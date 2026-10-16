@@ -31,6 +31,9 @@ async def test_token_endpoint_dispatches_agent(client):
     c = claims(data["participantToken"])
     assert c["video"]["room"] == data["roomName"]
     assert c["roomConfig"]["agents"][0]["agentName"] == AGENT_NAME
+    # The app may update its own attributes (current page) after joining.
+    assert c["video"]["canUpdateOwnMetadata"] is True
+    assert c["video"]["canPublishData"] is True
 
 
 async def test_token_without_body(client):

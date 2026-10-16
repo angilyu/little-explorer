@@ -1,7 +1,7 @@
 """Speech-to-text and text-to-speech for Pip.
 
 ``PIP_SPEECH=openai`` (default) uses OpenAI transcription and a warm OpenAI voice through the
-LiveKit OpenAI plugin, so it works on any LiveKit server. ``PIP_SPEECH=livekit`` uses the voice-kit
+LiveKit OpenAI plugin, so it works on any LiveKit server. ``PIP_SPEECH=livekit`` uses the patient
 preset's LiveKit Inference models and turn detector (LiveKit Cloud).
 """
 
@@ -10,7 +10,7 @@ from __future__ import annotations
 import os
 from typing import Any
 
-from voice_kit import VoicePreset
+from .voice import VoicePreset
 
 VOICE_STYLE = (
     "You are Pip, a friendly, gentle buddy talking with a 6-year-old. Speak warmly and a little "

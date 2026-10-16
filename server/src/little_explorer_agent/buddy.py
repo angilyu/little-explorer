@@ -9,16 +9,8 @@ import re
 from collections.abc import Awaitable, Callable, Mapping
 from typing import Any
 
-from voice_kit import (
-    TurnDecision,
-    UserTurn,
-    init_chat_model_from_spec,
-    is_question,
-    llm_gate,
-    text_overlap,
-)
-
 from .content import BOOK_KEY, CITY_KEY, PAGE_KEY, PAGE_NUMBER_KEY, PAGE_TEXT_KEY, lookup
+from .voice import TurnDecision, UserTurn, init_chat_model_from_spec, is_question, llm_gate, message_text, text_overlap
 
 log = logging.getLogger(__name__)
 
@@ -205,7 +197,6 @@ def build_graph(model: Any = None) -> Any:
     """A one-node LangGraph graph that streams Pip's spoken reply."""
     from langgraph.config import get_stream_writer
     from langgraph.graph import START, MessagesState, StateGraph
-    from voice_kit import message_text
 
     chat = model if model is not None else init_chat_model_from_spec(REPLY_MODEL)
 

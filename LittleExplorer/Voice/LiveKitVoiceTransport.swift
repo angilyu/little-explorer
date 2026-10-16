@@ -6,7 +6,7 @@ import LiveKit
 
 /// Joins a LiveKit room with the microphone on. The agent (server/) is dispatched into the room by
 /// the token, which also carries the opening page. Page turns go to the agent as JSON on the
-/// `context` data topic (voice-kit's `attach_room_context`), and the agent talks back as audio.
+/// `context` data topic (the agent's `attach_room_context`), and the agent talks back as audio.
 final class LiveKitVoiceTransport: NSObject, VoiceTransport, RoomDelegate, @unchecked Sendable {
     var onEvent: ((VoiceTransportEvent) -> Void)?
 

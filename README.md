@@ -69,9 +69,9 @@ If a page has no clip for its current sentence, the app falls back to the best o
 
 Tap **Talk to Pip** in a book to start voice mode. It stays on across page turns until it's turned off.
 On every page turn the app sends the current page (book, page, sentence) to the agent.
-The agent lives in [`server/`](server) and uses [voice-kit](https://github.com/angilyu/voice-kit) (LiveKit Agents + LangGraph):
+The agent lives in [`server/`](server) (LiveKit Agents + LangGraph; its voice stack is in `server/src/little_explorer_agent/voice/`):
 
-- **Reading:** while he reads the page aloud, Pip stays quiet (`reference_text_gate` → LISTEN), even if he reads slowly or softly, then praises him.
+- **Reading:** while he reads the page aloud, Pip stays quiet (the reading gate → LISTEN), even if he reads slowly or softly, then praises him.
 - **Noise:** background voices are cancelled, and an LLM relevance gate ignores noise, other people's conversations and off-topic talk.
 - **Patience:** the `patient` preset waits 1.6–6 s for him to finish a turn. Answers are short and warm, and end with an open question that invites a longer reply.
 

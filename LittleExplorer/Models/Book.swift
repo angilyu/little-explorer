@@ -98,7 +98,7 @@ struct PageContext: Equatable, Sendable {
 
     /// Published as LiveKit participant attributes so the agent always knows the current page,
     /// even if it joins after the page was turned. Keys must match server/src/little_explorer_agent/content.py
-    /// (`page_text` is what voice-kit's reading gate compares speech against).
+    /// (`page_text` is what the agent's reading gate compares speech against).
     var attributes: [String: String] {
         [
             "book": bookId,
