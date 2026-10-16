@@ -55,7 +55,7 @@ mistake the app's voice for the child.
 [`scripts/generate_narration.py`](scripts/generate_narration.py) makes the clips. It reads each sentence with
 `gpt-4o-mini-tts` and gets word timings from `whisper-1`. It tightens those timings to the real pauses in the audio,
 retries if the transcript doesn't match the sentence, and writes `LittleExplorer/Resources/Narration/`. After editing a
-sentence, rerun it (it only regenerates pages that changed). It needs `OPENAI_API_KEY` (or `server/.env`) and macOS `afconvert`:
+sentence, rerun it (it only regenerates pages that changed). It needs `OPENAI_API_KEY` (or an env file, see below) and macOS `afconvert`:
 
 ```sh
 python3 scripts/generate_narration.py                  # new or changed pages only
@@ -73,7 +73,22 @@ The agent lives in [`server/`](server) (LiveKit Agents + LangGraph; its voice st
 
 - **Reading:** while he reads the page aloud, Pip stays quiet (the reading gate → LISTEN), even if he reads slowly or softly, then praises him.
 - **Noise:** background voices are cancelled, and an LLM relevance gate ignores noise, other people's conversations and off-topic talk.
-- **Patience:** the `patient` preset waits 1.6–6 s for him to finish a turn. Answers are short and warm, and end with an open question that invites a longer reply.
+- **Patience:** Pip waits through his pauses and answers briefly and warmly, ending with an open question that invites a longer reply.
+
+Pip has two voice engines. Pick one with `PIP_MODE` in the env file and restart the agent; the app doesn't change.
+
+- `PIP_MODE=pipeline` (default): streaming transcription (`gpt-realtime-whisper`) → reply (LangGraph) → `gpt-4o-mini-tts`.
+  A local end-of-turn model decides when he has finished (0.5 s when his words sound done, up to 4 s mid-sentence).
+  Local Silero VAD stops Pip after 0.3 s of his speech and resumes if it was only a noise. The reading and noise
+  checks are instant; the LLM topic check runs alongside the reply instead of before it.
+- `PIP_MODE=realtime`: one OpenAI Realtime speech-to-speech model (`gpt-realtime`, voice `coral`) hears him and talks
+  back. It uses `semantic_vad` with low eagerness, so slow reading isn't cut off. The page is in its instructions
+  and is updated on every page turn. The instructions tell it to stay quiet (a `stay_quiet` tool) while he reads and
+  when grown-ups talk. A guard checks each transcript afterwards and cuts off a reply to reading or adult talk. It
+  never delays a reply. Realtime costs much more per minute than the pipeline.
+
+The e2e harness can try either engine without restarting the agent: `tools/e2e_smoke.py --mode realtime`.
+It reports the reply latency and how fast Pip stops when talked over.
 
 No audio is stored. The app never holds LiveKit secrets. A small token server mints room tokens that dispatch the agent automatically.
 
@@ -86,6 +101,11 @@ uv run python -m little_explorer_agent.agent dev      # the Pip worker
 uv run pytest -q
 uv run python tools/e2e_smoke.py                       # live end-to-end check (no audio saved)
 ```
+
+Secrets are loaded from the first of: the path in `LITTLE_EXPLORER_ENV`, `server/.env`, or
+`~/.config/little-explorer/.env` (a per-user copy, `chmod 600`, that survives deleting the checkout). The token
+server, the agent, `tools/e2e_smoke.py` and `scripts/generate_narration.py` all use this order. Variables already
+set in the shell win.
 
 On a real device, set the token server address in the Grown-ups corner (e.g. `http://<your-mac>.local:8787`).
 

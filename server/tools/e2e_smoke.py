@@ -8,16 +8,24 @@ then plays synthesized speech into the microphone track and checks how Pip react
 2. reading the page aloud slowly, in two pieces, is listened to and then praised once;
 3. adults talking to each other get no answer;
 4. a question about the page gets an answer;
-5. after a page turn, a question about the new page is answered from that page.
+5. after a page turn, a question about the new page is answered from that page;
+6. talking over Pip makes him stop.
+
+It also measures, from Pip's audio track: reply latency (end of the child's speech -> Pip's first
+audible sound) and barge-in stop time (child starts talking over Pip -> Pip goes quiet).
 
 Needs the agent worker and token server running, plus OPENAI_API_KEY for the test voices.
-Run from server/: ``uv run python tools/e2e_smoke.py``. No audio is saved.
+Run from server/: ``uv run python tools/e2e_smoke.py [--mode pipeline|realtime] [--trials N]``.
+``--mode`` asks the token server for that engine, so one running agent can be compared in both.
+No audio is saved.
 """
 
 from __future__ import annotations
 
+import argparse
 import asyncio
 import json
+import statistics
 import os
 import sys
 import time
@@ -25,17 +33,19 @@ import urllib.request
 from pathlib import Path
 
 import numpy as np
-from dotenv import load_dotenv
 from livekit import rtc
 from openai import AsyncOpenAI
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+from little_explorer_agent.config import load_env  # noqa: E402
 from little_explorer_agent.content import load_books  # noqa: E402
 
 SAMPLE_RATE = 24000
 FRAME = SAMPLE_RATE // 100  # 10 ms
+LOUD_RMS = 300  # int16 RMS above this counts as Pip making sound
+QUIET_GAP = 0.7  # Pip has stopped when he stays quiet this long
 
-load_dotenv(Path(__file__).resolve().parents[1] / ".env")
+load_env()
 TOKEN_URL = os.environ.get("TOKEN_URL", "http://127.0.0.1:8787/token")
 
 
@@ -56,6 +66,8 @@ class Probe:
         self.tasks: set[asyncio.Task] = set()
         self.t0 = time.monotonic()
         self.openai = AsyncOpenAI()
+        self.loud: list[float] = []  # times of audible 10 ms frames from Pip
+        self.last_said: float = 0.0
 
     def now(self) -> float:
         return time.monotonic() - self.t0
@@ -65,8 +77,11 @@ class Probe:
         self.tasks.add(task)
         task.add_done_callback(self.tasks.discard)
 
-    async def connect(self, context: dict[str, str]) -> None:
-        body = json.dumps({"context": context}).encode()
+    async def connect(self, context: dict[str, str], mode: str | None = None) -> None:
+        payload: dict[str, object] = {"context": context}
+        if mode:
+            payload["pip_mode"] = mode
+        body = json.dumps(payload).encode()
         req = urllib.request.Request(TOKEN_URL, data=body, headers={"Content-Type": "application/json"}, method="POST")
         creds = json.loads(urllib.request.urlopen(req, timeout=10).read())
         print(f"[{self.now():5.1f}] room {creds['roomName']}")
@@ -91,12 +106,36 @@ class Probe:
                 print(f"[{self.now():5.1f}]   PIP: {text}")
 
         self.room.register_text_stream_handler("lk.transcription", lambda r, ident: self._spawn(_read(r, ident)))
+
+        @self.room.on("track_subscribed")
+        def _track(track: rtc.Track, _pub: rtc.RemoteTrackPublication, participant: rtc.RemoteParticipant) -> None:
+            if track.kind == rtc.TrackKind.KIND_AUDIO:
+                self._spawn(self._listen(track))
         await self.room.connect(creds["serverUrl"], creds["participantToken"])
         track = rtc.LocalAudioTrack.create_audio_track("mic", self.source)
         await self.room.local_participant.publish_track(
             track, rtc.TrackPublishOptions(source=rtc.TrackSource.SOURCE_MICROPHONE)
         )
         self._spawn(self._pump())
+
+    async def _listen(self, track: rtc.Track) -> None:
+        async for event in rtc.AudioStream(track, sample_rate=SAMPLE_RATE, num_channels=1):
+            samples = np.frombuffer(event.frame.data, dtype=np.int16).astype(np.float32)
+            if len(samples) and float(np.sqrt(np.mean(samples * samples))) > LOUD_RMS:
+                self.loud.append(self.now())
+
+    def first_sound_after(self, t: float) -> float | None:
+        return next((when for when in self.loud if when > t), None)
+
+    def quiet_after(self, t: float) -> float | None:
+        """When Pip went quiet (for ``QUIET_GAP``) after ``t``; None if he never did."""
+        frames = [when for when in self.loud if when >= t]
+        previous = t
+        for when in frames:
+            if when - previous >= QUIET_GAP:
+                return previous
+            previous = when
+        return previous if self.now() - previous >= QUIET_GAP else None
 
     async def _pump(self) -> None:
         silence = np.zeros(FRAME, dtype=np.int16)
@@ -109,14 +148,19 @@ class Probe:
                 chunk = np.concatenate([chunk, np.zeros(FRAME - len(chunk), dtype=np.int16)])
             await self.source.capture_frame(rtc.AudioFrame(chunk.tobytes(), SAMPLE_RATE, 1, FRAME))
 
-    async def say(self, text: str, voice: str, style: str) -> None:
+    async def synth(self, text: str, voice: str, style: str) -> np.ndarray:
         resp = await self.openai.audio.speech.create(
             model="gpt-4o-mini-tts", voice=voice, input=text, instructions=style, response_format="pcm"
         )
-        pcm = np.frombuffer(resp.content, dtype=np.int16)
+        return np.frombuffer(resp.content, dtype=np.int16)
+
+    async def say(self, text: str, voice: str, style: str, pcm: np.ndarray | None = None) -> None:
+        if pcm is None:
+            pcm = await self.synth(text, voice, style)
         print(f"[{self.now():5.1f}] >> ({voice}) {text}")
         await self.queue.put(pcm)
         await asyncio.sleep(len(pcm) / SAMPLE_RATE)
+        self.last_said = self.now()
 
     async def set_page(self, ctx: dict[str, str]) -> None:
         await self.room.local_participant.publish_data(json.dumps(ctx), reliable=True, topic="context")
@@ -141,10 +185,31 @@ READING = "You are a 6-year-old boy reading aloud slowly and carefully, word by 
 ADULTS = "An adult chatting casually in a kitchen with another adult."
 
 
-async def main() -> int:
+LATENCY_QUESTIONS = [
+    "Pip, why do people in Paris say bonjour?",
+    "Pip, what do kids in Paris eat for breakfast?",
+    "Why is the Eiffel Tower so tall?",
+    "Pip, can you go up to the top of the tower?",
+    "What is the river in Paris called?",
+]
+
+
+def median(values: list[float]) -> str:
+    return f"{statistics.median(values):.2f}s" if values else "n/a"
+
+
+async def main(mode: str | None, trials: int) -> int:
     probe = Probe()
-    await probe.connect(page_context("paris", 1))
+    await probe.connect(page_context("paris", 1), mode)
     results: dict[str, bool] = {}
+    latencies: list[float] = []
+    stops: list[float] = []
+
+    def note_latency(since: float) -> None:
+        heard = probe.first_sound_after(since)
+        if heard is not None:
+            latencies.append(heard - since)
+            print(f"[{probe.now():5.1f}]   latency {heard - since:.2f}s")
 
     await probe.wait_reply(0, timeout=60)
     results["greeting spoken"] = bool(probe.agent_lines)
@@ -165,9 +230,17 @@ async def main() -> int:
     results["adult chatter -> ignored"] = not probe.replies_since(t)
 
     t = probe.now()
-    await probe.say("Pip, why do people in Paris say bonjour?", "ash", CHILD)
+    await probe.say(LATENCY_QUESTIONS[0], "ash", CHILD)
+    said = probe.last_said
     await probe.wait_reply(t)
+    note_latency(said)
     results["question -> answered"] = bool(probe.replies_since(t))
+    for question in LATENCY_QUESTIONS[1:trials]:
+        t = probe.now()
+        await probe.say(question, "ash", CHILD)
+        said = probe.last_said
+        await probe.wait_reply(t)
+        note_latency(said)
 
     await probe.set_page(page_context("paris", 5))
     await asyncio.sleep(1)
@@ -177,13 +250,45 @@ async def main() -> int:
     replies = " ".join(probe.replies_since(t)).lower()
     results["page turn -> answers from the new page's hidden notes"] = "brown" in replies
 
+    barge_text = "Wait Pip! Wait! Does the tower have an elevator?"
+    barge_pcm = await probe.synth(barge_text, "ash", CHILD)
+    for _ in range(max(1, trials // 2)):
+        t = probe.now()
+        await probe.say("Pip, can you tell me a long story about the Eiffel Tower?", "ash", CHILD)
+        # Let Pip talk for about two seconds, then talk over him.
+        first = None
+        for _ in range(150):
+            first = probe.first_sound_after(probe.last_said)
+            if first is not None and probe.now() - first >= 2.0:
+                break
+            await asyncio.sleep(0.1)
+        if first is None:
+            print("   Pip never started; skipping barge-in trial")
+            continue
+        barge = probe.now()
+        await probe.say(barge_text, "ash", CHILD, barge_pcm)
+        quiet = probe.quiet_after(barge)
+        if quiet is not None and quiet < probe.last_said:
+            stops.append(quiet - barge)
+            print(f"[{probe.now():5.1f}]   barge-in stop {quiet - barge:.2f}s")
+        else:
+            print(f"[{probe.now():5.1f}]   Pip kept talking over the child")
+        await probe.wait_reply(t, settle=3)
+    results["barge-in -> Pip stops"] = bool(stops)
+
     await probe.room.disconnect()
-    print("\nRESULTS")
+    print(f"\nRESULTS ({mode or 'agent default'} mode)")
     for name, ok in results.items():
         print(f"  {'PASS' if ok else 'FAIL'}  {name}")
     print(f"  agent states seen: {sorted({s for _, s in probe.states})}")
+    print(f"  reply latency (end of speech -> first audio): median {median(latencies)} {[round(x, 2) for x in latencies]}")
+    print(f"  barge-in stop time: median {median(stops)} {[round(x, 2) for x in stops]}")
     return 0 if all(results.values()) else 1
 
 
 if __name__ == "__main__":
-    sys.exit(asyncio.run(main()))
+    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser.add_argument("--mode", choices=["pipeline", "realtime"], help="ask the token server for this engine")
+    parser.add_argument("--trials", type=int, default=3, help="latency questions (and half as many barge-ins)")
+    args = parser.parse_args()
+    sys.exit(asyncio.run(main(args.mode, args.trials)))

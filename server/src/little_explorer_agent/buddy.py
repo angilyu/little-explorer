@@ -46,7 +46,8 @@ GATE_PURPOSE = """\
 Pip is a voice buddy in a picture book app for a 6-year-old boy, about cities and travel.
 RESPOND when the child talks to Pip: questions or comments about the book, the page, the photo,
 the city, its country, language, food or famous places, about travel, or a short reply to Pip's
-last question (even "yes", "I like the boat"), or when he asks Pip something directly.
+last question (even "yes", "I like the boat"), or when he asks Pip something directly. A question
+about another place in the same city (not the one on this page) is still about the book.
 LISTEN when he is reading the page sentence aloud or is clearly in the middle of a thought.
 IGNORE adults talking to each other, TV or music, phone calls, speech that is not directed at
 Pip, and noise or mumbles that are not words.
@@ -65,6 +66,11 @@ def _words(text: str) -> list[str]:
 # Words that mark a question or a request to Pip rather than reading. Speech-to-text often drops
 # the "?" and splits "Pip, why ..." into pieces, so look for them anywhere in the turn.
 ASKING_WORDS = frozenset({"pip", "why", "what", "how", "where", "who", "when", "which", "tell", "wonder"})
+
+
+def addresses_pip(text: str) -> bool:
+    """He said Pip's name, so the turn is for Pip even if it strays from the current page."""
+    return "pip" in _words(text)
 
 
 class ReadingTracker:
@@ -115,6 +121,10 @@ class ReadingTracker:
             return TurnDecision.RESPOND
         return TurnDecision.LISTEN
 
+    def praise_pending(self, context: Mapping[str, Any]) -> bool:
+        """Like :meth:`take_praise` but does not use the praise up."""
+        return self._pending_praise is not None and self._pending_praise == self._page_key(context)
+
     def take_praise(self, context: Mapping[str, Any]) -> bool:
         """True once, for the reply right after he finished reading the current page."""
         key, self._pending_praise = self._pending_praise, None
@@ -157,26 +167,34 @@ def default_topic_gate() -> TopicGate:
     )
 
 
+def page_note(context: Mapping[str, Any]) -> list[str]:
+    """What is on screen plus the hidden notes for this page, as lines (empty if no page yet)."""
+    book, page = lookup(context)
+    city = book.city if book else context.get(CITY_KEY)
+    page_text = page.text if page else context.get(PAGE_TEXT_KEY)
+    if not city and not page_text:
+        return []
+    lines = ["What the child is looking at right now:"]
+    if city:
+        country = f", {book.country}" if book and book.country else ""
+        theme = f' (the "{book.theme}" book)' if book and book.theme else ""
+        lines.append(f"- Book: {city}{country}{theme}")
+    if context.get(PAGE_NUMBER_KEY):
+        lines.append(f"- Page {context[PAGE_NUMBER_KEY]}")
+    if page_text:
+        lines.append(f'- The sentence on the page: "{page_text}"')
+    if page and page.about:
+        lines.append(f"- Hidden notes for you (he cannot see these): {page.about}")
+    return lines
+
+
 def make_context_note(tracker: ReadingTracker) -> Callable[[Mapping[str, Any]], str | None]:
     """System note for each reply: what is on screen plus the hidden notes for this page."""
 
     def note(context: Mapping[str, Any]) -> str | None:
-        book, page = lookup(context)
-        city = book.city if book else context.get(CITY_KEY)
-        page_text = page.text if page else context.get(PAGE_TEXT_KEY)
-        if not city and not page_text:
+        lines = page_note(context)
+        if not lines:
             return None
-        lines = ["What the child is looking at right now:"]
-        if city:
-            country = f", {book.country}" if book and book.country else ""
-            theme = f' (the "{book.theme}" book)' if book and book.theme else ""
-            lines.append(f"- Book: {city}{country}{theme}")
-        if context.get(PAGE_NUMBER_KEY):
-            lines.append(f"- Page {context[PAGE_NUMBER_KEY]}")
-        if page_text:
-            lines.append(f'- The sentence on the page: "{page_text}"')
-        if page and page.about:
-            lines.append(f"- Hidden notes for you (he cannot see these): {page.about}")
         if tracker.take_praise(context):
             lines.append(
                 "He just read this page aloud all by himself. Praise his reading warmly and "
@@ -185,6 +203,43 @@ def make_context_note(tracker: ReadingTracker) -> Callable[[Mapping[str, Any]], 
         return "\n".join(lines)
 
     return note
+
+
+def make_parallel_topic_gate(tracker: ReadingTracker, topic_gate: TopicGate) -> TopicGate:
+    """The topic gate for the parallel path: praise after reading is always answered."""
+
+    async def gate(turn: UserTurn) -> TurnDecision:
+        if tracker.praise_pending(turn.context) or addresses_pip(turn.text):
+            return TurnDecision.RESPOND
+        result = topic_gate(turn)
+        if inspect.isawaitable(result):
+            result = await result
+        return result
+
+    return gate
+
+
+REALTIME_RULES = """How listening works (very important):
+- You hear the room through a microphone. Speak only when the child is talking to you: about the
+  book, the page, the photo, the city, its country, food or famous places, about travel, or
+  answering your last question.
+- When he reads the sentence on the page aloud, he may be slow and quiet and pause between words.
+  Do not interrupt and do not answer while he is reading: call stay_quiet. When he has read the
+  whole sentence, praise his reading warmly in one short sentence, then ask one easy question
+  about the page.
+- If he stops in the middle of a sentence or says "um", he is still thinking: call stay_quiet.
+- If you hear grown-ups talking to each other, a phone call, TV, music, noise, or anything not
+  meant for you, call stay_quiet. Never mention it.
+- When you do answer, use two or three short sentences, then one curious question.
+- Speak warmly, clearly and a little slowly, like reading a picture book to a 6-year-old.
+"""
+
+
+def realtime_instructions(context: Mapping[str, Any]) -> str:
+    """Full instructions for the realtime model on the current page."""
+    lines = page_note(context)
+    page = "\n".join(lines) if lines else "The book is not open on a page yet."
+    return f"{PERSONA}\n{REALTIME_RULES}\n{page}\n"
 
 
 def _trim(messages: list[Any]) -> list[Any]:

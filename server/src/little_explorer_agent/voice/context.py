@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping
 from typing import Any
 
 
@@ -12,6 +12,7 @@ class ContextStore:
 
     def __init__(self, initial: Mapping[str, Any] | None = None) -> None:
         self._data: dict[str, Any] = {}
+        self._listeners: list[Callable[[dict[str, Any]], None]] = []
         if initial:
             self.update(initial)
 
@@ -26,7 +27,15 @@ class ContextStore:
             elif key not in self._data or self._data[key] != value:
                 self._data[key] = value
                 changed[key] = value
+        if changed:
+            for listener in list(self._listeners):
+                listener(changed)
         return changed
+
+    def subscribe(self, listener: Callable[[dict[str, Any]], None]) -> Callable[[], None]:
+        """Call ``listener(changed)`` after every update that changes something. Returns an unsubscribe."""
+        self._listeners.append(listener)
+        return lambda: self._listeners.remove(listener)
 
     def handle_data(self, payload: bytes | str) -> dict[str, Any]:
         """Apply a data message: a JSON object is merged; anything else is ignored."""

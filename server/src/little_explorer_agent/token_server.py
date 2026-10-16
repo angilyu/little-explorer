@@ -3,7 +3,8 @@
 ``POST /token`` with an optional ``{"context": {"book": ..., "page": ..., ...}}`` body returns
 ``{"serverUrl", "participantToken", "roomName"}``. The token dispatches the ``little-explorer``
 agent into a fresh room and carries the opening page as participant attributes, so Pip knows the
-page from the first word. Later page turns arrive as JSON on the ``context`` data topic. Run: ``uv run python -m little_explorer_agent.token_server``.
+page from the first word. An optional ``"pip_mode": "pipeline" | "realtime"`` picks Pip's voice
+engine for that room (otherwise the agent's ``PIP_MODE`` applies). Later page turns arrive as JSON on the ``context`` data topic. Run: ``uv run python -m little_explorer_agent.token_server``.
 """
 
 from __future__ import annotations
@@ -14,10 +15,11 @@ import uuid
 from datetime import timedelta
 
 from aiohttp import web
-from dotenv import load_dotenv
 
 from . import AGENT_NAME
+from .config import load_env
 from .content import BOOK_KEY, CITY_KEY, PAGE_KEY, PAGE_NUMBER_KEY, PAGE_TEXT_KEY
+from .modes import PipMode, mode_metadata, parse_mode
 
 log = logging.getLogger("little_explorer.tokens")
 
@@ -37,7 +39,9 @@ def clean_context(raw: object) -> dict[str, str]:
     }
 
 
-def credentials(identity: str | None = None, context: dict[str, str] | None = None) -> dict[str, str]:
+def credentials(
+    identity: str | None = None, context: dict[str, str] | None = None, mode: PipMode | None = None
+) -> dict[str, str]:
     from .voice.tokens import mint_token
 
     url = os.environ.get("LIVEKIT_URL", "").strip()
@@ -51,6 +55,7 @@ def credentials(identity: str | None = None, context: dict[str, str] | None = No
         name="Little Explorer",
         attributes=context or None,
         agent_name=AGENT_NAME,
+        agent_metadata=mode_metadata(mode) if mode else None,
         ttl=TOKEN_TTL,
     )
     return {"serverUrl": url, "participantToken": token, "roomName": room}
@@ -66,8 +71,11 @@ async def handle_token(request: web.Request) -> web.Response:
     identity = body.get("identity")
     if identity is not None and (not isinstance(identity, str) or not identity.isascii() or len(identity) > 64):
         return web.json_response({"error": "bad identity"}, status=400)
+    mode = parse_mode(body.get("pip_mode"))
+    if body.get("pip_mode") is not None and mode is None:
+        return web.json_response({"error": "bad pip_mode"}, status=400)
     try:
-        payload = credentials(identity, clean_context(body.get("context")))
+        payload = credentials(identity, clean_context(body.get("context")), mode)
     except RuntimeError as exc:
         log.error("%s", exc)
         return web.json_response({"error": "token server is not configured"}, status=500)
@@ -87,7 +95,7 @@ def create_app() -> web.Application:
 
 
 def main() -> None:
-    load_dotenv()
+    load_env()
     logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO"))
     host = os.environ.get("TOKEN_SERVER_HOST", "127.0.0.1")
     port = int(os.environ.get("TOKEN_SERVER_PORT", "8787"))

@@ -12,6 +12,7 @@ def mint_token(
     room: str,
     identity: str,
     agent_name: str,
+    agent_metadata: str | None = None,
     name: str | None = None,
     attributes: Mapping[str, str] | None = None,
     ttl: timedelta = timedelta(hours=1),
@@ -23,6 +24,7 @@ def mint_token(
     ``attributes`` become the participant's initial attributes (the opening page, so the agent
     knows it before any data message). The participant may update its own attributes later
     (``can_update_own_metadata``), so the current page is always readable from the room.
+    ``agent_metadata`` reaches the agent as its job metadata.
     """
     from livekit import api
 
@@ -44,7 +46,11 @@ def mint_token(
                 can_update_own_metadata=True,
             )
         )
-        .with_room_config(api.RoomConfiguration(agents=[api.RoomAgentDispatch(agent_name=agent_name)]))
+        .with_room_config(
+            api.RoomConfiguration(
+                agents=[api.RoomAgentDispatch(agent_name=agent_name, metadata=agent_metadata or "")]
+            )
+        )
     )
     if name:
         token = token.with_name(name)
