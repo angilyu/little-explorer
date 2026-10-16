@@ -17,6 +17,24 @@ final class FakeSpeechEngine: SpeechEngine {
 }
 
 @MainActor
+final class FakeNarrationPlayer: NarrationPlayer {
+    var events: ReadAloudController.EngineEvents?
+    var canPlay = true
+    private(set) var played: [String] = []
+    private(set) var stopCount = 0
+
+    func play(_ narration: Narration) -> Bool {
+        guard canPlay else { return false }
+        played.append(narration.file)
+        return true
+    }
+    func stop() { stopCount += 1 }
+
+    func word(_ range: NSRange) { events?.willSpeak(range) }
+    func finish() { events?.finished() }
+}
+
+@MainActor
 final class ReadAloudControllerTests: XCTestCase {
     private var engine: FakeSpeechEngine!
     private var reader: ReadAloudController!
@@ -24,7 +42,7 @@ final class ReadAloudControllerTests: XCTestCase {
 
     override func setUp() async throws {
         engine = FakeSpeechEngine()
-        reader = ReadAloudController(engine: engine)
+        reader = ReadAloudController(engine: engine, player: FakeNarrationPlayer(), narrations: { _, _ in nil })
         speakingChanges = []
         reader.onSpeakingChanged = { [unowned self] in speakingChanges.append($0) }
     }
@@ -89,6 +107,105 @@ final class ReadAloudControllerTests: XCTestCase {
         XCTAssertEqual(runs.first.map { String(marked[$0.range].characters) }, "Paris")
         XCTAssertEqual(String(PageView.highlighted(text, range: nil, tint: .blue).characters), text)
         XCTAssertTrue(PageView.highlighted(text, range: nil, tint: .blue).runs.allSatisfy { $0.backgroundColor == nil })
+    }
+}
+
+@MainActor
+final class NarrationClipTests: XCTestCase {
+    private let clip = Narration(
+        file: "read-paris-welcome",
+        text: "This is Paris.",
+        duration: 2,
+        words: [
+            .init(location: 0, length: 4, start: 0.2, end: 0.5),
+            .init(location: 5, length: 2, start: 0.5, end: 0.7),
+            .init(location: 8, length: 5, start: 1.0, end: 1.6),
+        ]
+    )
+
+    func testPlaysTheNaturalVoiceClipWhenThereIsOne() {
+        let engine = FakeSpeechEngine(), player = FakeNarrationPlayer()
+        var changes: [Bool] = []
+        let reader = ReadAloudController(engine: engine, player: player, narrations: { [clip] id, _ in id == "paris/welcome" ? clip : nil })
+        reader.onSpeakingChanged = { changes.append($0) }
+
+        reader.toggle(pageId: "paris/welcome", text: clip.text)
+        XCTAssertTrue(reader.usingClip)
+        XCTAssertEqual(player.played, ["read-paris-welcome"])
+        XCTAssertTrue(engine.spoken.isEmpty)
+
+        player.word(NSRange(location: 8, length: 5))
+        XCTAssertEqual(reader.spokenRange, NSRange(location: 8, length: 5))
+        player.finish()
+        XCTAssertFalse(reader.isSpeaking)
+        XCTAssertFalse(reader.usingClip)
+        XCTAssertEqual(changes, [true, false])
+    }
+
+    func testTapAgainAndPageTurnStopTheClip() {
+        let engine = FakeSpeechEngine(), player = FakeNarrationPlayer()
+        let reader = ReadAloudController(engine: engine, player: player, narrations: { [clip] _, _ in clip })
+        reader.toggle(pageId: "paris/welcome", text: clip.text)
+        reader.toggle(pageId: "paris/welcome", text: clip.text)
+        XCTAssertFalse(reader.isSpeaking)
+        reader.toggle(pageId: "paris/welcome", text: clip.text)
+        reader.pageDidChange(to: "paris/bonjour")
+        XCTAssertFalse(reader.isSpeaking)
+        XCTAssertEqual(player.stopCount, 2)
+        XCTAssertEqual(engine.stopCount, 0)
+    }
+
+    func testFallsBackToSystemVoiceWithoutAClip() {
+        let engine = FakeSpeechEngine(), player = FakeNarrationPlayer()
+        player.canPlay = false
+        let reader = ReadAloudController(engine: engine, player: player, narrations: { [clip] id, _ in id == "paris/welcome" ? clip : nil })
+        reader.toggle(pageId: "paris/welcome", text: clip.text)
+        XCTAssertFalse(reader.usingClip)
+        XCTAssertEqual(engine.spoken.map(\.text), ["This is Paris."])
+
+        reader.toggle(pageId: "london/bus", text: "A red bus.")
+        XCTAssertEqual(engine.spoken.map(\.text), ["This is Paris.", "A red bus."])
+        XCTAssertEqual(engine.stopCount, 1)
+        XCTAssertEqual(player.stopCount, 0)
+    }
+
+    func testWordAtTimeHoldsThroughPauses() {
+        XCTAssertNil(clip.word(at: 0.1))
+        XCTAssertEqual(clip.word(at: 0.3)?.location, 0)
+        XCTAssertEqual(clip.word(at: 0.85)?.location, 5)
+        XCTAssertEqual(clip.word(at: 1.9)?.location, 8)
+    }
+
+    func testEveryPageHasAMatchingNaturalVoiceClip() throws {
+        let library = NarrationLibrary.bundled
+        let books = try BookLibrary.loadBundled()
+        var checked = 0
+        for book in books {
+            for page in book.pages {
+                let id = HeartStore.id(bookId: book.id, pageId: page.id)
+                let clip = try XCTUnwrap(library.narration(for: id, text: page.text), "no clip for \(id): run scripts/generate_narration.py")
+                let text = page.text as NSString
+                XCTAssertFalse(clip.words.isEmpty, id)
+                XCTAssertGreaterThan(clip.duration, 1, id)
+                var lastStart = -1.0
+                for word in clip.words {
+                    XCTAssertLessThanOrEqual(word.location + word.length, text.length, id)
+                    XCTAssertFalse(text.substring(with: word.range).contains(" "), id)
+                    XCTAssertGreaterThanOrEqual(word.start, lastStart, id)
+                    XCTAssertLessThanOrEqual(word.start, clip.duration, id)
+                    lastStart = word.start
+                }
+                checked += 1
+            }
+        }
+        XCTAssertEqual(checked, 64)
+    }
+
+    func testChangedSentenceDoesNotUseAStaleClip() throws {
+        let library = NarrationLibrary.bundled
+        XCTAssertNotNil(library.clips["paris/welcome"])
+        XCTAssertNil(library.narration(for: "paris/welcome", text: "Some new sentence."))
+        XCTAssertNil(library.narration(for: "paris/no-such-page", text: "Hi."))
     }
 }
 
