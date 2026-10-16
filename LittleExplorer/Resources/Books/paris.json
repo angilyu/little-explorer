@@ -1,0 +1,236 @@
+{
+  "id": "paris",
+  "city": "Paris",
+  "country": "France",
+  "flagImage": "paris-flag.png",
+  "flag": "🇫🇷",
+  "coverColor": "#3B6EA5",
+  "tagline": "The city of lights",
+  "theme": "Famous Places",
+  "pages": [
+    {
+      "id": "welcome",
+      "text": "This is Paris. Paris is a big city in France.",
+      "about": "Paris is the capital city of France, a country in Europe. About two million people live in the city itself and many more live all around it. People call Paris 'the City of Light' because it was one of the first cities with lots of street lights, and because it has always been a city of ideas and art.",
+      "emoji": "🗼",
+      "photo": {
+        "file": "paris-welcome.jpg",
+        "commonsTitle": "File:Paris view from Sacre Coeur DSC 0371.JPG",
+        "query": "Paris skyline Eiffel Tower Seine panorama",
+        "verified": true,
+        "author": "Pline",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Paris_view_from_Sacre_Coeur_DSC_0371.JPG"
+      }
+    },
+    {
+      "id": "bonjour",
+      "text": "People in Paris speak French. They say bonjour!",
+      "about": "In France people speak French. 'Bonjour' (bon-ZHOOR) means hello or good day. 'Merci' (mair-SEE) means thank you, and 'au revoir' (oh ruh-VWAR) means goodbye. Saying bonjour when you walk into a shop is good manners in Paris.",
+      "emoji": "👋",
+      "photo": {
+        "file": "paris-bonjour.jpg",
+        "commonsTitle": "File:Café de Flore, 172 boulevard Saint-Germain, Paris 6e.jpg",
+        "query": "Paris cafe terrace street",
+        "author": "Celette",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Caf%C3%A9_de_Flore,_172_boulevard_Saint-Germain,_Paris_6e.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "flag",
+      "text": "The flag of France is blue, white and red.",
+      "about": "The French flag has three tall stripes: blue, white and red. People call it 'le drapeau tricolore', which means the three-colored flag. Blue and red are old colors of the city of Paris.",
+      "emoji": "🇫🇷",
+      "photo": {
+        "file": "paris-flag.png",
+        "commonsTitle": "File:Flag of France.svg",
+        "query": null,
+        "author": "Original: Unknown Vector: SKopp",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Flag_of_France.svg",
+        "verified": true
+      }
+    },
+    {
+      "id": "seine",
+      "text": "A river runs through Paris. It is called the Seine.",
+      "about": "The Seine (say 'sen') is the river that flows through the middle of Paris. There are 37 bridges over it in Paris. The oldest one is funny: it is called the Pont Neuf, which means 'New Bridge', but it was finished more than 400 years ago, in 1607! You can ride a boat on the Seine and see the city from the water.",
+      "emoji": "🚤",
+      "photo": {
+        "file": "paris-seine.jpg",
+        "commonsTitle": "File:Paris, Pont Neuf -- 2014 -- 1425.jpg",
+        "query": "Pont Neuf Paris Seine",
+        "author": "Dietmar Rabich",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Paris,_Pont_Neuf_--_2014_--_1425.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "eiffel",
+      "text": "The Eiffel Tower is very tall. It is made of iron.",
+      "about": "The Eiffel Tower was built for a big world fair in 1889. It is made of thousands of iron pieces held together by about 2.5 million rivets, like giant metal buttons. It is about 330 meters tall, as tall as a building with about 80 floors. You can walk up 674 steps to the second floor, or ride a lift. In hot summer days the iron grows a little and the tower gets a few centimeters taller!",
+      "emoji": "🗼",
+      "photo": {
+        "file": "paris-eiffel.jpg",
+        "commonsTitle": "File:Tour Eiffel Wikimedia Commons.jpg",
+        "query": null,
+        "author": "Benh LIEU SONG",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Tour_Eiffel_Wikimedia_Commons.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "eiffel-paint",
+      "text": "Painters give the tower new paint every seven years.",
+      "about": "To keep the iron from getting rusty, the Eiffel Tower is repainted about every seven years. Painters climb on it with ropes and use brushes, not spray cans. It takes about 60 tonnes of paint, as heavy as ten elephants! The color is a special brown called 'Eiffel Tower brown', and it is a little darker at the bottom and lighter at the top so it looks the same color from the ground.",
+      "emoji": "🎨",
+      "photo": {
+        "file": "paris-eiffel-paint.jpg",
+        "commonsTitle": "File:Travaux de peinture à la Tour Eiffel (deux peintres au travail) - btv1b532543124.jpg",
+        "query": "Eiffel Tower painters painting repainting campaign",
+        "verified": true,
+        "author": "Agence Rol",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Travaux_de_peinture_%C3%A0_la_Tour_Eiffel_(deux_peintres_au_travail)_-_btv1b532543124.jpg"
+      }
+    },
+    {
+      "id": "eiffel-sparkle",
+      "text": "At night the tower sparkles like stars!",
+      "about": "When it gets dark, the Eiffel Tower is lit up with golden lights. Then, at the start of every hour, about 20,000 little light bulbs twinkle all over the tower for five minutes. It looks like the tower is covered in glitter. On top there is also a beacon light that turns around like a lighthouse.",
+      "emoji": "✨",
+      "photo": {
+        "file": "paris-eiffel-sparkle.jpg",
+        "commonsTitle": "File:Reflet-tour-Eiffel-Paris-Luc-Viatour.jpg",
+        "query": "Eiffel Tower at night illuminated",
+        "author": "Lviatour",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Reflet-tour-Eiffel-Paris-Luc-Viatour.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "louvre",
+      "text": "The Louvre is a huge museum with a glass pyramid.",
+      "about": "The Louvre (say 'loov') used to be a palace for French kings. Now it is one of the biggest art museums in the world, with more than 35,000 works of art on show. The glass pyramid in front is the entrance. It was built in 1989 and is made of 673 glass panes. Some people say you would need many days to see every room!",
+      "emoji": "🔺",
+      "photo": {
+        "file": "paris-louvre.jpg",
+        "commonsTitle": "File:Louvre Museum Wikimedia Commons.jpg",
+        "query": "Louvre pyramid",
+        "author": "Benh LIEU SONG (Flickr)",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Louvre_Museum_Wikimedia_Commons.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "mona-lisa",
+      "text": "The Mona Lisa lives in the Louvre. She is smiling.",
+      "about": "The Mona Lisa is a painting by Leonardo da Vinci, made about 500 years ago. It is one of the most famous paintings in the world, but it is quite small: about as big as a school poster, 77 by 53 centimeters. She sits behind special glass. People say her eyes seem to follow you around the room, and nobody is sure why she is smiling.",
+      "emoji": "🖼️",
+      "photo": {
+        "file": "paris-mona-lisa.jpg",
+        "commonsTitle": "File:Mona Lisa, by Leonardo da Vinci, from C2RMF retouched.jpg",
+        "query": null,
+        "author": "Leonardo da Vinci",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Mona_Lisa,_by_Leonardo_da_Vinci,_from_C2RMF_retouched.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "notre-dame",
+      "text": "Notre-Dame is a very old church with stone monsters.",
+      "about": "Notre-Dame de Paris is a cathedral that is more than 800 years old. High up there are stone creatures. The gargoyles have long necks and spit rainwater away from the walls when it rains. Other creatures, called chimeras, just sit and watch over the city. In 2019 a big fire burned the roof, and builders worked very hard to fix it. It opened again in December 2024.",
+      "emoji": "⛪",
+      "photo": {
+        "file": "paris-notre-dame.jpg",
+        "commonsTitle": "File:Notre Dame HDR.jpg",
+        "query": "Notre-Dame de Paris chimera gargoyle stryge",
+        "author": "Prosthetic Head",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Notre_Dame_HDR.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "croissant",
+      "text": "In Paris, you can eat a warm croissant for breakfast.",
+      "about": "A croissant (say 'kwah-SAHN') is a soft, flaky bread shaped like a crescent moon. Lots of people in Paris also buy a long thin bread called a baguette every day from the bakery, which is called a boulangerie. Some people eat the crunchy end of the baguette on the way home!",
+      "emoji": "🥐",
+      "photo": {
+        "file": "paris-croissant.jpg",
+        "commonsTitle": "File:Croissants au beurre (18953292873).jpg",
+        "query": "croissant breakfast",
+        "author": "Herry Wibisono (herryway)",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Croissants_au_beurre_(18953292873).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "arc",
+      "text": "Twelve big streets meet at the Arc de Triomphe.",
+      "about": "The Arc de Triomphe is a giant stone arch. Twelve big avenues spread out from it like the points of a star, and cars drive round and round it. You can climb 284 steps to the top for a great view. Under the arch there is a little flame that is lit every evening to remember soldiers.",
+      "emoji": "🏛️",
+      "photo": {
+        "file": "paris-arc.jpg",
+        "commonsTitle": "File:Arc de Triomphe de l'Étoile at night vertical fix.jpg",
+        "query": "Arc de Triomphe Paris",
+        "author": "Wilfredor",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Arc_de_Triomphe_de_l%27%C3%89toile_at_night_vertical_fix.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "sailboats",
+      "text": "In the park, kids push toy boats with a stick.",
+      "about": "In the Luxembourg Garden there is a big round pond. Children can rent little wooden sailboats with colorful sails and push them across the water with a long stick. Then they run around the pond to meet their boat on the other side. Kids have been doing this for about 100 years!",
+      "emoji": "⛵",
+      "photo": {
+        "file": "paris-sailboats.jpg",
+        "commonsTitle": "File:Model boats @ Jardin du Luxembourg @ Paris (25244626451).jpg",
+        "query": "Jardin du Luxembourg toy sailboats basin",
+        "verified": true,
+        "author": "Guilhem Vellut from Paris, France",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Model_boats_@_Jardin_du_Luxembourg_@_Paris_(25244626451).jpg"
+      }
+    },
+    {
+      "id": "goodbye",
+      "text": "Au revoir, Paris! Where should we go next?",
+      "about": "Au revoir means goodbye in French. The next book goes to London, a big city across the sea in England. You can even get from Paris to London by a fast train that goes under the sea through a tunnel!",
+      "emoji": "🧳",
+      "photo": {
+        "file": "paris-goodbye.jpg",
+        "commonsTitle": "File:Golden sky over Paris.jpg",
+        "query": "Paris rooftops view sunset",
+        "author": "Radek Kucharski",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Golden_sky_over_Paris.jpg",
+        "verified": true
+      }
+    }
+  ]
+}

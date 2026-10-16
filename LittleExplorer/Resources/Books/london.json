@@ -1,0 +1,219 @@
+{
+  "id": "london",
+  "city": "London",
+  "country": "England, United Kingdom",
+  "flagImage": "london-flag.png",
+  "flag": "🇬🇧",
+  "coverColor": "#C8312E",
+  "tagline": "Red buses and royal guards",
+  "pages": [
+    {
+      "id": "welcome",
+      "text": "This is London. London is a big city in England.",
+      "about": "London is the capital city of England and of the whole United Kingdom. Almost nine million people live there. London is very old: the Romans built a town there almost 2,000 years ago and called it Londinium.",
+      "emoji": "🏙️",
+      "photo": {
+        "file": "london-welcome.jpg",
+        "commonsTitle": "File:London Westminster Skyline.jpg",
+        "query": "London skyline Thames Westminster panorama",
+        "author": "reverendlukewarm",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:London_Westminster_Skyline.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "flag",
+      "text": "The flag has red, white and blue crosses.",
+      "about": "The flag of the United Kingdom is called the Union Jack or Union Flag. It mixes three crosses: the red cross of England, the white X-shaped cross of Scotland, and a red X-shaped cross for Ireland. In London people speak English, just like you!",
+      "emoji": "🇬🇧",
+      "photo": {
+        "file": "london-flag.png",
+        "commonsTitle": "File:Flag of the United Kingdom.svg",
+        "query": null,
+        "author": "Original: Acts of Union 1800 Vector: Yaddah",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Flag_of_the_United_Kingdom_(3-5).svg",
+        "verified": true
+      }
+    },
+    {
+      "id": "thames",
+      "text": "The river in London is called the Thames.",
+      "about": "The River Thames flows through London. It is spelled with 'th' but you say it 'Temz'! There are more than 30 bridges over it in London. Boats and river buses carry people up and down the river, and the water goes up and down with the sea tides twice a day.",
+      "emoji": "🌊",
+      "photo": {
+        "file": "london-thames.jpg",
+        "commonsTitle": "File:View of Hermitage Riverside and City of London from the Thames. London.jpg",
+        "query": "River Thames London boats",
+        "author": "Ввласенко",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:View_of_Hermitage_Riverside_and_City_of_London_from_the_Thames._London.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "big-ben",
+      "text": "Big Ben is not the tower. Big Ben is the bell!",
+      "about": "Most people call the tall clock tower 'Big Ben', but Big Ben is really the name of the giant bell inside. The bell weighs about 13.7 tonnes, as much as two elephants. The tower is called the Elizabeth Tower. It has four huge clock faces, and the bell goes BONG every hour.",
+      "emoji": "🔔",
+      "photo": {
+        "file": "london-big-ben.jpg",
+        "commonsTitle": "File:Clock Tower - Palace of Westminster, London - May 2007.jpg",
+        "query": "Elizabeth Tower Big Ben",
+        "author": "Diliff",
+        "license": "CC BY 2.5",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.5",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Clock_Tower_-_Palace_of_Westminster,_London_-_May_2007.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "tower-bridge",
+      "text": "Tower Bridge can lift up to let big ships pass.",
+      "about": "Tower Bridge opened in 1894. The middle part of the road splits in two and both halves lift up into the air, so tall ships can sail through. Cars and people have to wait. High up, there is a walkway with a glass floor, so you can look down at the river and the cars below your feet!",
+      "emoji": "🌉",
+      "photo": {
+        "file": "london-tower-bridge.jpg",
+        "commonsTitle": "File:Puente de la Torre, Londres, Inglaterra, 2014-08-11, DD 092.JPG",
+        "query": "Tower Bridge raised bascules open ship",
+        "author": "Diego Delso",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Puente_de_la_Torre,_Londres,_Inglaterra,_2014-08-11,_DD_092.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "bus",
+      "text": "London buses are red. Many buses have two floors!",
+      "about": "London is famous for red double-decker buses. Double-decker means the bus has two floors, a downstairs and an upstairs. Lots of kids love to sit at the very front of the top floor, because it feels like you are driving the bus!",
+      "emoji": "🚌",
+      "photo": {
+        "file": "london-bus.jpg",
+        "commonsTitle": "File:Red double-decker bus passing Nelson's Column, Trafalgar Square, London (Tripyana).jpg",
+        "query": "red double-decker bus London",
+        "author": "Mam16600 for Tripyana (tripyana.com)",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Red_double-decker_bus_passing_Nelson%27s_Column,_Trafalgar_Square,_London_(Tripyana).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "ravens",
+      "text": "Big black birds live at the Tower of London.",
+      "about": "The Tower of London is an old castle, almost 1,000 years old, where the king's crown jewels are kept. Big black birds called ravens live there. An old story says that if the ravens ever leave, the kingdom will fall, so there are always at least six ravens. A special guard called the Ravenmaster looks after them and feeds them treats like meat and eggs.",
+      "emoji": "🐦‍⬛",
+      "photo": {
+        "file": "london-ravens.jpg",
+        "commonsTitle": "File:Jubilee and Munin, Ravens, Tower of London 2016-04-30.jpg",
+        "query": "Tower of London raven",
+        "author": "Colin",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Jubilee_and_Munin,_Ravens,_Tower_of_London_2016-04-30.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "guards",
+      "text": "The guards wear tall, fluffy black hats.",
+      "about": "Soldiers guard Buckingham Palace, where the King lives and works. They wear red jackets and tall, fluffy black hats called bearskins. The hats are very tall and quite heavy. The guards stand very still and do not chat. You can watch them march with a band at the Changing of the Guard.",
+      "emoji": "💂",
+      "photo": {
+        "file": "london-guards.jpg",
+        "commonsTitle": "File:Guard of Buckingham Palace - 01.jpg",
+        "query": "Queen's Guard bearskin Buckingham Palace",
+        "author": "Carlos Delgado",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Guard_of_Buckingham_Palace_-_01.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "london-eye",
+      "text": "The London Eye is a giant wheel by the river.",
+      "about": "The London Eye is a huge wheel, 135 meters tall. It has 32 glass capsules, and each one can carry about 25 people. It turns so slowly that it does not even stop to let people on; you just walk in. One trip around takes about 30 minutes, and on a clear day you can see far across London.",
+      "emoji": "🎡",
+      "photo": {
+        "file": "london-london-eye.jpg",
+        "commonsTitle": "File:London Eye Twilight April 2006.jpg",
+        "query": "London Eye",
+        "author": "User:Diliff",
+        "license": "CC BY 2.5",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.5",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:London_Eye_Twilight_April_2006.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "tube",
+      "text": "Trains zoom under the city. People call it the Tube.",
+      "about": "London has the oldest underground railway in the world. It opened in 1863! People call it the Tube because the tunnels are round like tubes. At some stations a voice says 'Mind the gap', which means be careful of the space between the train and the platform.",
+      "emoji": "🚇",
+      "photo": {
+        "file": "london-tube.jpg",
+        "commonsTitle": "File:Clapham Common Tube Station Platforms - Oct 2007.jpg",
+        "query": "London Underground Tube train platform",
+        "author": "Diliff",
+        "license": "CC BY 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Clapham_Common_Tube_Station_Platforms_-_Oct_2007.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "whale",
+      "text": "A giant whale hangs in a big museum.",
+      "about": "In the Natural History Museum, a real skeleton of a blue whale hangs from the ceiling, as if it is diving. Her name is Hope, and she is 25 meters long. Blue whales are the biggest animals that have ever lived, even bigger than dinosaurs. The museum also has dinosaur skeletons, and it is free to visit.",
+      "emoji": "🐋",
+      "photo": {
+        "file": "london-whale.jpg",
+        "commonsTitle": "File:Blue whale skeleton Hope Hintze Hall Natural History Museum London 2025 dllu.jpg",
+        "query": "Natural History Museum Hope blue whale skeleton Hintze Hall",
+        "author": "Daniel Lu (User:dllu)",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Blue_whale_skeleton_Hope_Hintze_Hall_Natural_History_Museum_London_2025_dllu.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "fish-chips",
+      "text": "People in London like to eat fish and chips.",
+      "about": "Fish and chips is a famous food in England: fish cooked in crispy batter, with thick fried potato chips. Chips are what Americans call fries! People often add salt and vinegar, and sometimes mushy peas. Afternoon tea with little sandwiches and scones is another fun London treat.",
+      "emoji": "🐟",
+      "photo": {
+        "file": "london-fish-chips.jpg",
+        "commonsTitle": "File:Fish and chips plate with peas.jpg",
+        "query": "fish and chips",
+        "author": "Grendelkhan",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Fish_and_chips_plate_with_peas.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "goodbye",
+      "text": "Goodbye, London! Now we fly south to Spain.",
+      "about": "Next we go to Barcelona, a sunny city in Spain by the sea. It is about a two-hour plane ride from London. In Barcelona there are beaches, mosaic dragons, and a church that is still being built!",
+      "emoji": "✈️",
+      "photo": {
+        "file": "london-goodbye.jpg",
+        "commonsTitle": "File:British Airways Airbus A321-231 G-MEDJ Taking Off (14390299275).jpg",
+        "query": "Westminster Bridge London sunset",
+        "author": "Tony Hisgett from Birmingham, UK",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:British_Airways_Airbus_A321-231_G-MEDJ_Taking_Off_(14390299275).jpg",
+        "verified": true
+      }
+    }
+  ]
+}
