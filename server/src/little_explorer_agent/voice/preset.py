@@ -18,6 +18,9 @@ NoiseCancellation = Literal["none", "nc", "bvc"]
 people talking in the room). Both need LiveKit Cloud."""
 
 TurnDetection = Literal["model", "vad", "stt", "manual"]
+InterruptionMode = Literal["adaptive", "vad"]
+"""``vad`` = barge-in needs ``min_interruption_duration`` of speech (and the word count); ``adaptive`` =
+LiveKit's ML detector, which can fire on ~50 ms of audio and so cuts Pip off on echo and noise."""
 """``model`` = LiveKit's end-of-turn model (LiveKit Inference); ``stt`` = the STT's end of speech."""
 
 
@@ -32,7 +35,8 @@ class VoicePreset:
     # Children pause mid-sentence while sounding out words; wait well past a normal pause.
     min_endpointing_delay: float = 1.6
     max_endpointing_delay: float = 6.0
-    # Coughs, "um", page turns and short background words should not cut Pip off.
+    # Coughs, "um", page turns, short background words and speaker echo should not cut Pip off.
+    interruption_mode: InterruptionMode = "vad"
     min_interruption_duration: float = 0.8
     min_interruption_words: int = 2
     false_interruption_timeout: float = 1.5
@@ -49,6 +53,7 @@ class VoicePreset:
             "endpointing": {"min_delay": self.min_endpointing_delay, "max_delay": self.max_endpointing_delay},
             "interruption": {
                 "enabled": True,
+                "mode": self.interruption_mode,
                 "min_duration": self.min_interruption_duration,
                 "min_words": self.min_interruption_words,
                 "resume_false_interruption": True,

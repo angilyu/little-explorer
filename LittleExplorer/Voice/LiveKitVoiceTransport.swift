@@ -29,7 +29,7 @@ final class LiveKitVoiceTransport: NSObject, VoiceTransport, RoomDelegate, @unch
         let room = Room(delegate: self)
         self.room = room
         try await room.connect(url: credentials.serverUrl, token: credentials.participantToken)
-        _ = try await room.localParticipant.setMicrophone(enabled: true)
+        _ = try await room.localParticipant.setMicrophone(enabled: true, captureOptions: Self.captureOptions)
         for participant in room.remoteParticipants.values {
             emitActivity(from: participant.attributes)
         }
@@ -43,7 +43,18 @@ final class LiveKitVoiceTransport: NSObject, VoiceTransport, RoomDelegate, @unch
 
     func setMicrophone(enabled: Bool) async {
         guard let room else { return }
-        _ = try? await room.localParticipant.setMicrophone(enabled: enabled)
+        _ = try? await room.localParticipant.setMicrophone(enabled: enabled, captureOptions: Self.captureOptions)
+    }
+
+    /// On a device Apple's voice processing removes Pip's voice from the mic. The simulator has no
+    /// voice processing, so the Mac mic heard Pip through the speakers and Pip answered (and cut
+    /// itself off on) its own echo; use WebRTC's software echo cancellation there instead.
+    static var captureOptions: AudioCaptureOptions {
+        #if targetEnvironment(simulator)
+        AudioCaptureOptions(echoCancellationMode: .software, noiseSuppressionMode: .software)
+        #else
+        AudioCaptureOptions()
+        #endif
     }
 
     func disconnect() async {
