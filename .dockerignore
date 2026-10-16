@@ -1,0 +1,9 @@
+# Render builds server/Dockerfile.web from the repo root: send only what it copies.
+*
+!server/src
+!LittleExplorer/Resources/library.json
+!LittleExplorer/Resources/Books
+!LittleExplorer/Resources/Photos
+!LittleExplorer/Resources/Narration
+**/__pycache__
+**/.env

@@ -32,6 +32,7 @@ from .buddy import (  # noqa: E402
     make_parallel_topic_gate,
     realtime_instructions,
 )
+from .content import refresh_remote  # noqa: E402
 from .modes import resolve_mode  # noqa: E402
 from .speech import speech_setup  # noqa: E402
 from .usage import UsageMeter  # noqa: E402
@@ -140,6 +141,7 @@ async def entrypoint(ctx: JobContext) -> None:
 
     # Runs on every job end, including the child leaving abruptly or the worker shutting down.
     ctx.add_shutdown_callback(write_usage)
+    await refresh_remote()
     session = await (_realtime if mode == "realtime" else _pipeline)(ctx)
     meter.bind(session)
     pages = ContextStore()
