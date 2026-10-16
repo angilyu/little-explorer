@@ -14,12 +14,13 @@ load_env()
 import inspect  # noqa: E402
 import os  # noqa: E402
 
-from livekit.agents import AgentServer, JobContext, cli, function_tool, llm  # noqa: E402
+from livekit.agents import AgentServer, AgentSession, JobContext, cli, function_tool, llm  # noqa: E402
 
 from . import AGENT_NAME  # noqa: E402
 from .buddy import (  # noqa: E402
     GREETING,
     PERSONA,
+    REPLY_MODEL,
     ReadingTracker,
     TopicGate,
     _words,
@@ -33,9 +34,10 @@ from .buddy import (  # noqa: E402
 )
 from .modes import resolve_mode  # noqa: E402
 from .speech import speech_setup  # noqa: E402
-from .voice import TurnDecision, UserTurn, preset_from_env  # noqa: E402
+from .usage import UsageMeter  # noqa: E402
+from .voice import ContextStore, TurnDecision, UserTurn, preset_from_env  # noqa: E402
 from .voice.realtime import RealtimeConfig, start_realtime_session  # noqa: E402
-from .voice.session import start_graph_session  # noqa: E402
+from .voice.session import attach_room_context, start_graph_session  # noqa: E402
 
 log = logging.getLogger("little_explorer.agent")
 
@@ -90,10 +92,10 @@ def make_realtime_guard(tracker: ReadingTracker, topic_gate: TopicGate | None) -
     return guard
 
 
-async def _pipeline(ctx: JobContext) -> None:
+async def _pipeline(ctx: JobContext) -> AgentSession:
     tracker = ReadingTracker()
     preset, speech = speech_setup(preset_from_env())
-    await start_graph_session(
+    return await start_graph_session(
         ctx,
         _shared_graph(),
         preset=preset,
@@ -108,8 +110,8 @@ async def _pipeline(ctx: JobContext) -> None:
     )
 
 
-async def _realtime(ctx: JobContext) -> None:
-    await start_realtime_session(
+async def _realtime(ctx: JobContext) -> AgentSession:
+    return await start_realtime_session(
         ctx,
         config=realtime_config(),
         preset=preset_from_env(),
@@ -121,10 +123,28 @@ async def _realtime(ctx: JobContext) -> None:
     )
 
 
+def session_model(mode: str, env: dict[str, str] | None = None) -> str:
+    """The main model a session bills for: the realtime model, or the pipeline's reply model."""
+    if mode == "realtime":
+        return realtime_config(env).model
+    return REPLY_MODEL.split(":", 1)[-1].split("@", 1)[0]
+
+
 async def entrypoint(ctx: JobContext) -> None:
     mode = resolve_mode(ctx.job.metadata)
     log.info("Pip mode: %s", mode)
-    await (_realtime if mode == "realtime" else _pipeline)(ctx)
+    meter = UsageMeter(mode=mode, model=session_model(mode))
+
+    async def write_usage(_reason: str = "") -> None:
+        meter.finish()
+
+    # Runs on every job end, including the child leaving abruptly or the worker shutting down.
+    ctx.add_shutdown_callback(write_usage)
+    session = await (_realtime if mode == "realtime" else _pipeline)(ctx)
+    meter.bind(session)
+    pages = ContextStore()
+    pages.subscribe(lambda _changed: meter.on_context(pages.snapshot()))
+    attach_room_context(pages, ctx.room)
 
 
 def create_server() -> AgentServer:

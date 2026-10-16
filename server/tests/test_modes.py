@@ -58,9 +58,22 @@ class FakeJob:
         self.metadata = metadata
 
 
+class FakeSession:
+    def __init__(self):
+        self.handlers = {}
+
+    def on(self, event, callback):
+        self.handlers[event] = callback
+
+
 class FakeCtx:
     def __init__(self, metadata=""):
         self.job = FakeJob(metadata)
+        self.room = object()
+        self.shutdown_callbacks = []
+
+    def add_shutdown_callback(self, callback):
+        self.shutdown_callbacks.append(callback)
 
 
 @pytest.mark.parametrize(
@@ -72,14 +85,19 @@ class FakeCtx:
         (mode_metadata("pipeline"), "realtime", "pipeline"),
     ],
 )
-async def test_entrypoint_runs_the_chosen_engine(monkeypatch, metadata, env, expected):
+async def test_entrypoint_runs_the_chosen_engine(monkeypatch, tmp_path, metadata, env, expected):
     ran = []
 
     async def fake_pipeline(ctx):
         ran.append("pipeline")
+        return FakeSession()
 
     async def fake_realtime(ctx):
         ran.append("realtime")
+        return FakeSession()
+
+    monkeypatch.setattr(agent_mod, "attach_room_context", lambda store, room: None)
+    monkeypatch.setenv("PIP_USAGE_FILE", str(tmp_path / "usage.csv"))
 
     monkeypatch.setattr(agent_mod, "_pipeline", fake_pipeline)
     monkeypatch.setattr(agent_mod, "_realtime", fake_realtime)
@@ -87,8 +105,13 @@ async def test_entrypoint_runs_the_chosen_engine(monkeypatch, metadata, env, exp
         monkeypatch.setenv("PIP_MODE", env)
     else:
         monkeypatch.delenv("PIP_MODE", raising=False)
-    await agent_mod.entrypoint(FakeCtx(metadata))
+    ctx = FakeCtx(metadata)
+    await agent_mod.entrypoint(ctx)
     assert ran == [expected]
+    # Every session logs its usage when the job ends.
+    assert len(ctx.shutdown_callbacks) == 1
+    await ctx.shutdown_callbacks[0]("room disconnected")
+    assert f",{expected}," in (tmp_path / "usage.csv").read_text()
 
 
 def test_realtime_config_from_env():

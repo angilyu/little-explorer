@@ -7,6 +7,10 @@ The first that applies wins:
 3. ``~/.config/little-explorer/.env``, a per-user copy that survives deleting the checkout.
 
 Variables already set in the environment are never overwritten.
+
+Admin-only keys that may sit in the same file (``OPENAI_ADMIN_KEY``, ``RENDER_API_KEY``) are never
+loaded, and are removed from this process's environment, so the agent, its job processes and the
+token server can't log or forward them. The file itself is left alone.
 """
 
 from __future__ import annotations
@@ -14,11 +18,12 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-from dotenv import load_dotenv
+from dotenv import dotenv_values
 
 ENV_OVERRIDE = "LITTLE_EXPLORER_ENV"
 SERVER_ENV = Path(__file__).resolve().parents[2] / ".env"
 USER_ENV = Path("~/.config/little-explorer/.env")
+ADMIN_ONLY = frozenset({"OPENAI_ADMIN_KEY", "RENDER_API_KEY"})
 
 
 def env_file(environ: dict[str, str] | None = None) -> Path | None:
@@ -38,5 +43,9 @@ def load_env() -> Path | None:
     if path is not None:
         if not path.is_file():
             raise FileNotFoundError(f"{ENV_OVERRIDE} points to {path}, which does not exist")
-        load_dotenv(path, override=False)
+        for key, value in dotenv_values(path).items():
+            if key not in ADMIN_ONLY and value is not None:
+                os.environ.setdefault(key, value)
+    for key in ADMIN_ONLY:
+        os.environ.pop(key, None)
     return path

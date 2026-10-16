@@ -105,7 +105,21 @@ uv run python tools/e2e_smoke.py                       # live end-to-end check (
 Secrets are loaded from the first of: the path in `LITTLE_EXPLORER_ENV`, `server/.env`, or
 `~/.config/little-explorer/.env` (a per-user copy, `chmod 600`, that survives deleting the checkout). The token
 server, the agent, `tools/e2e_smoke.py` and `scripts/generate_narration.py` all use this order. Variables already
-set in the shell win.
+set in the shell win. Admin-only keys in the same file (`OPENAI_ADMIN_KEY`, `RENDER_API_KEY`) are never loaded
+by the server, so they can't be logged or passed on.
+
+### What a session costs
+
+When a Pip session ends (he closes the book, the app drops off, or the worker stops), the agent appends one row to
+`~/.config/little-explorer/usage.csv` (mode 600; `PIP_USAGE_FILE` moves it): start time, length, engine, model,
+book, pages visited, number of model responses, input/output tokens split into text and audio, cached tokens,
+input-transcription tokens, and an estimated price. It never holds transcripts or audio. Prices are OpenAI's list
+prices per 1M tokens, kept in `usage.py` with the source link; override one with e.g.
+`PIP_PRICE_GPT_REALTIME_AUDIO_OUT=64`. A worker that is killed outright (`kill -9`) can't write its rows.
+
+```sh
+uv run python tools/usage_report.py   # total minutes, $, $/minute, $/session, per day and per model
+```
 
 On a real device, set the token server address in the Grown-ups corner (e.g. `http://<your-mac>.local:8787`).
 
