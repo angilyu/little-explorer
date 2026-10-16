@@ -1,0 +1,219 @@
+{
+  "id": "barcelona",
+  "city": "Barcelona",
+  "country": "Spain",
+  "flagImage": "barcelona-flag.png",
+  "flag": "🇪🇸",
+  "coverColor": "#E0A100",
+  "tagline": "Sun, sea and mosaic dragons",
+  "pages": [
+    {
+      "id": "welcome",
+      "text": "This is Barcelona. It is a sunny city in Spain.",
+      "about": "Barcelona is the second biggest city in Spain, after Madrid. It sits by the Mediterranean Sea, so it is warm and sunny a lot of the year. It is the main city of Catalonia, a part of Spain with its own language and traditions.",
+      "emoji": "☀️",
+      "photo": {
+        "file": "barcelona-welcome.jpg",
+        "commonsTitle": "File:Barcelona view from Montjuïc hill.jpg",
+        "query": "Barcelona panorama view from Montjuic",
+        "author": "Kallerna",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Barcelona_view_from_Montju%C3%AFc_hill.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "hola",
+      "text": "People here say hola. They speak Catalan and Spanish.",
+      "about": "In Barcelona people speak two languages: Catalan and Spanish. 'Hola' (OH-la) means hello in both! 'Bon dia' means good morning in Catalan, and 'gràcies' means thank you. In Spanish, thank you is 'gracias'.",
+      "emoji": "👋",
+      "photo": {
+        "file": "barcelona-hola.jpg",
+        "commonsTitle": "File:Artist La Rambla 3.JPG",
+        "query": "La Rambla Barcelona people",
+        "author": "böhringer friedrich",
+        "license": "CC BY-SA 2.5",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Artist_La_Rambla_3.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "flag",
+      "text": "The flag of Spain is red and yellow.",
+      "about": "The flag of Spain has a red stripe, a wide yellow stripe, and another red stripe, with a coat of arms on one side. Barcelona also flies the flag of Catalonia, called the senyera, which has four red stripes on yellow.",
+      "emoji": "🇪🇸",
+      "photo": {
+        "file": "barcelona-flag.png",
+        "commonsTitle": "File:Flag of Spain.svg",
+        "query": null,
+        "author": "RelShot 263, Echando una mano; earlier version was Pedro A. Gracia Fajardo, escu",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Flag_of_Spain.svg",
+        "verified": true
+      }
+    },
+    {
+      "id": "beach",
+      "text": "Barcelona has a beach. You can build sandcastles!",
+      "about": "Barcelona is a big city with beaches right next to it. The most famous is Barceloneta beach. People swim, play volleyball, build sandcastles, and eat ice cream by the sea. The sea there is the Mediterranean Sea.",
+      "emoji": "🏖️",
+      "photo": {
+        "file": "barcelona-beach.jpg",
+        "commonsTitle": "File:Beach, Barcelona (P1170713).jpg",
+        "query": "Barceloneta beach Barcelona",
+        "author": "Matti Blume",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Beach,_Barcelona_(P1170713).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "sagrada",
+      "text": "This big church is still being built!",
+      "about": "The Sagrada Família is a giant church. Builders started it in 1882, more than 140 years ago, and they are still working on it today! A famous architect named Antoni Gaudí designed it. He said, 'My client is not in a hurry.' When it is done it will have 18 tall towers, and the middle one will be the tallest church tower in the world.",
+      "emoji": "⛪",
+      "photo": {
+        "file": "barcelona-sagrada.jpg",
+        "commonsTitle": "File:Sagrada Familia 0108.JPG",
+        "query": "Sagrada Familia Barcelona exterior cranes",
+        "author": "Ian Mcallister = Imcall",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sagrada_Familia_0108.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "sagrada-trees",
+      "text": "Inside, the columns look like tall trees.",
+      "about": "Gaudí loved nature. Inside the Sagrada Família the stone columns split into branches at the top, like a forest of trees. Colorful windows make rainbow light on the walls, blue and green on one side and orange and red on the other. It feels like being in a magic forest.",
+      "emoji": "🌳",
+      "photo": {
+        "file": "barcelona-sagrada-trees.jpg",
+        "commonsTitle": "File:Sagrada Familia interior 1.jpg",
+        "query": "Sagrada Familia interior columns ceiling",
+        "author": "Unknown author",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sagrada_Familia_interior_1.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "casa-batllo",
+      "text": "This house has a roof like a dragon's back.",
+      "about": "Casa Batlló is a house that Gaudí redesigned. The roof is curvy and covered in shiny tiles, like the scales on a dragon's back. Some people say the tower with a cross is the sword of Saint George, who fought the dragon in an old story. The balconies look like masks, and there are almost no straight lines anywhere!",
+      "emoji": "🐉",
+      "photo": {
+        "file": "barcelona-casa-batllo.jpg",
+        "commonsTitle": "File:Casa Batlló 01.jpg",
+        "query": "Casa Batllo facade roof",
+        "author": "Bernard Gagnon",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Casa_Batll%C3%B3_01.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "park-guell",
+      "text": "In this park, a colorful dragon guards the stairs.",
+      "about": "Park Güell is a park on a hill, made by Gaudí. At the entrance stairs there is a big colorful lizard or dragon that people call 'El Drac'. It is covered in a mosaic made from little broken pieces of tiles, called trencadís. Kids love to take photos with it. The park also has gingerbread-looking houses and a long wavy bench covered in tiles.",
+      "emoji": "🦎",
+      "photo": {
+        "file": "barcelona-park-guell.jpg",
+        "commonsTitle": "File:Barcelona Parc Güell el drac.jpg",
+        "query": "Park Guell dragon salamander mosaic",
+        "verified": true,
+        "author": "Isiwal",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Barcelona_Parc_G%C3%BCell_el_drac.jpg"
+      }
+    },
+    {
+      "id": "churros",
+      "text": "Dip a churro in hot chocolate. Yum!",
+      "about": "Churros are long sticks of fried dough, crispy outside and soft inside, often sprinkled with sugar. In Spain people dip them into very thick hot chocolate, so thick that a churro can almost stand up in it! People also love tapas, which are lots of small plates of food to share.",
+      "emoji": "🍫",
+      "photo": {
+        "file": "barcelona-churros.jpg",
+        "commonsTitle": "File:Chocolate con churros de lazo.jpg",
+        "query": "churros con chocolate",
+        "author": "LWY from Pasadena, USA",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Chocolate_con_churros_de_lazo.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "castells",
+      "text": "People stand on shoulders to make tall human towers.",
+      "about": "In Catalonia, teams build human towers called castells (cas-TAYS). Strong people stand at the bottom, and others climb up and stand on their shoulders, level after level, sometimes 9 or 10 levels high! The smallest and lightest child climbs to the very top, wearing a helmet, and raises a hand to wave. Their motto is 'strength, balance, courage and good sense'.",
+      "emoji": "🤸",
+      "photo": {
+        "file": "barcelona-castells.jpg",
+        "commonsTitle": "File:Catalunya en Miniatura-Ajuntament de Barcelona i Castellers de Barcelona.JPG",
+        "query": "castellers human tower Barcelona",
+        "author": "Jordiferrer",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Catalunya_en_Miniatura-Ajuntament_de_Barcelona_i_Castellers_de_Barcelona.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "football",
+      "text": "Lots of people here love football.",
+      "about": "Barcelona has a famous football (soccer) team, FC Barcelona, called Barça. Their shirts are blue and dark red. Their stadium, Camp Nou, is the biggest football stadium in Europe. When the team scores, the whole stadium cheers so loudly you can hear it streets away!",
+      "emoji": "⚽",
+      "photo": {
+        "file": "barcelona-football.jpg",
+        "commonsTitle": "File:2014. Camp Nou. Més que un club. Barcelona B40.jpg",
+        "query": "Camp Nou stadium Barcelona",
+        "author": "Luis Miguel Bugallo Sánchez (Lmbuga)",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:2014._Camp_Nou._M%C3%A9s_que_un_club._Barcelona_B40.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "fountain",
+      "text": "At night, a magic fountain dances to music.",
+      "about": "The Magic Fountain of Montjuïc was built in 1929. On some evenings it puts on a show: the water jumps and dances to music, and colored lights turn it pink, blue, green and gold. Lots of families sit on the steps to watch.",
+      "emoji": "⛲",
+      "photo": {
+        "file": "barcelona-fountain.jpg",
+        "commonsTitle": "File:One Night In Montjuic Magic Fountain (141291767).jpeg",
+        "query": "Magic Fountain of Montjuic night",
+        "author": "Jeronimo Alcala",
+        "license": "CC BY 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:One_Night_In_Montjuic_Magic_Fountain_(141291767).jpeg",
+        "verified": true
+      }
+    },
+    {
+      "id": "goodbye",
+      "text": "Adéu, Barcelona! Which city did you like best?",
+      "about": "Adéu (ah-DAY-oo) means goodbye in Catalan. In Spanish it is 'adiós'. You have now visited Paris, London and Barcelona. More cities are coming soon!",
+      "emoji": "🌍",
+      "photo": {
+        "file": "barcelona-goodbye.jpg",
+        "commonsTitle": "File:Skyline de Barcelona - panoramio.jpg",
+        "query": "Barcelona sunset skyline",
+        "author": "miki",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Skyline_de_Barcelona_-_panoramio.jpg",
+        "verified": true
+      }
+    }
+  ]
+}

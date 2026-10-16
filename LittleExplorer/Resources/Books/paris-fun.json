@@ -1,0 +1,204 @@
+{
+  "id": "paris-fun",
+  "city": "Paris",
+  "country": "France",
+  "flagImage": "paris-flag.png",
+  "flag": "🇫🇷",
+  "theme": "Fun & Art",
+  "coverColor": "#7E57A8",
+  "tagline": "Carousels, boats and painters",
+  "pages": [
+    {
+      "id": "welcome",
+      "text": "Paris is a great city to play and make art.",
+      "about": "Paris is full of parks, playgrounds, puppet shows, boat rides and museums. Many famous painters and sculptors lived and worked here. The Tuileries Garden (TWEE-luh-ree), next to the Louvre museum, was once a royal garden and is now a park where anyone can play, with ponds, statues and a summer fair.",
+      "emoji": "🎨",
+      "photo": {
+        "file": "paris-fun-welcome.jpg",
+        "commonsTitle": "File:Grand bassin octogonal Jardin des Tuileries 003.jpg",
+        "query": "Jardin des Tuileries Paris",
+        "author": "Moonik",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Grand_bassin_octogonal_Jardin_des_Tuileries_003.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "carousel",
+      "text": "Paris has old carousels. Kids try to catch rings!",
+      "about": "Paris has many old carousels, called 'manèges' (mah-NEZH), with horses that go up and down. The carousel in the Luxembourg Garden is from 1879 and is said to have been designed by Charles Garnier, who also built the Paris opera house. On it, kids hold a little wooden stick and try to catch metal rings as they ride past. This old game is called 'le jeu de bagues', the ring game.",
+      "emoji": "🎠",
+      "photo": {
+        "file": "paris-fun-carousel.jpg",
+        "commonsTitle": "File:CH-KBAR - Karussel im Jardin du Luxembourg - KB-020504.tif",
+        "query": "carousel Paris manège",
+        "author": "Herbert Maeder",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:CH-KBAR_-_Karussel_im_Jardin_du_Luxembourg_-_KB-020504.tif",
+        "verified": true
+      }
+    },
+    {
+      "id": "puppets",
+      "text": "Guignol is a funny puppet. Kids shout to help him!",
+      "about": "Guignol (geen-YOL) is a famous French hand puppet with a big smile. He was made about 200 years ago in the city of Lyon by Laurent Mourguet, a man who pulled teeth and used puppet shows to draw a crowd. In Paris parks, kids sit on benches in little puppet theaters and shout to warn Guignol when the sneaky bad guy is behind him.",
+      "emoji": "🎭",
+      "photo": {
+        "file": "paris-fun-puppets.jpg",
+        "commonsTitle": "File:Marionnettes des Champs-Élysées.jpg",
+        "query": "Guignol marionnette théâtre",
+        "author": "Charlik",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Marionnettes_des_Champs-%C3%89lys%C3%A9es.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "boat",
+      "text": "Ride a boat on the Seine. Wave at the bridges!",
+      "about": "Big tour boats called 'bateaux-mouches' (bah-TOH moosh) carry people along the Seine river. About 37 bridges cross the river in Paris. The oldest one is funny: it is called Pont Neuf, which means 'New Bridge', even though it is more than 400 years old. People on the bridges often wave at the boats, and the boats wave back.",
+      "emoji": "⛴️",
+      "photo": {
+        "file": "paris-fun-boat.jpg",
+        "commonsTitle": "File:Bateaux Mouches Paris 2011.jpg",
+        "query": "bateau-mouche Seine tour boat",
+        "author": "Daniel Stockman",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bateaux_Mouches_Paris_2011.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "louvre-castle",
+      "text": "Long ago, the Louvre was a castle for kings.",
+      "about": "Before it was a museum, the Louvre was a castle. King Philip II built it about 800 years ago as a fortress with thick walls and a moat to protect Paris. Later kings turned it into a palace, and it became a museum in 1793. Deep under the museum today, visitors can still walk next to the stones of the old castle walls.",
+      "emoji": "🏰",
+      "photo": {
+        "file": "paris-fun-louvre-castle.jpg",
+        "commonsTitle": "File:Pilier du fossé nord des fossés médiévaux du Louvre.jpg",
+        "query": "Louvre Cour Carrée palace",
+        "author": "Tangopaso",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Pilier_du_foss%C3%A9_nord_des_foss%C3%A9s_m%C3%A9di%C3%A9vaux_du_Louvre.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "orsay",
+      "text": "This museum was a train station. Look at the big clock!",
+      "about": "The Musée d'Orsay (mew-ZAY dor-SAY) was built as a train station for a big world fair in 1900. Later the trains got too long for its platforms, and in 1986 it became an art museum. It still has giant golden clocks. From inside, you can look out through one huge clock face and see the city and the river.",
+      "emoji": "🕰️",
+      "photo": {
+        "file": "paris-fun-orsay.jpg",
+        "commonsTitle": "File:Paris - Musée d'Orsay 8369.jpg",
+        "query": "Musée d'Orsay clock",
+        "author": "Phyrexian",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Paris_-_Mus%C3%A9e_d%27Orsay_8369.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "water-lilies",
+      "text": "Monet painted water lilies on very long paintings.",
+      "about": "Claude Monet (moh-NAY) was a painter who loved painting light. He made a pond full of water lilies in his garden in a village called Giverny and painted it about 250 times. In Paris, at a museum called the Orangerie, his biggest water lily paintings curve around two oval rooms, so you feel like you are standing in the middle of the pond.",
+      "emoji": "🪷",
+      "photo": {
+        "file": "paris-fun-water-lilies.jpg",
+        "commonsTitle": "File:Nymphéas (1914-1917) Claude Monet (W 1792).jpg",
+        "query": "Claude Monet Water Lilies painting",
+        "author": "Claude Monet",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Nymph%C3%A9as_(1914-1917)_Claude_Monet_(W_1792).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "montmartre",
+      "text": "On a hill, painters paint pictures outside.",
+      "about": "Montmartre (mohn-MAR-truh) is the highest hill in Paris. Long ago many artists lived there, including Pablo Picasso. Today, in a little square called Place du Tertre, painters set up easels outside, paint the streets around them, and can even paint your portrait while you sit very still.",
+      "emoji": "🖌️",
+      "photo": {
+        "file": "paris-fun-montmartre.jpg",
+        "commonsTitle": "File:Artistes-peintres de la Place du Tertre (3).jpg",
+        "query": "Place du Tertre painters Montmartre",
+        "author": "Michal Gorski",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Artistes-peintres_de_la_Place_du_Tertre_(3).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "funicular",
+      "text": "A little train pulls you up the steep hill.",
+      "about": "The Montmartre funicular (few-NIK-yoo-lar) is a little cable train that has been carrying people up the steep hill since 1900. The ride takes about a minute and a half. Next to it are stairs with about 220 steps, so most people with tired legs take the funicular. At the top is the white church called Sacré-Cœur.",
+      "emoji": "🚡",
+      "photo": {
+        "file": "paris-fun-funicular.jpg",
+        "commonsTitle": "File:Funiculaire de Montmartre devant le Sacré-Cœur.jpg",
+        "query": "funiculaire de Montmartre",
+        "author": "Peter Potrowl",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Funiculaire_de_Montmartre_devant_le_Sacr%C3%A9-C%C5%93ur.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "thinker",
+      "text": "This statue is thinking very hard. What is he thinking?",
+      "about": "The Thinker is a famous bronze statue by the sculptor Auguste Rodin (roh-DAN). He sits with his chin on his hand, thinking very hard. You can see him in the garden of the Rodin Museum in Paris. At first Rodin made him to sit above a giant door, thinking about a long poem. Kids love to copy his pose.",
+      "emoji": "🤔",
+      "photo": {
+        "file": "paris-fun-thinker.jpg",
+        "commonsTitle": "File:Le Penseur Musée Rodin Paris S.1295.jpg",
+        "query": "The Thinker Rodin museum garden Paris",
+        "author": "Auguste Rodin",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Le_Penseur_Mus%C3%A9e_Rodin_Paris_S.1295.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "beach",
+      "text": "In summer, Paris makes a beach by the river!",
+      "about": "Paris is far from the sea, so every summer since 2002 the city has made 'Paris Plages' (pah-REE PLAHZH), which means Paris Beaches. Sand, deck chairs, umbrellas and even palm trees are set up along the river and a canal. People play games, dance, read and relax as if they were at the seaside.",
+      "emoji": "🏖️",
+      "photo": {
+        "file": "paris-fun-beach.jpg",
+        "commonsTitle": "File:Paris Plages 2013 DSC 0822w.jpg",
+        "query": "Paris Plages sand deckchairs Seine",
+        "verified": true,
+        "author": "P e z i",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Paris_Plages_2013_DSC_0822w.jpg"
+      }
+    },
+    {
+      "id": "goodbye",
+      "text": "What would you like to play in Paris?",
+      "about": "This is the end of the Fun & Art book. Things in this book: carousels and the ring game, Guignol puppets, a boat ride on the Seine, the Louvre castle, the train-station museum with the big clock, Monet's water lilies, painters on Montmartre, the little hill train, Rodin's Thinker, and the summer beach. Ask the child which one they would do first, and why.",
+      "emoji": "🎈",
+      "photo": {
+        "file": "paris-fun-goodbye.jpg",
+        "commonsTitle": "File:Sunset-Paris-Seine-Pont-de-la Tournelle.jpg",
+        "query": "Paris Seine sunset bridges",
+        "author": "Acediscovery",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sunset-Paris-Seine-Pont-de-la_Tournelle.jpg",
+        "verified": true
+      }
+    }
+  ]
+}
