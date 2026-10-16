@@ -99,6 +99,7 @@ async def test_entrypoint_runs_the_chosen_engine(monkeypatch, tmp_path, metadata
     monkeypatch.setattr(agent_mod, "attach_room_context", lambda store, room: None)
     monkeypatch.setenv("PIP_USAGE_FILE", str(tmp_path / "usage.csv"))
 
+    monkeypatch.delenv("PIP_CONTENT_URL", raising=False)
     monkeypatch.setattr(agent_mod, "_pipeline", fake_pipeline)
     monkeypatch.setattr(agent_mod, "_realtime", fake_realtime)
     if env:
@@ -147,7 +148,7 @@ async def client(monkeypatch):
     monkeypatch.setenv("LIVEKIT_URL", "wss://example.livekit.cloud")
     monkeypatch.setenv("LIVEKIT_API_KEY", "test-key")
     monkeypatch.setenv("LIVEKIT_API_SECRET", "test-secret-that-is-long-enough-for-hs256")
-    async with TestClient(TestServer(create_app())) as c:
+    async with TestClient(TestServer(create_app(access_key=""))) as c:
         yield c
 
 

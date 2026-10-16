@@ -20,3 +20,7 @@ __pycache__/
 
 # macOS
 .DS_Store
+
+# Agent runtime files and deploy staging
+server/KMS/
+server/content/
