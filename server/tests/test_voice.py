@@ -34,6 +34,8 @@ class FakeModel:
 def test_patient_preset_waits_for_slow_readers():
     handling = PATIENT.turn_handling()
     assert handling["endpointing"] == {"min_delay": 1.6, "max_delay": 6.0}
+    # VAD barge-in honours min_duration; the adaptive detector cut Pip off on 50 ms of echo.
+    assert handling["interruption"]["mode"] == "vad"
     assert handling["interruption"]["min_duration"] == 0.8
     assert handling["interruption"]["min_words"] == 2
     assert handling["preemptive_generation"] == {"enabled": False}
@@ -122,3 +124,18 @@ def test_agent_registers_by_name_without_deprecated_argument(monkeypatch):
     server = create_server()
     assert server._entrypoint_fnc is entrypoint
     assert (server._agent_name, server._agent_name_source) == (AGENT_NAME, "env")
+
+
+def test_openai_speech_streams_pcm_in_longer_chunks(monkeypatch):
+    from livekit.agents import tts as agents_tts
+
+    from little_explorer_agent.speech import TTS_MIN_CHUNK_CHARS, speech_setup
+
+    monkeypatch.setenv("PIP_SPEECH", "openai")
+    monkeypatch.setenv("OPENAI_API_KEY", "test-key")
+    preset, speech = speech_setup(PATIENT)
+    assert preset.turn_detection == "stt"
+    adapter = speech["tts"]
+    assert isinstance(adapter, agents_tts.StreamAdapter)
+    assert adapter._wrapped_tts._opts.response_format == "pcm"
+    assert adapter._sentence_tokenizer._config.min_sentence_len == TTS_MIN_CHUNK_CHARS

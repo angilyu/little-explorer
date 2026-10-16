@@ -103,4 +103,8 @@ DEBUG builds accept launch arguments for screenshots: `-demoBook paris-food -dem
 `-demoVoice listening|live`, `-demoRead`.
 
 > **Simulator note:** the iOS 26.2/26.3 simulators draw every emoji as a "?" box. Real devices are fine.
+>
+> **Voice in the simulator:** the simulator has no Apple echo cancellation, so the app uses WebRTC's
+> software echo cancellation there. Pip can still hear itself through loud Mac speakers; headphones
+> give the cleanest test.
 > The app avoids emoji in its UI: flags are bundled images, and buttons use SF Symbols.
