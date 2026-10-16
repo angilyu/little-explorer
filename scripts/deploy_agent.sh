@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Deploy Pip to LiveKit Cloud: `scripts/deploy_agent.sh` (first run creates the agent, later runs update it).
+# Deploy Milo to LiveKit Cloud: `scripts/deploy_agent.sh` (first run creates the agent, later runs update it).
 # Reads LIVEKIT_*, OPENAI_API_KEY and PIP_* from the env file the server uses
 # ($LITTLE_EXPLORER_ENV, else server/.env, else ~/.config/little-explorer/.env). Needs the `lk` CLI.
 set -euo pipefail
@@ -11,7 +11,7 @@ env_file="${LITTLE_EXPLORER_ENV:-}"
 [[ -f "$env_file" ]] || { echo "no env file at $env_file" >&2; exit 1; }
 set -a; source "$env_file"; set +a
 : "${LIVEKIT_URL:?}" "${LIVEKIT_API_KEY:?}" "${LIVEKIT_API_SECRET:?}" "${OPENAI_API_KEY:?}"
-[[ -n "${PIP_CONTENT_URL:-}" ]] || echo "warning: PIP_CONTENT_URL is not set; Pip will use the books baked into the image" >&2
+[[ -n "${PIP_CONTENT_URL:-}" ]] || echo "warning: PIP_CONTENT_URL is not set; Milo will use the books baked into the image" >&2
 
 # Bake the current books into the image as a fallback (server/content is gitignored).
 rm -rf content && mkdir -p content && cp -R ../LittleExplorer/Resources/Books content/Books

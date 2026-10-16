@@ -21,7 +21,7 @@ protocol VoiceTransport: AnyObject {
     func connect(page: PageContext?) async throws
     /// Tells the agent about a page turn.
     func updatePage(_ context: PageContext) async throws
-    /// Mutes the mic while the app reads the page aloud, so Pip doesn't hear the app's own voice.
+    /// Mutes the mic while the app reads the page aloud, so Milo doesn't hear the app's own voice.
     func setMicrophone(enabled: Bool) async
     func disconnect() async
 }
@@ -33,9 +33,9 @@ enum VoiceError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .tokenServer: "Pip's server said no. Ask a grown-up to check it."
-        case .unavailable: "Pip isn't available in this build."
-        case .microphoneDenied: "Pip needs the microphone. Ask a grown-up to turn it on in Settings."
+        case .tokenServer: "Milo's server said no. Ask a grown-up to check it."
+        case .unavailable: "Milo isn't available in this build."
+        case .microphoneDenied: "Milo needs the microphone. Ask a grown-up to turn it on in Settings."
         }
     }
 }

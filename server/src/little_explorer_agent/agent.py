@@ -1,4 +1,4 @@
-"""LiveKit worker for Pip. Run: ``uv run python -m little_explorer_agent.agent dev``.
+"""LiveKit worker for Milo. Run: ``uv run python -m little_explorer_agent.agent dev``.
 
 ``PIP_MODE=pipeline`` (default) or ``PIP_MODE=realtime`` picks the voice engine; see :mod:`.modes`.
 """
@@ -24,7 +24,7 @@ from .buddy import (  # noqa: E402
     ReadingTracker,
     TopicGate,
     _words,
-    addresses_pip,
+    addresses_buddy,
     build_graph,
     default_topic_gate,
     make_context_note,
@@ -61,7 +61,7 @@ def _log_decision(turn: UserTurn, decision: TurnDecision) -> None:
 async def stay_quiet() -> llm.ToolResult:
     """Say nothing this turn: he is still reading the page aloud or still thinking, or the speech
     was not meant for you (grown-ups talking, TV, noise)."""
-    return llm.ToolResult("(Pip stayed quiet)", reply_required=False)
+    return llm.ToolResult("(Milo stayed quiet)", reply_required=False)
 
 
 def realtime_config(env: dict[str, str] | None = None) -> RealtimeConfig:
@@ -74,16 +74,16 @@ def realtime_config(env: dict[str, str] | None = None) -> RealtimeConfig:
 
 
 def make_realtime_guard(tracker: ReadingTracker, topic_gate: TopicGate | None) -> TopicGate:
-    """Post-hoc check of a realtime turn: cut the reply if he was reading or it was not for Pip.
+    """Post-hoc check of a realtime turn: cut the reply if he was reading or it was not for Milo.
 
-    Very short turns ("yes", "the boat!") are left to the model; they are usually answers to Pip.
+    Very short turns ("yes", "the boat!") are left to the model; they are usually answers to Milo.
     """
 
     async def guard(turn: UserTurn) -> TurnDecision:
         reading = tracker.check(turn)
         if reading is not None:
             return reading
-        if len(_words(turn.text)) < 3 or addresses_pip(turn.text) or topic_gate is None:
+        if len(_words(turn.text)) < 3 or addresses_buddy(turn.text) or topic_gate is None:
             return TurnDecision.RESPOND
         result = topic_gate(turn)
         if inspect.isawaitable(result):
@@ -133,7 +133,7 @@ def session_model(mode: str, env: dict[str, str] | None = None) -> str:
 
 async def entrypoint(ctx: JobContext) -> None:
     mode = resolve_mode(ctx.job.metadata)
-    log.info("Pip mode: %s", mode)
+    log.info("Milo mode: %s", mode)
     meter = UsageMeter(mode=mode, model=session_model(mode))
 
     async def write_usage(_reason: str = "") -> None:

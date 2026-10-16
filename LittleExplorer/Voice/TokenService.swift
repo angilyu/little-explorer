@@ -2,9 +2,20 @@ import Foundation
 
 enum VoiceSettings {
     static let tokenServerKey = "voice.tokenServerURL"
-    /// The token server runs next to the agent (see server/README). 127.0.0.1 works from the simulator;
-    /// on a real device set your Mac's LAN address in the grown-ups corner.
-    static let defaultTokenServer = "http://127.0.0.1:8787"
+    /// The Milo server (tokens and book updates) from Config/Pip.xcconfig; the grown-ups corner can
+    /// override it, e.g. http://127.0.0.1:8787 for a server running on this Mac.
+    static let defaultTokenServer: String = {
+        let value = (Bundle.main.object(forInfoDictionaryKey: "PipServerURL") as? String)?
+            .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        return value.isEmpty || value.contains("$(") ? "http://127.0.0.1:8787" : value
+    }()
+
+    /// Sent as a bearer token so only this app gets voice tokens (Config/Local.xcconfig).
+    static let accessKey: String? = {
+        let value = (Bundle.main.object(forInfoDictionaryKey: "PipAccessKey") as? String)?
+            .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        return value.isEmpty || value.contains("$(") ? nil : value
+    }()
 
     static func tokenServerURL(defaults: UserDefaults = .standard) -> URL {
         let raw = defaults.string(forKey: tokenServerKey)?.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -26,6 +37,7 @@ struct VoiceCredentials: Decodable, Equatable {
 /// Fetches a short-lived LiveKit token from our own server so the app never holds LiveKit secrets.
 struct TokenService {
     var baseURL: URL
+    var accessKey: String? = VoiceSettings.accessKey
     var session: URLSession = .shared
 
     /// `context` is the page open when voice mode starts; the server puts it in the token so the
@@ -33,8 +45,9 @@ struct TokenService {
     func fetchCredentials(context: PageContext?) async throws -> VoiceCredentials {
         var request = URLRequest(url: baseURL.appendingPathComponent("token"))
         request.httpMethod = "POST"
-        request.timeoutInterval = 10
+        request.timeoutInterval = 30
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        if let accessKey { request.setValue("Bearer \(accessKey)", forHTTPHeaderField: "Authorization") }
         request.httpBody = try JSONEncoder().encode(TokenRequest(context: context?.attributes))
         let (data, response) = try await session.data(for: request)
         let status = (response as? HTTPURLResponse)?.statusCode ?? 0

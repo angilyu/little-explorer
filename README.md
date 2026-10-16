@@ -2,7 +2,7 @@
 
 A picture-book app for iPhone and iPad that helps a 6-year-old discover cities and get excited about travel.
 Each page has a real photo, a short sentence he can read by himself, a heart button for pages he loves,
-and a speaker button that reads the sentence aloud. An optional voice buddy, **Pip**, listens patiently
+and a speaker button that reads the sentence aloud. An optional voice buddy, **Milo**, listens patiently
 while he reads and answers his questions about the book.
 
 | Shelf | Yummy Paris + heart | Read aloud | Voice mode |
@@ -24,7 +24,7 @@ The first screen is a shelf with every book, grouped by city. Tap a cover to ope
 | Barcelona | Barcelona (`barcelona`) | Beach, Sagrada Família, Casa Batlló, Park Güell's dragon, churros, human towers, football, the magic fountain |
 
 Books are JSON files in [`LittleExplorer/Resources/Books`](LittleExplorer/Resources/Books) with 10–14 pages each.
-Every page has a 4–12 word sentence, hidden `about` notes for Pip, and a photo. The shelf order is `BookLibrary.order`.
+Every page has a 4–12 word sentence, hidden `about` notes for Milo, and a photo. The shelf order is `BookLibrary.order`.
 A city with several books shows them under one city heading; `theme` is the title on the cover.
 
 Hearts are stored on the device as `<book id>/<page id>`, so each themed book keeps its own hearts.
@@ -45,11 +45,11 @@ Pin a specific file by setting the page's `photo.commonsTitle`.
 
 ## Read aloud
 
-The speaker button (bottom-left of every page) reads the sentence in a natural voice, the same OpenAI voice as Pip
+The speaker button (bottom-left of every page) reads the sentence in a natural voice, the same OpenAI voice as Milo
 (`gpt-4o-mini-tts`, "coral"), styled like a grown-up reading a picture book to a 6-year-old: warm, clear and a little slow.
 The clips are made ahead of time and bundled (about 2 MB of AAC for all 64 pages), so reading aloud works offline
 and the app never holds an API key. Each word is highlighted as it's spoken. Tap again to stop. Speech also stops when
-the page turns or the book closes. When voice mode is on, the microphone is muted while the app reads, so Pip doesn't
+the page turns or the book closes. When voice mode is on, the microphone is muted while the app reads, so Milo doesn't
 mistake the app's voice for the child.
 
 [`scripts/generate_narration.py`](scripts/generate_narration.py) makes the clips. It reads each sentence with
@@ -65,21 +65,21 @@ python3 scripts/generate_narration.py --only paris/eiffel --force
 If a page has no clip for its current sentence, the app falls back to the best on-device system voice
 (`AVSpeechSynthesizer`, slower rate, same word highlighting).
 
-## Voice buddy (Pip)
+## Voice buddy (Milo)
 
-Tap **Talk to Pip** in a book to start voice mode. It stays on across page turns until it's turned off.
+Tap **Talk to Milo** in a book to start voice mode. It stays on across page turns until it's turned off.
 On every page turn the app sends the current page (book, page, sentence) to the agent.
 The agent lives in [`server/`](server) (LiveKit Agents + LangGraph; its voice stack is in `server/src/little_explorer_agent/voice/`):
 
-- **Reading:** while he reads the page aloud, Pip stays quiet (the reading gate → LISTEN), even if he reads slowly or softly, then praises him.
+- **Reading:** while he reads the page aloud, Milo stays quiet (the reading gate → LISTEN), even if he reads slowly or softly, then praises him.
 - **Noise:** background voices are cancelled, and an LLM relevance gate ignores noise, other people's conversations and off-topic talk.
-- **Patience:** Pip waits through his pauses and answers briefly and warmly, ending with an open question that invites a longer reply.
+- **Patience:** Milo waits through his pauses and answers briefly and warmly, ending with an open question that invites a longer reply.
 
-Pip has two voice engines. Pick one with `PIP_MODE` in the env file and restart the agent; the app doesn't change.
+Milo was first called Pip, so its settings keep the `PIP_` prefix. Milo has two voice engines. Pick one with `PIP_MODE` in the env file and restart the agent; the app doesn't change.
 
 - `PIP_MODE=pipeline` (default): streaming transcription (`gpt-realtime-whisper`) → reply (LangGraph) → `gpt-4o-mini-tts`.
   A local end-of-turn model decides when he has finished (0.5 s when his words sound done, up to 4 s mid-sentence).
-  Local Silero VAD stops Pip after 0.3 s of his speech and resumes if it was only a noise. The reading and noise
+  Local Silero VAD stops Milo after 0.3 s of his speech and resumes if it was only a noise. The reading and noise
   checks are instant; the LLM topic check runs alongside the reply instead of before it.
 - `PIP_MODE=realtime`: one OpenAI Realtime speech-to-speech model (`gpt-realtime`, voice `coral`) hears him and talks
   back. It uses `semantic_vad` with low eagerness, so slow reading isn't cut off. The page is in its instructions
@@ -88,7 +88,7 @@ Pip has two voice engines. Pick one with `PIP_MODE` in the env file and restart 
   never delays a reply. Realtime costs much more per minute than the pipeline.
 
 The e2e harness can try either engine without restarting the agent: `tools/e2e_smoke.py --mode realtime`.
-It reports the reply latency and how fast Pip stops when talked over.
+It reports the reply latency and how fast Milo stops when talked over.
 
 No audio is stored. The app never holds LiveKit secrets. A small token server mints room tokens that dispatch the agent automatically.
 
@@ -97,7 +97,7 @@ cd server
 cp .env.example .env        # fill in LIVEKIT_* and OPENAI_API_KEY (never commit .env)
 uv sync
 uv run python -m little_explorer_agent.token_server   # http://127.0.0.1:8787
-uv run python -m little_explorer_agent.agent dev      # the Pip worker
+uv run python -m little_explorer_agent.agent dev      # the Milo worker
 uv run pytest -q
 uv run python tools/e2e_smoke.py                       # live end-to-end check (no audio saved)
 ```
@@ -110,7 +110,7 @@ by the server, so they can't be logged or passed on.
 
 ### What a session costs
 
-When a Pip session ends (he closes the book, the app drops off, or the worker stops), the agent appends one row to
+When a Milo session ends (he closes the book, the app drops off, or the worker stops), the agent appends one row to
 `~/.config/little-explorer/usage.csv` (mode 600; `PIP_USAGE_FILE` moves it): start time, length, engine, model,
 book, pages visited, number of model responses, input/output tokens split into text and audio, cached tokens,
 input-transcription tokens, and an estimated price. It never holds transcripts or audio. Prices are OpenAI's list
@@ -139,6 +139,6 @@ DEBUG builds accept launch arguments for screenshots: `-demoBook paris-food -dem
 > **Simulator note:** the iOS 26.2/26.3 simulators draw every emoji as a "?" box. Real devices are fine.
 >
 > **Voice in the simulator:** the simulator has no Apple echo cancellation, so the app uses WebRTC's
-> software echo cancellation there. Pip can still hear itself through loud Mac speakers; headphones
+> software echo cancellation there. Milo can still hear itself through loud Mac speakers; headphones
 > give the cleanest test.
 > The app avoids emoji in its UI: flags are bundled images, and buttons use SF Symbols.

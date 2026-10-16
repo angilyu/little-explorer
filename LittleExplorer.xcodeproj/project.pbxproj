@@ -23,6 +23,7 @@
 /* Begin PBXFileReference section */
 		4C4500000000000000000201 /* LittleExplorer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LittleExplorer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C4500000000000000000202 /* LittleExplorerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LittleExplorerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4C4500000000000000000210 /* Pip.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config/Pip.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -62,6 +63,7 @@
 			children = (
 				4C4500000000000000000301 /* LittleExplorer */,
 				4C4500000000000000000302 /* LittleExplorerTests */,
+				4C4500000000000000000210 /* Pip.xcconfig */,
 				4C4500000000000000000003 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -266,6 +268,7 @@
 		};
 		4C4500000000000000000703 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4C4500000000000000000210 /* Pip.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
@@ -298,6 +301,7 @@
 		};
 		4C4500000000000000000704 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4C4500000000000000000210 /* Pip.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;

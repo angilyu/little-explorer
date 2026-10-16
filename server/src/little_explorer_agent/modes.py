@@ -1,4 +1,4 @@
-"""Which voice engine Pip runs on, switchable without rebuilding the app.
+"""Which voice engine Milo runs on, switchable without rebuilding the app.
 
 * ``pipeline``: streaming transcription -> topic gate + LangGraph reply -> OpenAI voice, with local
   VAD barge-in and a local end-of-turn model.

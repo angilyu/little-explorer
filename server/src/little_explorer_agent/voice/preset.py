@@ -1,9 +1,9 @@
-"""Pip's speech and turn-taking settings.
+"""Milo's speech and turn-taking settings.
 
 The patient preset is for slow, quiet or hesitant speakers such as a young child reading aloud.
 A local end-of-turn model decides when he has finished: a short wait when the words sound
 finished, a long one when he is mid-sentence. Barge-in is fast (local Silero VAD, no transcript
-needed) and resumes Pip if it was only a noise. Background-voice noise cancellation stays on and
+needed) and resumes Milo if it was only a noise. Background-voice noise cancellation stays on and
 nothing is generated preemptively. It is plain data; :mod:`.session` turns it into
 ``AgentSession`` arguments.
 """
@@ -43,7 +43,7 @@ class VoicePreset:
     min_endpointing_delay: float = 0.5
     max_endpointing_delay: float = 4.0
     # Stop talking as soon as he really speaks; no transcript needed. If it was only a cough or a
-    # bump, Pip resumes after false_interruption_timeout of silence.
+    # bump, Milo resumes after false_interruption_timeout of silence.
     interruption_mode: InterruptionMode = "vad"
     min_interruption_duration: float = 0.3
     min_interruption_words: int = 0

@@ -5,7 +5,7 @@ for each page are read here, so the buddy can answer follow-up questions without
 them on every page turn.
 
 With ``PIP_CONTENT_URL`` set (the token server's ``/content``), :func:`refresh_remote` fetches the
-current books before each session, so book edits reach Pip without redeploying the agent.
+current books before each session, so book edits reach Milo without redeploying the agent.
 """
 
 from __future__ import annotations
