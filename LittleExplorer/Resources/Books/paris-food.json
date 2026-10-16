@@ -1,0 +1,204 @@
+{
+  "id": "paris-food",
+  "city": "Paris",
+  "country": "France",
+  "flagImage": "paris-flag.png",
+  "flag": "🇫🇷",
+  "theme": "Yummy Paris",
+  "coverColor": "#C9762C",
+  "tagline": "Bread, crêpes and cheese",
+  "pages": [
+    {
+      "id": "welcome",
+      "text": "People in Paris love to eat yummy food!",
+      "about": "Food is a big part of life in Paris. People shop for fresh bread every day, sit for long lunches with family, and say 'bon appétit' (bon ah-pay-TEE) before they eat, which means 'enjoy your meal'. A bakery is called a 'boulangerie' (boo-lahn-zhuh-REE).",
+      "emoji": "🥖",
+      "photo": {
+        "file": "paris-food-welcome.jpg",
+        "commonsTitle": "File:Boulangerie Patisserie La Parisienne, 28 rue Monge, 75005 Paris, 15 January 2017.jpg",
+        "query": "boulangerie Paris shop front",
+        "author": "besopha",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Boulangerie_Patisserie_La_Parisienne,_28_rue_Monge,_75005_Paris,_15_January_2017.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "baguette",
+      "text": "A baguette is a long bread. People eat it every day.",
+      "about": "A baguette (bag-ET) is a long, thin loaf with a crunchy crust. French bakers make billions of baguettes every year, and many people buy one fresh every day, often eating the crunchy tip on the walk home. A real 'baguette de tradition' is made only from flour, water, salt and yeast. In 2022 UNESCO added the skill of making French baguettes to its list of the world's important traditions.",
+      "emoji": "🥖",
+      "photo": {
+        "file": "paris-food-baguette.jpg",
+        "commonsTitle": "File:Boulangerie de Saint-Maurice-de-Beynost (Ain, France) - des baguettes de pain.JPG",
+        "query": "baguettes bakery France bread",
+        "author": "Benoît Prieur",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Boulangerie_de_Saint-Maurice-de-Beynost_(Ain,_France)_-_des_baguettes_de_pain.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "pain-chocolat",
+      "text": "A pain au chocolat has chocolate hiding inside!",
+      "about": "A pain au chocolat (pan oh shoh-koh-LAH) is made from the same flaky, buttery dough as a croissant, rolled around two little sticks of dark chocolate. In the south-west of France many people call it a 'chocolatine' instead, and people love to argue about which name is right. Kids often eat one after school as a snack, called 'le goûter' (luh goo-TAY).",
+      "emoji": "🍫",
+      "photo": {
+        "file": "paris-food-pain-chocolat.jpg",
+        "commonsTitle": "File:Pain au chocolat Luc Viatour.jpg",
+        "query": "pain au chocolat viennoiserie",
+        "author": "Luc Viatour",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Pain_au_chocolat_Luc_Viatour.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "macarons",
+      "text": "Macarons are little cookies in lots of colors.",
+      "about": "A macaron (mah-kah-ROHN) is two light, crunchy cookie shells made of almond flour, egg white and sugar, with a soft filling in the middle like a sandwich. They come in many colors and flavors, like raspberry (pink), pistachio (green), chocolate (brown) and lemon (yellow). A Paris tea shop called Ladurée helped make the sandwich kind famous.",
+      "emoji": "🍬",
+      "photo": {
+        "file": "paris-food-macarons.jpg",
+        "commonsTitle": "File:Ladurée Macaron.jpg",
+        "query": "macarons colorful Paris",
+        "author": "leo gonzales",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ladur%C3%A9e_Macaron.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "crepes",
+      "text": "A crêpe is a thin pancake. You can fold it up.",
+      "about": "Crêpes (krep) are very thin pancakes that first came from Brittany, in the west of France. In Paris you can buy one hot from a street stand, folded into a triangle with sugar, jam or chocolate spread. Salty ones made with buckwheat are called galettes. On Crêpe Day, called La Chandeleur on February 2nd, families try to flip a crêpe in the pan for good luck.",
+      "emoji": "🥞",
+      "photo": {
+        "file": "paris-food-crepes.jpg",
+        "commonsTitle": "File:Crepes dsc07085.jpg",
+        "query": "crêpe stand Paris street",
+        "author": "David Monniaux",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Crepes_dsc07085.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "cheese",
+      "text": "France has hundreds of kinds of cheese. Some are stinky!",
+      "about": "France makes hundreds of different cheeses, from soft Brie and Camembert to hard Comté and blue Roquefort, which ripens in caves. Brie comes from a town near Paris called Meaux. Some cheeses smell very strong, but people say the smelly ones often taste the best. In many French homes, a little cheese course comes after the main meal and before dessert.",
+      "emoji": "🧀",
+      "photo": {
+        "file": "paris-food-cheese.jpg",
+        "commonsTitle": "File:Intérieur d'une fromagerie à Paris (3385477752).jpg",
+        "query": "French cheese shop fromagerie",
+        "author": "Herry Lawford from Stockbridge, UK",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Int%C3%A9rieur_d%27une_fromagerie_%C3%A0_Paris_(3385477752).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "market",
+      "text": "At the market, people buy fruit, fish and flowers.",
+      "about": "Paris has dozens of food markets. Some are outside on the street a few mornings a week, and some are under a roof. Sellers call out to shoppers, and you can often taste a piece of fruit or cheese before you buy it. The covered market called Marché des Enfants Rouges, which means 'market of the red children', is about 400 years old. It is named after an old orphanage where the children wore red clothes. The market in this photo, Marché de Grenelle, sits right under a metro line that runs above the street on a bridge.",
+      "emoji": "🍓",
+      "photo": {
+        "file": "paris-food-market.jpg",
+        "commonsTitle": "File:A-public-market-in-Paris Marché-de-Grenelle located-in-boulevard-Grenelle sunday-first-juin-2008 from-Dupleix-subway-station 816x612.jpg",
+        "query": "Paris street market fruit stall",
+        "author": "Oliver H",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:A-public-market-in-Paris_March%C3%A9-de-Grenelle_located-in-boulevard-Grenelle_sunday-first-juin-2008_from-Dupleix-subway-station_816x612.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "cafe",
+      "text": "At a café, you can sit outside and watch people.",
+      "about": "Paris has thousands of cafés. Many put little round tables and chairs on the sidewalk, all facing the street, so people can sip a drink and watch everyone walk by. Grown-ups drink small, strong coffees. Kids often order a 'chocolat chaud' (shoh-koh-LAH shoh), a hot chocolate. One famous tea room, Angelina, has served very thick hot chocolate since 1903.",
+      "emoji": "☕",
+      "photo": {
+        "file": "paris-food-cafe.jpg",
+        "commonsTitle": "File:Terrasse du café, Paris July 30, 2010.jpg",
+        "query": "Paris café terrace chairs sidewalk",
+        "verified": true,
+        "author": "zoetnet",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Terrasse_du_caf%C3%A9,_Paris_July_30,_2010.jpg"
+      }
+    },
+    {
+      "id": "ice-cream",
+      "text": "On a little island, people line up for ice cream.",
+      "about": "Île Saint-Louis (eel san-loo-EE) is a small island in the middle of the Seine river. It is home to Berthillon (ber-tee-YOHN), an ice cream and sorbet shop that opened in 1954. On sunny days people line up outside, then lick their ice cream while walking along the river. Fruit sorbets, like wild strawberry, are favorites.",
+      "emoji": "🍦",
+      "photo": {
+        "file": "paris-food-ice-cream.jpg",
+        "commonsTitle": "File:Paris Berthillon, 12 July 2003.jpg",
+        "query": "Île Saint-Louis Paris",
+        "author": "David Monniaux",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Paris_Berthillon,_12_July_2003.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "snails",
+      "text": "Some people eat snails with garlic butter. Would you try one?",
+      "about": "In France some people eat snails, called 'escargots' (ess-kar-GOH). They are cooked in their shells with butter, garlic and parsley. You hold the shell with special tongs and pull the snail out with a tiny fork. Not everyone in France likes them, and that is fine! The snails people eat are farm snails, not ones from the garden.",
+      "emoji": "🐌",
+      "photo": {
+        "file": "paris-food-snails.jpg",
+        "commonsTitle": "File:Escargot à la Bourguignonne - eatingeast.jpg",
+        "query": "escargots bourguignonne plate",
+        "author": "eatingeast",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Escargot_%C3%A0_la_Bourguignonne_-_eatingeast.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "picnic",
+      "text": "On sunny days, families have picnics in the park.",
+      "about": "When the weather is nice, people in Paris love a picnic, called a 'pique-nique'. They sit on the grass in a park or along the river with a baguette, cheese, fruit and something sweet. The big lawn in front of the Eiffel Tower, the Champ de Mars, is a favorite picnic spot.",
+      "emoji": "🧺",
+      "photo": {
+        "file": "paris-food-picnic.jpg",
+        "commonsTitle": "File:Paris 75007 Champ-de-Mars lawn 20170526 Eiffel Tower (2).jpg",
+        "query": "picnic Champ de Mars Paris lawn",
+        "verified": true,
+        "author": "xiquinhosilva from Cacau",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Paris_75007_Champ-de-Mars_lawn_20170526_Eiffel_Tower_(2).jpg"
+      }
+    },
+    {
+      "id": "goodbye",
+      "text": "Bon appétit! What food would you like to try?",
+      "about": "Bon appétit means 'enjoy your meal'. This is the end of the Yummy Paris book. Foods in this book: baguette, pain au chocolat, macarons, crêpes, cheese, market fruit, café hot chocolate, island ice cream, snails and a park picnic. Ask the child which one they would try first, and why.",
+      "emoji": "😋",
+      "photo": {
+        "file": "paris-food-goodbye.jpg",
+        "commonsTitle": "File:Vitrine de la pâtisserie L. Bourbon à Brive-la-Gaillarde, France.JPG",
+        "query": "Paris patisserie window pastries",
+        "author": "Le grand Cricri",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Vitrine_de_la_p%C3%A2tisserie_L._Bourbon_%C3%A0_Brive-la-Gaillarde,_France.JPG",
+        "verified": true
+      }
+    }
+  ]
+}
