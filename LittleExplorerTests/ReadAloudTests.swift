@@ -218,10 +218,10 @@ final class ReadAloudVoiceModeTests: XCTestCase {
         transport.send(.buddyActivity(.listening))
 
         await voice.appReadAloudDidChange(true)
-        XCTAssertEqual(voice.statusText, "Pip waits while the book reads")
+        XCTAssertEqual(voice.statusText, "Milo waits while the book reads")
         await voice.appReadAloudDidChange(false)
         XCTAssertEqual(transport.microphoneChanges, [false, true])
-        XCTAssertEqual(voice.statusText, "Pip is listening")
+        XCTAssertEqual(voice.statusText, "Milo is listening")
     }
 
     func testReadingBeforeVoiceModeMutesMicOnceConnected() async {

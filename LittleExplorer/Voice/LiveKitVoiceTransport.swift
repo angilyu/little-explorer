@@ -46,8 +46,8 @@ final class LiveKitVoiceTransport: NSObject, VoiceTransport, RoomDelegate, @unch
         _ = try? await room.localParticipant.setMicrophone(enabled: enabled, captureOptions: Self.captureOptions)
     }
 
-    /// On a device Apple's voice processing removes Pip's voice from the mic. The simulator has no
-    /// voice processing, so the Mac mic heard Pip through the speakers and Pip answered (and cut
+    /// On a device Apple's voice processing removes Milo's voice from the mic. The simulator has no
+    /// voice processing, so the Mac mic heard Milo through the speakers and Milo answered (and cut
     /// itself off on) its own echo; use WebRTC's software echo cancellation there instead.
     static var captureOptions: AudioCaptureOptions {
         #if targetEnvironment(simulator)
@@ -97,7 +97,7 @@ final class LiveKitVoiceTransport: NSObject, VoiceTransport, RoomDelegate, @unch
 
     func room(_ room: Room, didDisconnectWithError error: LiveKitError?) {
         guard !isDisconnecting else { return }
-        let reason = error == nil ? nil : "Pip lost the connection. Tap to try again."
+        let reason = error == nil ? nil : "Milo lost the connection. Tap to try again."
         DispatchQueue.main.async { [weak self] in self?.onEvent?(.disconnected(reason: reason)) }
     }
 

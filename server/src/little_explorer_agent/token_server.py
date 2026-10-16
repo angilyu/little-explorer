@@ -2,8 +2,8 @@
 
 ``POST /token`` with an optional ``{"context": {"book": ..., "page": ..., ...}}`` body returns
 ``{"serverUrl", "participantToken", "roomName"}``. The token dispatches the ``little-explorer``
-agent into a fresh room and carries the opening page as participant attributes, so Pip knows the
-page from the first word. An optional ``"pip_mode": "pipeline" | "realtime"`` picks Pip's voice
+agent into a fresh room and carries the opening page as participant attributes, so Milo knows the
+page from the first word. An optional ``"pip_mode": "pipeline" | "realtime"`` picks Milo's voice
 engine for that room (otherwise the agent's ``PIP_MODE`` applies). Later page turns arrive as JSON
 on the ``context`` data topic. When ``PIP_ACCESS_KEY`` is set, ``/token`` needs
 ``Authorization: Bearer <key>``, so a public deployment can't be used to run up the OpenAI bill.
@@ -125,7 +125,7 @@ async def handle_content_file(request: web.Request) -> web.StreamResponse:
 
 
 async def _keepalive(url: str, every: float) -> None:
-    """Free hosts sleep when idle; pinging our own public URL keeps Pip ready to talk."""
+    """Free hosts sleep when idle; pinging our own public URL keeps Milo ready to talk."""
     from aiohttp import ClientSession, ClientTimeout
 
     async with ClientSession(timeout=ClientTimeout(total=30)) as session:
@@ -182,7 +182,7 @@ def main() -> None:
     host = os.environ.get("TOKEN_SERVER_HOST") or ("0.0.0.0" if os.environ.get("PORT") else "127.0.0.1")
     app = create_app()
     if not app[ACCESS_KEY] and host != "127.0.0.1":
-        log.warning("PIP_ACCESS_KEY is not set: anyone who can reach this server can start Pip sessions")
+        log.warning("PIP_ACCESS_KEY is not set: anyone who can reach this server can start Milo sessions")
     log.info("serving content version %s (%d files)", app[MANIFEST]["version"], len(app[FILES]))
     web.run_app(app, host=host, port=port)
 

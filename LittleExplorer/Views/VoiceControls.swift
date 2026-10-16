@@ -13,7 +13,7 @@ struct VoiceToggleButton: View {
                 Image(systemName: voice.isEnabled ? "mic.fill" : "mic.slash.fill")
                     .font(.system(size: 24, weight: .bold))
                 if !compact {
-                    Text(voice.isEnabled ? "Stop talking" : "Talk to Pip")
+                    Text(voice.isEnabled ? "Stop talking" : "Talk to Milo")
                         .font(.system(size: 20, weight: .bold, design: .rounded))
                 }
             }
@@ -24,11 +24,11 @@ struct VoiceToggleButton: View {
             .shadow(color: .black.opacity(0.12), radius: 4, x: 0, y: 2)
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(voice.isEnabled ? "Turn off Pip" : "Turn on Pip, your talking buddy")
+        .accessibilityLabel(voice.isEnabled ? "Turn off Milo" : "Turn on Milo, your talking buddy")
     }
 }
 
-/// Always-visible indicator of what Pip is doing while voice mode is on.
+/// Always-visible indicator of what Milo is doing while voice mode is on.
 struct VoiceStatusView: View {
     let voice: VoiceModeController
     var compact = false

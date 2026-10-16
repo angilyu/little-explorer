@@ -1,4 +1,4 @@
-"""Pip's two voice engines: the mode switch and the pieces that make each one feel conversational."""
+"""Milo's two voice engines: the mode switch and the pieces that make each one feel conversational."""
 
 import asyncio
 import base64
@@ -233,7 +233,7 @@ async def test_realtime_guard_listens_to_reading_and_ignores_adults():
 
     async def topic(t):
         calls.append(t.text)
-        return TurnDecision.LISTEN  # classifier unsure -> treated as not for Pip
+        return TurnDecision.LISTEN  # classifier unsure -> treated as not for Milo
 
     guard = agent_mod.make_realtime_guard(ReadingTracker(), topic)
     first_half = " ".join(PAGE.text.split()[:3])
@@ -243,14 +243,14 @@ async def test_realtime_guard_listens_to_reading_and_ignores_adults():
     assert calls == ["did you email the deck to the team"]
 
 
-async def test_realtime_guard_never_cuts_a_question_to_pip_by_name():
+async def test_realtime_guard_never_cuts_a_question_to_the_buddy_by_name():
     async def topic(t):
         return TurnDecision.IGNORE
 
     guard = agent_mod.make_realtime_guard(ReadingTracker(), topic)
-    assert await guard(turn("Pip, can you go up to the top of the tower?")) is TurnDecision.RESPOND
+    assert await guard(turn("Milo, can you go up to the top of the tower?")) is TurnDecision.RESPOND
     gate = make_parallel_topic_gate(ReadingTracker(), topic)
-    assert await gate(turn("pip can you go up to the top of the tower")) is TurnDecision.RESPOND
+    assert await gate(turn("milo can you go up to the top of the tower")) is TurnDecision.RESPOND
     assert await gate(turn("can you go up to the top of the tower")) is TurnDecision.IGNORE
 
 

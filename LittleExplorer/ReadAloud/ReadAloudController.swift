@@ -14,7 +14,7 @@ protocol SpeechEngine: AnyObject {
 /// Reads the page sentence aloud (no network) and reports which word is being spoken so the page can
 /// highlight it. Pages use their bundled natural-voice clip when there is one for the current sentence,
 /// otherwise the on-device system voice. Tapping again stops. Works with or without voice mode;
-/// `onSpeakingChanged` lets voice mode pause the mic so Pip doesn't hear the app.
+/// `onSpeakingChanged` lets voice mode pause the mic so Milo doesn't hear the app.
 @MainActor
 @Observable
 final class ReadAloudController {
@@ -48,7 +48,7 @@ final class ReadAloudController {
     ) {
         self.engine = engine ?? SystemSpeechEngine()
         self.player = player ?? ClipPlayer()
-        self.narrations = narrations ?? { NarrationLibrary.bundled.narration(for: $0, text: $1) }
+        self.narrations = narrations ?? { NarrationLibrary.current.narration(for: $0, text: $1) }
         let events = EngineEvents(
             willSpeak: { [weak self] range in self?.spokenRange = range },
             finished: { [weak self] in self?.reset() }

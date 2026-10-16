@@ -109,7 +109,7 @@ final class VoiceModeControllerTests: XCTestCase {
         XCTAssertEqual(voice.state, .thinking)
         transport.send(.buddyActivity(.speaking))
         XCTAssertEqual(voice.state, .speaking)
-        XCTAssertEqual(voice.statusText, "Pip is talking")
+        XCTAssertEqual(voice.statusText, "Milo is talking")
     }
 
     func testConnectFailureShowsFriendlyMessageAndRetryWorks() async {
@@ -119,7 +119,7 @@ final class VoiceModeControllerTests: XCTestCase {
             failNext = false
         }
         await voice.turnOn()
-        XCTAssertEqual(voice.state, .failed("Pip can't reach the voice server."))
+        XCTAssertEqual(voice.state, .failed("Milo can't reach the voice server."))
         XCTAssertTrue(voice.isEnabled, "failed stays visible so the child can tap to retry")
         XCTAssertEqual(transports[0].disconnectCount, 1)
 

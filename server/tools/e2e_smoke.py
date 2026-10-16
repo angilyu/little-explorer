@@ -2,17 +2,17 @@
 
 Joins like the iOS app (token from the local token server carrying the opening page, page turns
 as JSON on the ``context`` data topic),
-then plays synthesized speech into the microphone track and checks how Pip reacts:
+then plays synthesized speech into the microphone track and checks how Milo reacts:
 
 1. the greeting is spoken;
 2. reading the page aloud slowly, in two pieces, is listened to and then praised once;
 3. adults talking to each other get no answer;
 4. a question about the page gets an answer;
 5. after a page turn, a question about the new page is answered from that page;
-6. talking over Pip makes him stop.
+6. talking over Milo makes him stop.
 
-It also measures, from Pip's audio track: reply latency (end of the child's speech -> Pip's first
-audible sound) and barge-in stop time (child starts talking over Pip -> Pip goes quiet).
+It also measures, from Milo's audio track: reply latency (end of the child's speech -> Milo's first
+audible sound) and barge-in stop time (child starts talking over Milo -> Milo goes quiet).
 
 Needs the agent worker and token server running, plus OPENAI_API_KEY for the test voices.
 Run from server/: ``uv run python tools/e2e_smoke.py [--mode pipeline|realtime] [--trials N]``.
@@ -42,8 +42,8 @@ from little_explorer_agent.content import load_books  # noqa: E402
 
 SAMPLE_RATE = 24000
 FRAME = SAMPLE_RATE // 100  # 10 ms
-LOUD_RMS = 300  # int16 RMS above this counts as Pip making sound
-QUIET_GAP = 0.7  # Pip has stopped when he stays quiet this long
+LOUD_RMS = 300  # int16 RMS above this counts as Milo making sound
+QUIET_GAP = 0.7  # Milo has stopped when he stays quiet this long
 
 load_env()
 TOKEN_URL = os.environ.get("TOKEN_URL", "http://127.0.0.1:8787/token")
@@ -66,7 +66,7 @@ class Probe:
         self.tasks: set[asyncio.Task] = set()
         self.t0 = time.monotonic()
         self.openai = AsyncOpenAI()
-        self.loud: list[float] = []  # times of audible 10 ms frames from Pip
+        self.loud: list[float] = []  # times of audible 10 ms frames from Milo
         self.last_said: float = 0.0
 
     def now(self) -> float:
@@ -103,7 +103,7 @@ class Probe:
                 print(f"[{self.now():5.1f}]   heard: {text}")
             else:
                 self.agent_lines.append((self.now(), text))
-                print(f"[{self.now():5.1f}]   PIP: {text}")
+                print(f"[{self.now():5.1f}]   MILO: {text}")
 
         self.room.register_text_stream_handler("lk.transcription", lambda r, ident: self._spawn(_read(r, ident)))
 
@@ -128,7 +128,7 @@ class Probe:
         return next((when for when in self.loud if when > t), None)
 
     def quiet_after(self, t: float) -> float | None:
-        """When Pip went quiet (for ``QUIET_GAP``) after ``t``; None if he never did."""
+        """When Milo went quiet (for ``QUIET_GAP``) after ``t``; None if he never did."""
         frames = [when for when in self.loud if when >= t]
         previous = t
         for when in frames:
@@ -167,7 +167,7 @@ class Probe:
         print(f"[{self.now():5.1f}] page -> {ctx['book']} #{ctx['page_number']}: {ctx['page_text']}")
 
     async def wait_reply(self, since: float, settle: float = 2.0, timeout: float = 45) -> None:
-        """Wait for Pip to speak after ``since`` and go back to listening for ``settle`` seconds."""
+        """Wait for Milo to speak after ``since`` and go back to listening for ``settle`` seconds."""
         end = time.monotonic() + timeout
         while time.monotonic() < end:
             spoke = any(when >= since and state == "speaking" for when, state in self.states)
@@ -186,10 +186,10 @@ ADULTS = "An adult chatting casually in a kitchen with another adult."
 
 
 LATENCY_QUESTIONS = [
-    "Pip, why do people in Paris say bonjour?",
-    "Pip, what do kids in Paris eat for breakfast?",
+    "Milo, why do people in Paris say bonjour?",
+    "Milo, what do kids in Paris eat for breakfast?",
     "Why is the Eiffel Tower so tall?",
-    "Pip, can you go up to the top of the tower?",
+    "Milo, can you go up to the top of the tower?",
     "What is the river in Paris called?",
 ]
 
@@ -250,12 +250,12 @@ async def main(mode: str | None, trials: int) -> int:
     replies = " ".join(probe.replies_since(t)).lower()
     results["page turn -> answers from the new page's hidden notes"] = "brown" in replies
 
-    barge_text = "Wait Pip! Wait! Does the tower have an elevator?"
+    barge_text = "Wait Milo! Wait! Does the tower have an elevator?"
     barge_pcm = await probe.synth(barge_text, "ash", CHILD)
     for _ in range(max(1, trials // 2)):
         t = probe.now()
-        await probe.say("Pip, can you tell me a long story about the Eiffel Tower?", "ash", CHILD)
-        # Let Pip talk for about two seconds, then talk over him.
+        await probe.say("Milo, can you tell me a long story about the Eiffel Tower?", "ash", CHILD)
+        # Let Milo talk for about two seconds, then talk over him.
         first = None
         for _ in range(150):
             first = probe.first_sound_after(probe.last_said)
@@ -263,7 +263,7 @@ async def main(mode: str | None, trials: int) -> int:
                 break
             await asyncio.sleep(0.1)
         if first is None:
-            print("   Pip never started; skipping barge-in trial")
+            print("   Milo never started; skipping barge-in trial")
             continue
         barge = probe.now()
         await probe.say(barge_text, "ash", CHILD, barge_pcm)
@@ -272,9 +272,9 @@ async def main(mode: str | None, trials: int) -> int:
             stops.append(quiet - barge)
             print(f"[{probe.now():5.1f}]   barge-in stop {quiet - barge:.2f}s")
         else:
-            print(f"[{probe.now():5.1f}]   Pip kept talking over the child")
+            print(f"[{probe.now():5.1f}]   Milo kept talking over the child")
         await probe.wait_reply(t, settle=3)
-    results["barge-in -> Pip stops"] = bool(stops)
+    results["barge-in -> Milo stops"] = bool(stops)
 
     await probe.room.disconnect()
     print(f"\nRESULTS ({mode or 'agent default'} mode)")

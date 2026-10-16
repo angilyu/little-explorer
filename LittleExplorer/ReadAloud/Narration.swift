@@ -25,21 +25,30 @@ struct Narration: Decodable, Equatable {
     }
 }
 
-/// The bundled narration manifest, keyed like hearts: `book/page`.
+/// The narration manifest (downloaded or bundled), keyed like hearts: `book/page`.
 struct NarrationLibrary {
     private struct Manifest: Decodable {
         let clips: [String: Narration]
     }
 
     let clips: [String: Narration]
-    private let bundle: Bundle
+    private let files: ContentFiles
 
+    /// The current library; replaced when new books are downloaded.
+    @MainActor static private(set) var current = NarrationLibrary(files: .shared)
+
+    @MainActor static func reload() { current = NarrationLibrary(files: .shared) }
+
+    /// Only the clips inside the app.
     static let bundled = NarrationLibrary(bundle: .main)
 
     init(bundle: Bundle) {
-        self.bundle = bundle
-        if let url = bundle.url(forResource: "narration", withExtension: "json"),
-           let data = try? Data(contentsOf: url),
+        self.init(files: .bundleOnly(bundle))
+    }
+
+    init(files: ContentFiles) {
+        self.files = files
+        if let data = files.data("narration.json"),
            let manifest = try? JSONDecoder().decode(Manifest.self, from: data) {
             clips = manifest.clips
         } else {
@@ -54,7 +63,7 @@ struct NarrationLibrary {
     }
 
     func url(for clip: Narration) -> URL? {
-        bundle.url(forResource: clip.file, withExtension: "m4a")
+        files.url("\(clip.file).m4a")
     }
 }
 
@@ -71,19 +80,20 @@ protocol NarrationPlayer: AnyObject {
 @MainActor
 final class ClipPlayer: NSObject, NarrationPlayer, @preconcurrency AVAudioPlayerDelegate {
     var events: ReadAloudController.EngineEvents?
-    private let library: NarrationLibrary
+    private let library: NarrationLibrary?
     private var player: AVAudioPlayer?
     private var narration: Narration?
     private var link: CADisplayLink?
     private var lastWord: Int?
 
-    init(library: NarrationLibrary = .bundled) {
+    /// `library` nil uses whatever `NarrationLibrary.current` is at play time.
+    init(library: NarrationLibrary? = nil) {
         self.library = library
     }
 
     func play(_ narration: Narration) -> Bool {
         stop()
-        guard let url = library.url(for: narration), let player = try? AVAudioPlayer(contentsOf: url) else { return false }
+        guard let url = (library ?? NarrationLibrary.current).url(for: narration), let player = try? AVAudioPlayer(contentsOf: url) else { return false }
         AudioSessionSetup.configureForReading()
         player.delegate = self
         player.prepareToPlay()

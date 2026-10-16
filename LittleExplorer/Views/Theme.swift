@@ -36,7 +36,7 @@ struct FlagBadge: View {
     var height: CGFloat = 32
 
     var body: some View {
-        if let name = book.flagImage, let image = UIImage(named: name) {
+        if let name = book.flagImage, let image = ContentFiles.shared.image(named: name) {
             Image(uiImage: image)
                 .resizable()
                 .scaledToFit()
