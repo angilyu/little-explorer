@@ -33,11 +33,14 @@ class FakeModel:
 
 def test_patient_preset_waits_for_slow_readers():
     handling = PATIENT.turn_handling()
-    assert handling["endpointing"] == {"min_delay": 1.6, "max_delay": 6.0}
-    # VAD barge-in honours min_duration; the adaptive detector cut Pip off on 50 ms of echo.
+    # The local end-of-turn model stretches the wait up to max_delay when he sounds mid-sentence.
+    assert handling["endpointing"] == {"min_delay": 0.5, "max_delay": 4.0}
+    assert PATIENT.turn_detection == "model" and PATIENT.turn_detector_version == "v1-mini"
+    # Fast local-VAD barge-in that needs no transcript; resume if it was only a noise.
     assert handling["interruption"]["mode"] == "vad"
-    assert handling["interruption"]["min_duration"] == 0.8
-    assert handling["interruption"]["min_words"] == 2
+    assert handling["interruption"]["min_duration"] == 0.3
+    assert handling["interruption"]["min_words"] == 0
+    assert handling["interruption"]["resume_false_interruption"] is True
     assert handling["preemptive_generation"] == {"enabled": False}
     assert "turn_detection" not in handling
     assert PATIENT.noise_cancellation == "bvc"
@@ -134,7 +137,11 @@ def test_openai_speech_streams_pcm_in_longer_chunks(monkeypatch):
     monkeypatch.setenv("PIP_SPEECH", "openai")
     monkeypatch.setenv("OPENAI_API_KEY", "test-key")
     preset, speech = speech_setup(PATIENT)
-    assert preset.turn_detection == "stt"
+    # The local end-of-turn model stays on; transcription streams interim words.
+    assert preset.turn_detection == "model"
+    assert speech["stt"].model == "gpt-realtime-whisper"
+    assert speech["stt"].capabilities.interim_results is True
+    assert speech["vad"] is not None
     adapter = speech["tts"]
     assert isinstance(adapter, agents_tts.StreamAdapter)
     assert adapter._wrapped_tts._opts.response_format == "pcm"

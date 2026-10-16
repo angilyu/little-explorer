@@ -1,21 +1,40 @@
-"""LiveKit worker for Pip. Run: ``uv run python -m little_explorer_agent.agent dev``."""
+"""LiveKit worker for Pip. Run: ``uv run python -m little_explorer_agent.agent dev``.
+
+``PIP_MODE=pipeline`` (default) or ``PIP_MODE=realtime`` picks the voice engine; see :mod:`.modes`.
+"""
 
 from __future__ import annotations
 
 import logging
 
-from dotenv import load_dotenv
+from .config import load_env
 
-load_dotenv()
+load_env()
 
+import inspect  # noqa: E402
 import os  # noqa: E402
 
-from livekit.agents import AgentServer, JobContext, cli  # noqa: E402
+from livekit.agents import AgentServer, JobContext, cli, function_tool, llm  # noqa: E402
 
 from . import AGENT_NAME  # noqa: E402
+from .buddy import (  # noqa: E402
+    GREETING,
+    PERSONA,
+    ReadingTracker,
+    TopicGate,
+    _words,
+    addresses_pip,
+    build_graph,
+    default_topic_gate,
+    make_context_note,
+    make_gate,
+    make_parallel_topic_gate,
+    realtime_instructions,
+)
+from .modes import resolve_mode  # noqa: E402
 from .speech import speech_setup  # noqa: E402
-from .buddy import GREETING, PERSONA, ReadingTracker, build_graph, default_topic_gate, make_context_note, make_gate  # noqa: E402
 from .voice import TurnDecision, UserTurn, preset_from_env  # noqa: E402
+from .voice.realtime import RealtimeConfig, start_realtime_session  # noqa: E402
 from .voice.session import start_graph_session  # noqa: E402
 
 log = logging.getLogger("little_explorer.agent")
@@ -35,20 +54,77 @@ def _log_decision(turn: UserTurn, decision: TurnDecision) -> None:
     log.info("turn %s page=%s: %r", decision.name, turn.context.get("page"), turn.text[:120])
 
 
-async def entrypoint(ctx: JobContext) -> None:
+@function_tool
+async def stay_quiet() -> llm.ToolResult:
+    """Say nothing this turn: he is still reading the page aloud or still thinking, or the speech
+    was not meant for you (grown-ups talking, TV, noise)."""
+    return llm.ToolResult("(Pip stayed quiet)", reply_required=False)
+
+
+def realtime_config(env: dict[str, str] | None = None) -> RealtimeConfig:
+    env = dict(os.environ) if env is None else env
+    return RealtimeConfig(
+        model=env.get("PIP_REALTIME_MODEL", "gpt-realtime"),
+        voice=env.get("PIP_OPENAI_VOICE", "coral"),
+        eagerness=env.get("PIP_REALTIME_EAGERNESS", "low"),  # type: ignore[arg-type]
+    )
+
+
+def make_realtime_guard(tracker: ReadingTracker, topic_gate: TopicGate | None) -> TopicGate:
+    """Post-hoc check of a realtime turn: cut the reply if he was reading or it was not for Pip.
+
+    Very short turns ("yes", "the boat!") are left to the model; they are usually answers to Pip.
+    """
+
+    async def guard(turn: UserTurn) -> TurnDecision:
+        reading = tracker.check(turn)
+        if reading is not None:
+            return reading
+        if len(_words(turn.text)) < 3 or addresses_pip(turn.text) or topic_gate is None:
+            return TurnDecision.RESPOND
+        result = topic_gate(turn)
+        if inspect.isawaitable(result):
+            result = await result
+        return TurnDecision.IGNORE if result is TurnDecision.LISTEN else result
+
+    return guard
+
+
+async def _pipeline(ctx: JobContext) -> None:
     tracker = ReadingTracker()
     preset, speech = speech_setup(preset_from_env())
     await start_graph_session(
         ctx,
         _shared_graph(),
         preset=preset,
-        gate=make_gate(tracker, default_topic_gate()),
+        # Reading and noise are decided instantly; the LLM topic check runs alongside the reply.
+        gate=make_gate(tracker, None),
+        parallel_gate=make_parallel_topic_gate(tracker, default_topic_gate()),
         instructions=PERSONA,
         context_message=make_context_note(tracker),
         on_decision=_log_decision,
         greeting=GREETING,
         **speech,
     )
+
+
+async def _realtime(ctx: JobContext) -> None:
+    await start_realtime_session(
+        ctx,
+        config=realtime_config(),
+        preset=preset_from_env(),
+        instructions=realtime_instructions,
+        tools=[stay_quiet],
+        guard=make_realtime_guard(ReadingTracker(), default_topic_gate()),
+        on_decision=_log_decision,
+        greeting=GREETING,
+    )
+
+
+async def entrypoint(ctx: JobContext) -> None:
+    mode = resolve_mode(ctx.job.metadata)
+    log.info("Pip mode: %s", mode)
+    await (_realtime if mode == "realtime" else _pipeline)(ctx)
 
 
 def create_server() -> AgentServer:
