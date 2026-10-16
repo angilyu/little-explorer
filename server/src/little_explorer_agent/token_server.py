@@ -38,7 +38,7 @@ def clean_context(raw: object) -> dict[str, str]:
 
 
 def credentials(identity: str | None = None, context: dict[str, str] | None = None) -> dict[str, str]:
-    from voice_kit.tokens import mint_token
+    from .voice.tokens import mint_token
 
     url = os.environ.get("LIVEKIT_URL", "").strip()
     if not url or not os.environ.get("LIVEKIT_API_KEY") or not os.environ.get("LIVEKIT_API_SECRET"):

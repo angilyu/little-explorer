@@ -1,8 +1,8 @@
 import pytest
-from voice_kit import TurnDecision, UserTurn
 
 from little_explorer_agent.buddy import GREETING, PERSONA, ReadingTracker, make_context_note, make_gate
 from little_explorer_agent.content import load_books
+from little_explorer_agent.voice import TurnDecision, UserTurn
 
 PARIS = load_books()["paris"]
 PAGE = PARIS.pages[0]

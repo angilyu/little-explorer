@@ -8,12 +8,15 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from voice_kit import TurnDecision, UserTurn, preset_from_env  # noqa: E402
-from voice_kit.livekit import run_app, start_graph_session  # noqa: E402
+import os  # noqa: E402
+
+from livekit.agents import AgentServer, JobContext, cli  # noqa: E402
 
 from . import AGENT_NAME  # noqa: E402
 from .speech import speech_setup  # noqa: E402
 from .buddy import GREETING, PERSONA, ReadingTracker, build_graph, default_topic_gate, make_context_note, make_gate  # noqa: E402
+from .voice import TurnDecision, UserTurn, preset_from_env  # noqa: E402
+from .voice.session import start_graph_session  # noqa: E402
 
 log = logging.getLogger("little_explorer.agent")
 
@@ -32,9 +35,9 @@ def _log_decision(turn: UserTurn, decision: TurnDecision) -> None:
     log.info("turn %s page=%s: %r", decision.name, turn.context.get("page"), turn.text[:120])
 
 
-async def entrypoint(ctx) -> None:
+async def entrypoint(ctx: JobContext) -> None:
     tracker = ReadingTracker()
-    preset, speech = speech_setup(preset_from_env("patient", prefix="PIP_"))
+    preset, speech = speech_setup(preset_from_env())
     await start_graph_session(
         ctx,
         _shared_graph(),
@@ -48,8 +51,17 @@ async def entrypoint(ctx) -> None:
     )
 
 
+def create_server() -> AgentServer:
+    # Named agents are only dispatched explicitly (the app's token asks for this one). LiveKit takes
+    # the name from LIVEKIT_AGENT_NAME; passing agent_name to rtc_session is deprecated.
+    os.environ.setdefault("LIVEKIT_AGENT_NAME", AGENT_NAME)
+    server = AgentServer()
+    server.rtc_session(entrypoint)
+    return server
+
+
 def main() -> None:
-    run_app(entrypoint, agent_name=AGENT_NAME)
+    cli.run_app(create_server())
 
 
 if __name__ == "__main__":
