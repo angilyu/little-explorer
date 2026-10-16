@@ -1,5 +1,6 @@
 import AVFoundation
 import Observation
+import os
 
 /// What the read-aloud button needs from a speech engine. `AVSpeechSynthesizer` in the app,
 /// a recorder in tests.
@@ -10,9 +11,10 @@ protocol SpeechEngine: AnyObject {
     func stop()
 }
 
-/// Reads the page sentence aloud on the device (no network), slowly and clearly, and reports which
-/// word is being spoken so the page can highlight it. Tapping again stops. Works with or without
-/// voice mode; `onSpeakingChanged` lets voice mode pause the mic so Pip doesn't hear the app.
+/// Reads the page sentence aloud (no network) and reports which word is being spoken so the page can
+/// highlight it. Pages use their bundled natural-voice clip when there is one for the current sentence,
+/// otherwise the on-device system voice. Tapping again stops. Works with or without voice mode;
+/// `onSpeakingChanged` lets voice mode pause the mic so Pip doesn't hear the app.
 @MainActor
 @Observable
 final class ReadAloudController {
@@ -23,22 +25,36 @@ final class ReadAloudController {
 
     /// About 80% of the default rate: slow enough to follow word by word, still natural.
     static let rate: Float = AVSpeechUtteranceDefaultSpeechRate * 0.8
+    nonisolated private static let log = Logger(subsystem: "com.angilyu.littleexplorer", category: "readaloud")
 
     private(set) var pageId: String?
     private(set) var text: String?
     /// The word being spoken right now, in `text`'s UTF-16 offsets.
     private(set) var spokenRange: NSRange?
 
+    /// True while a bundled natural-voice clip is playing (false for the system voice).
+    private(set) var usingClip = false
+
     @ObservationIgnored var onSpeakingChanged: ((Bool) -> Void)?
     @ObservationIgnored private let engine: SpeechEngine
+    @ObservationIgnored private let player: NarrationPlayer
+    @ObservationIgnored private let narrations: (_ pageId: String, _ text: String) -> Narration?
     @ObservationIgnored private lazy var voice: AVSpeechSynthesisVoice? = Self.bestVoice(from: AVSpeechSynthesisVoice.speechVoices())
 
-    init(engine: SpeechEngine? = nil) {
+    init(
+        engine: SpeechEngine? = nil,
+        player: NarrationPlayer? = nil,
+        narrations: ((String, String) -> Narration?)? = nil
+    ) {
         self.engine = engine ?? SystemSpeechEngine()
-        self.engine.events = EngineEvents(
+        self.player = player ?? ClipPlayer()
+        self.narrations = narrations ?? { NarrationLibrary.bundled.narration(for: $0, text: $1) }
+        let events = EngineEvents(
             willSpeak: { [weak self] range in self?.spokenRange = range },
             finished: { [weak self] in self?.reset() }
         )
+        self.engine.events = events
+        self.player.events = events
     }
 
     var isSpeaking: Bool { pageId != nil }
@@ -50,18 +66,29 @@ final class ReadAloudController {
             stop()
             return
         }
-        if isSpeaking { engine.stop() }
+        if isSpeaking { stopEngine() }
         self.pageId = pageId
         self.text = text
         spokenRange = nil
         onSpeakingChanged?(true)
-        engine.speak(text, voice: voice, rate: Self.rate)
+        if let clip = narrations(pageId, text), player.play(clip) {
+            usingClip = true
+            Self.log.info("read aloud \(pageId, privacy: .public): natural voice clip")
+        } else {
+            usingClip = false
+            Self.log.info("read aloud \(pageId, privacy: .public): system voice")
+            engine.speak(text, voice: voice, rate: Self.rate)
+        }
     }
 
     func stop() {
         guard isSpeaking else { return }
-        engine.stop()
+        stopEngine()
         reset()
+    }
+
+    private func stopEngine() {
+        if usingClip { player.stop() } else { engine.stop() }
     }
 
     /// Stop if the page being read is no longer the one on screen.
@@ -74,6 +101,7 @@ final class ReadAloudController {
         pageId = nil
         text = nil
         spokenRange = nil
+        usingClip = false
         onSpeakingChanged?(false)
     }
 
@@ -110,7 +138,7 @@ final class SystemSpeechEngine: NSObject, SpeechEngine, @preconcurrency AVSpeech
     }
 
     func speak(_ text: String, voice: AVSpeechSynthesisVoice?, rate: Float) {
-        configureAudioSession()
+        AudioSessionSetup.configureForReading()
         let utterance = AVSpeechUtterance(string: text)
         utterance.voice = voice
         utterance.rate = rate
@@ -123,15 +151,6 @@ final class SystemSpeechEngine: NSObject, SpeechEngine, @preconcurrency AVSpeech
     func stop() {
         current = nil
         synthesizer.stopSpeaking(at: .immediate)
-    }
-
-    /// When voice mode is on, LiveKit already owns a play-and-record session, so leave it alone.
-    /// Otherwise use a playback session so the sentence is heard even with the silent switch on.
-    private func configureAudioSession() {
-        let session = AVAudioSession.sharedInstance()
-        guard session.category != .playAndRecord else { return }
-        try? session.setCategory(.playback, mode: .spokenAudio, options: [.duckOthers])
-        try? session.setActive(true)
     }
 
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, willSpeakRangeOfSpeechString characterRange: NSRange, utterance: AVSpeechUtterance) {

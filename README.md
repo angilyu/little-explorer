@@ -45,10 +45,25 @@ Pin a specific file by setting the page's `photo.commonsTitle`.
 
 ## Read aloud
 
-The speaker button (bottom-left of every page) reads the sentence with the on-device `AVSpeechSynthesizer`.
-It picks the best installed en-US/en-GB voice, speaks a little slower than normal, and highlights each word as it's spoken.
-Tap again to stop. Speech also stops when the page turns or the book closes. No network is needed.
-When voice mode is on, the microphone is muted while the app reads, so Pip doesn't mistake the app's voice for the child.
+The speaker button (bottom-left of every page) reads the sentence in a natural voice, the same OpenAI voice as Pip
+(`gpt-4o-mini-tts`, "coral"), styled like a grown-up reading a picture book to a 6-year-old: warm, clear and a little slow.
+The clips are made ahead of time and bundled (about 2 MB of AAC for all 64 pages), so reading aloud works offline
+and the app never holds an API key. Each word is highlighted as it's spoken. Tap again to stop. Speech also stops when
+the page turns or the book closes. When voice mode is on, the microphone is muted while the app reads, so Pip doesn't
+mistake the app's voice for the child.
+
+[`scripts/generate_narration.py`](scripts/generate_narration.py) makes the clips. It reads each sentence with
+`gpt-4o-mini-tts` and gets word timings from `whisper-1`. It tightens those timings to the real pauses in the audio,
+retries if the transcript doesn't match the sentence, and writes `LittleExplorer/Resources/Narration/`. After editing a
+sentence, rerun it (it only regenerates pages that changed). It needs `OPENAI_API_KEY` (or `server/.env`) and macOS `afconvert`:
+
+```sh
+python3 scripts/generate_narration.py                  # new or changed pages only
+python3 scripts/generate_narration.py --only paris/eiffel --force
+```
+
+If a page has no clip for its current sentence, the app falls back to the best on-device system voice
+(`AVSpeechSynthesizer`, slower rate, same word highlighting).
 
 ## Voice buddy (Pip)
 
