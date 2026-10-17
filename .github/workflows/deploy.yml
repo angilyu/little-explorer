@@ -1,0 +1,203 @@
+# Deploys the server pieces when main changes, after the server tests pass:
+# - Render (token + book server, server/Dockerfile.web) when its code or the books change.
+# - LiveKit Cloud (Milo, server/Dockerfile) when the agent's code or build changes. Book-only changes skip it:
+#   Milo reads the books from Render at runtime (PIP_CONTENT_URL).
+# iOS-only and docs-only pushes deploy nothing. "Run workflow" force-deploys either piece.
+#
+# Secrets live in the `production` environment, which only main can use: RENDER_DEPLOY_HOOK_URL,
+# LIVEKIT_URL, LIVEKIT_API_KEY, LIVEKIT_API_SECRET. Nothing runs on pull_request here, so forks never see them.
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      render:
+        description: Deploy the Render token/book server
+        type: boolean
+        default: false
+      agent:
+        description: Deploy Milo to LiveKit Cloud
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+env:
+  SERVER_URL: https://little-explorer-pip.onrender.com
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      render: ${{ steps.pick.outputs.render }}
+      agent: ${{ steps.pick.outputs.agent }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        if: github.event_name == 'push'
+        with:
+          persist-credentials: false
+      - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
+        id: filter
+        if: github.event_name == 'push'
+        with:
+          filters: |
+            render:
+              - 'server/src/**'
+              - 'server/Dockerfile.web'
+              - 'server/requirements*'
+              - '.dockerignore'
+              - 'LittleExplorer/Resources/**'
+            agent:
+              - 'server/src/**'
+              - 'server/Dockerfile'
+              - 'server/livekit.toml'
+              - 'server/requirements*'
+              - 'server/pyproject.toml'
+      - id: pick
+        env:
+          EVENT: ${{ github.event_name }}
+          ON_MAIN: ${{ github.ref == 'refs/heads/main' }}
+          PUSH_RENDER: ${{ steps.filter.outputs.render }}
+          PUSH_AGENT: ${{ steps.filter.outputs.agent }}
+          FORCE_RENDER: ${{ inputs.render }}
+          FORCE_AGENT: ${{ inputs.agent }}
+        run: |
+          if [[ "$ON_MAIN" != true ]]; then
+            render=false; agent=false
+            echo "::warning::Deploys only run from main."
+          elif [[ "$EVENT" == workflow_dispatch ]]; then
+            render="$FORCE_RENDER"; agent="$FORCE_AGENT"
+          else
+            render="$PUSH_RENDER"; agent="$PUSH_AGENT"
+          fi
+          echo "render=${render:-false}" >> "$GITHUB_OUTPUT"
+          echo "agent=${agent:-false}" >> "$GITHUB_OUTPUT"
+          echo "Deploy Render: ${render:-false}, LiveKit agent: ${agent:-false}"
+
+  tests:
+    needs: changes
+    if: needs.changes.outputs.render == 'true' || needs.changes.outputs.agent == 'true'
+    uses: ./.github/workflows/server-tests.yml
+
+  render:
+    needs: [changes, tests]
+    if: needs.changes.outputs.render == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment:
+      name: production
+      url: ${{ env.SERVER_URL }}/healthz
+    concurrency:
+      group: deploy-render
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Expected book content version
+        id: expect
+        run: |
+          version=$(PYTHONPATH=server/src python3 -c \
+            'from little_explorer_agent.catalog import build_manifest; print(build_manifest()["version"])')
+          echo "content=$version" >> "$GITHUB_OUTPUT"
+          echo "Expecting commit $GITHUB_SHA with content $version"
+      - name: Trigger the Render deploy of this commit
+        env:
+          HOOK: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          [[ -n "$HOOK" ]] || { echo "::error::RENDER_DEPLOY_HOOK_URL is not set in the production environment"; exit 1; }
+          code=$(curl -sS -o /dev/null -w '%{http_code}' -X POST "${HOOK}&ref=${GITHUB_SHA}")
+          echo "Render deploy hook answered HTTP $code"
+          [[ "$code" == 200 || "$code" == 202 ]]
+      - name: Wait until it is live
+        env:
+          WANT_CONTENT: ${{ steps.expect.outputs.content }}
+        run: |
+          deadline=$((SECONDS + 1500))
+          while (( SECONDS < deadline )); do
+            health=$(curl -fsS --max-time 60 "$SERVER_URL/healthz" 2>/dev/null || true)
+            commit=$(jq -r '.commit // empty' <<<"$health" 2>/dev/null || true)
+            if [[ "$commit" == "$GITHUB_SHA" ]]; then
+              live=$(curl -fsS --max-time 60 "$SERVER_URL/content/manifest.json" | jq -r .version)
+              if [[ "$live" == "$WANT_CONTENT" ]]; then
+                echo "Live: commit $commit, content $live"
+                exit 0
+              fi
+              echo "::error::Commit $commit is live but serves content $live, expected $WANT_CONTENT"
+              exit 1
+            fi
+            echo "Waiting: live commit ${commit:-unknown}"
+            sleep 20
+          done
+          echo "::error::$GITHUB_SHA did not go live on Render within 25 minutes"
+          exit 1
+
+  agent:
+    needs: [changes, tests]
+    if: needs.changes.outputs.agent == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+    concurrency:
+      group: deploy-agent
+      cancel-in-progress: false
+    env:
+      LK_VERSION: 2.18.8
+      LK_SHA256: 3e0977d0385d2f220d7f455105ac52f8035f79e70aecdf70b6dc054179905c7c
+      LIVEKIT_URL: ${{ secrets.LIVEKIT_URL }}
+      LIVEKIT_API_KEY: ${{ secrets.LIVEKIT_API_KEY }}
+      LIVEKIT_API_SECRET: ${{ secrets.LIVEKIT_API_SECRET }}
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install the LiveKit CLI
+        run: |
+          tarball="lk_${LK_VERSION}_linux_amd64.tar.gz"
+          curl -fsSL -o "$RUNNER_TEMP/$tarball" \
+            "https://github.com/livekit/livekit-cli/releases/download/v${LK_VERSION}/${tarball}"
+          echo "$LK_SHA256  $RUNNER_TEMP/$tarball" | sha256sum -c -
+          tar -xzf "$RUNNER_TEMP/$tarball" -C "$RUNNER_TEMP" lk
+          echo "$RUNNER_TEMP" >> "$GITHUB_PATH"
+      - name: Check the agent's runtime secrets are in place
+        # The deploy keeps the agent's existing LiveKit secrets (OPENAI_API_KEY, PIP_*), which
+        # scripts/deploy_agent.sh sets. Only names are listed, never values.
+        run: |
+          [[ -n "$LIVEKIT_URL" && -n "$LIVEKIT_API_KEY" && -n "$LIVEKIT_API_SECRET" ]] \
+            || { echo "::error::LIVEKIT_* secrets are not set in the production environment"; exit 1; }
+          names=$(lk agent secrets .)
+          for name in OPENAI_API_KEY PIP_CONTENT_URL PIP_SERVER_URL PIP_REPORT_KEY; do
+            grep -qw "$name" <<<"$names" \
+              || { echo "::error::agent secret $name is missing; run scripts/deploy_agent.sh once"; exit 1; }
+          done
+      - name: Deploy Milo
+        run: |
+          # Bake the current books into the image as a fallback (same as scripts/deploy_agent.sh).
+          rm -rf content && mkdir -p content && cp -R ../LittleExplorer/Resources/Books content/Books
+          lk agent deploy -y \
+            --attribute "git_commit=$GITHUB_SHA" \
+            --attribute "git_branch=$GITHUB_REF_NAME" \
+            --attribute "github_run=$GITHUB_RUN_ID" .
+      - name: Wait until it is live
+        run: |
+          deadline=$((SECONDS + 900))
+          while (( SECONDS < deadline )); do
+            current=$(lk agent versions . --json 2>/dev/null \
+              | jq -c '[.versions[] | select(.current)][0] | {version, status, commit: .attributes.git_commit}' || true)
+            echo "Current version: ${current:-unknown}"
+            if [[ "$(jq -r '.commit' <<<"$current" 2>/dev/null)" == "$GITHUB_SHA" ]]; then
+              status=$(jq -r '.status' <<<"$current")
+              [[ "$status" == Available ]] && { lk agent status .; exit 0; }
+              [[ "$status" == Failed ]] && { echo "::error::agent version failed"; exit 1; }
+            fi
+            sleep 15
+          done
+          echo "::error::$GITHUB_SHA did not become the live agent version within 15 minutes"
+          exit 1

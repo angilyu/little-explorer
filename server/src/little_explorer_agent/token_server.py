@@ -266,8 +266,10 @@ async def handle_admin_update(request: web.Request) -> web.Response:
     return web.json_response({"device": {**device.__dict__, "display_name": device.display_name}})
 
 
-async def handle_health(_: web.Request) -> web.Response:
-    return web.json_response({"ok": True})
+async def handle_health(request: web.Request) -> web.Response:
+    # The deploy workflow polls this until the new commit and book content are live.
+    commit = os.environ.get("RENDER_GIT_COMMIT", "").strip() or None
+    return web.json_response({"ok": True, "commit": commit, "content": request.app[MANIFEST]["version"]})
 
 
 async def handle_manifest(request: web.Request) -> web.Response:

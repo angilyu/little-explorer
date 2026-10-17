@@ -232,7 +232,33 @@ Two free-tier pieces. The app only talks to the first; LiveKit dispatches the se
 | Token and book server (`server/Dockerfile.web`) | Render web service `little-explorer-pip` (free plan), https://little-explorer-pip.onrender.com | `POST /token` (needs `Authorization: Bearer $PIP_ACCESS_KEY`), `/content/…` (books, photos, narration), `/healthz` |
 | Milo agent (`server/Dockerfile`) | LiveKit Cloud agent, `server/livekit.toml` | joins each room the token server creates |
 
-- **Render** builds from the repo root and redeploys on every push to its branch. Its env vars are
+**Pushing to `main` deploys automatically** (`.github/workflows/deploy.yml`). The workflow works out what
+changed, runs the server tests, and deploys only the pieces that need it:
+
+| Change on `main` | Render | LiveKit agent |
+|---|---|---|
+| `server/src/**` | ✓ | ✓ |
+| Books, photos, narration, `library.json` (`LittleExplorer/Resources/**`) | ✓ | – (Milo fetches books from Render) |
+| `server/Dockerfile.web`, `.dockerignore` | ✓ | – |
+| `server/Dockerfile`, `server/livekit.toml`, `server/pyproject.toml` | – | ✓ |
+| `server/requirements*` | ✓ | ✓ |
+| iOS app, docs, scripts, tests only | – | – |
+
+- Nothing deploys if the tests fail. One deploy per service runs at a time; a newer push waits for it.
+- The Render job calls the service's deploy hook for that exact commit, then waits until `/healthz` reports the
+  commit and `/content/manifest.json` matches the commit's books. The agent job runs `lk agent deploy` and waits
+  until LiveKit reports that commit as the live, available version. Either job fails if its deploy doesn't go live.
+- **Actions → Deploy → Run workflow** (on `main`) force-deploys Render, the agent, or both.
+- Render's own auto-deploy is **Off**, so every deploy goes through the tests. (Before, Render watched the
+  `angilyu-pip-deploy` branch, so merges to `main` never auto-deployed and were deployed by hand.)
+- Secrets are in the repo's `production` environment, which only `main` can use: `RENDER_DEPLOY_HOOK_URL` (from
+  the Render service's Settings → Deploy Hook) and `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET`.
+  Nothing runs on pull requests with secrets. To rotate one, pipe it in so it isn't echoed or saved in shell history, e.g.
+  `grep '^LIVEKIT_API_SECRET=' ~/.config/little-explorer/.env | cut -d= -f2- | tr -d '\n' | gh secret set LIVEKIT_API_SECRET --env production`.
+- The agent's runtime secrets (`OPENAI_API_KEY`, `PIP_*`) stay in LiveKit; the workflow keeps them and checks
+  they exist. Change them with `scripts/deploy_agent.sh`, which also works for a manual deploy.
+
+- **Render** builds `server/Dockerfile.web` from the repo root. Its env vars are
   `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET`, `PIP_ACCESS_KEY`, `KEEPALIVE_SECONDS`, `DATABASE_URL`,
   `PIP_ADMIN_KEY` and `PIP_REPORT_KEY`, set in the Render dashboard, not in git. A free service sleeps after 15 idle minutes, so with `KEEPALIVE_SECONDS` set the
   server pings its own `/healthz` to stay awake (one always-on service fits in the free 750 hours a month). If it
@@ -254,7 +280,7 @@ books bundled in the app are the last fallback. Milo re-reads the books from the
 
 1. Edit `LittleExplorer/Resources/Books/*.json` (or `library.json` for the shelf), add photos to
    `Resources/Photos` and run `scripts/generate_narration.py` for new sentences.
-2. Push to the branch Render deploys. Render rebuilds; the next app launch picks the changes up.
+2. Merge to `main`. The Deploy workflow rebuilds Render; the next app launch picks the changes up.
 
 A new book must still use the existing page format; a format change needs an app update.
 
