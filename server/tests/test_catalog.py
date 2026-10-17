@@ -18,7 +18,7 @@ def make_root(tmp_path, order=("paris",), books=("paris",)):
 def test_bundled_content_makes_a_valid_manifest():
     manifest = build_manifest(RESOURCES_DIR)
     files = manifest["files"]
-    assert manifest["order"] == ["paris", "paris-food", "paris-fun", "london", "barcelona"]
+    assert manifest["order"] == ["paris", "paris-food", "paris-fun", "paris-notre-dame", "london", "barcelona"]
     assert "library.json" in files and "Narration/narration.json" in files
     assert any(p.startswith("Photos/") for p in files) and any(p.endswith(".m4a") for p in files)
     assert all(len(e["sha256"]) == 64 and e["size"] > 0 for e in files.values())

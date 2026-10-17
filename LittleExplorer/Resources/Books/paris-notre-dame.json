@@ -1,0 +1,204 @@
+{
+  "id": "paris-notre-dame",
+  "city": "Paris",
+  "country": "France",
+  "flagImage": "paris-flag.png",
+  "flag": "🇫🇷",
+  "theme": "Notre-Dame",
+  "coverColor": "#2F7F7A",
+  "tagline": "Gargoyles, bells and a golden rooster",
+  "pages": [
+    {
+      "id": "welcome",
+      "text": "This is Notre-Dame. It is a very old church in Paris.",
+      "about": "Notre-Dame de Paris (NOH-truh DAHM duh pah-REE) is a huge stone cathedral. Its name means 'Our Lady' in French. Builders started it in 1163, more than 850 years ago, and it took them almost 200 years to finish, using only ropes, wooden wheels and their hands. It has two square towers in front, 69 meters tall, and you can climb almost 400 steps to the top. Big stone arms on the outside, called flying buttresses, lean against the walls to hold them up.",
+      "emoji": "⛪",
+      "photo": {
+        "commonsTitle": "File:Notre-Dame de Paris 2013-07-24.jpg",
+        "query": "Notre-Dame de Paris facade",
+        "file": "paris-notre-dame-welcome.jpg",
+        "author": "P e z i",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Notre-Dame_de_Paris_2013-07-24.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "island",
+      "text": "Notre-Dame stands on an island in the river Seine.",
+      "about": "Notre-Dame is on the Île de la Cité (EEL duh lah see-TAY), an island in the middle of the river Seine. Paris began on this little island more than 2,000 years ago, when a tribe called the Parisii lived there; the city's name comes from them. Bridges connect the island to both sides of the river. The photo shows the back of the church at dusk, at the tip of the island.",
+      "emoji": "🏝️",
+      "photo": {
+        "commonsTitle": "File:Notre-Dame de Paris and Île de la Cité at dusk 140516 1.jpg",
+        "query": "Île de la Cité Notre-Dame dusk",
+        "file": "paris-notre-dame-island.jpg",
+        "author": "DXR",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Notre-Dame_de_Paris_and_%C3%8Ele_de_la_Cit%C3%A9_at_dusk_140516_1.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "gargoyles",
+      "text": "Gargoyles are stone monsters. Rain comes out of their mouths!",
+      "about": "Gargoyles (GAR-goyls) are carved stone creatures that stick out from the roof. They are really rain spouts: when it rains, water runs along the roof and pours out of their open mouths, far away from the walls, so the stone doesn't get damaged. The word comes from the French 'gargouille', which is linked to the throat and the gurgling sound water makes. They look like monsters, dogs, lions and birds.",
+      "emoji": "🌧️",
+      "photo": {
+        "commonsTitle": "File:Notre-Dame Rzygacze.JPG",
+        "query": "Notre-Dame de Paris gargoyle",
+        "file": "paris-notre-dame-gargoyles.jpg",
+        "author": "Krzysztof Mizera",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Notre-Dame_Rzygacze.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "chimeras",
+      "text": "Some stone monsters just sit and look down at Paris.",
+      "about": "These creatures are called chimeras (kai-MEER-uhs). Unlike gargoyles, they don't carry rain water; they are there to look interesting. They were added about 170 years ago, in the 1800s, by an architect named Viollet-le-Duc who repaired the cathedral. The most famous one, called the Stryge (STREEZH), has wings and rests its chin in its hands, as if it's thinking. Visitors who climb the towers walk right past them on the Gallery of Chimeras.",
+      "emoji": "👀",
+      "photo": {
+        "commonsTitle": "File:Chimera of Notre-Dame de Paris, 26 April 2014.jpg",
+        "query": "Stryge Notre-Dame",
+        "file": "paris-notre-dame-chimeras.jpg",
+        "author": "Jawed Karim",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Chimera_of_Notre-Dame_de_Paris,_26_April_2014.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "rose",
+      "text": "This round window looks like a giant flower made of glass.",
+      "about": "Notre-Dame has three huge round windows called rose windows. They were made about 750 years ago from hundreds of little pieces of colored glass held together with lead. The two biggest are about 13 meters across, as wide as three cars parked in a row. When the sun shines through, colored light spills onto the floor. The pictures in the glass tell old Bible stories. All three rose windows survived the 2019 fire.",
+      "emoji": "🌸",
+      "photo": {
+        "commonsTitle": "File:Rozeta Paryż notre-dame chalger.jpg",
+        "query": "Notre-Dame de Paris rose window",
+        "file": "paris-notre-dame-rose.jpg",
+        "author": "Krzysztof Mizera",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Rozeta_Pary%C5%BC_notre-dame_chalger.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "bells",
+      "text": "The biggest bell is called Emmanuel. It is heavier than two elephants!",
+      "about": "The biggest bell, named Emmanuel, hangs in the south tower. It was made in 1686 and weighs about 13 tonnes, more than two big elephants. Its clapper alone weighs about as much as a small car. Emmanuel only rings for very special days. It has a deep, low voice, and people say you can feel it in your tummy. Notre-Dame has ten bells in its towers, and each one has its own name, like Marie.",
+      "emoji": "🔔",
+      "photo": {
+        "commonsTitle": "File:Bourdon Emmanuel in 2016 (37206718285).jpg",
+        "query": "bourdon Emmanuel Notre-Dame",
+        "file": "paris-notre-dame-bells.jpg",
+        "author": "Jason Riedy from East Point, GA, USA",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bourdon_Emmanuel_in_2016_(37206718285).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "story",
+      "text": "In a famous story, a kind man rings the bells here.",
+      "about": "In 1831 the writer Victor Hugo wrote a book about Notre-Dame. In the story, a kind but lonely bell ringer named Quasimodo (kah-zee-MOH-doh) lives in the towers and loves the bells like friends. The book was so popular that people realised how special the old church was, and they started to repair it. There is also a cartoon version. The picture is an old drawing of Quasimodo peeking out from the stone. Keep it light: talk about the bells and the kind bell ringer, not the sad parts of the story.",
+      "emoji": "📖",
+      "photo": {
+        "commonsTitle": "File:Quasimodo (Livre I, Chapitre V), 2019.3.1.jpg",
+        "query": "Quasimodo illustration",
+        "file": "paris-notre-dame-story.jpg",
+        "author": "Luc-Olivier Merson",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Quasimodo_(Livre_I,_Chapitre_V),_2019.3.1.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "fire",
+      "text": "One day the roof caught fire. Brave firefighters saved the church.",
+      "about": "In April 2019 the old wooden roof of Notre-Dame caught fire while it was being repaired. About 500 Paris firefighters worked all evening and night. They saved the two big towers, the bells and the rose windows, and made a human chain to carry the treasures out safely. A firefighting robot named Colossus helped spray water inside. Even the honeybees living in hives on a lower roof were fine. The photo shows Paris fire trucks with their long ladders. Be gentle and hopeful here: if he seems worried, tell him the church is safe and open again now.",
+      "emoji": "🚒",
+      "photo": {
+        "commonsTitle": "File:Pompiers-IMG 1593.jpg",
+        "query": "Paris firefighters trucks",
+        "file": "paris-notre-dame-fire.jpg",
+        "author": "Rama",
+        "license": "CC BY-SA 2.0 fr",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/fr/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Pompiers-IMG_1593.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "rebuild",
+      "text": "Many helpers worked for five years to fix it.",
+      "about": "After the fire, about 2,000 people helped rebuild Notre-Dame: carpenters, stone carvers, roofers, glass makers, organ builders and painters. The carpenters used more than a thousand oak trees from French forests, and shaped the beams with hand axes, the same way builders did long ago. Workers also cleaned the old stones, so the inside is now bright and creamy instead of dark. A giant crane, taller than the towers, lifted everything into place.",
+      "emoji": "🔨",
+      "photo": {
+        "commonsTitle": "File:Notre-Dame de Paris en 2023 et la grue du chantier.JPG",
+        "query": "Notre-Dame de Paris restoration crane",
+        "file": "paris-notre-dame-rebuild.jpg",
+        "author": "Benoît Prieur",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Notre-Dame_de_Paris_en_2023_et_la_grue_du_chantier.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "rooster",
+      "text": "Now a golden rooster sits on top of the tall spire.",
+      "about": "The spire is the thin pointy tower in the middle of the roof. It fell down in the fire, and builders made a new one just like the old one, 96 meters tall. On top sits a shiny rooster. The rooster is a symbol of France. The old rooster fell during the fire too, and was found dented but in one piece. The new one, with feathers that look like flames, went up in December 2023. Inside it is a little box with the names of almost 2,000 people who helped rebuild the church.",
+      "emoji": "🐓",
+      "photo": {
+        "commonsTitle": "File:Rooster at the top of the new spire of Notre Dame Cathedral in Paris 2024 01.jpg",
+        "query": "Notre-Dame new spire rooster",
+        "file": "paris-notre-dame-rooster.jpg",
+        "author": "Ibex73",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Rooster_at_the_top_of_the_new_spire_of_Notre_Dame_Cathedral_in_Paris_2024_01.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "open",
+      "text": "In 2024, Notre-Dame opened its doors again. Hooray!",
+      "about": "In December 2024, about five and a half years after the fire, Notre-Dame opened again, and the big bells rang to celebrate. Now visitors can go inside for free. The clean stone walls look light and golden, and the stained-glass windows glow. The photo shows the inside, with a rose window shining at the end.",
+      "emoji": "🎉",
+      "photo": {
+        "commonsTitle": "File:Interieur de Notre-Dame de Paris, decembre 2024 08.jpg",
+        "query": "Notre-Dame de Paris interior 2024",
+        "file": "paris-notre-dame-open.jpg",
+        "author": "Ibex73",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Interieur_de_Notre-Dame_de_Paris,_decembre_2024_08.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "goodbye",
+      "text": "Au revoir! Step on this star to come back one day.",
+      "about": "In front of Notre-Dame, set into the ground, is a round stone with a bronze star in the middle. It's called Point Zéro (pwan zay-ROH). Distances from Paris to other French cities are measured from this spot, so it is the very middle of France's roads. It has been there since 1924. People say that if you stand on the star, one day you will come back to Paris. Ask him where he'd like to go next.",
+      "emoji": "⭐",
+      "photo": {
+        "commonsTitle": "File:Point Zéro des Routes de France (1).JPG",
+        "query": "Point zéro des routes de France",
+        "file": "paris-notre-dame-goodbye.jpg",
+        "author": "Jean-Pierre Bazard Jpbazard",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Point_Z%C3%A9ro_des_Routes_de_France_(1).JPG",
+        "verified": true
+      }
+    }
+  ]
+}

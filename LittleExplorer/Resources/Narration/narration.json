@@ -3179,6 +3179,888 @@
    ],
    "style": "40b5f639d1"
   },
+  "paris-notre-dame/bells": {
+   "file": "read-paris-notre-dame-bells",
+   "text": "The biggest bell is called Emmanuel. It is heavier than two elephants!",
+   "duration": 6.21,
+   "match": 1.0,
+   "heard": "The biggest bell is called Emmanuel. It is heavier than two elephants!",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.0,
+     "end": 0.34
+    },
+    {
+     "location": 4,
+     "length": 7,
+     "start": 0.43,
+     "end": 0.86
+    },
+    {
+     "location": 12,
+     "length": 4,
+     "start": 0.86,
+     "end": 1.28
+    },
+    {
+     "location": 17,
+     "length": 2,
+     "start": 1.35,
+     "end": 1.72
+    },
+    {
+     "location": 20,
+     "length": 6,
+     "start": 1.72,
+     "end": 1.91
+    },
+    {
+     "location": 27,
+     "length": 8,
+     "start": 1.97,
+     "end": 2.66
+    },
+    {
+     "location": 37,
+     "length": 2,
+     "start": 3.34,
+     "end": 3.52
+    },
+    {
+     "location": 40,
+     "length": 2,
+     "start": 3.52,
+     "end": 3.84
+    },
+    {
+     "location": 43,
+     "length": 7,
+     "start": 3.84,
+     "end": 4.26
+    },
+    {
+     "location": 51,
+     "length": 4,
+     "start": 4.46,
+     "end": 4.71
+    },
+    {
+     "location": 56,
+     "length": 3,
+     "start": 4.79,
+     "end": 5.2
+    },
+    {
+     "location": 60,
+     "length": 9,
+     "start": 5.26,
+     "end": 5.66
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-notre-dame/chimeras": {
+   "file": "read-paris-notre-dame-chimeras",
+   "text": "Some stone monsters just sit and look down at Paris.",
+   "duration": 6.0,
+   "match": 1.0,
+   "heard": "Some stone monsters just sit and look down at Paris.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.0,
+     "end": 0.65
+    },
+    {
+     "location": 5,
+     "length": 5,
+     "start": 0.77,
+     "end": 1.52
+    },
+    {
+     "location": 11,
+     "length": 8,
+     "start": 1.52,
+     "end": 2.24
+    },
+    {
+     "location": 20,
+     "length": 4,
+     "start": 2.54,
+     "end": 3.17
+    },
+    {
+     "location": 25,
+     "length": 3,
+     "start": 3.26,
+     "end": 3.34
+    },
+    {
+     "location": 29,
+     "length": 3,
+     "start": 3.81,
+     "end": 4.18
+    },
+    {
+     "location": 33,
+     "length": 4,
+     "start": 4.18,
+     "end": 4.33
+    },
+    {
+     "location": 38,
+     "length": 4,
+     "start": 4.39,
+     "end": 4.8
+    },
+    {
+     "location": 43,
+     "length": 2,
+     "start": 4.91,
+     "end": 5.03
+    },
+    {
+     "location": 46,
+     "length": 5,
+     "start": 5.13,
+     "end": 5.62
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-notre-dame/fire": {
+   "file": "read-paris-notre-dame-fire",
+   "text": "One day the roof caught fire. Brave firefighters saved the church.",
+   "duration": 6.12,
+   "match": 1.0,
+   "heard": "One day the roof caught fire. Brave firefighters saved the church.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.0,
+     "end": 0.5
+    },
+    {
+     "location": 4,
+     "length": 3,
+     "start": 0.5,
+     "end": 0.82
+    },
+    {
+     "location": 8,
+     "length": 3,
+     "start": 1.21,
+     "end": 1.46
+    },
+    {
+     "location": 12,
+     "length": 4,
+     "start": 1.46,
+     "end": 1.74
+    },
+    {
+     "location": 17,
+     "length": 6,
+     "start": 1.83,
+     "end": 2.07
+    },
+    {
+     "location": 24,
+     "length": 4,
+     "start": 2.25,
+     "end": 3.69
+    },
+    {
+     "location": 30,
+     "length": 5,
+     "start": 3.75,
+     "end": 4.02
+    },
+    {
+     "location": 36,
+     "length": 12,
+     "start": 4.11,
+     "end": 4.51
+    },
+    {
+     "location": 49,
+     "length": 5,
+     "start": 4.73,
+     "end": 5.2
+    },
+    {
+     "location": 55,
+     "length": 3,
+     "start": 5.26,
+     "end": 5.64
+    },
+    {
+     "location": 59,
+     "length": 6,
+     "start": 5.74,
+     "end": 5.82
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-notre-dame/gargoyles": {
+   "file": "read-paris-notre-dame-gargoyles",
+   "text": "Gargoyles are stone monsters. Rain comes out of their mouths!",
+   "duration": 6.55,
+   "match": 1.0,
+   "heard": "Gargoyles are stone monsters. Rain comes out of their mouths!",
+   "words": [
+    {
+     "location": 0,
+     "length": 9,
+     "start": 0.6,
+     "end": 1.11
+    },
+    {
+     "location": 10,
+     "length": 3,
+     "start": 1.41,
+     "end": 1.88
+    },
+    {
+     "location": 14,
+     "length": 5,
+     "start": 1.96,
+     "end": 2.42
+    },
+    {
+     "location": 20,
+     "length": 8,
+     "start": 2.42,
+     "end": 4.37
+    },
+    {
+     "location": 30,
+     "length": 4,
+     "start": 4.7,
+     "end": 4.78
+    },
+    {
+     "location": 35,
+     "length": 5,
+     "start": 4.78,
+     "end": 5.06
+    },
+    {
+     "location": 41,
+     "length": 3,
+     "start": 5.06,
+     "end": 5.26
+    },
+    {
+     "location": 45,
+     "length": 2,
+     "start": 5.26,
+     "end": 5.42
+    },
+    {
+     "location": 48,
+     "length": 5,
+     "start": 5.42,
+     "end": 5.6
+    },
+    {
+     "location": 54,
+     "length": 6,
+     "start": 5.6,
+     "end": 6.02
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-notre-dame/goodbye": {
+   "file": "read-paris-notre-dame-goodbye",
+   "text": "Au revoir! Step on this star to come back one day.",
+   "duration": 5.06,
+   "match": 1.0,
+   "heard": "Au revoir! Step on this star to come back one day.",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.84,
+     "end": 1.44
+    },
+    {
+     "location": 3,
+     "length": 6,
+     "start": 2.29,
+     "end": 2.62
+    },
+    {
+     "location": 11,
+     "length": 4,
+     "start": 2.68,
+     "end": 2.76
+    },
+    {
+     "location": 16,
+     "length": 2,
+     "start": 2.76,
+     "end": 2.94
+    },
+    {
+     "location": 19,
+     "length": 4,
+     "start": 2.94,
+     "end": 3.2
+    },
+    {
+     "location": 24,
+     "length": 4,
+     "start": 3.2,
+     "end": 3.5
+    },
+    {
+     "location": 29,
+     "length": 2,
+     "start": 3.56,
+     "end": 3.76
+    },
+    {
+     "location": 32,
+     "length": 4,
+     "start": 3.76,
+     "end": 4.0
+    },
+    {
+     "location": 37,
+     "length": 4,
+     "start": 4.0,
+     "end": 4.22
+    },
+    {
+     "location": 42,
+     "length": 3,
+     "start": 4.22,
+     "end": 4.54
+    },
+    {
+     "location": 46,
+     "length": 3,
+     "start": 4.54,
+     "end": 4.69
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-notre-dame/island": {
+   "file": "read-paris-notre-dame-island",
+   "text": "Notre-Dame stands on an island in the river Seine.",
+   "duration": 5.52,
+   "match": 1.0,
+   "heard": "Notre-Dame stands on an island in the river Seine.",
+   "words": [
+    {
+     "location": 0,
+     "length": 5,
+     "start": 0.0,
+     "end": 0.8
+    },
+    {
+     "location": 6,
+     "length": 4,
+     "start": 0.8,
+     "end": 1.12
+    },
+    {
+     "location": 11,
+     "length": 6,
+     "start": 1.5,
+     "end": 2.14
+    },
+    {
+     "location": 18,
+     "length": 2,
+     "start": 2.14,
+     "end": 2.49
+    },
+    {
+     "location": 21,
+     "length": 2,
+     "start": 2.55,
+     "end": 3.12
+    },
+    {
+     "location": 24,
+     "length": 6,
+     "start": 3.4,
+     "end": 3.48
+    },
+    {
+     "location": 31,
+     "length": 2,
+     "start": 3.48,
+     "end": 3.6
+    },
+    {
+     "location": 34,
+     "length": 3,
+     "start": 3.6,
+     "end": 3.96
+    },
+    {
+     "location": 38,
+     "length": 5,
+     "start": 3.96,
+     "end": 4.28
+    },
+    {
+     "location": 44,
+     "length": 5,
+     "start": 4.28,
+     "end": 4.56
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-notre-dame/open": {
+   "file": "read-paris-notre-dame-open",
+   "text": "In 2024, Notre-Dame opened its doors again. Hooray!",
+   "duration": 6.4,
+   "match": 1.0,
+   "heard": "In 2024, Notre-Dame opened its doors again. Hooray!",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.52,
+     "end": 0.8
+    },
+    {
+     "location": 3,
+     "length": 4,
+     "start": 0.8,
+     "end": 1.96
+    },
+    {
+     "location": 9,
+     "length": 5,
+     "start": 3.0,
+     "end": 3.08
+    },
+    {
+     "location": 15,
+     "length": 4,
+     "start": 3.08,
+     "end": 3.37
+    },
+    {
+     "location": 20,
+     "length": 6,
+     "start": 3.49,
+     "end": 3.88
+    },
+    {
+     "location": 27,
+     "length": 3,
+     "start": 3.88,
+     "end": 4.2
+    },
+    {
+     "location": 31,
+     "length": 5,
+     "start": 4.2,
+     "end": 4.46
+    },
+    {
+     "location": 37,
+     "length": 5,
+     "start": 4.46,
+     "end": 4.96
+    },
+    {
+     "location": 44,
+     "length": 6,
+     "start": 6.06,
+     "end": 6.14
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-notre-dame/rebuild": {
+   "file": "read-paris-notre-dame-rebuild",
+   "text": "Many helpers worked for five years to fix it.",
+   "duration": 4.56,
+   "match": 1.0,
+   "heard": "Many helpers worked for five years to fix it.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.0,
+     "end": 0.77
+    },
+    {
+     "location": 5,
+     "length": 7,
+     "start": 0.83,
+     "end": 1.17
+    },
+    {
+     "location": 13,
+     "length": 6,
+     "start": 1.4,
+     "end": 1.82
+    },
+    {
+     "location": 20,
+     "length": 3,
+     "start": 1.82,
+     "end": 2.26
+    },
+    {
+     "location": 24,
+     "length": 4,
+     "start": 2.26,
+     "end": 2.7
+    },
+    {
+     "location": 29,
+     "length": 5,
+     "start": 2.7,
+     "end": 3.19
+    },
+    {
+     "location": 35,
+     "length": 2,
+     "start": 3.52,
+     "end": 3.82
+    },
+    {
+     "location": 38,
+     "length": 3,
+     "start": 3.82,
+     "end": 4.13
+    },
+    {
+     "location": 42,
+     "length": 2,
+     "start": 4.22,
+     "end": 4.3
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-notre-dame/rooster": {
+   "file": "read-paris-notre-dame-rooster",
+   "text": "Now a golden rooster sits on top of the tall spire.",
+   "duration": 5.16,
+   "match": 1.0,
+   "heard": "Now a golden rooster sits on top of the tall spire.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.0,
+     "end": 0.45
+    },
+    {
+     "location": 4,
+     "length": 1,
+     "start": 0.52,
+     "end": 0.66
+    },
+    {
+     "location": 6,
+     "length": 6,
+     "start": 0.76,
+     "end": 1.28
+    },
+    {
+     "location": 13,
+     "length": 7,
+     "start": 1.28,
+     "end": 1.83
+    },
+    {
+     "location": 21,
+     "length": 4,
+     "start": 2.23,
+     "end": 2.7
+    },
+    {
+     "location": 26,
+     "length": 2,
+     "start": 2.7,
+     "end": 3.02
+    },
+    {
+     "location": 29,
+     "length": 3,
+     "start": 3.02,
+     "end": 3.35
+    },
+    {
+     "location": 33,
+     "length": 2,
+     "start": 3.43,
+     "end": 3.51
+    },
+    {
+     "location": 36,
+     "length": 3,
+     "start": 3.6,
+     "end": 3.68
+    },
+    {
+     "location": 40,
+     "length": 4,
+     "start": 3.68,
+     "end": 4.12
+    },
+    {
+     "location": 45,
+     "length": 5,
+     "start": 4.12,
+     "end": 4.57
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-notre-dame/rose": {
+   "file": "read-paris-notre-dame-rose",
+   "text": "This round window looks like a giant flower made of glass.",
+   "duration": 4.36,
+   "match": 1.0,
+   "heard": "This round window looks like a giant flower made of glass.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.06,
+     "end": 0.4
+    },
+    {
+     "location": 5,
+     "length": 5,
+     "start": 0.4,
+     "end": 0.74
+    },
+    {
+     "location": 11,
+     "length": 6,
+     "start": 0.74,
+     "end": 1.13
+    },
+    {
+     "location": 18,
+     "length": 5,
+     "start": 1.48,
+     "end": 1.78
+    },
+    {
+     "location": 24,
+     "length": 4,
+     "start": 1.78,
+     "end": 2.02
+    },
+    {
+     "location": 29,
+     "length": 1,
+     "start": 2.02,
+     "end": 2.56
+    },
+    {
+     "location": 31,
+     "length": 5,
+     "start": 2.56,
+     "end": 2.64
+    },
+    {
+     "location": 37,
+     "length": 6,
+     "start": 2.64,
+     "end": 3.01
+    },
+    {
+     "location": 44,
+     "length": 4,
+     "start": 3.19,
+     "end": 3.5
+    },
+    {
+     "location": 49,
+     "length": 2,
+     "start": 3.5,
+     "end": 4.08
+    },
+    {
+     "location": 52,
+     "length": 5,
+     "start": 4.08,
+     "end": 4.16
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-notre-dame/story": {
+   "file": "read-paris-notre-dame-story",
+   "text": "In a famous story, a kind man rings the bells here.",
+   "duration": 4.65,
+   "match": 1.0,
+   "heard": "In a famous story, a kind man rings the bells here.",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.0,
+     "end": 0.2
+    },
+    {
+     "location": 3,
+     "length": 1,
+     "start": 0.2,
+     "end": 0.33
+    },
+    {
+     "location": 5,
+     "length": 6,
+     "start": 0.47,
+     "end": 0.92
+    },
+    {
+     "location": 12,
+     "length": 5,
+     "start": 0.92,
+     "end": 1.92
+    },
+    {
+     "location": 19,
+     "length": 1,
+     "start": 2.01,
+     "end": 2.09
+    },
+    {
+     "location": 21,
+     "length": 4,
+     "start": 2.09,
+     "end": 2.52
+    },
+    {
+     "location": 26,
+     "length": 3,
+     "start": 2.52,
+     "end": 2.88
+    },
+    {
+     "location": 30,
+     "length": 5,
+     "start": 3.0,
+     "end": 3.4
+    },
+    {
+     "location": 36,
+     "length": 3,
+     "start": 3.4,
+     "end": 3.68
+    },
+    {
+     "location": 40,
+     "length": 5,
+     "start": 3.68,
+     "end": 3.92
+    },
+    {
+     "location": 46,
+     "length": 4,
+     "start": 3.92,
+     "end": 4.2
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-notre-dame/welcome": {
+   "file": "read-paris-notre-dame-welcome",
+   "text": "This is Notre-Dame. It is a very old church in Paris.",
+   "duration": 6.16,
+   "match": 1.0,
+   "heard": "This is Notre-Dame. It is a very old church in Paris.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.15,
+     "end": 0.52
+    },
+    {
+     "location": 5,
+     "length": 2,
+     "start": 0.93,
+     "end": 1.34
+    },
+    {
+     "location": 8,
+     "length": 5,
+     "start": 1.34,
+     "end": 1.68
+    },
+    {
+     "location": 14,
+     "length": 4,
+     "start": 1.68,
+     "end": 2.05
+    },
+    {
+     "location": 20,
+     "length": 2,
+     "start": 2.91,
+     "end": 3.06
+    },
+    {
+     "location": 23,
+     "length": 2,
+     "start": 3.06,
+     "end": 3.2
+    },
+    {
+     "location": 26,
+     "length": 1,
+     "start": 3.2,
+     "end": 3.44
+    },
+    {
+     "location": 28,
+     "length": 4,
+     "start": 3.44,
+     "end": 3.77
+    },
+    {
+     "location": 33,
+     "length": 3,
+     "start": 3.87,
+     "end": 4.16
+    },
+    {
+     "location": 37,
+     "length": 6,
+     "start": 4.22,
+     "end": 4.71
+    },
+    {
+     "location": 44,
+     "length": 2,
+     "start": 5.11,
+     "end": 5.31
+    },
+    {
+     "location": 47,
+     "length": 5,
+     "start": 5.37,
+     "end": 5.86
+    }
+   ],
+   "style": "40b5f639d1"
+  },
   "paris/arc": {
    "file": "read-paris-arc",
    "text": "Twelve big streets meet at the Arc de Triomphe.",
