@@ -35,14 +35,32 @@ final class FakeNarrationPlayer: NarrationPlayer {
 }
 
 @MainActor
+final class FakeReadingAudioSession: ReadingAudioSession {
+    private(set) var calls: [String] = []
+    private(set) var isHeld = false
+
+    func begin() {
+        calls.append("begin")
+        isHeld = true
+    }
+
+    func end() {
+        calls.append("end")
+        isHeld = false
+    }
+}
+
+@MainActor
 final class ReadAloudControllerTests: XCTestCase {
     private var engine: FakeSpeechEngine!
     private var reader: ReadAloudController!
+    private var audio: FakeReadingAudioSession!
     private var speakingChanges: [Bool] = []
 
     override func setUp() async throws {
         engine = FakeSpeechEngine()
-        reader = ReadAloudController(engine: engine, player: FakeNarrationPlayer(), narrations: { _, _ in nil })
+        audio = FakeReadingAudioSession()
+        reader = ReadAloudController(engine: engine, player: FakeNarrationPlayer(), narrations: { _, _ in nil }, audioSession: audio)
         speakingChanges = []
         reader.onSpeakingChanged = { [unowned self] in speakingChanges.append($0) }
     }
@@ -93,6 +111,42 @@ final class ReadAloudControllerTests: XCTestCase {
         XCTAssertEqual(speakingChanges, [true, true])
     }
 
+    func testHoldsTheAudioSessionOnlyWhileReading() {
+        reader.toggle(pageId: "paris/welcome", text: "One.")
+        XCTAssertTrue(audio.isHeld)
+        reader.toggle(pageId: "paris/bonjour", text: "Two.")
+        XCTAssertTrue(audio.isHeld)
+        engine.finish()
+        XCTAssertFalse(audio.isHeld)
+
+        reader.toggle(pageId: "paris/welcome", text: "One.")
+        reader.toggle(pageId: "paris/welcome", text: "One.")
+        reader.toggle(pageId: "paris/welcome", text: "One.")
+        reader.pageDidChange(to: "paris/bonjour")
+        XCTAssertFalse(audio.isHeld)
+        XCTAssertEqual(audio.calls, ["begin", "begin", "end", "begin", "end", "begin", "end"])
+    }
+
+    func testTakesTheAudioSessionBeforePlaying() {
+        final class OrderPlayer: NarrationPlayer {
+            var events: ReadAloudController.EngineEvents?
+            var heldWhenPlayed: Bool?
+            let audio: FakeReadingAudioSession
+            init(audio: FakeReadingAudioSession) { self.audio = audio }
+            func play(_ narration: Narration) -> Bool {
+                heldWhenPlayed = audio.isHeld
+                return true
+            }
+            func stop() {}
+        }
+        let audio = FakeReadingAudioSession()
+        let player = OrderPlayer(audio: audio)
+        let clip = Narration(file: "clip", text: "One.", duration: 1, words: [])
+        let reader = ReadAloudController(engine: FakeSpeechEngine(), player: player, narrations: { _, _ in clip }, audioSession: audio)
+        reader.toggle(pageId: "paris/welcome", text: "One.")
+        XCTAssertEqual(player.heldWhenPlayed, true)
+    }
+
     func testBestVoiceIsEnglish() {
         let voice = ReadAloudController.bestVoice(from: AVSpeechSynthesisVoice.speechVoices())
         XCTAssertNotNil(voice)
@@ -126,7 +180,7 @@ final class NarrationClipTests: XCTestCase {
     func testPlaysTheNaturalVoiceClipWhenThereIsOne() {
         let engine = FakeSpeechEngine(), player = FakeNarrationPlayer()
         var changes: [Bool] = []
-        let reader = ReadAloudController(engine: engine, player: player, narrations: { [clip] id, _ in id == "paris/welcome" ? clip : nil })
+        let reader = ReadAloudController(engine: engine, player: player, narrations: { [clip] id, _ in id == "paris/welcome" ? clip : nil }, audioSession: FakeReadingAudioSession())
         reader.onSpeakingChanged = { changes.append($0) }
 
         reader.toggle(pageId: "paris/welcome", text: clip.text)
@@ -144,7 +198,7 @@ final class NarrationClipTests: XCTestCase {
 
     func testTapAgainAndPageTurnStopTheClip() {
         let engine = FakeSpeechEngine(), player = FakeNarrationPlayer()
-        let reader = ReadAloudController(engine: engine, player: player, narrations: { [clip] _, _ in clip })
+        let reader = ReadAloudController(engine: engine, player: player, narrations: { [clip] _, _ in clip }, audioSession: FakeReadingAudioSession())
         reader.toggle(pageId: "paris/welcome", text: clip.text)
         reader.toggle(pageId: "paris/welcome", text: clip.text)
         XCTAssertFalse(reader.isSpeaking)
@@ -158,7 +212,7 @@ final class NarrationClipTests: XCTestCase {
     func testFallsBackToSystemVoiceWithoutAClip() {
         let engine = FakeSpeechEngine(), player = FakeNarrationPlayer()
         player.canPlay = false
-        let reader = ReadAloudController(engine: engine, player: player, narrations: { [clip] id, _ in id == "paris/welcome" ? clip : nil })
+        let reader = ReadAloudController(engine: engine, player: player, narrations: { [clip] id, _ in id == "paris/welcome" ? clip : nil }, audioSession: FakeReadingAudioSession())
         reader.toggle(pageId: "paris/welcome", text: clip.text)
         XCTAssertFalse(reader.usingClip)
         XCTAssertEqual(engine.spoken.map(\.text), ["This is Paris."])
