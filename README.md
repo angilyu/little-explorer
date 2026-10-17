@@ -169,7 +169,7 @@ uv run python tools/devices.py block <id or label>  # also: unblock, limit <ref>
 Approve your own devices after each has used Milo once (it appears in the list as unknown). iOS reports every
 iPad as just "iPad", so use the id shown in the Grown-ups corner (it has a copy button) and give it a label.
 
-The app uses the deployed server (`PIP_SERVER_URL` in `Config/Pip.xcconfig`). To try a local token server from a
+The app uses the deployed server (`PIP_SERVER_URL` in `Config/Milo.xcconfig`). To try a local token server from a
 device, set its address in the Grown-ups corner (e.g. `http://<your-mac>.local:8787`).
 
 ### Stars and the Passport

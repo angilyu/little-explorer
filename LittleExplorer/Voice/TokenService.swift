@@ -2,7 +2,7 @@ import Foundation
 
 enum VoiceSettings {
     static let tokenServerKey = "voice.tokenServerURL"
-    /// The Milo server (tokens and book updates) from Config/Pip.xcconfig; the grown-ups corner can
+    /// The Milo server (tokens and book updates) from Config/Milo.xcconfig; the grown-ups corner can
     /// override it, e.g. http://127.0.0.1:8787 for a server running on this Mac.
     static let defaultTokenServer: String = {
         let value = (Bundle.main.object(forInfoDictionaryKey: "PipServerURL") as? String)?
