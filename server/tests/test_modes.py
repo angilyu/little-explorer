@@ -1,4 +1,4 @@
-"""Pip's two voice engines: the mode switch and the pieces that make each one feel conversational."""
+"""Milo's two voice engines: the mode switch and the pieces that make each one feel conversational."""
 
 import asyncio
 import base64
@@ -53,9 +53,14 @@ def test_dispatch_metadata_beats_env():
     assert resolve_mode("[1, 2]", env={}) == "pipeline"
 
 
+class FakeRoomInfo:
+    name = "little-explorer-test"
+
+
 class FakeJob:
     def __init__(self, metadata):
         self.metadata = metadata
+        self.room = FakeRoomInfo()
 
 
 class FakeSession:
@@ -88,17 +93,18 @@ class FakeCtx:
 async def test_entrypoint_runs_the_chosen_engine(monkeypatch, tmp_path, metadata, env, expected):
     ran = []
 
-    async def fake_pipeline(ctx):
+    async def fake_pipeline(ctx, game):
         ran.append("pipeline")
         return FakeSession()
 
-    async def fake_realtime(ctx):
+    async def fake_realtime(ctx, game):
         ran.append("realtime")
         return FakeSession()
 
     monkeypatch.setattr(agent_mod, "attach_room_context", lambda store, room: None)
     monkeypatch.setenv("PIP_USAGE_FILE", str(tmp_path / "usage.csv"))
 
+    monkeypatch.delenv("PIP_CONTENT_URL", raising=False)
     monkeypatch.setattr(agent_mod, "_pipeline", fake_pipeline)
     monkeypatch.setattr(agent_mod, "_realtime", fake_realtime)
     if env:
@@ -109,8 +115,10 @@ async def test_entrypoint_runs_the_chosen_engine(monkeypatch, tmp_path, metadata
     await agent_mod.entrypoint(ctx)
     assert ran == [expected]
     # Every session logs its usage when the job ends.
-    assert len(ctx.shutdown_callbacks) == 1
+    assert len(ctx.shutdown_callbacks) == 3  # usage, pending star reports, timers
     await ctx.shutdown_callbacks[0]("room disconnected")
+    await ctx.shutdown_callbacks[1]()
+    await ctx.shutdown_callbacks[2]()
     assert f",{expected}," in (tmp_path / "usage.csv").read_text()
 
 
@@ -147,7 +155,7 @@ async def client(monkeypatch):
     monkeypatch.setenv("LIVEKIT_URL", "wss://example.livekit.cloud")
     monkeypatch.setenv("LIVEKIT_API_KEY", "test-key")
     monkeypatch.setenv("LIVEKIT_API_SECRET", "test-secret-that-is-long-enough-for-hs256")
-    async with TestClient(TestServer(create_app())) as c:
+    async with TestClient(TestServer(create_app(access_key=""))) as c:
         yield c
 
 
@@ -160,7 +168,8 @@ async def test_token_can_ask_for_a_mode(client):
 async def test_token_without_mode_leaves_it_to_the_agent(client):
     resp = await client.post("/token", json={})
     dispatch = claims((await resp.json())["participantToken"])["roomConfig"]["agents"][0]
-    assert not dispatch.get("metadata")
+    assert "pip_mode" not in json.loads(dispatch["metadata"])
+    assert resolve_mode(dispatch["metadata"], env={"PIP_MODE": "realtime"}) == "realtime"
 
 
 async def test_token_rejects_unknown_mode(client):
@@ -232,7 +241,7 @@ async def test_realtime_guard_listens_to_reading_and_ignores_adults():
 
     async def topic(t):
         calls.append(t.text)
-        return TurnDecision.LISTEN  # classifier unsure -> treated as not for Pip
+        return TurnDecision.LISTEN  # classifier unsure -> treated as not for Milo
 
     guard = agent_mod.make_realtime_guard(ReadingTracker(), topic)
     first_half = " ".join(PAGE.text.split()[:3])
@@ -242,14 +251,14 @@ async def test_realtime_guard_listens_to_reading_and_ignores_adults():
     assert calls == ["did you email the deck to the team"]
 
 
-async def test_realtime_guard_never_cuts_a_question_to_pip_by_name():
+async def test_realtime_guard_never_cuts_a_question_to_the_buddy_by_name():
     async def topic(t):
         return TurnDecision.IGNORE
 
     guard = agent_mod.make_realtime_guard(ReadingTracker(), topic)
-    assert await guard(turn("Pip, can you go up to the top of the tower?")) is TurnDecision.RESPOND
+    assert await guard(turn("Milo, can you go up to the top of the tower?")) is TurnDecision.RESPOND
     gate = make_parallel_topic_gate(ReadingTracker(), topic)
-    assert await gate(turn("pip can you go up to the top of the tower")) is TurnDecision.RESPOND
+    assert await gate(turn("milo can you go up to the top of the tower")) is TurnDecision.RESPOND
     assert await gate(turn("can you go up to the top of the tower")) is TurnDecision.IGNORE
 
 

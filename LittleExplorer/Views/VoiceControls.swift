@@ -13,7 +13,7 @@ struct VoiceToggleButton: View {
                 Image(systemName: voice.isEnabled ? "mic.fill" : "mic.slash.fill")
                     .font(.system(size: 24, weight: .bold))
                 if !compact {
-                    Text(voice.isEnabled ? "Stop talking" : "Talk to Pip")
+                    Text(voice.isEnabled ? "Stop talking" : "Talk to Milo")
                         .font(.system(size: 20, weight: .bold, design: .rounded))
                 }
             }
@@ -24,11 +24,11 @@ struct VoiceToggleButton: View {
             .shadow(color: .black.opacity(0.12), radius: 4, x: 0, y: 2)
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(voice.isEnabled ? "Turn off Pip" : "Turn on Pip, your talking buddy")
+        .accessibilityLabel(voice.isEnabled ? "Turn off Milo" : "Turn on Milo, your talking buddy")
     }
 }
 
-/// Always-visible indicator of what Pip is doing while voice mode is on.
+/// Always-visible indicator of what Milo is doing while voice mode is on.
 struct VoiceStatusView: View {
     let voice: VoiceModeController
     var compact = false
@@ -99,6 +99,40 @@ struct VoiceStatusView: View {
         case .failed: Color.red.opacity(0.15)
         case .listening: Color.green.opacity(0.18)
         default: Color.white
+        }
+    }
+}
+
+/// Shown after Milo turned itself off: a nap after a quiet spell, or rest for the day.
+/// Tapping it dismisses it; the mic button turns Milo back on.
+struct VoiceNoticeBanner: View {
+    let voice: VoiceModeController
+
+    var body: some View {
+        if !voice.isEnabled, let notice = voice.notice {
+            Button {
+                withAnimation { voice.dismissNotice() }
+            } label: {
+                HStack(spacing: 10) {
+                    Image(systemName: notice == VoiceModeController.restNotice ? "moon.stars.fill" : "zzz")
+                        .font(.system(size: 26, weight: .bold))
+                        .foregroundStyle(.purple)
+                    Text(notice)
+                        .font(.system(size: 20, weight: .bold, design: .rounded))
+                        .multilineTextAlignment(.leading)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .padding(.horizontal, 18)
+                .padding(.vertical, 12)
+                .background(Capsule().fill(.white))
+                .foregroundStyle(Theme.ink)
+                .shadow(color: .black.opacity(0.15), radius: 6, x: 0, y: 3)
+            }
+            .buttonStyle(.plain)
+            .padding(12)
+            .accessibilityLabel(notice)
+            .accessibilityHint("Tap to hide")
+            .transition(.move(edge: .top).combined(with: .opacity))
         }
     }
 }

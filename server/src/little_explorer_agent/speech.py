@@ -1,4 +1,4 @@
-"""Speech-to-text and text-to-speech for Pip.
+"""Speech-to-text and text-to-speech for Milo.
 
 ``PIP_SPEECH=openai`` (default) uses streaming OpenAI transcription and a warm OpenAI voice through
 the LiveKit OpenAI plugin, with the local Silero VAD and end-of-turn model. ``PIP_SPEECH=livekit`` uses the patient

@@ -6,7 +6,9 @@ struct ParentCornerView: View {
 
     @Environment(HeartStore.self) private var hearts
     @Environment(\.dismiss) private var dismiss
+    @Environment(ContentStore.self) private var content
     @AppStorage(VoiceSettings.tokenServerKey) private var tokenServer = VoiceSettings.defaultTokenServer
+    @State private var device: DeviceInfo?
 
     var body: some View {
         NavigationStack {
@@ -41,10 +43,29 @@ struct ParentCornerView: View {
                         .autocorrectionDisabled()
                         .keyboardType(.URL)
                     Button("Reset to default") { tokenServer = VoiceSettings.defaultTokenServer }
+                    if let device {
+                        LabeledContent("This device") {
+                            Text(device.id)
+                                .font(.caption.monospaced())
+                                .textSelection(.enabled)
+                        }
+                        Button("Copy device id") { UIPasteboard.general.string = device.id }
+                    }
                 } header: {
-                    Text("Voice buddy (Pip)")
+                    Text("Voice buddy (Milo)")
                 } footer: {
-                    Text("Pip runs on your own server (see server/README.md in the repo). On the simulator use http://127.0.0.1:8787. On a real iPhone or iPad use your Mac's address, for example http://192.168.1.20:8787. Audio is not recorded.")
+                    Text("Milo's server hands out voice tokens and new books. The default is the hosted server; for a server on your Mac use http://127.0.0.1:8787 (simulator) or the Mac's address, e.g. http://192.168.1.20:8787. Audio is not recorded. Milo's minutes are counted per device: approve this device with `tools/devices.py approve <id>` for the longer daily limit.")
+                }
+
+                Section {
+                    LabeledContent("Books version", value: content.version.map { String($0.prefix(8)) } ?? "Built in")
+                    LabeledContent("Last check", value: statusText)
+                    Button("Check for new books") { Task { await content.refresh(force: true) } }
+                        .disabled(content.status == .checking)
+                } header: {
+                    Text("Books")
+                } footer: {
+                    Text("New and updated books download from Milo's server when the app opens, so they don't need an app update.")
                 }
 
                 Section("Photo credits") {
@@ -68,9 +89,20 @@ struct ParentCornerView: View {
                 }
             }
             .navigationTitle("Grown-ups corner")
+            .task { device = DeviceIdentity.current() }
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } }
             }
+        }
+    }
+
+    private var statusText: String {
+        switch content.status {
+        case .idle: "Not yet"
+        case .checking: "Checking…"
+        case .upToDate: "Up to date"
+        case let .updated(count): "Updated (\(count) new files)"
+        case .failed: "Couldn't reach the server"
         }
     }
 }

@@ -6,16 +6,16 @@ final class ContentTests: XCTestCase {
     private func books() throws -> [Book] { try BookLibrary.loadBundled() }
 
     func testLoadsAllBooksInShelfOrder() throws {
-        XCTAssertEqual(try books().map(\.id), ["paris", "paris-food", "paris-fun", "london", "barcelona"])
+        XCTAssertEqual(try books().map(\.id), ["paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "london", "london-big-ben", "barcelona"])
     }
 
-    func testParisHasThreeThemedBooks() throws {
+    func testParisHasNineThemedBooks() throws {
         let paris = try books().filter { $0.city == "Paris" }
-        XCTAssertEqual(paris.map(\.theme), ["Famous Places", "Yummy Paris", "Fun & Art"])
-        XCTAssertEqual(paris.map(\.coverTitle), ["Famous Places", "Yummy Paris", "Fun & Art"])
+        XCTAssertEqual(paris.map(\.theme), ["Famous Places", "Yummy Paris", "Fun & Art", "Notre-Dame", "Eiffel Tower", "Jardin d'Acclimatation", "Louvre Museum", "Palace of Versailles", "Seine River Cruise"])
+        XCTAssertEqual(paris.map(\.coverTitle), ["Famous Places", "Yummy Paris", "Fun & Art", "Notre-Dame", "Eiffel Tower", "Jardin d'Acclimatation", "Louvre Museum", "Palace of Versailles", "Seine River Cruise"])
         XCTAssertEqual(paris[1].shelfTitle, "Paris: Yummy Paris")
         XCTAssertEqual(paris[2].openLabel, "Open the Fun & Art book about Paris")
-        XCTAssertEqual(Set(paris.map(\.coverColor)).count, 3, "themed covers need different colors")
+        XCTAssertEqual(Set(try books().map(\.coverColor)).count, try books().count, "themed covers need different colors")
         let london = try XCTUnwrap(try books().first { $0.id == "london" })
         XCTAssertNil(london.theme)
         XCTAssertEqual(london.coverTitle, "London")
@@ -25,19 +25,22 @@ final class ContentTests: XCTestCase {
     func testShelvesGroupBooksByCityInOrder() throws {
         let shelves = BookLibrary.shelves(try books())
         XCTAssertEqual(shelves.map(\.city), ["Paris", "London", "Barcelona"])
-        XCTAssertEqual(shelves[0].books.map(\.id), ["paris", "paris-food", "paris-fun"])
-        XCTAssertEqual(shelves[1].books.map(\.id), ["london"])
+        XCTAssertEqual(shelves[0].books.map(\.id), ["paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine"])
+        XCTAssertEqual(shelves[1].books.map(\.id), ["london", "london-big-ben"])
+        XCTAssertEqual(shelves[1].books.map(\.coverTitle), ["London", "Big Ben"])
         XCTAssertEqual(shelves[2].books.map(\.id), ["barcelona"])
     }
 
     func testShelfRowsPackOneBookCitiesSideBySide() throws {
-        let shelves = BookLibrary.shelves(try books())
+        let shelves = BookLibrary.shelves(try books().filter { $0.id != "london-big-ben" })
         let cities = { (rows: [[CityShelf]]) in rows.map { $0.map(\.city) } }
         XCTAssertEqual(cities(BookLibrary.rows(shelves, columns: 3)), [["Paris"], ["London", "Barcelona"]])
         XCTAssertEqual(cities(BookLibrary.rows(shelves, columns: 2)), [["Paris"], ["London", "Barcelona"]])
         XCTAssertEqual(cities(BookLibrary.rows(shelves, columns: 1)), [["Paris"], ["London"], ["Barcelona"]])
         let reordered = [shelves[1], shelves[0], shelves[2]]
         XCTAssertEqual(cities(BookLibrary.rows(reordered, columns: 3)), [["London"], ["Paris"], ["Barcelona"]])
+        let all = BookLibrary.shelves(try books())
+        XCTAssertEqual(cities(BookLibrary.rows(all, columns: 3)), [["Paris"], ["London"], ["Barcelona"]])
     }
 
     func testEachBookHasTenToFourteenUniquePages() throws {
@@ -112,5 +115,10 @@ final class ContentTests: XCTestCase {
         XCTAssertEqual(live?.liveVoice, true)
         XCTAssertNil(live?.voiceActivity)
         XCTAssertEqual(live?.startsWithVoice, true)
+        let star = DemoLaunch.parse(["app", "-demoStars", "23", "-demoPassport", "-demoVoice", "star"])
+        XCTAssertEqual(star?.seedStars, 23)
+        XCTAssertEqual(star?.openPassport, true)
+        XCTAssertEqual(star?.voiceStar, true)
+        XCTAssertEqual(star?.voiceActivity, .listening)
     }
 }

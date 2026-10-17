@@ -76,7 +76,7 @@ async def test_question_echoing_page_words_without_question_mark_is_not_reading(
     topic = FakeTopicGate()
     gate = make_gate(ReadingTracker(), topic)
     # Speech-to-text lost the "?" and split the question; most words are on the page.
-    text = "Pip Why do people in Paris say Bonjour."
+    text = "Milo Why do people in Paris say Bonjour."
     assert await gate(turn(text, ctx)) is TurnDecision.RESPOND
     assert topic.calls == [text]
 
@@ -123,4 +123,14 @@ def test_context_note_without_context_is_empty():
 def test_persona_guards():
     assert "personal" in PERSONA
     assert "question" in PERSONA
-    assert "Pip" in GREETING
+    assert "Milo" in GREETING
+
+
+def test_buddy_introduces_itself_as_milo():
+    from little_explorer_agent.buddy import BUDDY_NAME, GREETING, PERSONA, addresses_buddy
+
+    assert BUDDY_NAME == "Milo"
+    assert "I'm Milo" in GREETING and PERSONA.startswith("You are Milo,")
+    assert "Pip" not in GREETING + PERSONA
+    assert addresses_buddy("Mylo why is the tower brown")
+    assert not addresses_buddy("my low battery")

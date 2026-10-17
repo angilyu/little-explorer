@@ -6,8 +6,25 @@ enum ContentError: Error, Equatable {
 }
 
 enum BookLibrary {
-    /// Reading order of the books on the shelf.
-    static let order = ["paris", "paris-food", "paris-fun", "london", "barcelona"]
+    /// Reading order of the books on the shelf when library.json is missing.
+    static let order = ["paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "london", "london-big-ben", "barcelona"]
+
+    private struct Shelf: Decodable { let order: [String] }
+
+    /// The shelf order from library.json (downloaded or bundled).
+    static func order(files: ContentFiles) -> [String] {
+        guard let data = files.data("library.json"), let shelf = try? JSONDecoder().decode(Shelf.self, from: data),
+              !shelf.order.isEmpty else { return order }
+        return shelf.order
+    }
+
+    /// The books on the shelf, preferring downloaded copies over bundled ones.
+    static func load(files: ContentFiles = .shared) throws -> [Book] {
+        try order(files: files).map { id in
+            guard let data = files.data("\(id).json") else { throw ContentError.missingBook(id) }
+            return try decode(data)
+        }
+    }
 
     static func decode(_ data: Data) throws -> Book {
         let book = try JSONDecoder().decode(Book.self, from: data)

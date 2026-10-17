@@ -1,4 +1,4 @@
-"""Pip, the reading buddy: persona, turn gate, per-page context note and the reply graph."""
+"""Milo, the reading buddy: persona, turn gate, per-page context note and the reply graph."""
 
 from __future__ import annotations
 
@@ -18,10 +18,14 @@ REPLY_MODEL = os.environ.get("PIP_LLM_MODEL", "openai:gpt-5.4-mini@none")
 GATE_MODEL = os.environ.get("PIP_GATE_MODEL", "openai:gpt-5.4-nano@none")
 MAX_HISTORY = 16
 
-GREETING = "Hi, I'm Pip! You can read the page to me, or ask me anything you wonder about."
+BUDDY_NAME = "Milo"
+# Speech-to-text spellings of the name, so "Milo, why..." always counts as talking to the buddy.
+NAME_WORDS = frozenset({"milo", "mylo", "milo's"})
+
+GREETING = f"Hi, I'm {BUDDY_NAME}! You can read the page to me, or ask me anything you wonder about."
 
 PERSONA = """\
-You are Pip, a warm, playful travel buddy inside a picture book app called Little Explorer.
+You are Milo, a warm, playful travel buddy inside a picture book app called Little Explorer.
 You talk with a 6-year-old boy who is learning about cities around the world so he gets excited
 about travel. Everything you say is spoken aloud.
 
@@ -43,34 +47,34 @@ Safety:
 """
 
 GATE_PURPOSE = """\
-Pip is a voice buddy in a picture book app for a 6-year-old boy, about cities and travel.
-RESPOND when the child talks to Pip: questions or comments about the book, the page, the photo,
-the city, its country, language, food or famous places, about travel, or a short reply to Pip's
-last question (even "yes", "I like the boat"), or when he asks Pip something directly. A question
+Milo is a voice buddy in a picture book app for a 6-year-old boy, about cities and travel.
+RESPOND when the child talks to Milo: questions or comments about the book, the page, the photo,
+the city, its country, language, food or famous places, about travel, or a short reply to Milo's
+last question (even "yes", "I like the boat"), or when he asks Milo something directly. A question
 about another place in the same city (not the one on this page) is still about the book.
 LISTEN when he is reading the page sentence aloud or is clearly in the middle of a thought.
 IGNORE adults talking to each other, TV or music, phone calls, speech that is not directed at
-Pip, and noise or mumbles that are not words.
-Signs it is grown-ups, not the child talking to Pip (IGNORE): work words (meeting, deck, launch,
+Milo, and noise or mumbles that are not words.
+Signs it is grown-ups, not the child talking to Milo (IGNORE): work words (meeting, deck, launch,
 deadline, project, team, email, planning), chores and errands, traffic, money, news, talking
 about other people ("he said", "your mom"), long run-on speech, or anything a 6-year-old would
 not say to a picture book. A word like "city" or "bridge" alone does not make it about the book.
 When unsure whether a child's question is about the book, prefer RESPOND; when unsure whether it
-is a child talking to Pip at all, prefer IGNORE."""
+is a child talking to Milo at all, prefer IGNORE."""
 
 
 def _words(text: str) -> list[str]:
     return [w.lower() for w in re.findall(r"[\w']+", text or "")]
 
 
-# Words that mark a question or a request to Pip rather than reading. Speech-to-text often drops
-# the "?" and splits "Pip, why ..." into pieces, so look for them anywhere in the turn.
-ASKING_WORDS = frozenset({"pip", "why", "what", "how", "where", "who", "when", "which", "tell", "wonder"})
+# Words that mark a question or a request to Milo rather than reading. Speech-to-text often drops
+# the "?" and splits "Milo, why ..." into pieces, so look for them anywhere in the turn.
+ASKING_WORDS = NAME_WORDS | frozenset({"why", "what", "how", "where", "who", "when", "which", "tell", "wonder"})
 
 
-def addresses_pip(text: str) -> bool:
-    """He said Pip's name, so the turn is for Pip even if it strays from the current page."""
-    return "pip" in _words(text)
+def addresses_buddy(text: str) -> bool:
+    """He said Milo's name, so the turn is for Milo even if it strays from the current page."""
+    return not NAME_WORDS.isdisjoint(_words(text))
 
 
 class ReadingTracker:
@@ -153,7 +157,7 @@ def make_gate(tracker: ReadingTracker, topic_gate: TopicGate | None) -> Callable
         if inspect.isawaitable(result):
             result = await result
         # Only his own reading is worth keeping quietly; other talk the classifier is unsure about
-        # (adults chatting, TV) is dropped so Pip never brings it up later.
+        # (adults chatting, TV) is dropped so Milo never brings it up later.
         return TurnDecision.IGNORE if result is TurnDecision.LISTEN else result
 
     return gate
@@ -209,7 +213,7 @@ def make_parallel_topic_gate(tracker: ReadingTracker, topic_gate: TopicGate) -> 
     """The topic gate for the parallel path: praise after reading is always answered."""
 
     async def gate(turn: UserTurn) -> TurnDecision:
-        if tracker.praise_pending(turn.context) or addresses_pip(turn.text):
+        if tracker.praise_pending(turn.context) or addresses_buddy(turn.text):
             return TurnDecision.RESPOND
         result = topic_gate(turn)
         if inspect.isawaitable(result):
@@ -235,11 +239,25 @@ REALTIME_RULES = """How listening works (very important):
 """
 
 
-def realtime_instructions(context: Mapping[str, Any]) -> str:
-    """Full instructions for the realtime model on the current page."""
+STAR_RULES = """Stars (a game that rewards curious questions; the app hands them out, you just cheer):
+- When he asks you a real, curious question about the book, the page, the photo, the city or
+  travel, begin your answer with "Great question, that's a star!", then answer.
+- Never say it for reading the page aloud, answers to your questions, greetings, "how are you",
+  noise, or anything that is not his question, or when the stars line says this page has all its
+  stars. Don't talk about stars at any other time.
+"""
+
+
+def realtime_instructions(context: Mapping[str, Any], stars: str | None = None) -> str:
+    """Full instructions for the realtime model on the current page.
+
+    ``stars`` is the star status for this page (see :meth:`.stars.StarKeeper.status_line`); without
+    it the star game is left out.
+    """
     lines = page_note(context)
     page = "\n".join(lines) if lines else "The book is not open on a page yet."
-    return f"{PERSONA}\n{REALTIME_RULES}\n{page}\n"
+    game = f"{STAR_RULES}{stars}\n" if stars else ""
+    return f"{PERSONA}\n{REALTIME_RULES}\n{game}{page}\n"
 
 
 def _trim(messages: list[Any]) -> list[Any]:
@@ -249,7 +267,7 @@ def _trim(messages: list[Any]) -> list[Any]:
 
 
 def build_graph(model: Any = None) -> Any:
-    """A one-node LangGraph graph that streams Pip's spoken reply."""
+    """A one-node LangGraph graph that streams Milo's spoken reply."""
     from langgraph.config import get_stream_writer
     from langgraph.graph import START, MessagesState, StateGraph
 

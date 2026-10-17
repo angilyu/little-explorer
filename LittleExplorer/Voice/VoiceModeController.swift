@@ -18,12 +18,19 @@ final class VoiceModeController {
 
     private(set) var state: State = .off
     private(set) var currentPage: PageContext?
-    /// True while the app reads the page aloud; the mic is muted so Pip doesn't hear it.
+    /// True while the app reads the page aloud; the mic is muted so Milo doesn't hear it.
     private(set) var isAppReadingAloud = false
+    /// A gentle note shown after Milo turned itself off (a nap after a quiet spell, or rest for the day).
+    private(set) var notice: String?
+
+    nonisolated static let napNotice = "Milo is taking a nap — tap to talk again"
+    nonisolated static let restNotice = "Milo needs a rest today. Let's talk again tomorrow!"
 
     @ObservationIgnored private let makeTransport: @MainActor () -> VoiceTransport
     @ObservationIgnored private var transport: VoiceTransport?
     @ObservationIgnored private var generation = 0
+    /// Called with every star Milo gives (the app saves it in ``StarStore``).
+    @ObservationIgnored var onStar: ((StarAward) -> Void)?
 
     init(makeTransport: @escaping @MainActor () -> VoiceTransport) {
         self.makeTransport = makeTransport
@@ -39,13 +46,13 @@ final class VoiceModeController {
     }
 
     var statusText: String {
-        if isAppReadingAloud, isConnected { return "Pip waits while the book reads" }
+        if isAppReadingAloud, isConnected { return "Milo waits while the book reads" }
         return switch state {
-        case .off: "Pip is asleep"
-        case .connecting, .waitingForBuddy: "Waking Pip up…"
-        case .listening: "Pip is listening"
-        case .thinking: "Pip is thinking"
-        case .speaking: "Pip is talking"
+        case .off: "Milo is asleep"
+        case .connecting, .waitingForBuddy: "Waking Milo up…"
+        case .listening: "Milo is listening"
+        case .thinking: "Milo is thinking"
+        case .speaking: "Milo is talking"
         case .failed(let message): message
         }
     }
@@ -56,6 +63,7 @@ final class VoiceModeController {
 
     func turnOn() async {
         guard state == .off else { return }
+        notice = nil
         generation += 1
         let gen = generation
         state = .connecting
@@ -82,11 +90,17 @@ final class VoiceModeController {
             guard gen == generation else { return }
             self.transport = nil
             await transport.disconnect()
-            state = .failed(Self.message(for: error))
+            if case VoiceError.resting = error {
+                state = .off
+                notice = Self.restNotice
+            } else {
+                state = .failed(Self.message(for: error))
+            }
         }
     }
 
     func turnOff() async {
+        notice = nil
         generation += 1
         let transport = self.transport
         self.transport = nil
@@ -130,22 +144,35 @@ final class VoiceModeController {
             }
         case .disconnected(let reason):
             transport = nil
-            state = .failed(reason ?? "Pip fell asleep. Tap to wake Pip up.")
+            state = .failed(reason ?? "Milo fell asleep. Tap to wake Milo up.")
+        case .ended(let reason):
+            let transport = self.transport
+            self.transport = nil
+            generation += 1
+            state = .off
+            notice = reason == "limit" ? Self.restNotice : Self.napNotice
+            Task { await transport?.disconnect() }
+        case .star(let award):
+            onStar?(award)
         }
     }
 
+    func dismissNotice() {
+        notice = nil
+    }
+
     static func message(for error: Error) -> String {
-        if error is URLError { return "Pip can't reach the voice server." }
+        if error is URLError { return "Milo can't reach the voice server." }
         if let voiceError = error as? VoiceError, let text = voiceError.errorDescription { return text }
-        return "Pip can't talk right now."
+        return "Milo can't talk right now."
     }
 }
 
 extension VoiceModeController {
     static func live() -> VoiceModeController {
         #if DEBUG
-        if let activity = DemoLaunch.current?.voiceActivity {
-            return VoiceModeController { DemoVoiceTransport(activity: activity) }
+        if let demo = DemoLaunch.current, let activity = demo.voiceActivity {
+            return VoiceModeController { DemoVoiceTransport(activity: activity, endReason: demo.voiceEnd, givesStar: demo.voiceStar) }
         }
         #endif
         return VoiceModeController { makeLiveVoiceTransport() }
