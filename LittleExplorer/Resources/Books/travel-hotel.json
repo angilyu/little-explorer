@@ -1,0 +1,237 @@
+{
+  "id": "travel-hotel",
+  "city": "Travel",
+  "country": "Around the world",
+  "kind": "travel",
+  "flagImage": "travel-flag.png",
+  "flag": "✈️",
+  "theme": "Hotel Stay",
+  "coverColor": "#B45309",
+  "tagline": "Key cards, lifts and a breakfast buffet",
+  "pages": [
+    {
+      "id": "welcome",
+      "text": "A hotel is a big house for travelers.",
+      "about": "A hotel is a building full of bedrooms where travelers can sleep while they are away from home. Some hotels are tiny, with only a few rooms, and some are giant, with hundreds or even thousands! This hotel in the photo is lit up with warm lights as the evening sky turns blue. Francis, can you guess how many windows, and maybe rooms, this hotel has?",
+      "emoji": "🏨",
+      "photo": {
+        "commonsTitle": "File:Exterior Facade Building.jpg",
+        "query": "hotel exterior dusk",
+        "file": "travel-hotel-welcome.jpg",
+        "author": "Tiffanysiantono",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Exterior_Facade_Building.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "front-desk",
+      "text": "First, say hello at the front desk.",
+      "about": "When you arrive, you go to the front desk, also called reception. The people who work there check your name, help you sign in, and give you the key to your room. This is called checking in. They can also answer questions, like where breakfast is or how to find the pool. Francis, you can practice saying a big friendly hello and thank you!",
+      "emoji": "🛎️",
+      "photo": {
+        "commonsTitle": "File:Konstanz - Rezeption Hotel Halm.jpg",
+        "query": "hotel reception desk",
+        "file": "travel-hotel-front-desk.jpg",
+        "author": "MBq",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Konstanz_-_Rezeption_Hotel_Halm.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "luggage-cart",
+      "text": "A shiny cart carries all the heavy bags.",
+      "about": "Many hotels have a luggage cart, a rolling rack with a tall bar on top, for carrying suitcases to your room. In bigger hotels a worker called a bellhop or porter may push the cart for you. In this photo, a hotel porter is wheeling a cart piled with bags. Francis, how many suitcases do you think your family could stack on a cart?",
+      "emoji": "🧳",
+      "photo": {
+        "commonsTitle": "File:HK Disneyland Hotel Bellboy 手推車 Porter.jpg",
+        "query": "hotel bellboy luggage cart",
+        "file": "travel-hotel-luggage-cart.jpg",
+        "author": "Helloahappysa",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:HK_Disneyland_Hotel_Bellboy_%E6%89%8B%E6%8E%A8%E8%BB%8A_Porter.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "key-card",
+      "text": "Tap the key card and the door opens!",
+      "about": "Most hotel rooms do not use a metal key. Instead you get a plastic key card that you tap on or slide into the lock on the door. A little light often blinks green to say yes, and you can push the door open. In this photo, a key card is in the lock of a hotel room door. Some hotels even need the card in a slot inside the room to switch on the lights!",
+      "emoji": "💳",
+      "photo": {
+        "commonsTitle": "File:Rumsdörr, Rica Talk Hotel.jpg",
+        "query": "hotel key card door lock",
+        "file": "travel-hotel-key-card.jpg",
+        "author": "Wolfgangus Mozart",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Rumsd%C3%B6rr,_Rica_Talk_Hotel.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "lift",
+      "text": "Ride the lift up to your floor.",
+      "about": "Tall hotels have a lift, which Americans call an elevator, to carry people up and down. Inside there are buttons with numbers, one for each floor. You press the number of your floor, the doors close, and up you go! Francis, if you are allowed, you can be the one who presses the button, but only once.",
+      "emoji": "🛗",
+      "photo": {
+        "commonsTitle": "File:Decision Time (3282679725).jpg",
+        "query": "elevator buttons",
+        "file": "travel-hotel-lift.jpg",
+        "author": "frankieleon",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Decision_Time_(3282679725).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "room-number",
+      "text": "Room 512 is often on floor five.",
+      "about": "Every room has its own number on the door. In many hotels, the first number tells you the floor, so room 512 is usually on floor 5 and room 207 on floor 2. This sign in a hotel in Toulouse, France, says the fifth floor has rooms 501 to 520. Signs and arrows in the hallway help you find your door. Francis, can you work out which floor room 318 would be on?",
+      "emoji": "🔢",
+      "photo": {
+        "commonsTitle": "File:Toulouse - Eklo Toulouse - 20240506 (6).jpg",
+        "query": "hotel floor sign room numbers",
+        "file": "travel-hotel-room-number.jpg",
+        "author": "Olybrius",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Toulouse_-_Eklo_Toulouse_-_20240506_(6).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "hallway",
+      "text": "Walk quietly in the hallway. People are sleeping!",
+      "about": "Hotel hallways can be very long, with doors on both sides. Behind each door is a family or traveler who might be sleeping, even in the daytime, because they just arrived from far away. That is why we walk and talk quietly and never run or shout in the hallway. Thick carpets like this one help to hush the sound of footsteps.",
+      "emoji": "🤫",
+      "photo": {
+        "commonsTitle": "File:13-02-27-wiesbaden-nassauer-hof-by-RalfR-048.jpg",
+        "query": "hotel corridor carpet",
+        "file": "travel-hotel-hallway.jpg",
+        "author": "Ralf Roletschek",
+        "license": "CC BY 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:13-02-27-wiesbaden-nassauer-hof-by-RalfR-048.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "bed",
+      "text": "Fluffy pillows and a big bed, but no jumping!",
+      "about": "Hotel beds are usually made very neatly, with crisp white sheets and lots of fluffy pillows. Some rooms have one huge bed, and some have two beds side by side for families. It is tempting to bounce, but jumping on beds can hurt you and the bed, so we save jumping for outside. This room in Saigon, Vietnam, has a big comfy bed by the window.",
+      "emoji": "🛏️",
+      "photo": {
+        "commonsTitle": "File:Caravelle Saigon - Signature Studio Room.jpg",
+        "query": "hotel room bed",
+        "file": "travel-hotel-bed.jpg",
+        "author": "BaonguyenCaravelas",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Caravelle_Saigon_-_Signature_Studio_Room.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "view",
+      "text": "Look out the window. What can you see?",
+      "about": "One of the most exciting things about a hotel room is the view from the window or balcony. You might see the sea, mountains, a busy city street or a swimming pool. This photo shows a blue sea view from a hotel balcony. Francis, when you get to a hotel, run to the window first and tell everyone what you can spot!",
+      "emoji": "🪟",
+      "photo": {
+        "commonsTitle": "File:Sea View from Balcony - panoramio.jpg",
+        "query": "sea view hotel balcony",
+        "file": "travel-hotel-view.jpg",
+        "author": "Phill Walker",
+        "license": "CC BY 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sea_View_from_Balcony_-_panoramio.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "do-not-disturb",
+      "text": "Hang the sign that says Do Not Disturb.",
+      "about": "Many hotel rooms have a card you can hang on the outside door handle. One side says Do Not Disturb, which means please do not knock, we are resting. The other side often says Please Make Up Room, which asks the cleaners to come in. In this photo, a bright red sign hangs on a door knob. Francis, which side would you hang up in the morning?",
+      "emoji": "🚪",
+      "photo": {
+        "commonsTitle": "File:Do not disturb (4718215678).jpg",
+        "query": "do not disturb sign door",
+        "file": "travel-hotel-do-not-disturb.jpg",
+        "author": "Quinn Dombrowski",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Do_not_disturb_(4718215678).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "towel-animals",
+      "text": "Housekeeping tidies up, sometimes with towel animals!",
+      "about": "While you are out exploring, workers called housekeeping clean the room, make the beds and bring fresh towels. In some hotels and on cruise ships, they fold the towels into funny animals as a surprise, like this towel elephant with a long trunk. Saying thank you, or leaving a little note, is a kind way to show you noticed. Francis, can you try folding a towel into a snake or an elephant at home?",
+      "emoji": "🐘",
+      "photo": {
+        "commonsTitle": "File:Elephant towel animal.jpg",
+        "query": "towel animal elephant",
+        "file": "travel-hotel-towel-animals.jpg",
+        "author": "Littleinfo",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Elephant_towel_animal.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "breakfast",
+      "text": "At the buffet, you choose your own breakfast.",
+      "about": "Many hotels serve breakfast as a buffet, which means lots of food is laid out and you choose what you want. There might be croissants, cereal, fruit, eggs, yogurt and little pots of jam like in this photo from a hotel in Zurich. You can always go back for more, but it is polite to only take what you can eat. Francis, what would you put on your plate first?",
+      "emoji": "🥐",
+      "photo": {
+        "commonsTitle": "File:20180619 ParkInn@ZRH 5497 (48402595661).jpg",
+        "query": "hotel breakfast buffet",
+        "file": "travel-hotel-breakfast.jpg",
+        "author": "Ray Swi-hymn",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:20180619_ParkInn@ZRH_5497_(48402595661).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "pool",
+      "text": "Splash in the pool, always with a grown-up.",
+      "about": "Lots of hotels have a swimming pool, sometimes indoors and sometimes outside in the sunshine. Kids must always swim with a grown-up watching, and it is important to walk, not run, because the floor gets slippery. This hotel pool in Perth, Australia, has sun loungers all around it. Francis, can you count the loungers next to the water?",
+      "emoji": "🏊",
+      "photo": {
+        "commonsTitle": "File:Crown Metropol Perth pool and recliners OIC.jpg",
+        "query": "hotel swimming pool",
+        "file": "travel-hotel-pool.jpg",
+        "author": "Orderinchaos",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Crown_Metropol_Perth_pool_and_recliners_OIC.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "goodbye",
+      "text": "Pack up, check out, and wave goodbye!",
+      "about": "When your stay is over, you pack your bags, check nothing is left under the bed, and return the key card at the front desk. This is called checking out. These old-style suitcases are on a luggage cart at the TWA Hotel, which sits right at a New York airport. Goodbye, hotel, and thank you for the cozy nights!",
+      "emoji": "👋",
+      "photo": {
+        "commonsTitle": "File:Luggage Cart, TWA Flight Center, John F. Kennedy International Airport, Jamaica, Queens, New York City, NY - 48581209351.jpg",
+        "query": "vintage luggage cart hotel",
+        "file": "travel-hotel-goodbye.jpg",
+        "author": "w_lemay",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Luggage_Cart,_TWA_Flight_Center,_John_F._Kennedy_International_Airport,_Jamaica,_Queens,_New_York_City,_NY_-_48581209351.jpg",
+        "verified": true
+      }
+    }
+  ]
+}

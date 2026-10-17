@@ -1,0 +1,205 @@
+{
+  "id": "travel-packing",
+  "city": "Travel",
+  "country": "Around the world",
+  "kind": "travel",
+  "flagImage": "travel-flag.png",
+  "flag": "✈️",
+  "theme": "Pack Your Bag",
+  "coverColor": "#7C3AED",
+  "tagline": "Socks, toothbrush and a favorite toy",
+  "pages": [
+    {
+      "id": "welcome",
+      "text": "We are going on a trip, so let us pack!",
+      "about": "Before any trip, travelers pack a suitcase with the things they will need while they are away. Packing is like a puzzle: you want everything you need, but it all has to fit and not be too heavy. Kids can be great packers, choosing their own clothes and a toy or two with a grown-up's help. This photo shows a kid's suitcase packed for a family holiday, with dinosaur shoes, a toy plane and a toy train tucked inside. Ask Francis: what is the very first thing you would put in your suitcase?",
+      "emoji": "🧳",
+      "photo": {
+        "commonsTitle": "File:Kid's Luggage Packed for Family Holiday.jpg",
+        "query": "kid's suitcase packed for holiday",
+        "file": "travel-packing-welcome.jpg",
+        "author": "Familydestinationsguide.com",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Kid%27s_Luggage_Packed_for_Family_Holiday.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "checklist",
+      "text": "We make a list so we do not forget.",
+      "about": "A packing checklist is a list of everything you want to bring, and you tick each thing off as it goes in the bag. Many families make the list together a few days before the trip, so nobody forgets important things like pajamas or a toothbrush. Kids who cannot write every word yet can draw little pictures instead, like a sock or a teddy. This photo shows a handwritten kids' packing list with clothes, toys, snacks and a teddy on it. Idea for Francis: make your own picture checklist with a grown-up and tick it off as you pack.",
+      "emoji": "📝",
+      "photo": {
+        "commonsTitle": "File:Kid's Holiday Packing List.jpg",
+        "query": "kids holiday packing list",
+        "file": "travel-packing-checklist.jpg",
+        "author": "Familydestinationsguide.com",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Kid%27s_Holiday_Packing_List.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "fold-roll",
+      "text": "Fold or roll your clothes to save space.",
+      "about": "Clothes take up less room when they are folded neatly or rolled up tight like little sausages. Rolling is a favorite trick of many travelers because rolled T-shirts and pajamas squeeze into gaps and get fewer big creases. You usually pack shirts, pants, socks, underwear and pajamas, about one outfit for each day, plus maybe one extra. This photo shows a grown-up's hands folding a child's shirt next to an open suitcase. Idea for Francis: try rolling a T-shirt into a tube and see how small you can make it.",
+      "emoji": "👕",
+      "photo": {
+        "commonsTitle": "File:Father Packing Kid's Luggage for Holiday.jpg",
+        "query": "packing kid's clothes suitcase",
+        "file": "travel-packing-fold-roll.jpg",
+        "author": "Familydestinationsguide.com",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Father_Packing_Kid%27s_Luggage_for_Holiday.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "toothbrush",
+      "text": "Do not forget your toothbrush and toothpaste!",
+      "about": "Your teeth still need brushing on vacation, morning and night, so a toothbrush and toothpaste always go in the bag. Many travelers keep them in a small wash bag along with a hairbrush, so everything stays together and nothing leaks onto clothes. A toothbrush cover or a little case keeps the bristles clean. This photo shows colorful children's toothbrushes next to a tube of toothpaste. Ask Francis: what color is your toothbrush, and can you remember to pack it yourself?",
+      "emoji": "🪥",
+      "photo": {
+        "commonsTitle": "File:Elmex Aronal und Zahnbürsten 2.jpg",
+        "query": "children's toothbrushes toothpaste",
+        "file": "travel-packing-toothbrush.jpg",
+        "author": "IgorCalzone1",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Elmex_Aronal_und_Zahnb%C3%BCrsten_2.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "teddy",
+      "text": "My teddy comes too, so I feel at home.",
+      "about": "Sleeping in a new place can feel a little strange, and a favorite cuddly toy makes any bed feel more like home. Lots of kids bring one special teddy or toy on every trip, and it can become a well-traveled explorer too. Just remember to check the bed before you leave so your teddy does not get left behind. This photo shows a famous travelling teddy called Barnaby Bear, sitting on some rocks at a train station in Wales. Idea for Francis: take a photo of your teddy in every new place you visit.",
+      "emoji": "🧸",
+      "photo": {
+        "commonsTitle": "File:FR BF Barnaby Bear.jpg",
+        "query": "teddy bear traveling",
+        "file": "travel-packing-teddy.jpg",
+        "author": "David Marshall",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:FR_BF_Barnaby_Bear.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "backpack",
+      "text": "My little backpack has a snack and a book.",
+      "about": "Besides the big suitcase, many kids carry a small backpack on the plane or train, which travelers call a carry-on. It is for things you want close by during the trip: a snack, a water bottle to fill up after security, a book, crayons, headphones and maybe a sweater, because planes can feel chilly. Keeping it light means you can carry it all by yourself. This photo shows a little girl walking with a pink backpack on her back. Ask Francis: what three things would you put in your travel backpack?",
+      "emoji": "🎒",
+      "photo": {
+        "commonsTitle": "File:SAKURAKO carry a backpack. (5007456915).jpg",
+        "query": "small child wearing backpack",
+        "file": "travel-packing-backpack.jpg",
+        "author": "MIKI Yoshihito",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:SAKURAKO_carry_a_backpack._(5007456915).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "liquids",
+      "text": "Small bottles go in a clear bag.",
+      "about": "In many airports, drinks, gels, creams and toothpaste in your carry-on must be in small bottles, usually no bigger than 100 milliliters (3.4 ounces) each. All the small bottles go together in one clear, zip-up plastic bag so the security staff can see them easily. Bigger bottles can travel in the big suitcase that goes under the plane instead. This photo shows a clear plastic bag holding small travel bottles of liquids and gels. Idea for Francis: help a grown-up find all the tiny bottles and zip them into the clear bag.",
+      "emoji": "🧴",
+      "photo": {
+        "commonsTitle": "File:My gels and liquids (max 100ml) in a regulation plastic bag (1355852892).jpg",
+        "query": "liquids in clear plastic bag airport",
+        "file": "travel-packing-liquids.jpg",
+        "author": "David Lisbona",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:My_gels_and_liquids_(max_100ml)_in_a_regulation_plastic_bag_(1355852892).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "weigh",
+      "text": "We weigh the bag so it is not too heavy.",
+      "about": "Airlines and some trains have weight limits for suitcases, so it is smart to weigh your bag before you go. A bag that is too heavy can cost extra money, and it is also hard to lift and roll along. You can weigh a bag on a bathroom scale or with a little hanging luggage scale. This photo shows a suitcase standing next to a floor scale at a train station in Hong Kong, with a sign saying grown-ups may bring 20 kilograms and children 10 kilograms. Ask Francis: do you think your suitcase weighs more or less than you do?",
+      "emoji": "⚖️",
+      "photo": {
+        "commonsTitle": "File:HK West Kln 廣深港高速鐵路 GSH XRL 香港西九龍站 MTR Station Baggage weight and dementsion control Sept 2018 SSG 01.jpg",
+        "query": "luggage weighing scale station",
+        "file": "travel-packing-weigh.jpg",
+        "author": "Saiw Olma Havekoh",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:HK_West_Kln_%E5%BB%A3%E6%B7%B1%E6%B8%AF%E9%AB%98%E9%80%9F%E9%90%B5%E8%B7%AF_GSH_XRL_%E9%A6%99%E6%B8%AF%E8%A5%BF%E4%B9%9D%E9%BE%8D%E7%AB%99_MTR_Station_Baggage_weight_and_dementsion_control_Sept_2018_SSG_01.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "name-tag",
+      "text": "A name tag helps our bag come back to us.",
+      "about": "A luggage tag is a little card that hangs on the handle of your suitcase. A grown-up writes a name and a way to reach them on it, so if the bag ever gets lost or mixed up, it can find its way home. Lots of suitcases look alike, so a bright tag also helps you spot yours quickly. This photo shows a blank luggage tag with spaces for a name and address. Idea for Francis: pick a fun color or sticker so your tag is easy to find, and let a grown-up fill in the details.",
+      "emoji": "🏷️",
+      "photo": {
+        "commonsTitle": "File:UnixWare luggage tag.jpg",
+        "query": "luggage name tag",
+        "file": "travel-packing-name-tag.jpg",
+        "author": "Jonathan Schilling",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:UnixWare_luggage_tag.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "weather",
+      "text": "Pack a sun hat or a warm coat for the weather.",
+      "about": "Before packing, travelers check the weather where they are going. A sunny beach trip needs a sun hat, sunscreen and a swimsuit, while a snowy trip needs a warm coat, gloves and a cozy hat. Many people also pack a light jacket just in case, because weather can change, and planes can be chilly too. This photo shows three colorful sun hats that are great for keeping the sun off your face. Ask Francis: if we went somewhere snowy, what would you pack?",
+      "emoji": "👒",
+      "photo": {
+        "commonsTitle": "File:Sun hat caps.jpg",
+        "query": "colorful sun hats",
+        "file": "travel-packing-weather.jpg",
+        "author": "Ikhadeejatu",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sun_hat_caps.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "zip-up",
+      "text": "Push it down and zip it up tight!",
+      "about": "Sometimes a suitcase is so full that it will not close, and that is when the fun trick comes in: press down on the lid, or even sit on it, while a grown-up zips it shut. If it still will not close, it might be time to take out one or two things you do not really need. Many suitcases also have straps inside to hold everything snug. This photo shows hands pushing down on a very full suitcase to close it. Idea for Francis: be the official suitcase sitter while a grown-up does the zip.",
+      "emoji": "🤐",
+      "photo": {
+        "commonsTitle": "File:Struggling with Overpacking a Full Suitcase.jpg",
+        "query": "closing overpacked suitcase",
+        "file": "travel-packing-zip-up.jpg",
+        "author": "Familydestinationsguide.com",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Struggling_with_Overpacking_a_Full_Suitcase.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "goodbye",
+      "text": "Bags are packed. Bye, house, we are off!",
+      "about": "When the bags are packed, checked against the list and zipped up, it is time to load them into the car or taxi and head off on the adventure. A last quick look around the house helps make sure nothing important was left behind. Then it is goodbye for now, until you come back home with stories to tell. This photo shows a suitcase being loaded into the back of a car for a family holiday. Ask Francis: who would you like to wave goodbye to before the trip?",
+      "emoji": "👋",
+      "photo": {
+        "commonsTitle": "File:Packing Luggage into the Car for a Holiday.jpg",
+        "query": "loading luggage into car holiday",
+        "file": "travel-packing-goodbye.jpg",
+        "author": "Familydestinationsguide.com",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Packing_Luggage_into_the_Car_for_a_Holiday.jpg",
+        "verified": true
+      }
+    }
+  ]
+}
