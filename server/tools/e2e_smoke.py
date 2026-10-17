@@ -15,6 +15,7 @@ It also measures, from Milo's audio track: reply latency (end of the child's spe
 audible sound) and barge-in stop time (child starts talking over Milo -> Milo goes quiet).
 
 Needs the agent worker and token server running, plus OPENAI_API_KEY for the test voices.
+``TOKEN_URL`` points it at another token server; ``PIP_ACCESS_KEY`` is sent if set.
 Run from server/: ``uv run python tools/e2e_smoke.py [--mode pipeline|realtime] [--trials N]``.
 ``--mode`` asks the token server for that engine, so one running agent can be compared in both.
 No audio is saved.
@@ -82,7 +83,10 @@ class Probe:
         if mode:
             payload["pip_mode"] = mode
         body = json.dumps(payload).encode()
-        req = urllib.request.Request(TOKEN_URL, data=body, headers={"Content-Type": "application/json"}, method="POST")
+        headers = {"Content-Type": "application/json"}
+        if key := os.environ.get("PIP_ACCESS_KEY", "").strip():
+            headers["Authorization"] = f"Bearer {key}"
+        req = urllib.request.Request(TOKEN_URL, data=body, headers=headers, method="POST")
         creds = json.loads(urllib.request.urlopen(req, timeout=10).read())
         print(f"[{self.now():5.1f}] room {creds['roomName']}")
 
