@@ -6,13 +6,13 @@ final class ContentTests: XCTestCase {
     private func books() throws -> [Book] { try BookLibrary.loadBundled() }
 
     func testLoadsAllBooksInShelfOrder() throws {
-        XCTAssertEqual(try books().map(\.id), ["paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "london", "london-big-ben", "barcelona"])
+        XCTAssertEqual(try books().map(\.id), ["paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "paris-french", "london", "london-big-ben", "barcelona"])
     }
 
     func testParisHasNineThemedBooks() throws {
         let paris = try books().filter { $0.city == "Paris" }
-        XCTAssertEqual(paris.map(\.theme), ["Famous Places", "Yummy Paris", "Fun & Art", "Notre-Dame", "Eiffel Tower", "Jardin d'Acclimatation", "Louvre Museum", "Palace of Versailles", "Seine River Cruise"])
-        XCTAssertEqual(paris.map(\.coverTitle), ["Famous Places", "Yummy Paris", "Fun & Art", "Notre-Dame", "Eiffel Tower", "Jardin d'Acclimatation", "Louvre Museum", "Palace of Versailles", "Seine River Cruise"])
+        XCTAssertEqual(paris.map(\.theme), ["Famous Places", "Yummy Paris", "Fun & Art", "Notre-Dame", "Eiffel Tower", "Jardin d'Acclimatation", "Louvre Museum", "Palace of Versailles", "Seine River Cruise", "Speak French"])
+        XCTAssertEqual(paris.map(\.coverTitle), ["Famous Places", "Yummy Paris", "Fun & Art", "Notre-Dame", "Eiffel Tower", "Jardin d'Acclimatation", "Louvre Museum", "Palace of Versailles", "Seine River Cruise", "Speak French"])
         XCTAssertEqual(paris[1].shelfTitle, "Paris: Yummy Paris")
         XCTAssertEqual(paris[2].openLabel, "Open the Fun & Art book about Paris")
         XCTAssertEqual(Set(try books().map(\.coverColor)).count, try books().count, "themed covers need different colors")
@@ -25,7 +25,7 @@ final class ContentTests: XCTestCase {
     func testShelvesGroupBooksByCityInOrder() throws {
         let shelves = BookLibrary.shelves(try books())
         XCTAssertEqual(shelves.map(\.city), ["Paris", "London", "Barcelona"])
-        XCTAssertEqual(shelves[0].books.map(\.id), ["paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine"])
+        XCTAssertEqual(shelves[0].books.map(\.id), ["paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "paris-french"])
         XCTAssertEqual(shelves[1].books.map(\.id), ["london", "london-big-ben"])
         XCTAssertEqual(shelves[1].books.map(\.coverTitle), ["London", "Big Ben"])
         XCTAssertEqual(shelves[2].books.map(\.id), ["barcelona"])

@@ -12,6 +12,14 @@ For each page the script
 
 Needs ffmpeg (`brew install ffmpeg`).
 
+A book can add its own reading note and read phrase by phrase, e.g. the French book, where each phrase
+is followed by a sound-it-out hint that a single take sometimes skips:
+
+    "narration": {"instructions": "Say every French phrase in native Parisian French...", "phraseByPhrase": true}
+
+Phrase by phrase, each phrase (split at punctuation and brackets) is its own take, joined with short
+pauses, so the word times come from the takes rather than from whisper.
+
 Pages whose text, voice and style haven't changed are skipped, so rerun it after editing a book.
 The key comes from OPENAI_API_KEY, else the env file in $LITTLE_EXPLORER_ENV, server/.env or
 ~/.config/little-explorer/.env (first that exists). It never ends up in the app.
@@ -65,8 +73,14 @@ ATTEMPTS = 3
 TOKEN = re.compile(r"[\w'’]+")
 
 
-def style_hash() -> str:
-    return hashlib.sha1(f"{MODEL}|{VOICE}|{INSTRUCTIONS}".encode()).hexdigest()[:10]
+def instructions(extra: str = "") -> str:
+    """The shared reading style, plus a book's own `narration` note (e.g. native French phrases)."""
+    return f"{INSTRUCTIONS} {extra}".strip() if extra else INSTRUCTIONS
+
+
+def style_hash(extra: str = "", phrased: bool = False) -> str:
+    style = f"{MODEL}|{VOICE}|{instructions(extra)}" + ("|phrase by phrase" if phrased else "")
+    return hashlib.sha1(style.encode()).hexdigest()[:10]
 
 
 def api_key() -> str:
@@ -104,8 +118,9 @@ def request(url: str, key: str, body: bytes, content_type: str) -> bytes:
     raise RuntimeError("unreachable")
 
 
-def speak(text: str, key: str) -> bytes:
-    body = json.dumps({"model": MODEL, "voice": VOICE, "input": text, "instructions": INSTRUCTIONS, "response_format": "mp3"})
+def speak(text: str, key: str, extra: str = "") -> bytes:
+    body = json.dumps({"model": MODEL, "voice": VOICE, "input": text, "instructions": instructions(extra),
+                       "response_format": "mp3"})
     return request("https://api.openai.com/v1/audio/speech", key, body.encode(), "application/json")
 
 
@@ -241,6 +256,65 @@ def snap_to_pauses(text: str, words: list[dict], gaps: list[tuple[float, float]]
     return words
 
 
+def phrases(text: str) -> list[tuple[str, list[re.Match]]]:
+    """Split a page into short spoken phrases at punctuation and brackets, e.g.
+    "Merci (mair-SEE) means thank you." -> "Merci" / "mair-SEE" / "means thank you."."""
+    tokens = [m for m in TOKEN.finditer(text) if norm(m.group())]
+    groups, current = [], tokens[:1]
+    for prev, tok in zip(tokens, tokens[1:]):
+        if re.search(r"[,.!?;:()]", text[prev.end():tok.start()]):
+            groups.append(current)
+            current = []
+        current.append(tok)
+    if current:
+        groups.append(current)
+    out = []
+    for k, group in enumerate(groups):
+        stop = groups[k + 1][0].start() if k + 1 < len(groups) else len(text)
+        spoken = re.sub(r"[()]", "", text[group[0].start():stop]).strip().rstrip(",;:").strip()
+        out.append((spoken, group))
+    return out
+
+
+def decode(audio: bytes, wav: Path) -> array.array:
+    src = wav.with_suffix(".mp3")
+    src.write_bytes(audio)
+    subprocess.run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-i", str(src), "-ac", "1", "-ar", str(RATE),
+                    "-c:a", "pcm_s16le", str(wav)], check=True)
+    with wave.open(str(wav)) as w:
+        return array.array("h", w.readframes(w.getnframes()))
+
+
+def speak_phrases(text: str, key: str, extra: str, out: Path) -> tuple[list[dict], float]:
+    """Read a page one phrase at a time and join the takes with short pauses, so a French phrase and its
+    sound-it-out hint are both always spoken (a single take sometimes skips the hint) and every word's
+    time is known exactly. Writes 16-bit mono wav to ``out``; returns the word timings and duration."""
+    samples, words = array.array("h", [0] * int(RATE * 0.15)), []
+    for spoken, group in phrases(text):
+        tmp = out.with_name(out.stem + "-phrase.wav")
+        take = decode(speak(spoken, key, extra), tmp)
+        gaps = silent_gaps(tmp, min_gap=0.03)
+        start = next((g[1] for g in gaps if g[0] <= 0.01), 0.0)
+        end = next((g[0] for g in gaps if g[1] >= len(take) / RATE - 0.02 and g[0] > start), len(take) / RATE)
+        take = take[int(start * RATE):int(end * RATE)]
+        t0, length = len(samples) / RATE, len(take) / RATE
+        weights = [max(len(norm(t.group())), 2) for t in group]
+        for tok, wgt in zip(group, weights):
+            t1 = t0 + length * wgt / sum(weights)
+            words.append({"location": utf16(text, tok.start()), "length": utf16(text, tok.end()) - utf16(text, tok.start()),
+                          "start": round(t0, 3), "end": round(t1, 3)})
+            t0 = t1
+        pause = 0.5 if re.search(r"[.!?]$", spoken) else 0.35
+        samples += take + array.array("h", [0] * int(RATE * pause))
+    samples = samples[:len(samples) - int(RATE * 0.2)]
+    with wave.open(str(out), "wb") as w:
+        w.setnchannels(1)
+        w.setsampwidth(2)
+        w.setframerate(RATE)
+        w.writeframes(samples.tobytes())
+    return words, round(len(samples) / RATE, 3)
+
+
 TARGET_LUFS = -16.0
 PEAK_DBFS = -3.0
 MAX_TRUE_PEAK = -1.0  # AAC encoding overshoots the limiter by up to ~3 dB; checked after encoding
@@ -290,10 +364,23 @@ def relevel(clip: Path) -> None:
         (Path(tmp) / "out.m4a").replace(clip)
 
 
-def generate(key_id: str, text: str, key: str) -> dict:
+def generate_phrased(key_id: str, text: str, key: str, extra: str) -> dict:
+    name = "read-" + key_id.replace("/", "-")
+    clip = OUT / f"{name}.m4a"
+    with tempfile.TemporaryDirectory() as tmp:
+        joined, pcm = Path(tmp) / "joined.wav", Path(tmp) / "clip.wav"
+        words, duration = speak_phrases(text, key, extra, joined)
+        level_and_encode(joined, pcm, clip)
+    return {"file": name, "text": text, "duration": duration, "match": 1.0, "heard": "(phrase by phrase)",
+            "words": words, "lufs": TARGET_LUFS}
+
+
+def generate(key_id: str, text: str, key: str, extra: str = "", phrased: bool = False) -> dict:
+    if phrased:
+        return generate_phrased(key_id, text, key, extra)
     best = None
     for _ in range(ATTEMPTS):
-        mp3 = speak(text, key)
+        mp3 = speak(text, key, extra)
         result = transcribe(mp3, text, key)
         words, score = align(text, result.get("words", []), float(result.get("duration", 0)))
         if best is None or score > best[2]:
@@ -337,29 +424,30 @@ def main() -> None:
         MANIFEST.write_text(json.dumps({**manifest, "clips": dict(sorted(clips.items()))}, ensure_ascii=False, indent=1) + "\n")
         print(f"re-levelled {len(todo)} clip(s) to {TARGET_LUFS} LUFS")
         return
-    style = style_hash()
-
-    pages = {}
+    pages, extras = {}, {}
     for path in sorted(BOOKS.glob("*.json")):
         book = json.loads(path.read_text())
         for page in book["pages"]:
             pages[f"{book['id']}/{page['id']}"] = page["text"]
+            # Optional per-book narration, e.g. {"instructions": "...", "phraseByPhrase": true}.
+            note = book.get("narration", {})
+            extras[f"{book['id']}/{page['id']}"] = (note.get("instructions", ""), bool(note.get("phraseByPhrase")))
 
     def wanted(key_id: str) -> bool:
         if args.only and not any(key_id == o or key_id.startswith(o + "/") for o in args.only):
             return False
         old = clips.get(key_id)
-        fresh = old and old["text"] == pages[key_id] and old.get("style") == style and (OUT / f"{old['file']}.m4a").exists()
+        fresh = old and old["text"] == pages[key_id] and old.get("style") == style_hash(*extras[key_id]) and (OUT / f"{old['file']}.m4a").exists()
         return args.force or not fresh
 
     todo = [k for k in pages if wanted(k)]
     print(f"{len(todo)} clip(s) to generate")
     key = api_key()
     with concurrent.futures.ThreadPoolExecutor(args.jobs) as pool:
-        futures = {pool.submit(generate, k, pages[k], key): k for k in todo}
+        futures = {pool.submit(generate, k, pages[k], key, *extras[k]): k for k in todo}
         for future in concurrent.futures.as_completed(futures):
             k = futures[future]
-            clips[k] = {**future.result(), "style": style}
+            clips[k] = {**future.result(), "style": style_hash(*extras[k])}
             print(f"  {k}: {clips[k]['duration']:.1f}s match {clips[k]['match']:.2f}")
 
     # Drop clips for pages that no longer exist.

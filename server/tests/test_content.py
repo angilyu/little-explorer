@@ -3,7 +3,7 @@ from little_explorer_agent.content import load_books, lookup
 
 def test_loads_all_books_from_app_resources():
     books = load_books()
-    assert {"paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "london", "london-big-ben", "barcelona"} <= set(books)
+    assert {"paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "paris-french", "london", "london-big-ben", "barcelona"} <= set(books)
     for book in books.values():
         assert 10 <= len(book.pages) <= 14
         for page in book.pages:
@@ -25,10 +25,10 @@ def test_lookup_handles_unknown_context():
 def test_themed_paris_books_carry_their_theme():
     books = load_books()
     ids = ("paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre",
-           "paris-versailles", "paris-seine")
+           "paris-versailles", "paris-seine", "paris-french")
     assert [books[i].theme for i in ids] == [
         "Famous Places", "Yummy Paris", "Fun & Art", "Notre-Dame", "Eiffel Tower", "Jardin d'Acclimatation",
-        "Louvre Museum", "Palace of Versailles", "Seine River Cruise"]
+        "Louvre Museum", "Palace of Versailles", "Seine River Cruise", "Speak French"]
     assert books["london"].theme == ""
 
 
@@ -47,7 +47,7 @@ async def test_refresh_remote_swaps_in_server_books(monkeypatch):
         assert await content.refresh_remote(base, max_age=0) is False  # same version
         assert await content.refresh_remote(base) is False  # checked moments ago
     books = content.current_books()
-    assert set(books) == {"paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "london", "london-big-ben", "barcelona"}
+    assert set(books) == {"paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "paris-french", "london", "london-big-ben", "barcelona"}
     book, page = content.lookup({"book": "paris", "page": books["paris"].pages[1].id})
     assert page is books["paris"].pages[1]
 
@@ -103,3 +103,42 @@ def test_new_paris_books_give_milo_context_with_fresh_photos():
     assert "small" in page.text and "Leonardo" in page.about
     book, page = lookup({"book": "paris-seine", "page": "bouquin"})
     assert "green boxes" in page.text.lower() and "bouquinistes" in page.about
+
+
+def test_french_book_teaches_a_phrase_per_page_with_fresh_photos():
+    import json
+    import re
+
+    from little_explorer_agent.content import content_dir
+
+    raw = {p.stem: json.loads(p.read_text(encoding="utf-8")) for p in content_dir().glob("*.json")}
+    french = raw.pop("paris-french")
+    titles = {pg["photo"]["commonsTitle"] for pg in french["pages"]}
+    files = {pg["photo"]["file"] for pg in french["pages"]}
+    assert not titles & {pg["photo"]["commonsTitle"] for b in raw.values() for pg in b["pages"]}
+    assert not files & {pg["photo"]["file"] for b in raw.values() for pg in b["pages"]}
+    assert french["narration"]["phraseByPhrase"] is True
+
+    book = load_books()["paris-french"]
+    assert book.city == "Paris" and len(book.pages) == 12 and book.pages[-1].id == "goodbye"
+    for page in book.pages[1:]:
+        assert re.search(r"\([^)]*[A-Z]{2,}[^)]*\)", page.text), f"{page.id} needs a sound-it-out hint"
+    _, page = lookup({"book": "paris-french", "page": "croissant"})
+    assert "Un croissant" in page.text and "Pretend I'm the baker" in page.about
+
+
+def test_narration_reads_french_phrase_and_hint_as_separate_takes():
+    import importlib.util
+    from pathlib import Path
+
+    path = Path(__file__).resolve().parents[2] / "scripts" / "generate_narration.py"
+    spec = importlib.util.spec_from_file_location("generate_narration", path)
+    narration = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(narration)
+
+    text = "Ask the baker: Un croissant (kwah-SAHN), s'il vous plaît!"
+    assert [spoken for spoken, _ in narration.phrases(text)] == [
+        "Ask the baker", "Un croissant", "kwah-SAHN", "s'il vous plaît!"]
+    assert sum(len(words) for _, words in narration.phrases(text)) == 10
+    # Books without their own narration note keep the shared style, so their clips aren't regenerated.
+    assert narration.style_hash() == narration.style_hash("", False) != narration.style_hash("note", True)
