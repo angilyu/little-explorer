@@ -1,7 +1,7 @@
-"""Speech-to-text and text-to-speech for Pip.
+"""Speech-to-text and text-to-speech for Milo.
 
-``PIP_SPEECH=openai`` (default) uses OpenAI transcription and a warm OpenAI voice through the
-LiveKit OpenAI plugin, so it works on any LiveKit server. ``PIP_SPEECH=livekit`` uses the patient
+``PIP_SPEECH=openai`` (default) uses streaming OpenAI transcription and a warm OpenAI voice through
+the LiveKit OpenAI plugin, with the local Silero VAD and end-of-turn model. ``PIP_SPEECH=livekit`` uses the patient
 preset's LiveKit Inference models and turn detector (LiveKit Cloud).
 """
 
@@ -31,22 +31,31 @@ def speech_mode() -> str:
     return mode
 
 
+# Streams words while he is still talking (interim results), so turn-taking and barge-in see them
+# early. It has no server-side endpointing; the local VAD closes each segment.
+DEFAULT_STT_MODEL = "gpt-realtime-whisper"
+
+
 def speech_setup(preset: VoicePreset) -> tuple[VoicePreset, dict[str, Any]]:
-    """The preset to use plus ``stt``/``tts`` session overrides for the chosen speech provider."""
+    """The preset to use plus ``stt``/``tts``/``vad`` session overrides for the chosen provider."""
     if speech_mode() == "livekit":
         return preset, {}
-    from livekit.agents import tokenize
+    from livekit.agents import inference, tokenize
     from livekit.agents import tts as agents_tts
     from livekit.plugins import openai as lk_openai
 
-    stt = lk_openai.STT(
-        model=os.environ.get("PIP_OPENAI_STT_MODEL", "gpt-4o-transcribe"),
-        language="en",
-        # Children read slowly; let a pause run before OpenAI closes a segment. The session's
-        # patient endpointing still waits on top of this before Pip replies.
-        turn_detection={"silence_duration_ms": 900, "prefix_padding_ms": 400},
-        noise_reduction_type="near_field",
-    )
+    # Silero runs on this machine: it drives barge-in and closes the STT segments.
+    vad = inference.VAD(model="silero")
+    stt_model = os.environ.get("PIP_OPENAI_STT_MODEL", DEFAULT_STT_MODEL)
+    if stt_model.startswith(("gpt-realtime-whisper", "gpt-live-transcribe")):
+        stt = lk_openai.STT(model=stt_model, language="en", vad=vad)
+    else:
+        stt = lk_openai.STT(
+            model=stt_model,
+            language="en",
+            turn_detection={"silence_duration_ms": 500, "prefix_padding_ms": 300},
+            noise_reduction_type="near_field",
+        )
     tts = agents_tts.StreamAdapter(
         tts=lk_openai.TTS(
             model=os.environ.get("PIP_OPENAI_TTS_MODEL", "gpt-4o-mini-tts"),
@@ -59,5 +68,5 @@ def speech_setup(preset: VoicePreset) -> tuple[VoicePreset, dict[str, Any]]:
             retain_format=True, min_sentence_len=TTS_MIN_CHUNK_CHARS
         ),
     )
-    # The model turn detector is a LiveKit Inference service too; segment on the STT's end of speech.
-    return preset.with_overrides(turn_detection="stt"), {"stt": stt, "tts": tts}
+    # The preset's end-of-turn model runs locally (v1-mini), so it works with OpenAI speech too.
+    return preset, {"stt": stt, "tts": tts, "vad": vad}

@@ -5,11 +5,13 @@ struct LibraryView: View {
 
     @Environment(HeartStore.self) private var hearts
     @Environment(VoiceModeController.self) private var voice
+    @Environment(StarStore.self) private var stars
     @Environment(\.horizontalSizeClass) private var sizeClass
 
     @State private var openBook: OpenBook?
     @State private var showGate = false
     @State private var showParentCorner = false
+    @State private var showPassport = false
     @State private var didApplyDemo = false
 
     private var regular: Bool { sizeClass == .regular }
@@ -41,6 +43,12 @@ struct LibraryView: View {
             BookReaderView(book: open.book, startPage: open.startPage)
                 .environment(hearts)
                 .environment(voice)
+                .environment(stars)
+        }
+        .sheet(isPresented: $showPassport) {
+            PassportView(shelves: BookLibrary.shelves(books))
+                .environment(stars)
+                .passportSizing()
         }
         .sheet(isPresented: $showGate) {
             ParentGateView {
@@ -96,9 +104,15 @@ struct LibraryView: View {
         Button {
             showGate = true
         } label: {
-            Label("Grown-ups", systemImage: "lock.fill")
-                .labelStyle(.titleAndIcon)
-                .font(.footnote.weight(.semibold))
+            if regular {
+                Label("Grown-ups", systemImage: "lock.fill")
+                    .labelStyle(.titleAndIcon)
+                    .font(.footnote.weight(.semibold))
+            } else {
+                Image(systemName: "lock.fill")
+                    .font(.footnote.weight(.semibold))
+                    .accessibilityLabel("Grown-ups")
+            }
         }
         .accessibilityHint("For parents only")
     }
@@ -106,13 +120,17 @@ struct LibraryView: View {
     @ViewBuilder
     private var header: some View {
         if regular {
-            VStack(alignment: .leading, spacing: 6) {
-                Text("Little Explorer")
-                    .font(Theme.titleFont(regular: true))
-                    .foregroundStyle(Theme.ink)
-                Text("Pick a book to explore!")
-                    .font(.system(size: 28, weight: .semibold, design: .rounded))
-                    .foregroundStyle(Theme.ink.opacity(0.75))
+            HStack(alignment: .top) {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Little Explorer")
+                        .font(Theme.titleFont(regular: true))
+                        .foregroundStyle(Theme.ink)
+                    Text("Pick a book to explore!")
+                        .font(.system(size: 28, weight: .semibold, design: .rounded))
+                        .foregroundStyle(Theme.ink.opacity(0.75))
+                }
+                Spacer()
+                starBadge
             }
         } else {
             // iPhone: one compact row so every cover fits on the first screen.
@@ -120,7 +138,11 @@ struct LibraryView: View {
                 Text("Little Explorer")
                     .font(.system(size: 30, weight: .heavy, design: .rounded))
                     .foregroundStyle(Theme.ink)
-                Spacer()
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
+                    .layoutPriority(1)
+                Spacer(minLength: 4)
+                starBadge
                 grownUpsButton
                     .buttonStyle(.bordered)
                     .tint(Theme.ink)
@@ -128,9 +150,18 @@ struct LibraryView: View {
         }
     }
 
+    private var starBadge: some View {
+        StarTotalBadge(total: stars.total, regular: regular) { showPassport = true }
+            .animation(.spring(duration: 0.4), value: stars.total)
+    }
+
     private func applyDemoLaunch() {
         guard !didApplyDemo, let demo = DemoLaunch.current else { return }
         didApplyDemo = true
+        if demo.seedStars > 0 {
+            stars.merge(StarStore.demoAwards(total: demo.seedStars, shelves: BookLibrary.shelves(books)))
+        }
+        if demo.openPassport { showPassport = true }
         guard let id = demo.bookId, let book = books.first(where: { $0.id == id }) else { return }
         let index = min(demo.pageIndex, book.pages.count - 1)
         if demo.lovePage {

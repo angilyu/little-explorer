@@ -2,6 +2,8 @@
 
 * :class:`GraphAgent` runs the turn gate on every finished user turn: LISTEN keeps the words in
   history without replying, IGNORE drops them, RESPOND adds the page context as a system note.
+  An optional ``parallel_gate`` (the slower LLM topic check) runs alongside reply generation and
+  holds the reply back until it agrees, so it adds no latency when it says RESPOND.
 * :func:`attach_room_context` keeps a :class:`ContextStore` in sync with the app's participant
   attributes and JSON data messages on the ``context`` topic.
 * :func:`start_graph_session` connects, wires both, and starts the ``AgentSession``.
@@ -9,13 +11,14 @@
 
 from __future__ import annotations
 
+import asyncio
 import inspect
 import logging
-from collections.abc import Awaitable, Callable, Mapping
+from collections.abc import AsyncIterable, Awaitable, Callable, Mapping
 from typing import Any
 
 from livekit import rtc
-from livekit.agents import Agent, AgentSession, JobContext, TurnHandlingOptions, inference, llm
+from livekit.agents import Agent, AgentSession, JobContext, ModelSettings, TurnHandlingOptions, inference, llm
 from livekit.agents.llm import StopResponse
 from livekit.agents.voice import room_io
 
@@ -54,12 +57,43 @@ class GraphAgent(Agent):
         context: ContextStore,
         context_message: ContextFormatter | None = None,
         on_decision: DecisionCallback | None = None,
+        parallel_gate: TurnGate | None = None,
     ) -> None:
         super().__init__(instructions=instructions)
         self.gate = gate
+        self.parallel_gate = parallel_gate
         self.context = context
         self.context_message = context_message
         self.on_decision = on_decision
+        self._pending_gate: asyncio.Task[TurnDecision] | None = None
+        self._pending_message_id: str | None = None
+        self._ignored_ids: set[str] = set()
+
+    async def _report(self, turn: UserTurn, decision: TurnDecision) -> None:
+        if self.on_decision is None:
+            return
+        try:
+            result = self.on_decision(turn, decision)
+            if inspect.isawaitable(result):
+                await result
+        except Exception:
+            log.exception("on_decision callback failed")
+
+    async def _parallel_decision(self, turn: UserTurn) -> TurnDecision:
+        decision = await decide(self.parallel_gate, turn)
+        await self._report(turn, decision)
+        return decision
+
+    async def _forget_ignored(self) -> None:
+        """Drop turns the parallel gate IGNOREd (they reach history before the gate answers)."""
+        if not self._ignored_ids:
+            return
+        ctx = self.chat_ctx.copy()
+        kept = [item for item in ctx.items if getattr(item, "id", None) not in self._ignored_ids]
+        if len(kept) != len(ctx.items):
+            ctx.items[:] = kept
+            await self.update_chat_ctx(ctx)
+            self._ignored_ids.clear()
 
     async def on_user_turn_completed(self, turn_ctx: llm.ChatContext, new_message: llm.ChatMessage) -> None:
         snapshot = self.context.snapshot()
@@ -68,14 +102,10 @@ class GraphAgent(Agent):
             context=snapshot,
             history=_history(turn_ctx, exclude_id=new_message.id),
         )
+        await self._forget_ignored()
         decision = await decide(self.gate, turn)
-        if self.on_decision is not None:
-            try:
-                result = self.on_decision(turn, decision)
-                if inspect.isawaitable(result):
-                    await result
-            except Exception:
-                log.exception("on_decision callback failed")
+        if decision is not TurnDecision.RESPOND or self.parallel_gate is None:
+            await self._report(turn, decision)
         if decision is TurnDecision.IGNORE:
             raise StopResponse()
         if decision is TurnDecision.LISTEN:
@@ -84,8 +114,51 @@ class GraphAgent(Agent):
             ctx.items.append(new_message)
             await self.update_chat_ctx(ctx)
             raise StopResponse()
+        if self.parallel_gate is not None:
+            self._pending_gate = asyncio.create_task(self._parallel_decision(turn))
+            self._pending_message_id = new_message.id
         if self.context_message is not None and (note := self.context_message(snapshot)):
             turn_ctx.add_message(role="system", content=note)
+
+    async def llm_node(
+        self, chat_ctx: llm.ChatContext, tools: list[llm.Tool], model_settings: ModelSettings
+    ) -> AsyncIterable[Any]:
+        gate, self._pending_gate = self._pending_gate, None
+        message_id, self._pending_message_id = self._pending_message_id, None
+        stream = Agent.default.llm_node(self, chat_ctx, tools, model_settings)
+        if gate is None:
+            async for chunk in stream:
+                yield chunk
+            return
+        # Generate while the gate thinks; speak nothing until it says RESPOND.
+        queue: asyncio.Queue[Any] = asyncio.Queue()
+        done = object()
+
+        async def pump() -> None:
+            try:
+                async for chunk in stream:
+                    queue.put_nowait(chunk)
+            finally:
+                queue.put_nowait(done)
+
+        pump_task = asyncio.create_task(pump())
+        try:
+            try:
+                decision = await gate
+            except Exception:
+                log.exception("parallel gate failed; answering anyway")
+                decision = TurnDecision.RESPOND
+            if decision is not TurnDecision.RESPOND:
+                if message_id:
+                    self._ignored_ids.add(message_id)
+                    # The turn joins history once its (now empty) reply is scheduled; drop it then.
+                    asyncio.get_running_loop().call_later(1.0, lambda: asyncio.ensure_future(self._forget_ignored()))
+                return
+            while (chunk := await queue.get()) is not done:
+                yield chunk
+        finally:
+            if not pump_task.done():
+                pump_task.cancel()
 
 
 def attach_room_context(store: ContextStore, room: rtc.Room, *, topic: str = CONTEXT_TOPIC) -> Callable[[], None]:
@@ -132,7 +205,7 @@ def attach_room_context(store: ContextStore, room: rtc.Room, *, topic: str = CON
 def _turn_handling(preset: VoicePreset) -> TurnHandlingOptions:
     opts = preset.turn_handling()
     if preset.turn_detection == "model":
-        opts["turn_detection"] = inference.TurnDetector()
+        opts["turn_detection"] = inference.TurnDetector(version=preset.turn_detector_version)
     return TurnHandlingOptions(**opts)
 
 
@@ -167,6 +240,8 @@ async def start_graph_session(
     greeting: str | None = None,
     stt: Any = None,
     tts: Any = None,
+    vad: Any = None,
+    parallel_gate: TurnGate | None = None,
 ) -> AgentSession:
     """Connect, follow the app's page context, and start an ``AgentSession`` driven by ``graph``.
 
@@ -184,10 +259,12 @@ async def start_graph_session(
         llm=langchain.LLMAdapter(graph=graph, stream_mode="custom"),
         turn_handling=_turn_handling(preset),
         user_away_timeout=preset.user_away_timeout,
+        **({"vad": vad} if vad is not None else {}),
     )
     agent = GraphAgent(
         instructions=instructions,
         gate=gate,
+        parallel_gate=parallel_gate,
         context=store,
         context_message=context_message,
         on_decision=on_decision,

@@ -1,9 +1,11 @@
-"""Pip's speech and turn-taking settings.
+"""Milo's speech and turn-taking settings.
 
-The patient preset is for slow, quiet or hesitant speakers such as a young child reading aloud: a
-long end-of-turn delay, interruption only on deliberate speech, background-voice noise
-cancellation and no preemptive generation (nothing is generated until he has really finished).
-It is plain data; :mod:`.session` turns it into ``AgentSession`` arguments.
+The patient preset is for slow, quiet or hesitant speakers such as a young child reading aloud.
+A local end-of-turn model decides when he has finished: a short wait when the words sound
+finished, a long one when he is mid-sentence. Barge-in is fast (local Silero VAD, no transcript
+needed) and resumes Milo if it was only a noise. Background-voice noise cancellation stays on and
+nothing is generated preemptively. It is plain data; :mod:`.session` turns it into
+``AgentSession`` arguments.
 """
 
 from __future__ import annotations
@@ -19,8 +21,11 @@ people talking in the room). Both need LiveKit Cloud."""
 
 TurnDetection = Literal["model", "vad", "stt", "manual"]
 InterruptionMode = Literal["adaptive", "vad"]
-"""``vad`` = barge-in needs ``min_interruption_duration`` of speech (and the word count); ``adaptive`` =
-LiveKit's ML detector, which can fire on ~50 ms of audio and so cuts Pip off on echo and noise."""
+"""``vad`` = barge-in after ``min_interruption_duration`` of speech from the local Silero VAD;
+``adaptive`` = LiveKit's cloud ML detector, which fired on ~50 ms of speaker echo."""
+
+TurnDetectorVersion = Literal["v1-mini", "v1"]
+"""``v1-mini`` runs on this machine; ``v1`` is a LiveKit Inference service (rate-limited for us)."""
 """``model`` = LiveKit's end-of-turn model (LiveKit Inference); ``stt`` = the STT's end of speech."""
 
 
@@ -32,14 +37,17 @@ class VoicePreset:
     tts_voice: str | None = "fa4c9eb3dccc4806b382b40d61c6b10a"
     language: str = "en"
     turn_detection: TurnDetection = "model"
-    # Children pause mid-sentence while sounding out words; wait well past a normal pause.
-    min_endpointing_delay: float = 1.6
-    max_endpointing_delay: float = 6.0
-    # Coughs, "um", page turns, short background words and speaker echo should not cut Pip off.
+    turn_detector_version: TurnDetectorVersion = "v1-mini"
+    # With the end-of-turn model: wait min when his words sound finished, up to max when he
+    # sounds mid-sentence (children pause while sounding out words).
+    min_endpointing_delay: float = 0.5
+    max_endpointing_delay: float = 4.0
+    # Stop talking as soon as he really speaks; no transcript needed. If it was only a cough or a
+    # bump, Milo resumes after false_interruption_timeout of silence.
     interruption_mode: InterruptionMode = "vad"
-    min_interruption_duration: float = 0.8
-    min_interruption_words: int = 2
-    false_interruption_timeout: float = 1.5
+    min_interruption_duration: float = 0.3
+    min_interruption_words: int = 0
+    false_interruption_timeout: float = 1.0
     noise_cancellation: NoiseCancellation = "bvc"
     # Seconds of mutual silence before the child is marked "away".
     user_away_timeout: float | None = 60.0

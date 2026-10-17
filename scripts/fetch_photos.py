@@ -225,7 +225,11 @@ def main() -> int:
             info = chosen["imageinfo"][0]
             ok, label, license_url, _ = license_of(info)
             meta = info.get("extmetadata", {})
-            author = clean(meta.get("Artist", {}).get("value")) or clean(meta.get("Credit", {}).get("value"))
+            # Commons' explicit attribution (e.g. a museum) beats the Artist field, which can name the object's maker.
+            author = clean(meta.get("Attribution", {}).get("value")) or clean(meta.get("Artist", {}).get("value"))
+            author = author or clean(meta.get("Credit", {}).get("value"))
+            if author.lower().startswith("unknown"):
+                author = "Unknown author"
             author = author[:80] or "Unknown author"
             ext = ".png" if info.get("mime") in ("image/svg+xml", "image/png") else ".jpg"
             filename = f"{book['id']}-{page['id']}{ext}"

@@ -10,7 +10,8 @@ For each page the script
    records the timings in narration.json.
 
 Pages whose text, voice and style haven't changed are skipped, so rerun it after editing a book.
-The key comes from OPENAI_API_KEY or server/.env (gitignored). It never ends up in the app.
+The key comes from OPENAI_API_KEY, else the env file in $LITTLE_EXPLORER_ENV, server/.env or
+~/.config/little-explorer/.env (first that exists). It never ends up in the app.
 
     python3 scripts/generate_narration.py                    # every book, only what changed
     python3 scripts/generate_narration.py --only paris-food  # one book
@@ -66,12 +67,17 @@ def style_hash() -> str:
 def api_key() -> str:
     if key := os.environ.get("OPENAI_API_KEY"):
         return key
-    env = ROOT / "server" / ".env"
-    if env.exists():
+    override = os.environ.get("LITTLE_EXPLORER_ENV", "").strip()
+    candidates = [Path(override).expanduser()] if override else [
+        ROOT / "server" / ".env",
+        Path("~/.config/little-explorer/.env").expanduser(),
+    ]
+    env = next((path for path in candidates if path.is_file()), None)
+    if env is not None:
         for line in env.read_text().splitlines():
             if line.startswith("OPENAI_API_KEY="):
                 return line.split("=", 1)[1].strip().strip('"')
-    sys.exit("Set OPENAI_API_KEY or add it to server/.env")
+    sys.exit("Set OPENAI_API_KEY or add it to server/.env or ~/.config/little-explorer/.env")
 
 
 def request(url: str, key: str, body: bytes, content_type: str) -> bytes:

@@ -1,3 +1,3 @@
-"""Little Explorer voice buddy (Pip) and token server."""
+"""Little Explorer voice buddy (Milo) and token server."""
 
 AGENT_NAME = "little-explorer"

@@ -1,4 +1,4 @@
-"""Pip's voice stack: turn gates, the patient voice preset, client context and LiveKit wiring.
+"""Milo's voice stack: turn gates, the patient voice preset, client context and LiveKit wiring.
 
 Adapted from the MuseVoiceAgent voice stack and trimmed to what Little Explorer uses. The
 modules here are framework-free except :mod:`.session` (LiveKit Agents) and :mod:`.tokens`

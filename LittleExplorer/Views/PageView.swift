@@ -80,12 +80,12 @@ struct PageView: View {
                 .animation(.easeOut(duration: 0.12), value: readAloud.spokenRange)
             Spacer(minLength: 0)
             HStack {
-                ReadAloudButton(isReading: reading, tint: tint, size: regular ? 84 : 68) {
-                    readAloud.toggle(pageId: readingId, text: page.text)
-                }
-                Spacer()
                 HeartButton(isLoved: loved, size: regular ? 84 : 68) {
                     hearts.toggle(bookId: book.id, pageId: page.id)
+                }
+                Spacer()
+                ReadAloudButton(isReading: reading, tint: tint, size: regular ? 84 : 68) {
+                    readAloud.toggle(pageId: readingId, text: page.text)
                 }
             }
         }
@@ -163,7 +163,7 @@ struct PhotoView: View {
 
     @ViewBuilder
     private var content: some View {
-        if let file = photo.file, let image = UIImage(named: file) {
+        if let file = photo.file, let image = ContentFiles.shared.image(named: file) {
             framed(Image(uiImage: image))
         } else if let url = photo.remoteURL {
             AsyncImage(url: url) { phase in
