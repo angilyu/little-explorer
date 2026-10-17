@@ -7,6 +7,7 @@ import Foundation
 /// `-demoVoice star` turns Milo on and has him give a star for the opening page.
 /// `-demoStars 23` seeds that many saved stars; `-demoPassport` opens the Passport.
 /// `-demoRead` starts reading the opening page aloud, to show the word highlight.
+/// `-demoShelf paris-french` scrolls the shelf to that book's cover (without opening it).
 struct DemoLaunch: Equatable {
     var bookId: String?
     var pageIndex: Int = 0
@@ -18,6 +19,7 @@ struct DemoLaunch: Equatable {
     var voiceStar = false
     var seedStars = 0
     var openPassport = false
+    var shelfBook: String?
 
     var startsWithVoice: Bool { voiceActivity != nil || liveVoice }
 
@@ -42,6 +44,7 @@ struct DemoLaunch: Equatable {
         if arguments.contains("-demoRead") { demo.readAloud = true; found = true }
         if let stars = value(after: "-demoStars").flatMap(Int.init) { demo.seedStars = max(0, stars); found = true }
         if arguments.contains("-demoPassport") { demo.openPassport = true; found = true }
+        if let book = value(after: "-demoShelf") { demo.shelfBook = book; found = true }
         if let voice = value(after: "-demoVoice") {
             if voice == "star" {
                 demo.voiceActivity = .listening
