@@ -54,7 +54,7 @@ Pin a specific file by setting the page's `photo.commonsTitle`.
 
 The speaker button (bottom-right of every page) reads the sentence in a natural voice, the same OpenAI voice as Milo
 (`gpt-4o-mini-tts`, "coral"), styled like a grown-up reading a picture book to a 6-year-old: warm, clear and a little slow.
-The clips are made ahead of time and bundled (about 2 MB of AAC for all 64 pages), so reading aloud works offline
+The clips are made ahead of time and bundled (about 5 MB of AAC for all 148 pages), so reading aloud works offline
 and the app never holds an API key. Each word is highlighted as it's spoken. Tap again to stop. Speech also stops when
 the page turns or the book closes. When voice mode is on, the microphone is muted while the app reads, so Milo doesn't
 mistake the app's voice for the child.
@@ -62,11 +62,14 @@ mistake the app's voice for the child.
 [`scripts/generate_narration.py`](scripts/generate_narration.py) makes the clips. It reads each sentence with
 `gpt-4o-mini-tts` and gets word timings from `whisper-1`. It tightens those timings to the real pauses in the audio,
 retries if the transcript doesn't match the sentence, and writes `LittleExplorer/Resources/Narration/`. After editing a
-sentence, rerun it (it only regenerates pages that changed). It needs `OPENAI_API_KEY` (or an env file, see below) and macOS `afconvert`:
+sentence, rerun it (it only regenerates pages that changed). Every clip is levelled to -16 LUFS (normal speech
+loudness, the same level as Milo) with peaks kept under -1 dBTP, so the narration isn't quieter than Milo. It needs
+`OPENAI_API_KEY` (or an env file, see below), macOS `afconvert` and `ffmpeg` (`brew install ffmpeg`):
 
 ```sh
 python3 scripts/generate_narration.py                  # new or changed pages only
 python3 scripts/generate_narration.py --only paris/eiffel --force
+python3 scripts/generate_narration.py --loudness       # re-level existing clips, no API calls
 ```
 
 If a page has no clip for its current sentence, the app falls back to the best on-device system voice

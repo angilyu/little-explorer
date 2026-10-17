@@ -6,8 +6,11 @@ For each page the script
 2. transcribes the clip with whisper-1 to get word timestamps,
 3. aligns those words to the page text (so the app can highlight each word as it's spoken) and
    retries the clip if the transcript doesn't match the sentence,
-4. converts it to a small AAC file (macOS `afconvert`) in LittleExplorer/Resources/Narration and
-   records the timings in narration.json.
+4. levels it to TARGET_LUFS (-16 LUFS, peaks held under -3 dBFS, with `ffmpeg`) so it plays
+   about as loud as Milo, then converts it to a small AAC file (macOS `afconvert`) in
+   LittleExplorer/Resources/Narration and records the timings in narration.json.
+
+Needs ffmpeg (`brew install ffmpeg`).
 
 Pages whose text, voice and style haven't changed are skipped, so rerun it after editing a book.
 The key comes from OPENAI_API_KEY, else the env file in $LITTLE_EXPLORER_ENV, server/.env or
@@ -16,6 +19,7 @@ The key comes from OPENAI_API_KEY, else the env file in $LITTLE_EXPLORER_ENV, se
     python3 scripts/generate_narration.py                    # every book, only what changed
     python3 scripts/generate_narration.py --only paris-food  # one book
     python3 scripts/generate_narration.py --only paris/eiffel --force
+    python3 scripts/generate_narration.py --loudness         # re-level existing clips, no API calls
 """
 
 from __future__ import annotations
@@ -29,6 +33,7 @@ import json
 import math
 import os
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -236,6 +241,55 @@ def snap_to_pauses(text: str, words: list[dict], gaps: list[tuple[float, float]]
     return words
 
 
+TARGET_LUFS = -16.0
+PEAK_DBFS = -3.0
+MAX_TRUE_PEAK = -1.0  # AAC encoding overshoots the limiter by up to ~3 dB; checked after encoding
+RATE = 24000
+
+
+def measure(src: Path) -> tuple[float, float]:
+    """Integrated loudness (LUFS) and true peak (dBTP) of a clip."""
+    out = subprocess.run(["ffmpeg", "-hide_banner", "-nostats", "-i", str(src), "-af", "loudnorm=print_format=json",
+                          "-f", "null", "-"], check=True, capture_output=True, text=True).stderr
+    stats = json.loads(out[out.rindex("{"):out.rindex("}") + 1])
+    lufs, peak = float(stats["input_i"]), float(stats["input_tp"])
+    return (lufs if math.isfinite(lufs) else TARGET_LUFS), peak
+
+
+def level(src: Path, wav: Path, trim: float = 0.0) -> None:
+    """Write ``src`` as 16-bit mono wav at TARGET_LUFS (less ``trim`` dB): one fixed gain, and a
+    limiter (no added delay, so word timings stay put) that only touches the few peaks the gain
+    would push over PEAK_DBFS."""
+    gain = TARGET_LUFS - measure(src)[0] - trim
+    limit = 10 ** (PEAK_DBFS / 20)
+    subprocess.run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-i", str(src), "-af",
+                    f"volume={gain:.2f}dB,alimiter=limit={limit:.4f}:level=0:latency=1", "-ac", "1",
+                    "-ar", str(RATE), "-c:a", "pcm_s16le", str(wav)], check=True)
+
+
+def encode(wav: Path, clip: Path) -> None:
+    subprocess.run(["afconvert", "-f", "m4af", "-d", "aac", "-b", "48000", str(wav), str(clip)], check=True, capture_output=True)
+
+
+def level_and_encode(src: Path, wav: Path, clip: Path) -> None:
+    """Level ``src`` into ``wav`` and encode ``clip``; if the encoded peak is too hot, turn it down."""
+    level(src, wav)
+    encode(wav, clip)
+    peak = measure(clip)[1]
+    if peak > MAX_TRUE_PEAK:
+        level(src, wav, trim=peak - MAX_TRUE_PEAK + 0.3)
+        encode(wav, clip)
+
+
+def relevel(clip: Path) -> None:
+    """Bring an existing clip to TARGET_LUFS in place (same take, same timings)."""
+    with tempfile.TemporaryDirectory() as tmp:
+        src = Path(tmp) / "src.m4a"
+        shutil.copyfile(clip, src)
+        level_and_encode(src, Path(tmp) / "clip.wav", Path(tmp) / "out.m4a")
+        (Path(tmp) / "out.m4a").replace(clip)
+
+
 def generate(key_id: str, text: str, key: str) -> dict:
     best = None
     for _ in range(ATTEMPTS):
@@ -256,11 +310,11 @@ def generate(key_id: str, text: str, key: str) -> dict:
     with tempfile.TemporaryDirectory() as tmp:
         src, pcm = Path(tmp) / "clip.mp3", Path(tmp) / "clip.wav"
         src.write_bytes(mp3)
-        subprocess.run(["afconvert", "-f", "m4af", "-d", "aac", "-b", "48000", str(src), str(clip)], check=True, capture_output=True)
-        subprocess.run(["afconvert", "-f", "WAVE", "-d", "LEI16", str(clip), str(pcm)], check=True, capture_output=True)
+        level_and_encode(src, pcm, clip)
         words = snap_to_pauses(text, words, silent_gaps(pcm), duration)
     return {"file": name, "text": text, "duration": round(float(result.get("duration", 0)), 3),
-            "match": round(score, 3), "heard": result.get("text", "").strip(), "words": words}
+            "match": round(score, 3), "heard": result.get("text", "").strip(), "words": words,
+            "lufs": TARGET_LUFS}
 
 
 def main() -> None:
@@ -268,11 +322,21 @@ def main() -> None:
     parser.add_argument("--only", action="append", default=[], help="book or book/page (repeatable)")
     parser.add_argument("--force", action="store_true", help="regenerate even if unchanged")
     parser.add_argument("--jobs", type=int, default=4)
+    parser.add_argument("--loudness", action="store_true", help=f"re-level existing clips to {TARGET_LUFS} LUFS and exit")
     args = parser.parse_args()
 
     OUT.mkdir(parents=True, exist_ok=True)
     manifest = json.loads(MANIFEST.read_text()) if MANIFEST.exists() else {}
     clips: dict = manifest.get("clips", {})
+    if args.loudness:
+        todo = [k for k, c in clips.items() if c.get("lufs") != TARGET_LUFS or args.force]
+        with concurrent.futures.ThreadPoolExecutor(args.jobs) as pool:
+            list(pool.map(lambda k: relevel(OUT / f"{clips[k]['file']}.m4a"), todo))
+        for k in todo:
+            clips[k]["lufs"] = TARGET_LUFS
+        MANIFEST.write_text(json.dumps({**manifest, "clips": dict(sorted(clips.items()))}, ensure_ascii=False, indent=1) + "\n")
+        print(f"re-levelled {len(todo)} clip(s) to {TARGET_LUFS} LUFS")
+        return
     style = style_hash()
 
     pages = {}
