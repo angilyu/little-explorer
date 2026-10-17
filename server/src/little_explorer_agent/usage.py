@@ -8,6 +8,10 @@ Tokens come from LiveKit's per-session usage (``AgentSession.usage``), which add
 Realtime API's ``response.done`` usage and the input-transcription usage. Responses are counted
 from ``session_usage_updated``: each billed response of the main model grows its input tokens.
 
+When ``PIP_SERVER_URL`` and ``PIP_REPORT_KEY`` are set, the agent also posts a short summary (no
+token columns) to the token server's ``/usage`` so per-device minutes survive cloud deploys; see
+:func:`report_usage` and :mod:`.devices`.
+
 Prices are USD per 1M tokens from https://developers.openai.com/api/docs/pricing (checked
 2026-08). Override any rate with ``PIP_PRICE_<MODEL>_<RATE>``, e.g.
 ``PIP_PRICE_GPT_REALTIME_AUDIO_OUT=64`` (model upper-cased, non-alphanumerics -> ``_``).
@@ -15,12 +19,13 @@ Prices are USD per 1M tokens from https://developers.openai.com/api/docs/pricing
 
 from __future__ import annotations
 
+import asyncio
 import csv
 import logging
 import os
 import re
 import time
-from collections.abc import Iterable, Mapping
+from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass, field, fields, replace
 from datetime import datetime
 from pathlib import Path
@@ -242,9 +247,22 @@ def append_row(row: Mapping[str, Any], path: Path | None = None) -> Path:
 class UsageMeter:
     """Follows one session and writes its row exactly once, however the session ends."""
 
-    def __init__(self, *, mode: str, model: str, path: Path | None = None, clock=time.monotonic) -> None:
+    def __init__(
+        self,
+        *,
+        mode: str,
+        model: str,
+        path: Path | None = None,
+        clock=time.monotonic,
+        room: str = "",
+        device_id: str = "",
+    ) -> None:
         self.usage = SessionUsage(started_at=datetime.now().astimezone(), mode=mode, model=model)
         self.path = path
+        self.room = room
+        self.device_id = device_id
+        self.ended_reason = ""
+        self.row: dict[str, Any] | None = None
         self._clock = clock
         self._t0 = clock()
         self._main_input = 0
@@ -284,7 +302,7 @@ class UsageMeter:
             except Exception:
                 log.exception("could not read session usage")
         self.usage.duration_s = self._clock() - self._t0
-        row = self.usage.row()
+        row = self.row = self.usage.row()
         try:
             path = append_row(row, self.path)
             log.info("usage: %ss, %s responses, ~$%s -> %s", row["duration_s"], row["responses"], row["est_usd"], path)
@@ -296,3 +314,60 @@ class UsageMeter:
         tokens = tokens_from_usage(model_usage)
         if tokens:
             self.usage.tokens = tokens
+
+    def report(self, reason: str = "") -> dict[str, Any] | None:
+        """What :func:`report_usage` posts for this session (after :meth:`finish`)."""
+        if self.row is None:
+            return None
+        return {
+            "room": self.room,
+            "device_id": self.device_id,
+            "started_at": self.row["started_at"],
+            "duration_s": self.row["duration_s"],
+            "mode": self.row["mode"],
+            "model": self.row["model"],
+            "book": self.row["book"],
+            "pages": self.row["pages_visited"],
+            "responses": self.row["responses"],
+            "est_usd": float(self.row["est_usd"]),
+            "ended_reason": self.ended_reason or reason,
+        }
+
+
+def report_target(env: Mapping[str, str] | None = None) -> tuple[str, str] | None:
+    """``(url, key)`` for ``POST /usage``, or None when reporting is not set up."""
+    env = os.environ if env is None else env
+    base = (env.get("PIP_SERVER_URL") or "").strip().rstrip("/")
+    key = (env.get("PIP_REPORT_KEY") or "").strip()
+    return (f"{base}/usage", key) if base and key else None
+
+
+async def report_usage(
+    report: Mapping[str, Any] | None,
+    target: tuple[str, str] | None = None,
+    *,
+    timeouts: Sequence[float] = (4.0, 3.0),
+    pause: float = 0.5,
+) -> bool:
+    """Post ``report`` to the token server, retrying once. Fits the job's ~10 s shutdown window."""
+    target = report_target() if target is None else target
+    if not report or not target or not report.get("room"):
+        return False
+    from aiohttp import ClientSession, ClientTimeout
+
+    url, key = target
+    for attempt, timeout in enumerate(timeouts, 1):
+        try:
+            async with ClientSession(timeout=ClientTimeout(total=timeout)) as http:
+                async with http.post(url, json=dict(report), headers={"Authorization": f"Bearer {key}"}) as resp:
+                    if resp.status == 200:
+                        log.info("reported usage for %s", report["room"])
+                        return True
+                    log.warning("usage report got HTTP %s", resp.status)
+                    if 400 <= resp.status < 500:
+                        return False
+        except Exception as exc:  # noqa: BLE001 - network trouble; retry
+            log.warning("usage report attempt %d failed: %s", attempt, exc)
+        if attempt < len(timeouts):
+            await asyncio.sleep(pause)
+    return False

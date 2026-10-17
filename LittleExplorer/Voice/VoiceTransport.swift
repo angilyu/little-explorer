@@ -11,6 +11,8 @@ enum BuddyActivity: String, Sendable {
 enum VoiceTransportEvent: Sendable {
     case buddyActivity(BuddyActivity)
     case disconnected(reason: String?)
+    /// The agent ended the session on purpose (`milo.ended`): "idle" after a quiet spell, "limit" at the daily limit.
+    case ended(reason: String)
 }
 
 /// Thin seam between the app and whatever carries audio to the voice agent.
@@ -30,12 +32,15 @@ enum VoiceError: LocalizedError {
     case tokenServer(status: Int)
     case unavailable
     case microphoneDenied
+    /// The server refused a token: this device is blocked or used up today's minutes.
+    case resting
 
     var errorDescription: String? {
         switch self {
         case .tokenServer: "Milo's server said no. Ask a grown-up to check it."
         case .unavailable: "Milo isn't available in this build."
         case .microphoneDenied: "Milo needs the microphone. Ask a grown-up to turn it on in Settings."
+        case .resting: VoiceModeController.restNotice
         }
     }
 }
@@ -53,13 +58,23 @@ final class UnavailableVoiceTransport: VoiceTransport {
 final class DemoVoiceTransport: VoiceTransport {
     var onEvent: ((VoiceTransportEvent) -> Void)?
     private let activity: BuddyActivity
+    private let endReason: String?
 
-    init(activity: BuddyActivity) { self.activity = activity }
+    /// `endReason` ("idle" or "limit") makes Milo end the session a moment after joining.
+    init(activity: BuddyActivity, endReason: String? = nil) {
+        self.activity = activity
+        self.endReason = endReason
+    }
 
     func connect(page: PageContext?) async throws {
         try await Task.sleep(nanoseconds: 300_000_000)
         let activity = activity
         await MainActor.run { onEvent?(.buddyActivity(activity)) }
+        guard let endReason else { return }
+        Task { [weak self] in
+            try? await Task.sleep(nanoseconds: 1_000_000_000)
+            await MainActor.run { self?.onEvent?(.ended(reason: endReason)) }
+        }
     }
 
     func updatePage(_ context: PageContext) async throws {}

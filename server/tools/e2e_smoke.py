@@ -16,6 +16,8 @@ audible sound) and barge-in stop time (child starts talking over Milo -> Milo go
 
 Needs the agent worker and token server running, plus OPENAI_API_KEY for the test voices.
 ``TOKEN_URL`` points it at another token server; ``PIP_ACCESS_KEY`` is sent if set.
+It talks as device ``$E2E_DEVICE_ID`` (``e2e-smoke``); approve it once with
+``tools/devices.py approve e2e-smoke`` so the unknown-device limit doesn't block it.
 Run from server/: ``uv run python tools/e2e_smoke.py [--mode pipeline|realtime] [--trials N]``.
 ``--mode`` asks the token server for that engine, so one running agent can be compared in both.
 No audio is saved.
@@ -79,7 +81,8 @@ class Probe:
         task.add_done_callback(self.tasks.discard)
 
     async def connect(self, context: dict[str, str], mode: str | None = None) -> None:
-        payload: dict[str, object] = {"context": context}
+        device_id = os.environ.get("E2E_DEVICE_ID", "e2e-smoke")
+        payload: dict[str, object] = {"context": context, "device": {"id": device_id, "name": "e2e smoke test"}}
         if mode:
             payload["pip_mode"] = mode
         body = json.dumps(payload).encode()

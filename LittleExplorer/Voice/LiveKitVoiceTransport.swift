@@ -17,6 +17,9 @@ final class LiveKitVoiceTransport: NSObject, VoiceTransport, RoomDelegate, @unch
     private var latestPage: PageContext?
 
     static let contextTopic = "context"
+    /// Set by the agent just before it leaves on purpose (see server agent.py `ENDED_ATTRIBUTE`).
+    static let endedAttribute = "milo.ended"
+    private var endReported = false
 
     init(tokenService: TokenService) {
         self.tokenService = tokenService
@@ -102,15 +105,22 @@ final class LiveKitVoiceTransport: NSObject, VoiceTransport, RoomDelegate, @unch
     }
 
     private func emitActivity(from attributes: [String: String]) {
-        guard let raw = attributes["lk.agent.state"], let activity = BuddyActivity(rawValue: raw) else { return }
+        if let reason = attributes[Self.endedAttribute], !reason.isEmpty, !endReported {
+            endReported = true
+            DispatchQueue.main.async { [weak self] in self?.onEvent?(.ended(reason: reason)) }
+            return
+        }
+        guard !endReported, let raw = attributes["lk.agent.state"], let activity = BuddyActivity(rawValue: raw) else { return }
         DispatchQueue.main.async { [weak self] in self?.onEvent?(.buddyActivity(activity)) }
     }
 }
 #endif
 
+@MainActor
 func makeLiveVoiceTransport() -> VoiceTransport {
     #if canImport(LiveKit)
-    return LiveKitVoiceTransport(tokenService: TokenService(baseURL: VoiceSettings.tokenServerURL()))
+    let tokens = TokenService(baseURL: VoiceSettings.tokenServerURL(), device: DeviceIdentity.current())
+    return LiveKitVoiceTransport(tokenService: tokens)
     #else
     return UnavailableVoiceTransport()
     #endif

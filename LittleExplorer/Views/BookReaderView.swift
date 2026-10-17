@@ -42,6 +42,8 @@ struct BookReaderView: View {
                         .allowsHitTesting(false)
                 }
             }
+            .overlay(alignment: .top) { VoiceNoticeBanner(voice: voice) }
+            .animation(.spring(duration: 0.4), value: voice.notice)
             .padding(.horizontal, regular ? 24 : 10)
             bottomBar
         }

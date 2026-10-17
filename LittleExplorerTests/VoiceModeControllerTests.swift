@@ -165,6 +165,54 @@ final class VoiceModeControllerTests: XCTestCase {
         XCTAssertEqual(transports[0].pages, [page(2)], "the page turned to while connecting is sent once connected")
     }
 
+    func testIdleEndTurnsOffWithNapNotice() async {
+        let voice = makeController()
+        await voice.turnOn()
+        transports[0].send(.buddyActivity(.listening))
+        transports[0].send(.ended(reason: "idle"))
+        XCTAssertEqual(voice.state, .off, "the toggle switches off by itself")
+        XCTAssertFalse(voice.isEnabled)
+        XCTAssertEqual(voice.notice, VoiceModeController.napNotice)
+        for _ in 0..<200 where transports[0].disconnectCount == 0 { try? await Task.sleep(nanoseconds: 5_000_000) }
+        XCTAssertEqual(transports[0].disconnectCount, 1, "Milo's room is left")
+
+        transports[0].send(.disconnected(reason: nil))
+        XCTAssertEqual(voice.state, .off, "the room closing after Milo left is not an error")
+        await voice.pageDidChange(page(4))
+        XCTAssertTrue(transports[0].pages.isEmpty)
+
+        await voice.toggle()
+        XCTAssertEqual(voice.state, .waitingForBuddy, "turning it back on starts normally")
+        XCTAssertNil(voice.notice)
+        XCTAssertEqual(transports.count, 2)
+    }
+
+    func testLimitEndShowsRestNotice() async {
+        let voice = makeController()
+        await voice.turnOn()
+        transports[0].send(.ended(reason: "limit"))
+        XCTAssertEqual(voice.state, .off)
+        XCTAssertEqual(voice.notice, VoiceModeController.restNotice)
+        voice.dismissNotice()
+        XCTAssertNil(voice.notice)
+    }
+
+    func testRefusedTokenRestsInsteadOfFailing() async {
+        let voice = makeController { $0.connectError = VoiceError.resting }
+        await voice.turnOn()
+        XCTAssertEqual(voice.state, .off, "no retry spinner: Milo is resting for today")
+        XCTAssertEqual(voice.notice, "Milo needs a rest today. Let's talk again tomorrow!")
+        XCTAssertEqual(transports[0].disconnectCount, 1)
+    }
+
+    func testTurningOffClearsNotice() async {
+        let voice = makeController()
+        await voice.turnOn()
+        transports[0].send(.ended(reason: "idle"))
+        await voice.bookDidClose()
+        XCTAssertNil(voice.notice)
+    }
+
     func testBookCloseTurnsOffAndForgetsPage() async {
         let voice = makeController()
         await voice.pageDidChange(page(1))
@@ -188,5 +236,129 @@ final class TokenRequestTests: XCTestCase {
     func testTokenRequestWithoutPageIsEmptyObject() throws {
         let body = try JSONEncoder().encode(TokenRequest(context: nil))
         XCTAssertEqual(String(decoding: body, as: UTF8.self), "{}")
+    }
+}
+
+final class MemoryDeviceIDStore: DeviceIDStore {
+    var value: String?
+    private(set) var writes = 0
+    init(_ value: String? = nil) { self.value = value }
+    func read() -> String? { value }
+    func write(_ id: String) { value = id; writes += 1 }
+}
+
+final class DeviceIdentityTests: XCTestCase {
+    func testFirstRunSavesVendorIDAndLaterRunsReuseIt() {
+        let store = MemoryDeviceIDStore()
+        let first = DeviceIdentity.stableID(store: store, seed: "1F0E2D3C-AAAA-BBBB-CCCC-000000000001")
+        XCTAssertEqual(first, "1F0E2D3C-AAAA-BBBB-CCCC-000000000001")
+        let again = DeviceIdentity.stableID(store: store, seed: "99999999-0000-0000-0000-000000000000")
+        XCTAssertEqual(again, first, "a reinstall gets a new vendor id, but the Keychain id wins")
+        XCTAssertEqual(store.writes, 1)
+    }
+
+    func testMissingOrBadSeedMakesAValidUUID() {
+        let store = MemoryDeviceIDStore("not valid!")
+        let id = DeviceIdentity.stableID(store: store, seed: nil)
+        XCTAssertNotNil(UUID(uuidString: id))
+        XCTAssertEqual(store.value, id)
+    }
+
+    func testValidationMatchesServer() {
+        XCTAssertTrue(DeviceIdentity.isValid("e2e-smoke"))
+        XCTAssertFalse(DeviceIdentity.isValid(""))
+        XCTAssertFalse(DeviceIdentity.isValid("a b"))
+        XCTAssertFalse(DeviceIdentity.isValid("é"))
+        XCTAssertFalse(DeviceIdentity.isValid(String(repeating: "a", count: 65)))
+    }
+
+    func testKeychainRoundTrip() throws {
+        let store = KeychainDeviceIDStore(service: "com.angilyu.littleexplorer.tests.\(UUID().uuidString)")
+        store.write("ABC-123")
+        guard let read = store.read() else { throw XCTSkip("Keychain unavailable in this test host") }
+        XCTAssertEqual(read, "ABC-123")
+        store.write("DEF-456")
+        XCTAssertEqual(store.read(), "DEF-456")
+        SecItemDelete([kSecClass as String: kSecClassGenericPassword, kSecAttrService as String: store.service] as CFDictionary)
+    }
+
+    @MainActor
+    func testCurrentDeviceIsStable() {
+        let store = MemoryDeviceIDStore()
+        let a = DeviceIdentity.current(store: store)
+        let b = DeviceIdentity.current(store: store)
+        XCTAssertEqual(a, b)
+        XCTAssertTrue(DeviceIdentity.isValid(a.id))
+        XCTAssertFalse(a.model.isEmpty)
+    }
+}
+
+final class TokenServiceRefusalTests: XCTestCase {
+    final class StubProtocol: URLProtocol {
+        nonisolated(unsafe) static var status = 200
+        nonisolated(unsafe) static var lastBody: Data?
+        override class func canInit(with request: URLRequest) -> Bool { true }
+        override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
+        override func startLoading() {
+            if let stream = request.httpBodyStream {
+                stream.open()
+                var data = Data()
+                var buffer = [UInt8](repeating: 0, count: 4096)
+                while stream.hasBytesAvailable {
+                    let n = stream.read(&buffer, maxLength: buffer.count)
+                    if n <= 0 { break }
+                    data.append(buffer, count: n)
+                }
+                stream.close()
+                Self.lastBody = data
+            } else {
+                Self.lastBody = request.httpBody
+            }
+            let response = HTTPURLResponse(url: request.url!, statusCode: Self.status, httpVersion: nil, headerFields: nil)!
+            client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+            client?.urlProtocol(self, didLoad: Data(#"{"error":"limit","message":"Milo needs a rest today."}"#.utf8))
+            client?.urlProtocolDidFinishLoading(self)
+        }
+        override func stopLoading() {}
+    }
+
+    private func service() -> TokenService {
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [StubProtocol.self]
+        return TokenService(baseURL: URL(string: "https://milo.test")!, accessKey: nil, session: URLSession(configuration: config),
+                            device: DeviceInfo(id: "ipad-1", name: "iPad", model: "iPad13,18"))
+    }
+
+    func testLimitAndBlockedBecomeResting() async {
+        for status in [403, 429] {
+            StubProtocol.status = status
+            do {
+                _ = try await service().fetchCredentials(context: nil)
+                XCTFail("expected resting for \(status)")
+            } catch VoiceError.resting {
+            } catch {
+                XCTFail("\(status): \(error)")
+            }
+        }
+    }
+
+    func testOtherErrorsStayServerErrors() async {
+        StubProtocol.status = 500
+        do {
+            _ = try await service().fetchCredentials(context: nil)
+            XCTFail("expected an error")
+        } catch VoiceError.tokenServer(let status) {
+            XCTAssertEqual(status, 500)
+        } catch {
+            XCTFail("\(error)")
+        }
+    }
+
+    func testRequestSendsDevice() async throws {
+        StubProtocol.status = 429
+        _ = try? await service().fetchCredentials(context: nil)
+        let body = try XCTUnwrap(StubProtocol.lastBody)
+        let json = try XCTUnwrap(JSONSerialization.jsonObject(with: body) as? [String: Any])
+        XCTAssertEqual(json["device"] as? [String: String], ["id": "ipad-1", "name": "iPad", "model": "iPad13,18"])
     }
 }

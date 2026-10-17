@@ -3,12 +3,14 @@ import Foundation
 /// DEBUG-only launch arguments used to take screenshots without tapping, e.g.
 /// `xcrun simctl launch booted com.angilyu.littleexplorer -demoBook paris -demoPage 5 -demoLove -demoVoice listening`
 /// `-demoVoice live` turns real voice mode on at launch (needs the server running).
+/// `-demoVoice nap` / `-demoVoice rest` shows Milo turning itself off (idle / daily limit).
 /// `-demoRead` starts reading the opening page aloud, to show the word highlight.
 struct DemoLaunch: Equatable {
     var bookId: String?
     var pageIndex: Int = 0
     var lovePage = false
     var voiceActivity: BuddyActivity?
+    var voiceEnd: String?
     var liveVoice = false
     var readAloud = false
 
@@ -36,6 +38,10 @@ struct DemoLaunch: Equatable {
         if let voice = value(after: "-demoVoice") {
             if voice == "live" {
                 demo.liveVoice = true; found = true
+            } else if voice == "nap" || voice == "rest" {
+                demo.voiceActivity = .listening
+                demo.voiceEnd = voice == "nap" ? "idle" : "limit"
+                found = true
             } else if let activity = BuddyActivity(rawValue: voice) {
                 demo.voiceActivity = activity; found = true
             }
