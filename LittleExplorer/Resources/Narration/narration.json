@@ -59,7 +59,8 @@
      "end": 4.1
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "barcelona/casa-batllo": {
    "file": "read-barcelona-casa-batllo",
@@ -123,7 +124,8 @@
      "end": 3.58
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "barcelona/castells": {
    "file": "read-barcelona-castells",
@@ -187,7 +189,8 @@
      "end": 4.0
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "barcelona/churros": {
    "file": "read-barcelona-churros",
@@ -239,7 +242,8 @@
      "end": 3.4
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "barcelona/flag": {
    "file": "read-barcelona-flag",
@@ -297,7 +301,8 @@
      "end": 3.26
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "barcelona/football": {
    "file": "read-barcelona-football",
@@ -343,7 +348,8 @@
      "end": 2.54
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "barcelona/fountain": {
    "file": "read-barcelona-fountain",
@@ -401,7 +407,8 @@
      "end": 4.02
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "barcelona/goodbye": {
    "file": "read-barcelona-goodbye",
@@ -459,7 +466,8 @@
      "end": 4.16
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "barcelona/hola": {
    "file": "read-barcelona-hola",
@@ -523,7 +531,8 @@
      "end": 4.82
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "barcelona/park-guell": {
    "file": "read-barcelona-park-guell",
@@ -587,7 +596,8 @@
      "end": 4.24
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "barcelona/sagrada": {
    "file": "read-barcelona-sagrada",
@@ -639,7 +649,8 @@
      "end": 2.76
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "barcelona/sagrada-trees": {
    "file": "read-barcelona-sagrada-trees",
@@ -691,7 +702,8 @@
      "end": 3.2
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "barcelona/welcome": {
    "file": "read-barcelona-welcome",
@@ -761,7 +773,8 @@
      "end": 5.04
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "london-big-ben/bell": {
    "file": "read-london-big-ben-bell",
@@ -831,7 +844,8 @@
      "end": 4.33
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "london-big-ben/bong": {
    "file": "read-london-big-ben-bong",
@@ -907,7 +921,8 @@
      "end": 7.14
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "london-big-ben/chimes": {
    "file": "read-london-big-ben-chimes",
@@ -989,7 +1004,8 @@
      "end": 5.58
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "london-big-ben/clock-face": {
    "file": "read-london-big-ben-clock-face",
@@ -1059,7 +1075,8 @@
      "end": 3.56
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "london-big-ben/goodbye": {
    "file": "read-london-big-ben-goodbye",
@@ -1135,7 +1152,8 @@
      "end": 4.5
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "london-big-ben/hands": {
    "file": "read-london-big-ben-hands",
@@ -1205,7 +1223,8 @@
      "end": 4.57
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "london-big-ben/light": {
    "file": "read-london-big-ben-light",
@@ -1275,7 +1294,8 @@
      "end": 3.68
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "london-big-ben/name": {
    "file": "read-london-big-ben-name",
@@ -1351,7 +1371,8 @@
      "end": 4.34
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "london-big-ben/penny": {
    "file": "read-london-big-ben-penny",
@@ -1427,7 +1448,8 @@
      "end": 5.36
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "london-big-ben/steps": {
    "file": "read-london-big-ben-steps",
@@ -1503,7 +1525,8 @@
      "end": 5.29
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "london-big-ben/tower": {
    "file": "read-london-big-ben-tower",
@@ -1579,7 +1602,8 @@
      "end": 5.18
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "london-big-ben/welcome": {
    "file": "read-london-big-ben-welcome",
@@ -1649,7 +1673,8 @@
      "end": 3.8
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "london/big-ben": {
    "file": "read-london-big-ben",
@@ -1725,7 +1750,8 @@
      "end": 4.84
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "london/bus": {
    "file": "read-london-bus",
@@ -1789,7 +1815,8 @@
      "end": 4.9
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "london/fish-chips": {
    "file": "read-london-fish-chips",
@@ -1853,7 +1880,8 @@
      "end": 3.92
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "london/flag": {
    "file": "read-london-flag",
@@ -1911,7 +1939,8 @@
      "end": 3.44
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "london/goodbye": {
    "file": "read-london-goodbye",
@@ -1969,7 +1998,8 @@
      "end": 4.58
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "london/guards": {
    "file": "read-london-guards",
@@ -2021,7 +2051,8 @@
      "end": 4.14
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "london/london-eye": {
    "file": "read-london-london-eye",
@@ -2091,7 +2122,8 @@
      "end": 3.98
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "london/ravens": {
    "file": "read-london-ravens",
@@ -2155,7 +2187,8 @@
      "end": 3.5
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "london/thames": {
    "file": "read-london-thames",
@@ -2213,7 +2246,8 @@
      "end": 3.98
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "london/tower-bridge": {
    "file": "read-london-tower-bridge",
@@ -2283,7 +2317,8 @@
      "end": 3.82
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "london/tube": {
    "file": "read-london-tube",
@@ -2353,7 +2388,8 @@
      "end": 4.7
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "london/welcome": {
    "file": "read-london-welcome",
@@ -2423,7 +2459,8 @@
      "end": 3.98
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "london/whale": {
    "file": "read-london-whale",
@@ -2481,7 +2518,8 @@
      "end": 3.22
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-eiffel/apartment": {
    "file": "read-paris-eiffel-apartment",
@@ -2551,7 +2589,8 @@
      "end": 4.54
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-eiffel/build": {
    "file": "read-paris-eiffel-build",
@@ -2609,7 +2648,8 @@
      "end": 3.28
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-eiffel/fireworks": {
    "file": "read-paris-eiffel-fireworks",
@@ -2679,7 +2719,8 @@
      "end": 4.57
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-eiffel/goodbye": {
    "file": "read-paris-eiffel-goodbye",
@@ -2755,7 +2796,8 @@
      "end": 4.16
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-eiffel/grow": {
    "file": "read-paris-eiffel-grow",
@@ -2831,7 +2873,8 @@
      "end": 4.66
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-eiffel/lifts": {
    "file": "read-paris-eiffel-lifts",
@@ -2907,7 +2950,8 @@
      "end": 4.56
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-eiffel/name": {
    "file": "read-paris-eiffel-name",
@@ -2983,7 +3027,8 @@
      "end": 5.52
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-eiffel/painters": {
    "file": "read-paris-eiffel-painters",
@@ -3053,7 +3098,8 @@
      "end": 4.42
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-eiffel/rivets": {
    "file": "read-paris-eiffel-rivets",
@@ -3123,7 +3169,8 @@
      "end": 4.78
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-eiffel/stairs": {
    "file": "read-paris-eiffel-stairs",
@@ -3199,7 +3246,8 @@
      "end": 5.36
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-eiffel/twinkle": {
    "file": "read-paris-eiffel-twinkle",
@@ -3269,7 +3317,8 @@
      "end": 4.1
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-eiffel/welcome": {
    "file": "read-paris-eiffel-welcome",
@@ -3345,7 +3394,8 @@
      "end": 4.88
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-food/baguette": {
    "file": "read-paris-food-baguette",
@@ -3421,7 +3471,8 @@
      "end": 4.42
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-food/cafe": {
    "file": "read-paris-food-cafe",
@@ -3491,7 +3542,8 @@
      "end": 3.86
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-food/cheese": {
    "file": "read-paris-food-cheese",
@@ -3561,7 +3613,8 @@
      "end": 4.54
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-food/crepes": {
    "file": "read-paris-food-crepes",
@@ -3637,7 +3690,8 @@
      "end": 4.48
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-food/goodbye": {
    "file": "read-paris-food-goodbye",
@@ -3701,7 +3755,8 @@
      "end": 3.06
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-food/ice-cream": {
    "file": "read-paris-food-ice-cream",
@@ -3771,7 +3826,8 @@
      "end": 3.34
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-food/macarons": {
    "file": "read-paris-food-macarons",
@@ -3829,7 +3885,8 @@
      "end": 4.36
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-food/market": {
    "file": "read-paris-food-market",
@@ -3893,7 +3950,8 @@
      "end": 4.02
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-food/pain-chocolat": {
    "file": "read-paris-food-pain-chocolat",
@@ -3951,7 +4009,8 @@
      "end": 4.54
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-food/picnic": {
    "file": "read-paris-food-picnic",
@@ -4015,7 +4074,8 @@
      "end": 4.01
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-food/snails": {
    "file": "read-paris-food-snails",
@@ -4091,7 +4151,8 @@
      "end": 5.59
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-food/welcome": {
    "file": "read-paris-food-welcome",
@@ -4149,7 +4210,8 @@
      "end": 4.6
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-fun/beach": {
    "file": "read-paris-fun-beach",
@@ -4213,7 +4275,8 @@
      "end": 3.24
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-fun/boat": {
    "file": "read-paris-fun-boat",
@@ -4283,7 +4346,8 @@
      "end": 4.12
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-fun/carousel": {
    "file": "read-paris-fun-carousel",
@@ -4347,7 +4411,8 @@
      "end": 5.32
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-fun/funicular": {
    "file": "read-paris-fun-funicular",
@@ -4411,7 +4476,8 @@
      "end": 3.6
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-fun/goodbye": {
    "file": "read-paris-fun-goodbye",
@@ -4469,7 +4535,8 @@
      "end": 2.74
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-fun/louvre-castle": {
    "file": "read-paris-fun-louvre-castle",
@@ -4533,7 +4600,8 @@
      "end": 4.28
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-fun/montmartre": {
    "file": "read-paris-fun-montmartre",
@@ -4585,7 +4653,8 @@
      "end": 4.28
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-fun/orsay": {
    "file": "read-paris-fun-orsay",
@@ -4661,7 +4730,8 @@
      "end": 4.53
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-fun/puppets": {
    "file": "read-paris-fun-puppets",
@@ -4731,7 +4801,8 @@
      "end": 4.24
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-fun/thinker": {
    "file": "read-paris-fun-thinker",
@@ -4801,7 +4872,8 @@
      "end": 4.32
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-fun/water-lilies": {
    "file": "read-paris-fun-water-lilies",
@@ -4859,7 +4931,8 @@
      "end": 4.14
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-fun/welcome": {
    "file": "read-paris-fun-welcome",
@@ -4929,7 +5002,8 @@
      "end": 3.05
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-jardin/carousel": {
    "file": "read-paris-jardin-carousel",
@@ -4999,7 +5073,8 @@
      "end": 5.18
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-jardin/geese": {
    "file": "read-paris-jardin-geese",
@@ -5063,7 +5138,8 @@
      "end": 4.14
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-jardin/goodbye": {
    "file": "read-paris-jardin-goodbye",
@@ -5127,7 +5203,8 @@
      "end": 3.92
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-jardin/history": {
    "file": "read-paris-jardin-history",
@@ -5197,7 +5274,8 @@
      "end": 5.28
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-jardin/korea": {
    "file": "read-paris-jardin-korea",
@@ -5279,7 +5357,8 @@
      "end": 4.34
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-jardin/parrots": {
    "file": "read-paris-jardin-parrots",
@@ -5349,7 +5428,8 @@
      "end": 3.96
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-jardin/peacock": {
    "file": "read-paris-jardin-peacock",
@@ -5419,7 +5499,8 @@
      "end": 4.42
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-jardin/peahen": {
    "file": "read-paris-jardin-peahen",
@@ -5483,7 +5564,8 @@
      "end": 4.54
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-jardin/puppets": {
    "file": "read-paris-jardin-puppets",
@@ -5553,7 +5635,8 @@
      "end": 3.46
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-jardin/river": {
    "file": "read-paris-jardin-river",
@@ -5611,7 +5694,8 @@
      "end": 4.28
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-jardin/train": {
    "file": "read-paris-jardin-train",
@@ -5681,7 +5765,8 @@
      "end": 4.08
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-jardin/welcome": {
    "file": "read-paris-jardin-welcome",
@@ -5751,7 +5836,8 @@
      "end": 4.34
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-louvre/coffins": {
    "file": "read-paris-louvre-coffins",
@@ -5815,7 +5901,8 @@
      "end": 4.6
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-louvre/copyist": {
    "file": "read-paris-louvre-copyist",
@@ -5885,7 +5972,8 @@
      "end": 4.16
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-louvre/goodbye": {
    "file": "read-paris-louvre-goodbye",
@@ -5961,7 +6049,8 @@
      "end": 4.48
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-louvre/inverted": {
    "file": "read-paris-louvre-inverted",
@@ -6031,7 +6120,8 @@
      "end": 4.59
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-louvre/kids": {
    "file": "read-paris-louvre-kids",
@@ -6095,7 +6185,8 @@
      "end": 4.22
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-louvre/longhall": {
    "file": "read-paris-louvre-longhall",
@@ -6171,7 +6262,8 @@
      "end": 4.56
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-louvre/mona": {
    "file": "read-paris-louvre-mona",
@@ -6247,7 +6339,8 @@
      "end": 4.46
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-louvre/palace": {
    "file": "read-paris-louvre-palace",
@@ -6317,7 +6410,8 @@
      "end": 4.15
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-louvre/sphinx": {
    "file": "read-paris-louvre-sphinx",
@@ -6393,7 +6487,8 @@
      "end": 4.84
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-louvre/venus": {
    "file": "read-paris-louvre-venus",
@@ -6469,7 +6564,8 @@
      "end": 5.32
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-louvre/victory": {
    "file": "read-paris-louvre-victory",
@@ -6533,7 +6629,8 @@
      "end": 4.5
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-louvre/welcome": {
    "file": "read-paris-louvre-welcome",
@@ -6609,7 +6706,8 @@
      "end": 4.36
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-notre-dame/bells": {
    "file": "read-paris-notre-dame-bells",
@@ -6691,7 +6789,8 @@
      "end": 5.66
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-notre-dame/chimeras": {
    "file": "read-paris-notre-dame-chimeras",
@@ -6761,7 +6860,8 @@
      "end": 5.62
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-notre-dame/fire": {
    "file": "read-paris-notre-dame-fire",
@@ -6837,7 +6937,8 @@
      "end": 5.82
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-notre-dame/gargoyles": {
    "file": "read-paris-notre-dame-gargoyles",
@@ -6907,7 +7008,8 @@
      "end": 6.02
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-notre-dame/goodbye": {
    "file": "read-paris-notre-dame-goodbye",
@@ -6983,7 +7085,8 @@
      "end": 4.69
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-notre-dame/island": {
    "file": "read-paris-notre-dame-island",
@@ -7053,7 +7156,8 @@
      "end": 4.56
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-notre-dame/open": {
    "file": "read-paris-notre-dame-open",
@@ -7117,7 +7221,8 @@
      "end": 6.14
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-notre-dame/rebuild": {
    "file": "read-paris-notre-dame-rebuild",
@@ -7181,7 +7286,8 @@
      "end": 4.3
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-notre-dame/rooster": {
    "file": "read-paris-notre-dame-rooster",
@@ -7257,7 +7363,8 @@
      "end": 4.57
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-notre-dame/rose": {
    "file": "read-paris-notre-dame-rose",
@@ -7333,7 +7440,8 @@
      "end": 4.16
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-notre-dame/story": {
    "file": "read-paris-notre-dame-story",
@@ -7409,7 +7517,8 @@
      "end": 4.2
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-notre-dame/welcome": {
    "file": "read-paris-notre-dame-welcome",
@@ -7491,7 +7600,8 @@
      "end": 5.86
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-seine/alex": {
    "file": "read-paris-seine-alex",
@@ -7555,7 +7665,8 @@
      "end": 4.18
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-seine/bouquin": {
    "file": "read-paris-seine-bouquin",
@@ -7625,7 +7736,8 @@
      "end": 4.2
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-seine/faces": {
    "file": "read-paris-seine-faces",
@@ -7695,7 +7807,8 @@
      "end": 4.38
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-seine/goodbye": {
    "file": "read-paris-seine-goodbye",
@@ -7765,7 +7878,8 @@
      "end": 4.7
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-seine/houseboat": {
    "file": "read-paris-seine-houseboat",
@@ -7835,7 +7949,8 @@
      "end": 4.68
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-seine/liberty": {
    "file": "read-paris-seine-liberty",
@@ -7917,7 +8032,8 @@
      "end": 4.57
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-seine/olympics": {
    "file": "read-paris-seine-olympics",
@@ -7981,7 +8097,8 @@
      "end": 5.8
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-seine/pontneuf": {
    "file": "read-paris-seine-pontneuf",
@@ -8051,7 +8168,8 @@
      "end": 6.48
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-seine/swans": {
    "file": "read-paris-seine-swans",
@@ -8121,7 +8239,8 @@
      "end": 4.48
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-seine/wave": {
    "file": "read-paris-seine-wave",
@@ -8191,7 +8310,8 @@
      "end": 3.22
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-seine/welcome": {
    "file": "read-paris-seine-welcome",
@@ -8255,7 +8375,8 @@
      "end": 3.92
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-seine/zouave": {
    "file": "read-paris-seine-zouave",
@@ -8331,7 +8452,8 @@
      "end": 4.49
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-versailles/apollo": {
    "file": "read-paris-versailles-apollo",
@@ -8395,7 +8517,8 @@
      "end": 4.04
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-versailles/bedroom": {
    "file": "read-paris-versailles-bedroom",
@@ -8465,7 +8588,8 @@
      "end": 3.34
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-versailles/canal": {
    "file": "read-paris-versailles-canal",
@@ -8535,7 +8659,8 @@
      "end": 3.16
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-versailles/farm": {
    "file": "read-paris-versailles-farm",
@@ -8605,7 +8730,8 @@
      "end": 4.88
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-versailles/gardens": {
    "file": "read-paris-versailles-gardens",
@@ -8675,7 +8801,8 @@
      "end": 5.76
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-versailles/gate": {
    "file": "read-paris-versailles-gate",
@@ -8739,7 +8866,8 @@
      "end": 3.64
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-versailles/goodbye": {
    "file": "read-paris-versailles-goodbye",
@@ -8797,7 +8925,8 @@
      "end": 4.3
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-versailles/hamlet": {
    "file": "read-paris-versailles-hamlet",
@@ -8867,7 +8996,8 @@
      "end": 4.9
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-versailles/king": {
    "file": "read-paris-versailles-king",
@@ -8925,7 +9055,8 @@
      "end": 4.22
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-versailles/mirrors": {
    "file": "read-paris-versailles-mirrors",
@@ -8995,7 +9126,8 @@
      "end": 5.69
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-versailles/orange": {
    "file": "read-paris-versailles-orange",
@@ -9071,7 +9203,8 @@
      "end": 4.98
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris-versailles/welcome": {
    "file": "read-paris-versailles-welcome",
@@ -9129,7 +9262,8 @@
      "end": 3.72
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris/arc": {
    "file": "read-paris-arc",
@@ -9193,7 +9327,8 @@
      "end": 3.44
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris/bonjour": {
    "file": "read-paris-bonjour",
@@ -9251,7 +9386,8 @@
      "end": 4.72
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris/croissant": {
    "file": "read-paris-croissant",
@@ -9321,7 +9457,8 @@
      "end": 4.48
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris/eiffel": {
    "file": "read-paris-eiffel",
@@ -9397,7 +9534,8 @@
      "end": 4.3
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris/eiffel-paint": {
    "file": "read-paris-eiffel-paint",
@@ -9461,7 +9599,8 @@
      "end": 4.2
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris/eiffel-sparkle": {
    "file": "read-paris-eiffel-sparkle",
@@ -9513,7 +9652,8 @@
      "end": 3.48
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris/flag": {
    "file": "read-paris-flag",
@@ -9577,7 +9717,8 @@
      "end": 3.49
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris/goodbye": {
    "file": "read-paris-goodbye",
@@ -9635,7 +9776,8 @@
      "end": 3.74
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris/louvre": {
    "file": "read-paris-louvre",
@@ -9705,7 +9847,8 @@
      "end": 3.38
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris/mona-lisa": {
    "file": "read-paris-mona-lisa",
@@ -9775,7 +9918,8 @@
      "end": 4.56
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris/notre-dame": {
    "file": "read-paris-notre-dame",
@@ -9845,7 +9989,8 @@
      "end": 4.66
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris/sailboats": {
    "file": "read-paris-sailboats",
@@ -9915,7 +10060,8 @@
      "end": 4.92
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris/seine": {
    "file": "read-paris-seine",
@@ -9985,7 +10131,8 @@
      "end": 4.3
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   },
   "paris/welcome": {
    "file": "read-paris-welcome",
@@ -10055,7 +10202,8 @@
      "end": 3.94
     }
    ],
-   "style": "40b5f639d1"
+   "style": "40b5f639d1",
+   "lufs": -16.0
   }
  }
 }
