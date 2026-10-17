@@ -68,6 +68,18 @@ final class ContentTests: XCTestCase {
         }
     }
 
+    func testVisibleTextHasNoPronunciationHints() throws {
+        // The read-aloud voice says each word, so pages don't spell out sounds like "Honu (HO-noo)".
+        for book in try books() {
+            for label in [book.coverTitle, book.tagline] {
+                XCTAssertNil(label.rangeOfCharacter(from: CharacterSet(charactersIn: "()")), "\(book.id): \(label)")
+            }
+            for page in book.pages {
+                XCTAssertNil(page.text.rangeOfCharacter(from: CharacterSet(charactersIn: "()")), "\(book.id)/\(page.id): \(page.text)")
+            }
+        }
+    }
+
     func testEveryPhotoIsVerifiedCreditedAndBundled() throws {
         var files = Set<String>()
         var titles = Set<String>()
