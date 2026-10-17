@@ -1,9 +1,9 @@
-"""Stars for curious questions: Milo's ``give_star`` tool and the rules that check it.
+"""Stars for curious questions: the rules that decide when a question earns one.
 
-The realtime model decides *whether* the child asked a real question about the book and calls
-``give_star`` alongside its spoken answer. It cannot hand out stars freely: :class:`StarKeeper`
-checks every claim against what was actually heard (the input transcription and the turn guard's
-decision) and against the limits:
+Milo decides *whether* the child asked a real question for him: the turn guard's relevance check
+(the same one that decides whether he answers at all) lets it through and he answers it. Nothing
+the model says can hand out a star; :class:`StarKeeper` checks every answered turn against what was
+actually heard (the input transcription and the guard's decision) and against the limits:
 
 * the turn was a reply-worthy question (the guard said RESPOND: not reading aloud, not noise or
   grown-ups talking), at least ``min_words`` (3) words, and not small talk like "how are you";
@@ -11,9 +11,10 @@ decision) and against the limits:
 * at most ``page_cap`` (3) stars per page per session, and ``cooldown_s`` (8) seconds between awards.
 
 An award is 1 star, +1 for a long question (``long_words``, 8+ words) or a "why"/"how" question,
-+1 for a follow-up on a page that already earned a star, trimmed to what is left on the page.
++1 for a follow-up (the same page as the last star, within ``followup_s``), trimmed to what is
+left on the page.
 
-Awards hold counts and labels only (book, page, kind, flags, word count, the model's short reason);
+Awards hold counts and labels only (book, page, kind, flags, word count);
 never the transcript. They are sent to the app on the ``milo.star`` data topic and backed up to the
 token server (``POST /stars``) so a reinstall can restore them.
 
@@ -22,7 +23,6 @@ Settings: ``PIP_STAR_PAGE_CAP``, ``PIP_STAR_COOLDOWN_S``, ``PIP_STAR_LONG_WORDS`
 
 from __future__ import annotations
 
-import asyncio
 import logging
 import os
 import re
@@ -40,7 +40,6 @@ from .voice import TurnDecision, UserTurn
 log = logging.getLogger("little_explorer.stars")
 
 STAR_TOPIC = "milo.star"
-KINDS = ("question", "follow_up")
 MAX_REASON = 80
 
 _QUESTIONISH = frozenset({"why", "what", "how", "where", "who", "when", "which", "wonder", "tell", "explain", "is", "are", "do", "does", "can", "could", "did", "will", "would"})
@@ -58,8 +57,8 @@ class StarRules:
     cooldown_s: float = 8.0
     long_words: int = 8
     min_words: int = 3
-    # How long a claim waits for the turn's transcript and guard decision.
-    wait_s: float = 4.0
+    # A question on the same page this soon after the last star is a follow-up.
+    followup_s: float = 90.0
     # A transcript older than this cannot earn a star any more.
     fresh_s: float = 20.0
 
@@ -120,9 +119,9 @@ def looks_like_question(text: str) -> bool:
 
 @dataclass
 class StarKeeper:
-    """Validates ``give_star`` claims. Feed it every guarded turn (:meth:`heard`) and every time the
-    child starts speaking (:meth:`speech_started`); :meth:`claim` returns an award or the reason
-    there is none. ``clock`` is monotonic seconds; ``wall`` gives the award's local timestamp."""
+    """Validates stars. Feed it every guarded turn (:meth:`heard`) and every time the child starts
+    speaking (:meth:`speech_started`); :meth:`judge` returns an award for the newest turn or the
+    reason there is none. ``clock`` is monotonic seconds; ``wall`` gives the award's local timestamp."""
 
     device_id: str = ""
     room: str = ""
@@ -133,7 +132,6 @@ class StarKeeper:
     _turns: list[HeardTurn] = field(default_factory=list)
     _speech_at: float = -1.0
     _last_award_at: float | None = None
-    _changed: asyncio.Event | None = None
 
     # -- what was heard ---------------------------------------------------------------------------
 
@@ -143,12 +141,14 @@ class StarKeeper:
     def heard(self, turn: UserTurn, decision: TurnDecision) -> None:
         self._turns.append(HeardTurn(self.clock(), turn.text, decision, dict(turn.context)))
         del self._turns[:-6]
-        if self._changed is not None:
-            self._changed.set()
 
-    def pending(self) -> bool:
-        """He has started speaking since the last decision, so its transcript is still coming."""
-        return not self._turns or self._speech_at > self._turns[-1].at
+    @property
+    def speech_at(self) -> float:
+        """When he last started speaking (keeper clock), or -1."""
+        return self._speech_at
+
+    def latest(self) -> HeardTurn | None:
+        return self._turns[-1] if self._turns else None
 
     # -- counts ----------------------------------------------------------------------------------
 
@@ -164,19 +164,14 @@ class StarKeeper:
 
     # -- claims ----------------------------------------------------------------------------------
 
-    async def claim(self, kind: str, reason: str = "") -> StarAward | str:
-        """Wait (up to ``rules.wait_s``) for the current turn's decision, then :meth:`judge` it."""
-        deadline = self.clock() + self.rules.wait_s
-        while self.pending():
-            left = deadline - self.clock()
-            if left <= 0:
-                break
-            self._changed = asyncio.Event()
-            try:
-                await asyncio.wait_for(self._changed.wait(), left)
-            except asyncio.TimeoutError:
-                break
-        return self.judge(kind, reason)
+    def kind_for_next(self) -> str:
+        """``follow_up`` when the newest turn asks more about the page that just earned a star."""
+        turn, last = self.latest(), (self.awards[-1] if self.awards else None)
+        if turn is None or last is None or self._last_award_at is None:
+            return "question"
+        same_page = (turn.context.get(BOOK_KEY), turn.context.get(PAGE_KEY)) == (last.book, last.page)
+        recent = self.clock() - self._last_award_at <= self.rules.followup_s
+        return "follow_up" if same_page and recent else "question"
 
     def judge(self, kind: str, reason: str = "") -> StarAward | str:
         now = self.clock()
@@ -229,7 +224,7 @@ class StarKeeper:
     def status_line(self, context: Mapping[str, Any]) -> str:
         """The stars rule for the model's instructions on the current page."""
         if self.stars_left(context) <= 0:
-            return "Stars right now: this page has all its stars. Do not call give_star or mention stars on this page."
+            return "Stars right now: this page has all its stars. Don't mention stars on this page."
         return "Stars right now: this page still has stars to give."
 
 
