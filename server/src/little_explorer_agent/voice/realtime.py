@@ -118,15 +118,17 @@ async def start_realtime_session(
     guard: TurnGate | None = None,
     on_decision: DecisionCallback | None = None,
     greeting: str | None = None,
+    context_store: ContextStore | None = None,
 ) -> AgentSession:
     """Connect, follow the app's page context, and start a realtime ``AgentSession``.
 
     ``instructions(context)`` builds the full instructions for the current page; they are pushed
     to the model again whenever the context changes. ``preset`` only supplies the room's noise
-    cancellation; turn-taking belongs to the realtime model.
+    cancellation; turn-taking belongs to the realtime model. Pass ``context_store`` to share the
+    page context with the caller.
     """
     await ctx.connect()
-    store = ContextStore()
+    store = ContextStore() if context_store is None else context_store
     attach_room_context(store, ctx.room)
     agent = Agent(instructions=instructions(store.snapshot()), tools=list(tools))
     session = AgentSession(llm=realtime_model(config), user_away_timeout=preset.user_away_timeout)

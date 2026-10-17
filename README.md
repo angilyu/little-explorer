@@ -172,6 +172,27 @@ iPad as just "iPad", so use the id shown in the Grown-ups corner (it has a copy 
 The app uses the deployed server (`PIP_SERVER_URL` in `Config/Pip.xcconfig`). To try a local token server from a
 device, set its address in the Grown-ups corner (e.g. `http://<your-mac>.local:8787`).
 
+### Stars and the Passport
+
+He earns stars for curious questions, not for talking a lot. Milo decides what counts as a real question about
+the book and calls a `give_star` tool alongside his answer, starting with "Great question, that's a star!". The
+agent (`stars.py`) checks every award before it counts, using the input transcription:
+
+- 1 star for a question (at least 3 words, not reading the page aloud, not "hi Milo" or other small talk).
+- +1 for a long question (8+ words) or a "why"/"how" question; +1 for a follow-up on the same page.
+- At most 3 stars per page per session (`PIP_STAR_PAGE_CAP`) and 8 seconds between stars (`PIP_STAR_COOLDOWN_S`;
+  `PIP_STAR_LONG_WORDS` sets "long").
+
+Checked awards go to the app on the `milo.star` data topic (a star flies into the counter by the Milo switch
+with a soft chime) and to the token server (`POST /stars`, report key), which keeps them in the database by
+device id. The app saves them locally and, on launch, merges back the server's copy (`GET /stars?device=<id>`,
+access key), so stars survive a reinstall. Only counts, kinds, book, page and time are stored, never what he said.
+
+The library's top corner shows his total; tapping it opens the Passport: a stamp for each city he has asked
+about, plus Curious Cat (10 questions), Big Talker (5 long questions) and an Expert badge for asking in every
+book of a city (e.g. Paris Expert). The last page of each book shows the stars from that book. `tools/devices.py`
+lists stars per device. Pipeline mode gives stars too, but Milo doesn't announce them.
+
 ### Deploy
 
 Two free-tier pieces. The app only talks to the first; LiveKit dispatches the second.
@@ -218,7 +239,7 @@ scripts/screenshots.sh <iphone-udid> <ipad-udid>   # regenerates docs/screenshot
 ```
 
 DEBUG builds accept launch arguments for screenshots: `-demoBook paris-food -demoPage 4 -demoLove`,
-`-demoVoice listening|live`, `-demoRead`.
+`-demoVoice listening|live|nap|rest|star`, `-demoRead`, `-demoStars 23`, `-demoPassport`.
 
 ### Install on an iPhone or iPad (TestFlight)
 

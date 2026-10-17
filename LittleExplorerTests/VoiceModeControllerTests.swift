@@ -197,6 +197,20 @@ final class VoiceModeControllerTests: XCTestCase {
         XCTAssertNil(voice.notice)
     }
 
+    func testStarsReachTheAppOnlyFromTheLiveSession() async {
+        let voice = makeController()
+        var got: [String] = []
+        voice.onStar = { got.append($0.id) }
+        await voice.turnOn()
+        let star = StarAward(id: "s1", book: "paris", page: "p1", city: "Paris", stars: 2)
+        transports[0].send(.star(star))
+        XCTAssertEqual(got, ["s1"])
+        XCTAssertEqual(voice.state, .waitingForBuddy, "a star doesn't change what Milo is doing")
+        await voice.turnOff()
+        transports[0].send(.star(StarAward(id: "late", book: "paris", page: "p1", city: "Paris", stars: 1)))
+        XCTAssertEqual(got, ["s1"], "nothing arrives after Milo is off")
+    }
+
     func testRefusedTokenRestsInsteadOfFailing() async {
         let voice = makeController { $0.connectError = VoiceError.resting }
         await voice.turnOn()

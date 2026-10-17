@@ -14,6 +14,10 @@ gets ``429 {"error": "limit"}``, both with a kid-friendly ``message``. Otherwise
 identity is ``device-<id>`` and the agent learns the device and its remaining seconds through the
 dispatch metadata. Requests without a device count as the shared ``anonymous`` device.
 
+Stars (see :mod:`.stars`): the agent backs each award up with ``POST /stars`` (report key), and
+the app restores them after a reinstall with ``GET /stars?device=<id>`` (access key), which
+returns ``{"stars": [...], "total": N}``. Awards carry counts and labels only, never transcripts.
+
 ``POST /usage`` (``Authorization: Bearer $PIP_REPORT_KEY``) is how the agent reports each finished
 session. ``/admin/...`` (``Authorization: Bearer $PIP_ADMIN_KEY``) is for the owner, usually via
 ``tools/devices.py``: ``GET /admin/devices``, ``GET /admin/usage?days=7`` and
@@ -177,6 +181,30 @@ async def handle_usage(request: web.Request) -> web.Response:
     return web.json_response({"ok": True, "device_status": device.status})
 
 
+async def handle_star_report(request: web.Request) -> web.Response:
+    if not authorized(request, request.app[REPORT_KEY], required=True):
+        return web.json_response({"error": "unauthorized"}, status=401)
+    body = await _json_body(request)
+    if body is None:
+        return web.json_response({"error": "bad body"}, status=400)
+    try:
+        new = await asyncio.to_thread(request.app[STORE].record_star, body)
+    except ValueError as exc:
+        return web.json_response({"error": str(exc)}, status=400)
+    log.info("star: device %s, +%s on %s", body.get("device_id"), body.get("stars"), body.get("book"))
+    return web.json_response({"ok": True, "new": new})
+
+
+async def handle_stars(request: web.Request) -> web.Response:
+    if not authorized(request, request.app[ACCESS_KEY]):
+        return web.json_response({"error": "unauthorized"}, status=401)
+    device_id = request.query.get("device", "")
+    if not valid_device_id(device_id):
+        return web.json_response({"error": "bad device"}, status=400)
+    stars = await asyncio.to_thread(request.app[STORE].stars_for, device_id)
+    return web.json_response({"stars": stars, "total": sum(s["stars"] for s in stars)})
+
+
 def _admin(request: web.Request) -> web.Response | None:
     if not authorized(request, request.app[ADMIN_KEY], required=True):
         return web.json_response({"error": "unauthorized"}, status=401)
@@ -308,6 +336,8 @@ def create_app(
     app.router.add_get("/content/manifest.json", handle_manifest)
     app.router.add_get("/content/{path:.+}", handle_content_file)
     app.router.add_post("/usage", handle_usage)
+    app.router.add_post("/stars", handle_star_report)
+    app.router.add_get("/stars", handle_stars)
     app.router.add_get("/admin/devices", handle_admin_devices)
     app.router.add_get("/admin/usage", handle_admin_usage)
     app.router.add_post("/admin/devices/{ref}", handle_admin_update)

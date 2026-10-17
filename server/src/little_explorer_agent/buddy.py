@@ -239,11 +239,27 @@ REALTIME_RULES = """How listening works (very important):
 """
 
 
-def realtime_instructions(context: Mapping[str, Any]) -> str:
-    """Full instructions for the realtime model on the current page."""
+STAR_RULES = """Stars (a game that rewards curious questions):
+- When he asks you a real, curious question about the book, the page, the photo, the city or
+  travel, call give_star in the same response as your spoken answer, never instead of it. Use kind
+  "follow_up" when he asks more about the thing he just asked about.
+- When you call give_star, begin your answer with "Great question, that's a star!", then answer.
+- Never call give_star for reading the page aloud, answers to your questions, greetings, "how are
+  you", noise, or anything that is not his question. One call per question. Don't talk about
+  stars at any other time.
+"""
+
+
+def realtime_instructions(context: Mapping[str, Any], stars: str | None = None) -> str:
+    """Full instructions for the realtime model on the current page.
+
+    ``stars`` is the star status for this page (see :meth:`.stars.StarKeeper.status_line`); without
+    it the star game is left out.
+    """
     lines = page_note(context)
     page = "\n".join(lines) if lines else "The book is not open on a page yet."
-    return f"{PERSONA}\n{REALTIME_RULES}\n{page}\n"
+    game = f"{STAR_RULES}{stars}\n" if stars else ""
+    return f"{PERSONA}\n{REALTIME_RULES}\n{game}{page}\n"
 
 
 def _trim(messages: list[Any]) -> list[Any]:

@@ -93,11 +93,11 @@ class FakeCtx:
 async def test_entrypoint_runs_the_chosen_engine(monkeypatch, tmp_path, metadata, env, expected):
     ran = []
 
-    async def fake_pipeline(ctx):
+    async def fake_pipeline(ctx, game):
         ran.append("pipeline")
         return FakeSession()
 
-    async def fake_realtime(ctx):
+    async def fake_realtime(ctx, game):
         ran.append("realtime")
         return FakeSession()
 
@@ -115,9 +115,10 @@ async def test_entrypoint_runs_the_chosen_engine(monkeypatch, tmp_path, metadata
     await agent_mod.entrypoint(ctx)
     assert ran == [expected]
     # Every session logs its usage when the job ends.
-    assert len(ctx.shutdown_callbacks) == 2
+    assert len(ctx.shutdown_callbacks) == 3  # usage, pending star reports, timers
     await ctx.shutdown_callbacks[0]("room disconnected")
     await ctx.shutdown_callbacks[1]()
+    await ctx.shutdown_callbacks[2]()
     assert f",{expected}," in (tmp_path / "usage.csv").read_text()
 
 

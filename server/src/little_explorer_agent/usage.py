@@ -334,12 +334,41 @@ class UsageMeter:
         }
 
 
-def report_target(env: Mapping[str, str] | None = None) -> tuple[str, str] | None:
-    """``(url, key)`` for ``POST /usage``, or None when reporting is not set up."""
+def report_target(env: Mapping[str, str] | None = None, path: str = "usage") -> tuple[str, str] | None:
+    """``(url, key)`` for ``POST /<path>`` on the token server, or None when reporting is not set up."""
     env = os.environ if env is None else env
     base = (env.get("PIP_SERVER_URL") or "").strip().rstrip("/")
     key = (env.get("PIP_REPORT_KEY") or "").strip()
-    return (f"{base}/usage", key) if base and key else None
+    return (f"{base}/{path}", key) if base and key else None
+
+
+async def post_report(
+    payload: Mapping[str, Any],
+    target: tuple[str, str],
+    *,
+    label: str,
+    timeouts: Sequence[float] = (4.0, 3.0),
+    pause: float = 0.5,
+) -> bool:
+    """POST ``payload`` with the report key, retrying once on network trouble or a 5xx."""
+    from aiohttp import ClientSession, ClientTimeout
+
+    url, key = target
+    for attempt, timeout in enumerate(timeouts, 1):
+        try:
+            async with ClientSession(timeout=ClientTimeout(total=timeout)) as http:
+                async with http.post(url, json=dict(payload), headers={"Authorization": "Bearer " + key}) as resp:
+                    if resp.status == 200:
+                        log.info("reported %s", label)
+                        return True
+                    log.warning("%s report got HTTP %s", label, resp.status)
+                    if 400 <= resp.status < 500:
+                        return False
+        except Exception as exc:  # noqa: BLE001 - network trouble; retry
+            log.warning("%s report attempt %d failed: %s", label, attempt, exc)
+        if attempt < len(timeouts):
+            await asyncio.sleep(pause)
+    return False
 
 
 async def report_usage(
@@ -353,21 +382,4 @@ async def report_usage(
     target = report_target() if target is None else target
     if not report or not target or not report.get("room"):
         return False
-    from aiohttp import ClientSession, ClientTimeout
-
-    url, key = target
-    for attempt, timeout in enumerate(timeouts, 1):
-        try:
-            async with ClientSession(timeout=ClientTimeout(total=timeout)) as http:
-                async with http.post(url, json=dict(report), headers={"Authorization": f"Bearer {key}"}) as resp:
-                    if resp.status == 200:
-                        log.info("reported usage for %s", report["room"])
-                        return True
-                    log.warning("usage report got HTTP %s", resp.status)
-                    if 400 <= resp.status < 500:
-                        return False
-        except Exception as exc:  # noqa: BLE001 - network trouble; retry
-            log.warning("usage report attempt %d failed: %s", attempt, exc)
-        if attempt < len(timeouts):
-            await asyncio.sleep(pause)
-    return False
+    return await post_report(report, target, label=f"usage for {report['room']}", timeouts=timeouts, pause=pause)
