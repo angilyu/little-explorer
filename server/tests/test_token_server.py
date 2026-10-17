@@ -73,6 +73,15 @@ async def test_access_key_guards_tokens(monkeypatch):
         assert (await c.get("/content/manifest.json")).status == 200
 
 
+async def test_health_reports_commit_and_content_version(client, monkeypatch):
+    monkeypatch.setenv("RENDER_GIT_COMMIT", "abc123")
+    health = await (await client.get("/healthz")).json()
+    manifest = await (await client.get("/content/manifest.json")).json()
+    assert health == {"ok": True, "commit": "abc123", "content": manifest["version"]}
+    monkeypatch.delenv("RENDER_GIT_COMMIT")
+    assert (await (await client.get("/healthz")).json())["commit"] is None
+
+
 async def test_serves_manifest_and_listed_files_only(client):
     resp = await client.get("/content/manifest.json")
     assert resp.status == 200
