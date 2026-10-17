@@ -26,6 +26,7 @@ The first screen is a shelf with every book, grouped by city. Tap a cover to ope
 | Paris | Louvre Museum (`paris-louvre`) | The glass pyramid and the upside-down one, a king's palace, the very long hall, art copyists, the small Mona Lisa, Winged Victory, Venus de Milo, the giant sphinx, Egyptian coffins, too big for one day |
 | Paris | Palace of Versailles (`paris-versailles`) | The Sun King, the golden gate, the Hall of Mirrors, the king's getting-up crowd, huge gardens, orange trees in boxes, the Apollo fountain, Grand Canal rowboats, Marie Antoinette's hamlet and its farm |
 | Paris | Seine River Cruise (`paris-seine`) | Bateaux-mouches and waving, Pont Neuf, stone faces, Pont Alexandre III's gold, the Zouave flood gauge, houseboats, the bouquinistes' green boxes, the little Statue of Liberty, the 2024 Olympic boat parade, Swan Island |
+| Paris | Speak French (`paris-french`) | Travel French, one phrase per page with a sound-it-out hint: bonjour in shops, merci at the market, s'il vous plaît for crêpes, a croissant from the baker, oui and non on a carousel, je m'appelle with Guignol, où sont les toilettes, un-deux-trois macarons, j'aime la glace, excusez-moi on the métro, au revoir at the TGV. Milo role-plays the baker or shopkeeper so he says each phrase out loud |
 | London | London (`london`) | The Thames, Big Ben, Tower Bridge, buses, ravens, guards, London Eye, the Tube, the museum whale, fish and chips |
 | London | Big Ben (`london-big-ben`) | Big Ben the bell vs the Elizabeth Tower, who it's named after, the giant clock faces and minute hands, the bongs, the radio chimes, pennies on the pendulum, the Ayrton Light, 334 steps, Westminster Bridge |
 | Barcelona | Barcelona (`barcelona`) | Beach, Sagrada Família, Casa Batlló, Park Güell's dragon, churros, human towers, football, the magic fountain |
@@ -54,7 +55,7 @@ Pin a specific file by setting the page's `photo.commonsTitle`.
 
 The speaker button (bottom-right of every page) reads the sentence in a natural voice, the same OpenAI voice as Milo
 (`gpt-4o-mini-tts`, "coral"), styled like a grown-up reading a picture book to a 6-year-old: warm, clear and a little slow.
-The clips are made ahead of time and bundled (about 5 MB of AAC for all 148 pages), so reading aloud works offline
+The clips are made ahead of time and bundled (about 5 MB of AAC for all 160 pages), so reading aloud works offline
 and the app never holds an API key. Each word is highlighted as it's spoken. Tap again to stop. Speech also stops when
 the page turns or the book closes. When voice mode is on, the microphone is muted while the app reads, so Milo doesn't
 mistake the app's voice for the child.
@@ -64,7 +65,12 @@ mistake the app's voice for the child.
 retries if the transcript doesn't match the sentence, and writes `LittleExplorer/Resources/Narration/`. After editing a
 sentence, rerun it (it only regenerates pages that changed). Every clip is levelled to -16 LUFS (normal speech
 loudness, the same level as Milo) with peaks kept under -1 dBTP, so the narration isn't quieter than Milo. It needs
-`OPENAI_API_KEY` (or an env file, see below), macOS `afconvert` and `ffmpeg` (`brew install ffmpeg`):
+`OPENAI_API_KEY` (or an env file, see below), macOS `afconvert` and `ffmpeg` (`brew install ffmpeg`).
+
+A book can add its own reading note. Speak French uses `"narration": {"instructions": "...", "phraseByPhrase": true}`:
+the French is spoken natively (not anglicized), and each phrase, e.g. "Merci", "mair-SEE" and "means thank you.", is
+its own take joined with short pauses. In one take the voice sometimes skipped the sound-it-out hint; phrase by phrase it
+always says both, and the word times come straight from the takes. To run it:
 
 ```sh
 python3 scripts/generate_narration.py                  # new or changed pages only

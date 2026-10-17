@@ -4213,6 +4213,834 @@
    "style": "40b5f639d1",
    "lufs": -16.0
   },
+  "paris-french/bonjour": {
+   "file": "read-paris-french-bonjour",
+   "text": "Bonjour (bon-ZHOOR) means hello. Say it in shops!",
+   "duration": 7.18,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 7,
+     "start": 0.15,
+     "end": 0.74
+    },
+    {
+     "location": 9,
+     "length": 3,
+     "start": 1.09,
+     "end": 1.562
+    },
+    {
+     "location": 13,
+     "length": 5,
+     "start": 1.562,
+     "end": 2.35
+    },
+    {
+     "location": 20,
+     "length": 5,
+     "start": 2.7,
+     "end": 3.41
+    },
+    {
+     "location": 26,
+     "length": 5,
+     "start": 3.41,
+     "end": 4.12
+    },
+    {
+     "location": 33,
+     "length": 3,
+     "start": 4.62,
+     "end": 5.185
+    },
+    {
+     "location": 37,
+     "length": 2,
+     "start": 5.185,
+     "end": 5.562
+    },
+    {
+     "location": 40,
+     "length": 2,
+     "start": 5.562,
+     "end": 5.938
+    },
+    {
+     "location": 43,
+     "length": 5,
+     "start": 5.938,
+     "end": 6.88
+    }
+   ],
+   "lufs": -16.0,
+   "style": "053f05ced7"
+  },
+  "paris-french/croissant": {
+   "file": "read-paris-french-croissant",
+   "text": "Ask the baker: Un croissant (kwah-SAHN), s'il vous plaît!",
+   "duration": 6.11,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.15,
+     "end": 0.548
+    },
+    {
+     "location": 4,
+     "length": 3,
+     "start": 0.548,
+     "end": 0.946
+    },
+    {
+     "location": 8,
+     "length": 5,
+     "start": 0.946,
+     "end": 1.61
+    },
+    {
+     "location": 15,
+     "length": 2,
+     "start": 1.96,
+     "end": 2.138
+    },
+    {
+     "location": 18,
+     "length": 9,
+     "start": 2.138,
+     "end": 2.94
+    },
+    {
+     "location": 29,
+     "length": 4,
+     "start": 3.29,
+     "end": 3.875
+    },
+    {
+     "location": 34,
+     "length": 4,
+     "start": 3.875,
+     "end": 4.46
+    },
+    {
+     "location": 41,
+     "length": 4,
+     "start": 4.81,
+     "end": 5.06
+    },
+    {
+     "location": 46,
+     "length": 4,
+     "start": 5.06,
+     "end": 5.393
+    },
+    {
+     "location": 51,
+     "length": 5,
+     "start": 5.393,
+     "end": 5.81
+    }
+   ],
+   "lufs": -16.0,
+   "style": "053f05ced7"
+  },
+  "paris-french/excusez": {
+   "file": "read-paris-french-excusez",
+   "text": "Excusez-moi (ex-kew-zay MWAH) means excuse me.",
+   "duration": 6.5,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 7,
+     "start": 0.15,
+     "end": 0.878
+    },
+    {
+     "location": 8,
+     "length": 3,
+     "start": 0.878,
+     "end": 1.19
+    },
+    {
+     "location": 13,
+     "length": 2,
+     "start": 1.54,
+     "end": 1.955
+    },
+    {
+     "location": 16,
+     "length": 3,
+     "start": 1.955,
+     "end": 2.578
+    },
+    {
+     "location": 20,
+     "length": 3,
+     "start": 2.578,
+     "end": 3.2
+    },
+    {
+     "location": 24,
+     "length": 4,
+     "start": 3.2,
+     "end": 4.03
+    },
+    {
+     "location": 30,
+     "length": 5,
+     "start": 4.38,
+     "end": 5.08
+    },
+    {
+     "location": 36,
+     "length": 6,
+     "start": 5.08,
+     "end": 5.92
+    },
+    {
+     "location": 43,
+     "length": 2,
+     "start": 5.92,
+     "end": 6.2
+    }
+   ],
+   "lufs": -16.0,
+   "style": "053f05ced7"
+  },
+  "paris-french/goodbye": {
+   "file": "read-paris-french-goodbye",
+   "text": "Au revoir (oh ruh-VWAR) means goodbye. See you soon!",
+   "duration": 6.89,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.15,
+     "end": 0.302
+    },
+    {
+     "location": 3,
+     "length": 6,
+     "start": 0.302,
+     "end": 0.76
+    },
+    {
+     "location": 11,
+     "length": 2,
+     "start": 1.11,
+     "end": 1.521
+    },
+    {
+     "location": 14,
+     "length": 3,
+     "start": 1.521,
+     "end": 2.138
+    },
+    {
+     "location": 18,
+     "length": 4,
+     "start": 2.138,
+     "end": 2.96
+    },
+    {
+     "location": 24,
+     "length": 5,
+     "start": 3.31,
+     "end": 4.027
+    },
+    {
+     "location": 30,
+     "length": 7,
+     "start": 4.027,
+     "end": 5.03
+    },
+    {
+     "location": 39,
+     "length": 3,
+     "start": 5.53,
+     "end": 5.848
+    },
+    {
+     "location": 43,
+     "length": 3,
+     "start": 5.848,
+     "end": 6.166
+    },
+    {
+     "location": 47,
+     "length": 4,
+     "start": 6.166,
+     "end": 6.59
+    }
+   ],
+   "lufs": -16.0,
+   "style": "053f05ced7"
+  },
+  "paris-french/jaime": {
+   "file": "read-paris-french-jaime",
+   "text": "J'aime la glace (zhem lah GLASS) means I love ice cream.",
+   "duration": 7.1,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 6,
+     "start": 0.15,
+     "end": 0.771
+    },
+    {
+     "location": 7,
+     "length": 2,
+     "start": 0.771,
+     "end": 1.019
+    },
+    {
+     "location": 10,
+     "length": 5,
+     "start": 1.019,
+     "end": 1.64
+    },
+    {
+     "location": 17,
+     "length": 4,
+     "start": 1.99,
+     "end": 2.773
+    },
+    {
+     "location": 22,
+     "length": 3,
+     "start": 2.773,
+     "end": 3.361
+    },
+    {
+     "location": 26,
+     "length": 5,
+     "start": 3.361,
+     "end": 4.34
+    },
+    {
+     "location": 33,
+     "length": 5,
+     "start": 4.69,
+     "end": 5.245
+    },
+    {
+     "location": 39,
+     "length": 1,
+     "start": 5.245,
+     "end": 5.467
+    },
+    {
+     "location": 41,
+     "length": 4,
+     "start": 5.467,
+     "end": 5.912
+    },
+    {
+     "location": 46,
+     "length": 3,
+     "start": 5.912,
+     "end": 6.245
+    },
+    {
+     "location": 50,
+     "length": 5,
+     "start": 6.245,
+     "end": 6.8
+    }
+   ],
+   "lufs": -16.0,
+   "style": "053f05ced7"
+  },
+  "paris-french/merci": {
+   "file": "read-paris-french-merci",
+   "text": "Merci (mair-SEE) means thank you. Say it a lot!",
+   "duration": 6.23,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 5,
+     "start": 0.15,
+     "end": 0.87
+    },
+    {
+     "location": 7,
+     "length": 4,
+     "start": 1.22,
+     "end": 1.9
+    },
+    {
+     "location": 12,
+     "length": 3,
+     "start": 1.9,
+     "end": 2.41
+    },
+    {
+     "location": 17,
+     "length": 5,
+     "start": 2.76,
+     "end": 3.329
+    },
+    {
+     "location": 23,
+     "length": 5,
+     "start": 3.329,
+     "end": 3.898
+    },
+    {
+     "location": 29,
+     "length": 3,
+     "start": 3.898,
+     "end": 4.24
+    },
+    {
+     "location": 34,
+     "length": 3,
+     "start": 4.74,
+     "end": 5.097
+    },
+    {
+     "location": 38,
+     "length": 2,
+     "start": 5.097,
+     "end": 5.335
+    },
+    {
+     "location": 41,
+     "length": 1,
+     "start": 5.335,
+     "end": 5.573
+    },
+    {
+     "location": 43,
+     "length": 3,
+     "start": 5.573,
+     "end": 5.93
+    }
+   ],
+   "lufs": -16.0,
+   "style": "053f05ced7"
+  },
+  "paris-french/name": {
+   "file": "read-paris-french-name",
+   "text": "Je m'appelle (zhuh mah-PELL) means my name is.",
+   "duration": 7.5,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.15,
+     "end": 0.458
+    },
+    {
+     "location": 3,
+     "length": 9,
+     "start": 0.458,
+     "end": 1.69
+    },
+    {
+     "location": 14,
+     "length": 4,
+     "start": 2.04,
+     "end": 2.855
+    },
+    {
+     "location": 19,
+     "length": 3,
+     "start": 2.855,
+     "end": 3.465
+    },
+    {
+     "location": 23,
+     "length": 4,
+     "start": 3.465,
+     "end": 4.28
+    },
+    {
+     "location": 29,
+     "length": 5,
+     "start": 4.63,
+     "end": 5.618
+    },
+    {
+     "location": 35,
+     "length": 2,
+     "start": 5.618,
+     "end": 6.014
+    },
+    {
+     "location": 38,
+     "length": 4,
+     "start": 6.014,
+     "end": 6.805
+    },
+    {
+     "location": 43,
+     "length": 2,
+     "start": 6.805,
+     "end": 7.2
+    }
+   ],
+   "lufs": -16.0,
+   "style": "053f05ced7"
+  },
+  "paris-french/numbers": {
+   "file": "read-paris-french-numbers",
+   "text": "Count with me: un (UHN), deux (DUH), trois (TWAH)!",
+   "duration": 5.73,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 5,
+     "start": 0.15,
+     "end": 0.518
+    },
+    {
+     "location": 6,
+     "length": 4,
+     "start": 0.518,
+     "end": 0.813
+    },
+    {
+     "location": 11,
+     "length": 2,
+     "start": 0.813,
+     "end": 0.96
+    },
+    {
+     "location": 15,
+     "length": 2,
+     "start": 1.31,
+     "end": 1.56
+    },
+    {
+     "location": 19,
+     "length": 3,
+     "start": 1.91,
+     "end": 2.31
+    },
+    {
+     "location": 25,
+     "length": 4,
+     "start": 2.66,
+     "end": 3.06
+    },
+    {
+     "location": 31,
+     "length": 3,
+     "start": 3.41,
+     "end": 3.83
+    },
+    {
+     "location": 37,
+     "length": 5,
+     "start": 4.18,
+     "end": 4.58
+    },
+    {
+     "location": 44,
+     "length": 4,
+     "start": 4.93,
+     "end": 5.43
+    }
+   ],
+   "lufs": -16.0,
+   "style": "053f05ced7"
+  },
+  "paris-french/ouinon": {
+   "file": "read-paris-french-ouinon",
+   "text": "Oui (WEE) means yes, and non (NOHN) means no.",
+   "duration": 7.87,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.15,
+     "end": 0.43
+    },
+    {
+     "location": 5,
+     "length": 3,
+     "start": 0.78,
+     "end": 1.15
+    },
+    {
+     "location": 10,
+     "length": 5,
+     "start": 1.5,
+     "end": 2.388
+    },
+    {
+     "location": 16,
+     "length": 3,
+     "start": 2.388,
+     "end": 2.92
+    },
+    {
+     "location": 21,
+     "length": 3,
+     "start": 3.27,
+     "end": 3.87
+    },
+    {
+     "location": 25,
+     "length": 3,
+     "start": 3.87,
+     "end": 4.47
+    },
+    {
+     "location": 30,
+     "length": 4,
+     "start": 4.82,
+     "end": 5.47
+    },
+    {
+     "location": 36,
+     "length": 5,
+     "start": 5.82,
+     "end": 7.07
+    },
+    {
+     "location": 42,
+     "length": 2,
+     "start": 7.07,
+     "end": 7.57
+    }
+   ],
+   "lufs": -16.0,
+   "style": "053f05ced7"
+  },
+  "paris-french/please": {
+   "file": "read-paris-french-please",
+   "text": "S'il vous plaît (seel voo PLAY) means please.",
+   "duration": 5.33,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.15,
+     "end": 0.48
+    },
+    {
+     "location": 5,
+     "length": 4,
+     "start": 0.48,
+     "end": 0.92
+    },
+    {
+     "location": 10,
+     "length": 5,
+     "start": 0.92,
+     "end": 1.47
+    },
+    {
+     "location": 17,
+     "length": 4,
+     "start": 1.82,
+     "end": 2.413
+    },
+    {
+     "location": 22,
+     "length": 3,
+     "start": 2.413,
+     "end": 2.857
+    },
+    {
+     "location": 26,
+     "length": 4,
+     "start": 2.857,
+     "end": 3.45
+    },
+    {
+     "location": 32,
+     "length": 5,
+     "start": 3.8,
+     "end": 4.359
+    },
+    {
+     "location": 38,
+     "length": 6,
+     "start": 4.359,
+     "end": 5.03
+    }
+   ],
+   "lufs": -16.0,
+   "style": "053f05ced7"
+  },
+  "paris-french/toilettes": {
+   "file": "read-paris-french-toilettes",
+   "text": "Where is the toilet? Où sont les toilettes (oo sohn lay twah-LET)?",
+   "duration": 8.42,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 5,
+     "start": 0.15,
+     "end": 0.681
+    },
+    {
+     "location": 6,
+     "length": 2,
+     "start": 0.681,
+     "end": 0.894
+    },
+    {
+     "location": 9,
+     "length": 3,
+     "start": 0.894,
+     "end": 1.212
+    },
+    {
+     "location": 13,
+     "length": 6,
+     "start": 1.212,
+     "end": 1.85
+    },
+    {
+     "location": 21,
+     "length": 2,
+     "start": 2.35,
+     "end": 2.551
+    },
+    {
+     "location": 24,
+     "length": 4,
+     "start": 2.551,
+     "end": 2.953
+    },
+    {
+     "location": 29,
+     "length": 3,
+     "start": 2.953,
+     "end": 3.255
+    },
+    {
+     "location": 33,
+     "length": 9,
+     "start": 3.255,
+     "end": 4.16
+    },
+    {
+     "location": 44,
+     "length": 2,
+     "start": 4.51,
+     "end": 4.961
+    },
+    {
+     "location": 47,
+     "length": 4,
+     "start": 4.961,
+     "end": 5.864
+    },
+    {
+     "location": 52,
+     "length": 3,
+     "start": 5.864,
+     "end": 6.541
+    },
+    {
+     "location": 56,
+     "length": 4,
+     "start": 6.541,
+     "end": 7.443
+    },
+    {
+     "location": 61,
+     "length": 3,
+     "start": 7.443,
+     "end": 8.12
+    }
+   ],
+   "lufs": -16.0,
+   "style": "053f05ced7"
+  },
+  "paris-french/welcome": {
+   "file": "read-paris-french-welcome",
+   "text": "In France, people speak French. Let's learn some words!",
+   "duration": 6.94,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.15,
+     "end": 0.51
+    },
+    {
+     "location": 3,
+     "length": 6,
+     "start": 0.51,
+     "end": 1.59
+    },
+    {
+     "location": 11,
+     "length": 6,
+     "start": 1.94,
+     "end": 2.575
+    },
+    {
+     "location": 18,
+     "length": 5,
+     "start": 2.575,
+     "end": 3.105
+    },
+    {
+     "location": 24,
+     "length": 6,
+     "start": 3.105,
+     "end": 3.74
+    },
+    {
+     "location": 32,
+     "length": 5,
+     "start": 4.24,
+     "end": 4.773
+    },
+    {
+     "location": 38,
+     "length": 5,
+     "start": 4.773,
+     "end": 5.44
+    },
+    {
+     "location": 44,
+     "length": 4,
+     "start": 5.44,
+     "end": 5.973
+    },
+    {
+     "location": 49,
+     "length": 5,
+     "start": 5.973,
+     "end": 6.64
+    }
+   ],
+   "lufs": -16.0,
+   "style": "053f05ced7"
+  },
   "paris-fun/beach": {
    "file": "read-paris-fun-beach",
    "text": "In summer, Paris makes a beach by the river!",
