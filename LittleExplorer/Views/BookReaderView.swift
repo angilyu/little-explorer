@@ -9,8 +9,12 @@ struct BookReaderView: View {
     @Environment(HeartStore.self) private var hearts
     @Environment(VoiceModeController.self) private var voice
     @Environment(ReadAloudController.self) private var readAloud
+    @Environment(StarStore.self) private var stars
 
     @State private var pageIndex: Int
+    @State private var counterFrame: CGRect = .zero
+    @State private var flight: Int?
+    @State private var flying = false
 
     init(book: Book, startPage: Int = 0) {
         self.book = book
@@ -47,6 +51,16 @@ struct BookReaderView: View {
             .padding(.horizontal, regular ? 24 : 10)
             bottomBar
         }
+        .coordinateSpace(name: StarFlight.space)
+        .onPreferenceChange(StarCounterFrameKey.self) { counterFrame = $0 }
+        .overlay {
+            if flight != nil {
+                StarFlight(target: counterFrame, flying: flying)
+                    .transition(.opacity)
+            }
+        }
+        .onChange(of: stars.celebration) { _, _ in flyStar() }
+        .animation(.spring(duration: 0.35), value: voice.isEnabled)
         .background(tint.opacity(0.18).ignoresSafeArea())
         .task { await voice.pageDidChange(PageContext(book: book, index: pageIndex)) }
         .onChange(of: pageIndex) { _, newIndex in
@@ -75,7 +89,7 @@ struct BookReaderView: View {
     }
 
     private var topBar: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: regular ? 12 : 8) {
             Button {
                 readAloud.stop()
                 Task { await voice.bookDidClose() }
@@ -89,7 +103,9 @@ struct BookReaderView: View {
             }
             .accessibilityLabel("Close book")
 
-            FlagBadge(book: book, height: regular ? 34 : 26)
+            if regular || !voice.isEnabled {
+                FlagBadge(book: book, height: regular ? 34 : 26)
+            }
             VStack(alignment: .leading, spacing: 0) {
                 Text(book.city)
                     .font(.system(size: regular ? 32 : 24, weight: .heavy, design: .rounded))
@@ -107,10 +123,28 @@ struct BookReaderView: View {
             Spacer(minLength: 8)
 
             VoiceStatusView(voice: voice, compact: !regular)
+            if voice.isEnabled {
+                StarCounter(total: stars.total, bounce: stars.celebration, compact: !regular)
+            }
             VoiceToggleButton(voice: voice, compact: !regular)
         }
         .padding(.horizontal, regular ? 24 : 12)
         .padding(.vertical, 10)
+    }
+
+    /// A big star pops up over the page, then shrinks into the counter.
+    private func flyStar() {
+        let id = (flight ?? 0) + 1
+        flying = false
+        withAnimation(.spring(duration: 0.3)) { flight = id }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+            guard flight == id else { return }
+            withAnimation(.easeIn(duration: 0.7)) { flying = true }
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.4) {
+            guard flight == id else { return }
+            withAnimation(.easeOut(duration: 0.2)) { flight = nil }
+        }
     }
 
     private var bottomBar: some View {
@@ -119,10 +153,14 @@ struct BookReaderView: View {
                 pageIndex -= 1
             }
             Spacer()
-            Text("\(pageIndex + 1) / \(book.pages.count)")
-                .font(.system(size: 20, weight: .bold, design: .rounded))
-                .foregroundStyle(Theme.ink.opacity(0.7))
-                .accessibilityLabel("Page \(pageIndex + 1) of \(book.pages.count)")
+            if pageIndex == book.pages.count - 1 {
+                BookStarSummary(bookStars: stars.stars(inBook: book.id), total: stars.total, regular: regular)
+            } else {
+                Text("\(pageIndex + 1) / \(book.pages.count)")
+                    .font(.system(size: 20, weight: .bold, design: .rounded))
+                    .foregroundStyle(Theme.ink.opacity(0.7))
+                    .accessibilityLabel("Page \(pageIndex + 1) of \(book.pages.count)")
+            }
             Spacer()
             pageButton(systemImage: "arrow.right", label: "Next page", enabled: pageIndex < book.pages.count - 1) {
                 pageIndex += 1

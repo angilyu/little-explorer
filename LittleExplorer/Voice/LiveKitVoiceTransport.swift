@@ -17,6 +17,7 @@ final class LiveKitVoiceTransport: NSObject, VoiceTransport, RoomDelegate, @unch
     private var latestPage: PageContext?
 
     static let contextTopic = "context"
+    static let starTopic = "milo.star"
     /// Set by the agent just before it leaves on purpose (see server agent.py `ENDED_ATTRIBUTE`).
     static let endedAttribute = "milo.ended"
     private var endReported = false
@@ -96,6 +97,14 @@ final class LiveKitVoiceTransport: NSObject, VoiceTransport, RoomDelegate, @unch
     func room(_ room: Room, participant: Participant, didUpdateAttributes changedAttributes: [String: String]) {
         guard participant is RemoteParticipant else { return }
         emitActivity(from: participant.attributes)
+    }
+
+    func room(
+        _ room: Room, participant: RemoteParticipant?, didReceiveData data: Data, forTopic topic: String,
+        encryptionType: EncryptionType
+    ) {
+        guard topic == Self.starTopic, let award = try? JSONDecoder().decode(StarAward.self, from: data) else { return }
+        DispatchQueue.main.async { [weak self] in self?.onEvent?(.star(award)) }
     }
 
     func room(_ room: Room, didDisconnectWithError error: LiveKitError?) {

@@ -115,5 +115,10 @@ final class ContentTests: XCTestCase {
         XCTAssertEqual(live?.liveVoice, true)
         XCTAssertNil(live?.voiceActivity)
         XCTAssertEqual(live?.startsWithVoice, true)
+        let star = DemoLaunch.parse(["app", "-demoStars", "23", "-demoPassport", "-demoVoice", "star"])
+        XCTAssertEqual(star?.seedStars, 23)
+        XCTAssertEqual(star?.openPassport, true)
+        XCTAssertEqual(star?.voiceStar, true)
+        XCTAssertEqual(star?.voiceActivity, .listening)
     }
 }

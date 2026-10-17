@@ -29,6 +29,8 @@ final class VoiceModeController {
     @ObservationIgnored private let makeTransport: @MainActor () -> VoiceTransport
     @ObservationIgnored private var transport: VoiceTransport?
     @ObservationIgnored private var generation = 0
+    /// Called with every star Milo gives (the app saves it in ``StarStore``).
+    @ObservationIgnored var onStar: ((StarAward) -> Void)?
 
     init(makeTransport: @escaping @MainActor () -> VoiceTransport) {
         self.makeTransport = makeTransport
@@ -150,6 +152,8 @@ final class VoiceModeController {
             state = .off
             notice = reason == "limit" ? Self.restNotice : Self.napNotice
             Task { await transport?.disconnect() }
+        case .star(let award):
+            onStar?(award)
         }
     }
 
@@ -168,7 +172,7 @@ extension VoiceModeController {
     static func live() -> VoiceModeController {
         #if DEBUG
         if let demo = DemoLaunch.current, let activity = demo.voiceActivity {
-            return VoiceModeController { DemoVoiceTransport(activity: activity, endReason: demo.voiceEnd) }
+            return VoiceModeController { DemoVoiceTransport(activity: activity, endReason: demo.voiceEnd, givesStar: demo.voiceStar) }
         }
         #endif
         return VoiceModeController { makeLiveVoiceTransport() }

@@ -4,6 +4,8 @@ import Foundation
 /// `xcrun simctl launch booted com.angilyu.littleexplorer -demoBook paris -demoPage 5 -demoLove -demoVoice listening`
 /// `-demoVoice live` turns real voice mode on at launch (needs the server running).
 /// `-demoVoice nap` / `-demoVoice rest` shows Milo turning itself off (idle / daily limit).
+/// `-demoVoice star` turns Milo on and has him give a star for the opening page.
+/// `-demoStars 23` seeds that many saved stars; `-demoPassport` opens the Passport.
 /// `-demoRead` starts reading the opening page aloud, to show the word highlight.
 struct DemoLaunch: Equatable {
     var bookId: String?
@@ -13,6 +15,9 @@ struct DemoLaunch: Equatable {
     var voiceEnd: String?
     var liveVoice = false
     var readAloud = false
+    var voiceStar = false
+    var seedStars = 0
+    var openPassport = false
 
     var startsWithVoice: Bool { voiceActivity != nil || liveVoice }
 
@@ -35,8 +40,14 @@ struct DemoLaunch: Equatable {
         if let page = value(after: "-demoPage").flatMap(Int.init) { demo.pageIndex = max(0, page - 1); found = true }
         if arguments.contains("-demoLove") { demo.lovePage = true; found = true }
         if arguments.contains("-demoRead") { demo.readAloud = true; found = true }
+        if let stars = value(after: "-demoStars").flatMap(Int.init) { demo.seedStars = max(0, stars); found = true }
+        if arguments.contains("-demoPassport") { demo.openPassport = true; found = true }
         if let voice = value(after: "-demoVoice") {
-            if voice == "live" {
+            if voice == "star" {
+                demo.voiceActivity = .listening
+                demo.voiceStar = true
+                found = true
+            } else if voice == "live" {
                 demo.liveVoice = true; found = true
             } else if voice == "nap" || voice == "rest" {
                 demo.voiceActivity = .listening

@@ -108,7 +108,7 @@ def show_devices(data: dict[str, Any]) -> str:
     )
     if not data["devices"]:
         return head + "\nNo devices yet."
-    rows = [["DEVICE", "STATUS", "TODAY", "TODAY $", "TOTAL", "TOTAL $", "SESSIONS", "LAST SEEN", "ID"]]
+    rows = [["DEVICE", "STATUS", "TODAY", "TODAY $", "TOTAL", "TOTAL $", "SESSIONS", "STARS", "LAST SEEN", "ID"]]
     for d in data["devices"]:
         name = d["display_name"] + (f" ({d['model']})" if d.get("model") else "")
         rows.append(
@@ -120,6 +120,7 @@ def show_devices(data: dict[str, Any]) -> str:
                 f"{d['total_min']:g} min",
                 f"${d['total_usd']:.2f}",
                 str(d["sessions"]),
+                str(d.get("stars", 0)),
                 (d.get("last_seen") or "")[:16].replace("T", " "),
                 d["id"],
             ]

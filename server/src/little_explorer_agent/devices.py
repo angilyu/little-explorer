@@ -16,7 +16,8 @@ Days run midnight to midnight in ``PIP_TIMEZONE`` (America/Los_Angeles).
 Storage is Postgres when ``DATABASE_URL`` is set (the deployed token server uses a free Neon
 database, because Render's free disk is wiped on every deploy and restart), otherwise SQLite at
 ``PIP_DEVICES_DB`` (``~/.config/little-explorer/devices.sqlite3``) for local runs and tests.
-Only ids, names, models, timings, book ids and costs are stored; never transcripts or audio.
+Star awards (see :mod:`.stars`) are kept here too, so a reinstall can restore them.
+Only ids, names, models, timings, book ids, costs and star counts are stored; never transcripts or audio.
 """
 
 from __future__ import annotations
@@ -70,7 +71,30 @@ SCHEMA = (
         ended_reason TEXT NOT NULL DEFAULT ''
     )""",
     "CREATE INDEX IF NOT EXISTS sessions_device_day ON sessions (device_id, day)",
+    """CREATE TABLE IF NOT EXISTS stars (
+        id TEXT PRIMARY KEY,
+        device_id TEXT NOT NULL,
+        room TEXT NOT NULL DEFAULT '',
+        awarded_at TEXT NOT NULL,
+        day TEXT NOT NULL,
+        book TEXT NOT NULL DEFAULT '',
+        page TEXT NOT NULL DEFAULT '',
+        city TEXT NOT NULL DEFAULT '',
+        kind TEXT NOT NULL DEFAULT 'question',
+        long INTEGER NOT NULL DEFAULT 0,
+        why_how INTEGER NOT NULL DEFAULT 0,
+        followup INTEGER NOT NULL DEFAULT 0,
+        stars INTEGER NOT NULL,
+        words INTEGER NOT NULL DEFAULT 0,
+        reason TEXT NOT NULL DEFAULT ''
+    )""",
+    "CREATE INDEX IF NOT EXISTS stars_device ON stars (device_id)",
 )
+
+STAR_ID = re.compile(r"^[A-Za-z0-9-]{8,64}$")
+STAR_KINDS = ("question", "follow_up")
+MAX_STARS_PER_AWARD = 3
+_STAR_COLUMNS = "id, device_id, awarded_at, book, page, city, kind, long, why_how, followup, stars, words, reason"
 
 REST_MESSAGE = "Milo needs a rest today. Let's talk again tomorrow!"
 
@@ -353,6 +377,64 @@ class DeviceStore:
 
         return self._run(run)
 
+    # -- stars -----------------------------------------------------------------------------------
+
+    def record_star(self, award: Mapping[str, Any]) -> bool:
+        """Store one star award from the agent; True if it was new (the id makes retries safe)."""
+        star_id, device_id = award.get("id"), award.get("device_id") or ANONYMOUS
+        if not isinstance(star_id, str) or not STAR_ID.match(star_id) or not valid_device_id(device_id):
+            raise ValueError("a valid id and device_id are required")
+        stars = award.get("stars")
+        if isinstance(stars, bool) or not isinstance(stars, int) or not 1 <= stars <= MAX_STARS_PER_AWARD:
+            raise ValueError("stars must be 1 to 3")
+        kind = award.get("kind") if award.get("kind") in STAR_KINDS else "question"
+        awarded = str(award.get("awarded_at") or self.now().isoformat(timespec="seconds"))[:40]
+        values = (
+            star_id,
+            device_id,
+            _text(award.get("room")),
+            awarded,
+            self.day_of(awarded),
+            _text(award.get("book")),
+            _text(award.get("page")),
+            _text(award.get("city")),
+            kind,
+            int(bool(award.get("long"))),
+            int(bool(award.get("why_how"))),
+            int(bool(award.get("followup"))),
+            stars,
+            max(int(award.get("words") or 0), 0),
+            _text(award.get("reason")),
+        )
+
+        def run(cur: Any) -> bool:
+            self._exec(
+                cur,
+                """INSERT INTO stars (id, device_id, room, awarded_at, day, book, page, city, kind, long, why_how,
+                    followup, stars, words, reason) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ON CONFLICT (id) DO NOTHING""",
+                values,
+            )
+            return cur.rowcount == 1
+
+        return self._run(run)
+
+    def stars_for(self, device_id: str) -> list[dict[str, Any]]:
+        """Every award a device has earned, oldest first (for restoring after a reinstall)."""
+        rows = self._run(
+            lambda cur: self._exec(
+                cur, f"SELECT {_STAR_COLUMNS} FROM stars WHERE device_id = ? ORDER BY awarded_at, id", (device_id,)
+            ).fetchall()
+        )
+        keys = [k.strip() for k in _STAR_COLUMNS.split(",")]
+        out = []
+        for row in rows:
+            item = dict(zip(keys, row))
+            for flag in ("long", "why_how", "followup"):
+                item[flag] = bool(item[flag])
+            out.append(item)
+        return out
+
     # -- owner tools -----------------------------------------------------------------------------
 
     def find(self, ref: str) -> list[Device]:
@@ -415,7 +497,7 @@ class DeviceStore:
         """One entry per device: status, limit, and minutes and dollars today and in total."""
         day = self.day_of(now)
 
-        def run(cur: Any) -> tuple[list[Device], dict[str, Any]]:
+        def run(cur: Any) -> tuple[list[Device], dict[str, Any], dict[str, Any]]:
             devices = [Device(*r) for r in self._exec(cur, f"SELECT {_DEVICE_COLUMNS} FROM devices").fetchall()]
             totals = {
                 r[0]: r[1:]
@@ -428,9 +510,12 @@ class DeviceStore:
                     (day, day),
                 ).fetchall()
             }
-            return devices, totals
+            stars = dict(
+                self._exec(cur, "SELECT device_id, COALESCE(SUM(stars), 0) FROM stars GROUP BY device_id").fetchall()
+            )
+            return devices, totals, stars
 
-        devices, totals = self._run(run)
+        devices, totals, stars = self._run(run)
         out = []
         for d in devices:
             sessions, total_s, total_usd, today_s, today_usd = totals.get(d.id, (0, 0, 0, 0, 0))
@@ -444,6 +529,7 @@ class DeviceStore:
                     "total_min": round(float(total_s) / 60, 1),
                     "total_usd": round(float(total_usd), 4),
                     "sessions": int(sessions),
+                    "stars": int(stars.get(d.id, 0)),
                 }
             )
         return sorted(out, key=lambda r: r["last_seen"], reverse=True)

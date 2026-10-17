@@ -7,6 +7,10 @@ spoke (0 disables), and says goodbye when the device's minutes for today run out
 passes ``remaining_s``). Either way he sets his ``milo.ended`` attribute to ``idle`` or ``limit`` so
 the app can switch its toggle off with the right message, then leaves the room. Each session's
 length and cost is reported to the token server for per-device usage (see :mod:`.usage`).
+
+Curious questions earn stars (see :mod:`.stars`): the realtime model calls ``give_star`` with its
+answer, :class:`StarKeeper` checks the claim against what was heard, and :class:`StarGame` sends
+each award to the app (``milo.star`` data topic) and backs it up on the token server.
 """
 
 from __future__ import annotations
@@ -21,9 +25,9 @@ import asyncio  # noqa: E402
 import inspect  # noqa: E402
 import os  # noqa: E402
 from collections.abc import Awaitable, Callable, Mapping  # noqa: E402
-from typing import Any  # noqa: E402
+from typing import Any, Literal  # noqa: E402
 
-from livekit.agents import AgentServer, AgentSession, JobContext, cli, function_tool, llm  # noqa: E402
+from livekit.agents import AgentServer, AgentSession, JobContext, RunContext, cli, function_tool, llm  # noqa: E402
 
 from . import AGENT_NAME  # noqa: E402
 from .buddy import (  # noqa: E402
@@ -41,9 +45,10 @@ from .buddy import (  # noqa: E402
     make_parallel_topic_gate,
     realtime_instructions,
 )
-from .content import refresh_remote  # noqa: E402
+from .content import BOOK_KEY, PAGE_KEY, refresh_remote  # noqa: E402
 from .modes import parse_job_metadata, resolve_mode  # noqa: E402
 from .speech import speech_setup  # noqa: E402
+from .stars import KINDS, STAR_TOPIC, StarAward, StarKeeper, StarRules, report_star, star_payload  # noqa: E402
 from .usage import UsageMeter, report_usage  # noqa: E402
 from .voice import ContextStore, TurnDecision, UserTurn, VoicePreset, preset_from_env  # noqa: E402
 from .voice.realtime import RealtimeConfig, start_realtime_session  # noqa: E402
@@ -163,6 +168,122 @@ async def stay_quiet() -> llm.ToolResult:
     return llm.ToolResult("(Milo stayed quiet)", reply_required=False)
 
 
+async def give_star_result(
+    keeper: StarKeeper,
+    kind: str,
+    reason: str,
+    on_award: Callable[[StarAward], None],
+    spoke: Callable[[], Awaitable[bool]],
+) -> llm.ToolResult:
+    """What ``give_star`` does: validate the claim, hand a real award on at once (a barge-in cancels
+    the tool, so nothing slow happens after that), then make sure he still gets a spoken answer."""
+    result = await keeper.claim(kind if kind in KINDS else "question", reason)
+    if isinstance(result, StarAward):
+        on_award(result)
+        note = f"(Star given: {result.stars}.)"
+    else:
+        log.info("no star: %s", result)
+        note = "(No star this time. Don't mention stars until his next question.)"
+    if await spoke():
+        return llm.ToolResult(note, reply_required=False)
+    # The model only made the call and said nothing; let it answer now.
+    return llm.ToolResult(f"{note} Now answer his question out loud.", reply_required=True)
+
+
+async def _spoke(context: RunContext) -> bool:
+    """Whether this step's spoken answer was played (or cut off by him talking)."""
+    try:
+        await context.wait_for_playout()
+    except Exception:  # noqa: BLE001 - be safe: never make Milo talk twice
+        return True
+    handle = context.speech_handle
+    if handle.interrupted:
+        return True
+    return any(
+        getattr(item, "role", None) == "assistant" and (getattr(item, "text_content", "") or "").strip()
+        for item in handle.chat_items
+    )
+
+
+class StarGame:
+    """Plugs a :class:`StarKeeper` into a session: it hears every guarded turn, gives the realtime
+    model its ``give_star`` tool, and sends each award to the app and the token server."""
+
+    def __init__(
+        self,
+        ctx: Any,
+        keeper: StarKeeper,
+        *,
+        report: Callable[[StarAward], Awaitable[bool]] = report_star,
+    ) -> None:
+        self.ctx = ctx
+        self.keeper = keeper
+        self.report = report
+        self.refresh: Callable[[], None] | None = None
+        self._tasks: set[asyncio.Task[Any]] = set()
+
+    def _spawn(self, coro: Any) -> None:
+        task = asyncio.ensure_future(coro)
+        self._tasks.add(task)
+        task.add_done_callback(self._tasks.discard)
+
+    def on_decision(self, turn: UserTurn, decision: TurnDecision) -> None:
+        _log_decision(turn, decision)
+        self.keeper.heard(turn, decision)
+
+    def pipeline_decision(self, turn: UserTurn, decision: TurnDecision) -> None:
+        """The pipeline has no tool calls: a question it answers earns a star directly."""
+        self.on_decision(turn, decision)
+        if decision is TurnDecision.RESPOND:
+            result = self.keeper.judge("question")
+            if isinstance(result, StarAward):
+                self.award(result)
+
+    def watch(self, session: Any) -> None:
+        def on_user_state(ev: Any) -> None:
+            if getattr(ev, "new_state", None) == "speaking":
+                self.keeper.speech_started()
+
+        session.on("user_state_changed", on_user_state)
+
+    def award(self, award: StarAward) -> None:
+        log.info("star +%d on %s/%s (%s, %d words)", award.stars, award.book, award.page, award.kind, award.words)
+        self._spawn(self._publish(award))
+        self._spawn(self.report(award))
+        if self.refresh is not None and self.keeper.stars_left({BOOK_KEY: award.book, PAGE_KEY: award.page}) == 0:
+            self.refresh()
+
+    async def _publish(self, award: StarAward) -> None:
+        try:
+            await self.ctx.room.local_participant.publish_data(
+                star_payload(award, self.keeper.total()), reliable=True, topic=STAR_TOPIC
+            )
+        except Exception:  # noqa: BLE001
+            log.warning("could not send the star to the app", exc_info=True)
+
+    async def drain(self, timeout: float = 3.0) -> None:
+        if self._tasks:
+            await asyncio.wait(set(self._tasks), timeout=timeout)
+
+    def tool(self) -> Any:
+        game = self
+
+        @function_tool
+        async def give_star(
+            context: RunContext, kind: Literal["question", "follow_up"] = "question", reason: str = ""
+        ) -> llm.ToolResult:
+            """Give him a star for a real, curious question about the book, the page, the city or
+            travel. Call it in the same response as your spoken answer, never instead of it.
+
+            Args:
+                kind: "follow_up" when he asks more about the thing he just asked about, else "question".
+                reason: a few words on what he asked about, like "why the tower is painted". No names.
+            """
+            return await give_star_result(game.keeper, kind, reason, game.award, lambda: _spoke(context))
+
+        return give_star
+
+
 def realtime_config(env: dict[str, str] | None = None) -> RealtimeConfig:
     env = dict(os.environ) if env is None else env
     return RealtimeConfig(
@@ -192,7 +313,7 @@ def make_realtime_guard(tracker: ReadingTracker, topic_gate: TopicGate | None) -
     return guard
 
 
-async def _pipeline(ctx: JobContext) -> AgentSession:
+async def _pipeline(ctx: JobContext, game: StarGame) -> AgentSession:
     tracker = ReadingTracker()
     preset, speech = speech_setup(agent_preset())
     return await start_graph_session(
@@ -204,23 +325,35 @@ async def _pipeline(ctx: JobContext) -> AgentSession:
         parallel_gate=make_parallel_topic_gate(tracker, default_topic_gate()),
         instructions=PERSONA,
         context_message=make_context_note(tracker),
-        on_decision=_log_decision,
+        on_decision=game.pipeline_decision,
         greeting=GREETING,
         **speech,
     )
 
 
-async def _realtime(ctx: JobContext) -> AgentSession:
-    return await start_realtime_session(
+async def _realtime(ctx: JobContext, game: StarGame) -> AgentSession:
+    store = ContextStore()
+
+    def instructions(context: Mapping[str, Any]) -> str:
+        return realtime_instructions(context, stars=game.keeper.status_line(context))
+
+    session = await start_realtime_session(
         ctx,
         config=realtime_config(),
         preset=agent_preset(),
-        instructions=realtime_instructions,
-        tools=[stay_quiet],
+        instructions=instructions,
+        tools=[stay_quiet, game.tool()],
         guard=make_realtime_guard(ReadingTracker(), default_topic_gate()),
-        on_decision=_log_decision,
+        on_decision=game.on_decision,
         greeting=GREETING,
+        context_store=store,
     )
+
+    def refresh() -> None:
+        game._spawn(session.current_agent.update_instructions(instructions(store.snapshot())))
+
+    game.refresh = refresh
+    return session
 
 
 def session_model(mode: str, env: dict[str, str] | None = None) -> str:
@@ -252,7 +385,10 @@ async def entrypoint(ctx: JobContext) -> None:
     # Runs on every job end, including the child leaving abruptly or the worker shutting down.
     ctx.add_shutdown_callback(write_usage)
     await refresh_remote()
-    session = await (_realtime if mode == "realtime" else _pipeline)(ctx)
+    game = StarGame(ctx, StarKeeper(device_id=device_id, room=ctx.job.room.name, rules=StarRules.from_env()))
+    ctx.add_shutdown_callback(game.drain)
+    session = await (_realtime if mode == "realtime" else _pipeline)(ctx, game)
+    game.watch(session)
     meter.bind(session)
 
     def note_reason(reason: str) -> None:

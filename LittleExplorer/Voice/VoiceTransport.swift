@@ -13,6 +13,8 @@ enum VoiceTransportEvent: Sendable {
     case disconnected(reason: String?)
     /// The agent ended the session on purpose (`milo.ended`): "idle" after a quiet spell, "limit" at the daily limit.
     case ended(reason: String)
+    /// Milo gave a star for a curious question (`milo.star`), already checked by the agent.
+    case star(StarAward)
 }
 
 /// Thin seam between the app and whatever carries audio to the voice agent.
@@ -59,17 +61,27 @@ final class DemoVoiceTransport: VoiceTransport {
     var onEvent: ((VoiceTransportEvent) -> Void)?
     private let activity: BuddyActivity
     private let endReason: String?
+    private let givesStar: Bool
 
-    /// `endReason` ("idle" or "limit") makes Milo end the session a moment after joining.
-    init(activity: BuddyActivity, endReason: String? = nil) {
+    /// `endReason` ("idle" or "limit") makes Milo end the session a moment after joining;
+    /// `givesStar` makes Milo give one star for the opening page.
+    init(activity: BuddyActivity, endReason: String? = nil, givesStar: Bool = false) {
         self.activity = activity
         self.endReason = endReason
+        self.givesStar = givesStar
     }
 
     func connect(page: PageContext?) async throws {
         try await Task.sleep(nanoseconds: 300_000_000)
         let activity = activity
         await MainActor.run { onEvent?(.buddyActivity(activity)) }
+        if givesStar, let page {
+            Task { @MainActor [weak self] in
+                try? await Task.sleep(nanoseconds: 1_500_000_000)
+                let award = StarAward(book: page.bookId, page: page.pageId, city: page.city, whyHow: true, stars: 2, words: 9)
+                self?.onEvent?(.star(award))
+            }
+        }
         guard let endReason else { return }
         Task { @MainActor [weak self] in
             try? await Task.sleep(nanoseconds: 1_000_000_000)
