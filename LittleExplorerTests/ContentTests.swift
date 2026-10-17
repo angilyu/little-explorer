@@ -111,6 +111,7 @@ final class ContentTests: XCTestCase {
         let demo = DemoLaunch.parse(["app", "-demoBook", "london", "-demoPage", "4", "-demoLove", "-demoVoice", "speaking"])
         XCTAssertEqual(demo, DemoLaunch(bookId: "london", pageIndex: 3, lovePage: true, voiceActivity: .speaking))
         XCTAssertEqual(DemoLaunch.parse(["app", "-demoBook", "paris-fun", "-demoRead"])?.readAloud, true)
+        XCTAssertEqual(DemoLaunch.parse(["app", "-demoShelf", "paris-french"])?.shelfBook, "paris-french")
         let live = DemoLaunch.parse(["app", "-demoBook", "paris", "-demoVoice", "live"])
         XCTAssertEqual(live?.liveVoice, true)
         XCTAssertNil(live?.voiceActivity)
