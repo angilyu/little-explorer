@@ -1,4 +1,4 @@
-"""Where Pip's secrets come from.
+"""Where Milo's secrets come from.
 
 The first that applies wins:
 

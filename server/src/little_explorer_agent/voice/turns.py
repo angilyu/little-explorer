@@ -1,4 +1,4 @@
-"""Turn gates: decide whether Pip should answer a finished user turn at all.
+"""Turn gates: decide whether Milo should answer a finished user turn at all.
 
 * ``RESPOND``: run the reply graph and speak.
 * ``LISTEN``: keep the utterance in the conversation history but stay silent (the child reading

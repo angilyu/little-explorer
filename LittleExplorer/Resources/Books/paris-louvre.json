@@ -1,0 +1,204 @@
+{
+  "id": "paris-louvre",
+  "city": "Paris",
+  "country": "France",
+  "flagImage": "paris-flag.png",
+  "flag": "🇫🇷",
+  "theme": "Louvre Museum",
+  "coverColor": "#B5475E",
+  "tagline": "A glass pyramid and a tiny Mona Lisa",
+  "pages": [
+    {
+      "id": "welcome",
+      "text": "This is the Louvre. Its door is a big glass pyramid!",
+      "about": "The Louvre (LOOV-ruh) is the biggest art museum in the world. Its main entrance is a glass pyramid, built in 1989 by an architect named I. M. Pei. It is about 21 meters tall and made of 673 glass panes. You walk in through the pyramid and go down stairs into a big hall underneath. From there, you can go to all the parts of the museum.",
+      "emoji": "🔺",
+      "photo": {
+        "commonsTitle": "File:Cour Napoléon in 2006.jpg",
+        "query": "Louvre pyramid Cour Napoléon",
+        "file": "paris-louvre-welcome.jpg",
+        "author": "Kennito454",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Cour_Napol%C3%A9on_in_2006.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "inverted",
+      "text": "Inside, an upside-down pyramid almost touches a tiny one.",
+      "about": "Under the ground near the Louvre there is a glass pyramid hanging upside down from the ceiling! It is called the Inverted Pyramid. Its point hangs down just above a tiny stone pyramid on the floor. The two points almost touch, but not quite. Lots of people take pictures here, pretending to hold the pyramid up.",
+      "emoji": "🔻",
+      "photo": {
+        "commonsTitle": "File:Louvre - The inverted Pyramid (9132115104).jpg",
+        "query": "Louvre inverted pyramid",
+        "file": "paris-louvre-inverted.jpg",
+        "author": "Cesar I. Martins from Jundiai, Brazil",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Louvre_-_The_inverted_Pyramid_(9132115104).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "palace",
+      "text": "Long ago, the Louvre was a palace where kings lived.",
+      "about": "More than 800 years ago, the Louvre started as a castle with thick walls to protect Paris. Later, kings turned it into a beautiful palace and lived there. When King Louis XIV moved to Versailles, the palace was used for artists and art. It opened as a museum for everyone in 1793. You can still see the old castle walls under the museum today.",
+      "emoji": "👑",
+      "photo": {
+        "commonsTitle": "File:Louvre Cour Carrée June 2010.jpg",
+        "query": "Louvre Cour Carrée",
+        "file": "paris-louvre-palace.jpg",
+        "author": "King of Hearts",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Louvre_Cour_Carr%C3%A9e_June_2010.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "longhall",
+      "text": "One hall is so long, you can hardly see the end!",
+      "about": "The Grande Galerie is a giant hallway full of paintings. It is almost 300 meters long, as long as three football fields. Long ago it was even longer! Kings built it so they could walk from one palace to another without going outside in the rain. Light comes in from windows in the ceiling, so the paintings glow.",
+      "emoji": "🖼️",
+      "photo": {
+        "commonsTitle": "File:Intérieur de la Grande Galerie du Louvre.jpg",
+        "query": "Grande Galerie Louvre",
+        "file": "paris-louvre-longhall.jpg",
+        "author": "Touzania18",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Int%C3%A9rieur_de_la_Grande_Galerie_du_Louvre.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "copyist",
+      "text": "Artists come to copy famous paintings with their own brushes.",
+      "about": "For more than 200 years, artists have been allowed to bring easels and paint copies of the paintings in the Louvre. It is a great way to learn how the old masters painted. But there is a rule: the copy must be a different size than the real painting, so nobody can mix them up. Would you like to copy a painting?",
+      "emoji": "🎨",
+      "photo": {
+        "commonsTitle": "File:Copying in the grande galerie (Louvre).jpg",
+        "query": "copyist painting Louvre",
+        "file": "paris-louvre-copyist.jpg",
+        "author": "Luca Nebuloni",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Copying_in_the_grande_galerie_(Louvre).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "mona",
+      "text": "Everyone wants to see the Mona Lisa. She is quite small!",
+      "about": "The Mona Lisa was painted by Leonardo da Vinci more than 500 years ago. It is one of the most famous paintings in the world. But it is small, only about 77 by 53 centimeters, a bit bigger than a school notebook opened wide. It is painted on wood and kept behind special glass. People say her smile is mysterious and that her eyes seem to follow you.",
+      "emoji": "🖼️",
+      "photo": {
+        "commonsTitle": "File:Tourists crowding the Louvre's Salle des États (52789485343).jpg",
+        "query": "Mona Lisa crowd Louvre",
+        "file": "paris-louvre-mona.jpg",
+        "author": "Stefan Wloch",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Tourists_crowding_the_Louvre%27s_Salle_des_%C3%89tats_(52789485343).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "victory",
+      "text": "This stone lady has big wings but no head.",
+      "about": "This statue is called the Winged Victory of Samothrace. She is Nike, the Greek goddess of victory. She was carved about 2,200 years ago and found in 1863 on a Greek island, broken into many pieces. Her head and arms were never found, but one of her hands was found later and is in a glass case nearby. She stands on a stone ship at the top of a grand staircase, as if wind is blowing her dress.",
+      "emoji": "🕊️",
+      "photo": {
+        "commonsTitle": "File:Victoire de Samothrace - de face (4).JPG",
+        "query": "Winged Victory of Samothrace",
+        "file": "paris-louvre-victory.jpg",
+        "author": "Lyokoï88",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Victoire_de_Samothrace_-_de_face_(4).JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "venus",
+      "text": "Venus de Milo is famous, even though she has no arms.",
+      "about": "The Venus de Milo is a marble statue of Aphrodite, the Greek goddess of love and beauty. She is more than 2,000 years old. A farmer found her in 1820 on the Greek island of Milos. Her arms were already missing, and nobody knows for sure what they were doing. Maybe she was holding an apple, or a mirror? What do you think?",
+      "emoji": "🏛️",
+      "photo": {
+        "commonsTitle": "File:Louvre Museum - Aphrodite of Milos (Αφροδίτη της Μήλου) (7649035404).jpg",
+        "query": "Venus de Milo Louvre",
+        "file": "paris-louvre-venus.jpg",
+        "author": "SpirosK photography from Athens, Greece",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Louvre_Museum_-_Aphrodite_of_Milos_(%CE%91%CF%86%CF%81%CE%BF%CE%B4%CE%AF%CF%84%CE%B7_%CF%84%CE%B7%CF%82_%CE%9C%CE%AE%CE%BB%CE%BF%CF%85)_(7649035404).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "sphinx",
+      "text": "A giant sphinx has a lion's body and a king's face.",
+      "about": "This is the Great Sphinx of Tanis. It is carved from one giant block of pink granite and is thousands of years old. A sphinx has the body of a lion and the head of a king, to show the king was strong and brave. It guards the way to the Egyptian rooms, where there are mummies, jewels, toys and even ancient Egyptian writing called hieroglyphs.",
+      "emoji": "🦁",
+      "photo": {
+        "commonsTitle": "File:Great Sphinx of Tanis, Paris alt.jpg",
+        "query": "Great Sphinx of Tanis Louvre",
+        "file": "paris-louvre-sphinx.jpg",
+        "author": "Wilfredor",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Great_Sphinx_of_Tanis,_Paris_alt.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "coffins",
+      "text": "These painted coffins belonged to kings of ancient Egypt.",
+      "about": "Long ago in Egypt, when an important person died, their body was carefully wrapped to make a mummy and placed in a coffin shaped like a person. These two coffins belonged to kings called Intef, who lived more than 3,500 years ago. One is covered in gold. The coffins have painted faces and special writing to help the person on their journey, the Egyptians believed.",
+      "emoji": "⚱️",
+      "photo": {
+        "commonsTitle": "File:Ancient Egypt Coffins (28379840886).jpg",
+        "query": "ancient Egyptian coffins Louvre",
+        "file": "paris-louvre-coffins.jpg",
+        "author": "Gary Todd from Xinzheng, China",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ancient_Egypt_Coffins_(28379840886).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "kids",
+      "text": "Kids can explore art on big touch tables, too.",
+      "about": "The Louvre is not only for grown-ups. There are special tours, workshops and activities for kids, and a small gallery made just for families. Some rooms have touch screens where you can zoom in on paintings and learn their secrets. A fun game is to pick one animal, like a horse or a dog, and look for it in every painting.",
+      "emoji": "👆",
+      "photo": {
+        "commonsTitle": "File:Des visiteurs évaluant les fonctionnalités d'une table tactile, musée du Louvre 2013.jpg",
+        "query": "Louvre visitors touch table",
+        "file": "paris-louvre-kids.jpg",
+        "author": "Jean-Pierre Dalbéra from Paris, France",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Des_visiteurs_%C3%A9valuant_les_fonctionnalit%C3%A9s_d%27une_table_tactile,_mus%C3%A9e_du_Louvre_2013.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "goodbye",
+      "text": "It is too big to see in one day. Au revoir!",
+      "about": "About 35,000 works of art are on show in the Louvre. If you looked at each one for just 30 seconds, without stopping to eat or sleep, it would take almost two weeks! That is why people come back again and again. Au revoir (oh ruh-VWAHR) means goodbye in French. If you could take one thing home from the Louvre, what would it be?",
+      "emoji": "👋",
+      "photo": {
+        "commonsTitle": "File:Cour Napoléon from the southeast (panoramio 4).jpg",
+        "query": "Louvre pyramid courtyard",
+        "file": "paris-louvre-goodbye.jpg",
+        "author": "Michelle Maria",
+        "license": "CC BY 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Cour_Napol%C3%A9on_from_the_southeast_(panoramio_4).jpg",
+        "verified": true
+      }
+    }
+  ]
+}

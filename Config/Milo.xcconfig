@@ -1,0 +1,8 @@
+// Milo server settings, baked into Info.plist (PipServerURL, PipAccessKey).
+// Put the access key in Config/Local.xcconfig (gitignored), e.g.
+//   PIP_ACCESS_KEY = <the PIP_ACCESS_KEY from server/.env>
+// It only keeps strangers off the token endpoint; anyone with the app binary could read it.
+PIP_SERVER_URL = https:/$()/little-explorer-pip.onrender.com
+PIP_ACCESS_KEY =
+
+#include? "Local.xcconfig"

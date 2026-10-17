@@ -763,6 +763,894 @@
    ],
    "style": "40b5f639d1"
   },
+  "london-big-ben/bell": {
+   "file": "read-london-big-ben-bell",
+   "text": "Big Ben is the name of the giant bell inside.",
+   "duration": 4.65,
+   "match": 1.0,
+   "heard": "Big Ben is the name of the giant bell inside.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.2,
+     "end": 0.6
+    },
+    {
+     "location": 4,
+     "length": 3,
+     "start": 0.6,
+     "end": 1.09
+    },
+    {
+     "location": 8,
+     "length": 2,
+     "start": 1.33,
+     "end": 1.58
+    },
+    {
+     "location": 11,
+     "length": 3,
+     "start": 1.58,
+     "end": 1.92
+    },
+    {
+     "location": 15,
+     "length": 4,
+     "start": 1.92,
+     "end": 2.08
+    },
+    {
+     "location": 20,
+     "length": 2,
+     "start": 2.08,
+     "end": 2.42
+    },
+    {
+     "location": 23,
+     "length": 3,
+     "start": 2.42,
+     "end": 2.56
+    },
+    {
+     "location": 27,
+     "length": 5,
+     "start": 2.56,
+     "end": 2.96
+    },
+    {
+     "location": 33,
+     "length": 4,
+     "start": 2.96,
+     "end": 3.35
+    },
+    {
+     "location": 38,
+     "length": 6,
+     "start": 3.7,
+     "end": 4.33
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "london-big-ben/bong": {
+   "file": "read-london-big-ben-bong",
+   "text": "Bong, bong, bong! At three o'clock, Big Ben bongs three times.",
+   "duration": 7.41,
+   "match": 0.87,
+   "heard": "Bong, bong, bong! At three o'clock, Big Ben bongs three times.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.18,
+     "end": 1.67
+    },
+    {
+     "location": 6,
+     "length": 4,
+     "start": 2.1,
+     "end": 2.58
+    },
+    {
+     "location": 12,
+     "length": 4,
+     "start": 3.22,
+     "end": 3.34
+    },
+    {
+     "location": 18,
+     "length": 2,
+     "start": 3.6,
+     "end": 3.68
+    },
+    {
+     "location": 21,
+     "length": 5,
+     "start": 3.68,
+     "end": 4.0
+    },
+    {
+     "location": 27,
+     "length": 7,
+     "start": 4.0,
+     "end": 4.22
+    },
+    {
+     "location": 36,
+     "length": 3,
+     "start": 4.83,
+     "end": 5.22
+    },
+    {
+     "location": 40,
+     "length": 3,
+     "start": 5.22,
+     "end": 5.54
+    },
+    {
+     "location": 44,
+     "length": 5,
+     "start": 5.65,
+     "end": 6.15
+    },
+    {
+     "location": 50,
+     "length": 5,
+     "start": 6.29,
+     "end": 6.7
+    },
+    {
+     "location": 56,
+     "length": 5,
+     "start": 6.7,
+     "end": 7.14
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "london-big-ben/chimes": {
+   "file": "read-london-big-ben-chimes",
+   "text": "Four small bells play a tune. People hear it on the radio!",
+   "duration": 5.85,
+   "match": 1.0,
+   "heard": "Four small bells play a tune. People hear it on the radio!",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.07,
+     "end": 0.61
+    },
+    {
+     "location": 5,
+     "length": 5,
+     "start": 0.82,
+     "end": 1.42
+    },
+    {
+     "location": 11,
+     "length": 5,
+     "start": 1.42,
+     "end": 1.88
+    },
+    {
+     "location": 17,
+     "length": 4,
+     "start": 1.95,
+     "end": 2.26
+    },
+    {
+     "location": 22,
+     "length": 1,
+     "start": 2.26,
+     "end": 2.78
+    },
+    {
+     "location": 24,
+     "length": 4,
+     "start": 2.78,
+     "end": 2.86
+    },
+    {
+     "location": 30,
+     "length": 6,
+     "start": 3.65,
+     "end": 4.11
+    },
+    {
+     "location": 37,
+     "length": 4,
+     "start": 4.18,
+     "end": 4.36
+    },
+    {
+     "location": 42,
+     "length": 2,
+     "start": 4.36,
+     "end": 4.45
+    },
+    {
+     "location": 45,
+     "length": 2,
+     "start": 4.88,
+     "end": 5.1
+    },
+    {
+     "location": 48,
+     "length": 3,
+     "start": 5.1,
+     "end": 5.3
+    },
+    {
+     "location": 52,
+     "length": 5,
+     "start": 5.3,
+     "end": 5.58
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "london-big-ben/clock-face": {
+   "file": "read-london-big-ben-clock-face",
+   "text": "Each clock face is wider than a giraffe is tall!",
+   "duration": 5.4,
+   "match": 1.0,
+   "heard": "Each clock face is wider than a giraffe is tall.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.25,
+     "end": 0.66
+    },
+    {
+     "location": 5,
+     "length": 5,
+     "start": 0.66,
+     "end": 1.0
+    },
+    {
+     "location": 11,
+     "length": 4,
+     "start": 1.0,
+     "end": 1.33
+    },
+    {
+     "location": 16,
+     "length": 2,
+     "start": 1.41,
+     "end": 1.76
+    },
+    {
+     "location": 19,
+     "length": 5,
+     "start": 1.76,
+     "end": 2.06
+    },
+    {
+     "location": 25,
+     "length": 4,
+     "start": 2.06,
+     "end": 2.32
+    },
+    {
+     "location": 30,
+     "length": 1,
+     "start": 2.32,
+     "end": 2.78
+    },
+    {
+     "location": 32,
+     "length": 7,
+     "start": 2.85,
+     "end": 2.93
+    },
+    {
+     "location": 40,
+     "length": 2,
+     "start": 2.93,
+     "end": 3.26
+    },
+    {
+     "location": 43,
+     "length": 4,
+     "start": 3.26,
+     "end": 3.56
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "london-big-ben/goodbye": {
+   "file": "read-london-big-ben-goodbye",
+   "text": "Goodbye, Big Ben! Wave from the bridge over the river Thames.",
+   "duration": 5.2,
+   "match": 1.0,
+   "heard": "Goodbye, Big Ben! Wave from the bridge over the river Thames!",
+   "words": [
+    {
+     "location": 0,
+     "length": 7,
+     "start": 0.08,
+     "end": 1.28
+    },
+    {
+     "location": 9,
+     "length": 3,
+     "start": 1.34,
+     "end": 1.68
+    },
+    {
+     "location": 13,
+     "length": 3,
+     "start": 2.19,
+     "end": 2.59
+    },
+    {
+     "location": 18,
+     "length": 4,
+     "start": 2.68,
+     "end": 2.76
+    },
+    {
+     "location": 23,
+     "length": 4,
+     "start": 2.76,
+     "end": 2.94
+    },
+    {
+     "location": 28,
+     "length": 3,
+     "start": 3.0,
+     "end": 3.32
+    },
+    {
+     "location": 32,
+     "length": 6,
+     "start": 3.32,
+     "end": 3.4
+    },
+    {
+     "location": 39,
+     "length": 4,
+     "start": 3.4,
+     "end": 3.68
+    },
+    {
+     "location": 44,
+     "length": 3,
+     "start": 3.68,
+     "end": 3.96
+    },
+    {
+     "location": 48,
+     "length": 5,
+     "start": 3.96,
+     "end": 4.06
+    },
+    {
+     "location": 54,
+     "length": 6,
+     "start": 4.06,
+     "end": 4.5
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "london-big-ben/hands": {
+   "file": "read-london-big-ben-hands",
+   "text": "The long minute hand is longer than two grown-ups!",
+   "duration": 4.84,
+   "match": 1.0,
+   "heard": "The long minute hand is longer than two grown-ups!",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.06,
+     "end": 0.38
+    },
+    {
+     "location": 4,
+     "length": 4,
+     "start": 0.38,
+     "end": 0.96
+    },
+    {
+     "location": 9,
+     "length": 6,
+     "start": 0.96,
+     "end": 1.34
+    },
+    {
+     "location": 16,
+     "length": 4,
+     "start": 1.44,
+     "end": 1.79
+    },
+    {
+     "location": 21,
+     "length": 2,
+     "start": 2.14,
+     "end": 2.56
+    },
+    {
+     "location": 24,
+     "length": 6,
+     "start": 2.56,
+     "end": 3.06
+    },
+    {
+     "location": 31,
+     "length": 4,
+     "start": 3.2,
+     "end": 3.45
+    },
+    {
+     "location": 36,
+     "length": 3,
+     "start": 3.56,
+     "end": 4.04
+    },
+    {
+     "location": 40,
+     "length": 5,
+     "start": 4.04,
+     "end": 4.35
+    },
+    {
+     "location": 46,
+     "length": 3,
+     "start": 4.49,
+     "end": 4.57
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "london-big-ben/light": {
+   "file": "read-london-big-ben-light",
+   "text": "A light at the top shines when Parliament is working.",
+   "duration": 4.2,
+   "match": 1.0,
+   "heard": "A light at the top shines when Parliament is working.",
+   "words": [
+    {
+     "location": 0,
+     "length": 1,
+     "start": 0.0,
+     "end": 0.3
+    },
+    {
+     "location": 2,
+     "length": 5,
+     "start": 0.3,
+     "end": 0.52
+    },
+    {
+     "location": 8,
+     "length": 2,
+     "start": 0.63,
+     "end": 0.72
+    },
+    {
+     "location": 11,
+     "length": 3,
+     "start": 0.8,
+     "end": 1.18
+    },
+    {
+     "location": 15,
+     "length": 3,
+     "start": 1.26,
+     "end": 1.34
+    },
+    {
+     "location": 19,
+     "length": 6,
+     "start": 1.64,
+     "end": 2.22
+    },
+    {
+     "location": 26,
+     "length": 4,
+     "start": 2.22,
+     "end": 2.58
+    },
+    {
+     "location": 31,
+     "length": 10,
+     "start": 2.58,
+     "end": 3.08
+    },
+    {
+     "location": 42,
+     "length": 2,
+     "start": 3.16,
+     "end": 3.4
+    },
+    {
+     "location": 45,
+     "length": 7,
+     "start": 3.4,
+     "end": 3.68
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "london-big-ben/name": {
+   "file": "read-london-big-ben-name",
+   "text": "The bell may be named after a big man called Ben.",
+   "duration": 4.8,
+   "match": 1.0,
+   "heard": "The bell may be named after a big man called Ben.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.1,
+     "end": 0.3
+    },
+    {
+     "location": 4,
+     "length": 4,
+     "start": 0.3,
+     "end": 0.63
+    },
+    {
+     "location": 9,
+     "length": 3,
+     "start": 0.82,
+     "end": 1.22
+    },
+    {
+     "location": 13,
+     "length": 2,
+     "start": 1.22,
+     "end": 1.46
+    },
+    {
+     "location": 16,
+     "length": 5,
+     "start": 1.46,
+     "end": 1.7
+    },
+    {
+     "location": 22,
+     "length": 5,
+     "start": 1.7,
+     "end": 1.94
+    },
+    {
+     "location": 28,
+     "length": 1,
+     "start": 2.03,
+     "end": 2.28
+    },
+    {
+     "location": 30,
+     "length": 3,
+     "start": 2.35,
+     "end": 2.7
+    },
+    {
+     "location": 34,
+     "length": 3,
+     "start": 2.7,
+     "end": 3.06
+    },
+    {
+     "location": 38,
+     "length": 6,
+     "start": 3.35,
+     "end": 3.75
+    },
+    {
+     "location": 45,
+     "length": 3,
+     "start": 3.97,
+     "end": 4.34
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "london-big-ben/penny": {
+   "file": "read-london-big-ben-penny",
+   "text": "Old coins on the swinging pendulum keep the clock on time.",
+   "duration": 6.0,
+   "match": 1.0,
+   "heard": "Old coins on the swinging pendulum keep the clock on time.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.0,
+     "end": 0.6
+    },
+    {
+     "location": 4,
+     "length": 5,
+     "start": 0.6,
+     "end": 1.23
+    },
+    {
+     "location": 10,
+     "length": 2,
+     "start": 1.42,
+     "end": 1.62
+    },
+    {
+     "location": 13,
+     "length": 3,
+     "start": 1.62,
+     "end": 1.96
+    },
+    {
+     "location": 17,
+     "length": 8,
+     "start": 1.96,
+     "end": 2.38
+    },
+    {
+     "location": 26,
+     "length": 8,
+     "start": 2.38,
+     "end": 3.03
+    },
+    {
+     "location": 35,
+     "length": 4,
+     "start": 3.37,
+     "end": 3.58
+    },
+    {
+     "location": 40,
+     "length": 3,
+     "start": 3.73,
+     "end": 4.17
+    },
+    {
+     "location": 44,
+     "length": 5,
+     "start": 4.66,
+     "end": 4.74
+    },
+    {
+     "location": 50,
+     "length": 2,
+     "start": 4.74,
+     "end": 5.12
+    },
+    {
+     "location": 53,
+     "length": 4,
+     "start": 5.12,
+     "end": 5.36
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "london-big-ben/steps": {
+   "file": "read-london-big-ben-steps",
+   "text": "It takes 334 steps to climb up to the bell. Phew!",
+   "duration": 5.9,
+   "match": 0.952,
+   "heard": "It takes 334 steps to climb up to the bell.",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.19,
+     "end": 0.3
+    },
+    {
+     "location": 3,
+     "length": 5,
+     "start": 0.41,
+     "end": 0.88
+    },
+    {
+     "location": 9,
+     "length": 3,
+     "start": 0.97,
+     "end": 2.55
+    },
+    {
+     "location": 13,
+     "length": 5,
+     "start": 2.61,
+     "end": 2.77
+    },
+    {
+     "location": 19,
+     "length": 2,
+     "start": 3.02,
+     "end": 3.56
+    },
+    {
+     "location": 22,
+     "length": 5,
+     "start": 3.56,
+     "end": 3.64
+    },
+    {
+     "location": 28,
+     "length": 2,
+     "start": 3.64,
+     "end": 3.8
+    },
+    {
+     "location": 31,
+     "length": 2,
+     "start": 3.8,
+     "end": 3.92
+    },
+    {
+     "location": 34,
+     "length": 3,
+     "start": 3.92,
+     "end": 4.2
+    },
+    {
+     "location": 38,
+     "length": 4,
+     "start": 4.2,
+     "end": 4.28
+    },
+    {
+     "location": 44,
+     "length": 4,
+     "start": 4.82,
+     "end": 5.29
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "london-big-ben/tower": {
+   "file": "read-london-big-ben-tower",
+   "text": "The tower has its own name. It is the Elizabeth Tower.",
+   "duration": 6.4,
+   "match": 1.0,
+   "heard": "The tower has its own name. It is the Elizabeth Tower.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.07,
+     "end": 0.23
+    },
+    {
+     "location": 4,
+     "length": 5,
+     "start": 0.32,
+     "end": 0.87
+    },
+    {
+     "location": 10,
+     "length": 3,
+     "start": 1.06,
+     "end": 1.5
+    },
+    {
+     "location": 14,
+     "length": 3,
+     "start": 1.59,
+     "end": 1.8
+    },
+    {
+     "location": 18,
+     "length": 3,
+     "start": 1.91,
+     "end": 2.38
+    },
+    {
+     "location": 22,
+     "length": 4,
+     "start": 2.38,
+     "end": 2.67
+    },
+    {
+     "location": 28,
+     "length": 2,
+     "start": 3.32,
+     "end": 3.52
+    },
+    {
+     "location": 31,
+     "length": 2,
+     "start": 3.52,
+     "end": 3.72
+    },
+    {
+     "location": 34,
+     "length": 3,
+     "start": 3.72,
+     "end": 4.0
+    },
+    {
+     "location": 38,
+     "length": 9,
+     "start": 4.0,
+     "end": 4.4
+    },
+    {
+     "location": 48,
+     "length": 5,
+     "start": 4.76,
+     "end": 5.18
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "london-big-ben/welcome": {
+   "file": "read-london-big-ben-welcome",
+   "text": "This tall clock tower is in London, by the river.",
+   "duration": 4.15,
+   "match": 1.0,
+   "heard": "This tall clock tower is in London, by the river.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.15,
+     "end": 0.46
+    },
+    {
+     "location": 5,
+     "length": 4,
+     "start": 0.53,
+     "end": 0.94
+    },
+    {
+     "location": 10,
+     "length": 5,
+     "start": 1.01,
+     "end": 1.38
+    },
+    {
+     "location": 16,
+     "length": 5,
+     "start": 1.38,
+     "end": 1.74
+    },
+    {
+     "location": 22,
+     "length": 2,
+     "start": 1.74,
+     "end": 1.98
+    },
+    {
+     "location": 25,
+     "length": 2,
+     "start": 1.98,
+     "end": 2.26
+    },
+    {
+     "location": 28,
+     "length": 6,
+     "start": 2.26,
+     "end": 2.6
+    },
+    {
+     "location": 36,
+     "length": 2,
+     "start": 3.15,
+     "end": 3.44
+    },
+    {
+     "location": 39,
+     "length": 3,
+     "start": 3.44,
+     "end": 3.66
+    },
+    {
+     "location": 43,
+     "length": 5,
+     "start": 3.66,
+     "end": 3.8
+    }
+   ],
+   "style": "40b5f639d1"
+  },
   "london/big-ben": {
    "file": "read-london-big-ben",
    "text": "Big Ben is not the tower. Big Ben is the bell!",
@@ -1591,6 +2479,870 @@
      "length": 6,
      "start": 2.88,
      "end": 3.22
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-eiffel/apartment": {
+   "file": "read-paris-eiffel-apartment",
+   "text": "At the top, Mr. Eiffel had a secret little apartment.",
+   "duration": 5.4,
+   "match": 1.0,
+   "heard": "At the top, Mr. Eiffel had a secret little apartment.",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 1.04,
+     "end": 1.24
+    },
+    {
+     "location": 3,
+     "length": 3,
+     "start": 1.24,
+     "end": 1.62
+    },
+    {
+     "location": 7,
+     "length": 3,
+     "start": 1.68,
+     "end": 1.76
+    },
+    {
+     "location": 12,
+     "length": 2,
+     "start": 2.28,
+     "end": 2.7
+    },
+    {
+     "location": 16,
+     "length": 6,
+     "start": 2.92,
+     "end": 3.08
+    },
+    {
+     "location": 23,
+     "length": 3,
+     "start": 3.08,
+     "end": 3.26
+    },
+    {
+     "location": 27,
+     "length": 1,
+     "start": 3.26,
+     "end": 3.5
+    },
+    {
+     "location": 29,
+     "length": 6,
+     "start": 3.5,
+     "end": 3.8
+    },
+    {
+     "location": 36,
+     "length": 6,
+     "start": 3.8,
+     "end": 4.14
+    },
+    {
+     "location": 43,
+     "length": 9,
+     "start": 4.14,
+     "end": 4.54
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-eiffel/build": {
+   "file": "read-paris-eiffel-build",
+   "text": "Workers built the tower in just two years.",
+   "duration": 3.76,
+   "match": 1.0,
+   "heard": "Workers built the tower in just two years.",
+   "words": [
+    {
+     "location": 0,
+     "length": 7,
+     "start": 0.07,
+     "end": 0.62
+    },
+    {
+     "location": 8,
+     "length": 5,
+     "start": 0.62,
+     "end": 0.9
+    },
+    {
+     "location": 14,
+     "length": 3,
+     "start": 1.03,
+     "end": 1.36
+    },
+    {
+     "location": 18,
+     "length": 5,
+     "start": 1.36,
+     "end": 1.59
+    },
+    {
+     "location": 24,
+     "length": 2,
+     "start": 1.97,
+     "end": 2.22
+    },
+    {
+     "location": 27,
+     "length": 4,
+     "start": 2.22,
+     "end": 2.44
+    },
+    {
+     "location": 32,
+     "length": 3,
+     "start": 2.53,
+     "end": 2.92
+    },
+    {
+     "location": 36,
+     "length": 5,
+     "start": 2.92,
+     "end": 3.28
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-eiffel/fireworks": {
+   "file": "read-paris-eiffel-fireworks",
+   "text": "On special nights, fireworks fill the sky around the tower.",
+   "duration": 4.92,
+   "match": 1.0,
+   "heard": "On special nights, fireworks fill the sky around the tower.",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.0,
+     "end": 0.34
+    },
+    {
+     "location": 3,
+     "length": 7,
+     "start": 0.34,
+     "end": 1.0
+    },
+    {
+     "location": 11,
+     "length": 6,
+     "start": 1.09,
+     "end": 2.23
+    },
+    {
+     "location": 19,
+     "length": 9,
+     "start": 2.29,
+     "end": 2.48
+    },
+    {
+     "location": 29,
+     "length": 4,
+     "start": 2.62,
+     "end": 2.88
+    },
+    {
+     "location": 34,
+     "length": 3,
+     "start": 2.88,
+     "end": 3.18
+    },
+    {
+     "location": 38,
+     "length": 3,
+     "start": 3.18,
+     "end": 3.52
+    },
+    {
+     "location": 42,
+     "length": 6,
+     "start": 3.66,
+     "end": 4.1
+    },
+    {
+     "location": 49,
+     "length": 3,
+     "start": 4.1,
+     "end": 4.32
+    },
+    {
+     "location": 53,
+     "length": 5,
+     "start": 4.32,
+     "end": 4.57
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-eiffel/goodbye": {
+   "file": "read-paris-eiffel-goodbye",
+   "text": "From the top, you can see all of Paris. Au revoir!",
+   "duration": 4.65,
+   "match": 1.0,
+   "heard": "From the top, you can see all of Paris. Au revoir!",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.1,
+     "end": 0.3
+    },
+    {
+     "location": 5,
+     "length": 3,
+     "start": 0.3,
+     "end": 0.5
+    },
+    {
+     "location": 9,
+     "length": 3,
+     "start": 0.5,
+     "end": 0.67
+    },
+    {
+     "location": 14,
+     "length": 3,
+     "start": 1.24,
+     "end": 1.48
+    },
+    {
+     "location": 18,
+     "length": 3,
+     "start": 1.48,
+     "end": 1.74
+    },
+    {
+     "location": 22,
+     "length": 3,
+     "start": 1.74,
+     "end": 1.84
+    },
+    {
+     "location": 26,
+     "length": 3,
+     "start": 1.95,
+     "end": 2.38
+    },
+    {
+     "location": 30,
+     "length": 2,
+     "start": 2.49,
+     "end": 3.02
+    },
+    {
+     "location": 33,
+     "length": 5,
+     "start": 3.68,
+     "end": 3.9
+    },
+    {
+     "location": 40,
+     "length": 2,
+     "start": 3.98,
+     "end": 4.06
+    },
+    {
+     "location": 43,
+     "length": 6,
+     "start": 4.06,
+     "end": 4.16
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-eiffel/grow": {
+   "file": "read-paris-eiffel-grow",
+   "text": "On hot summer days, the tower grows a tiny bit taller!",
+   "duration": 4.92,
+   "match": 1.0,
+   "heard": "On hot summer days, the tower grows a tiny bit taller!",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.0,
+     "end": 0.4
+    },
+    {
+     "location": 3,
+     "length": 3,
+     "start": 0.4,
+     "end": 0.61
+    },
+    {
+     "location": 7,
+     "length": 6,
+     "start": 0.68,
+     "end": 1.14
+    },
+    {
+     "location": 14,
+     "length": 4,
+     "start": 1.14,
+     "end": 2.27
+    },
+    {
+     "location": 20,
+     "length": 3,
+     "start": 2.35,
+     "end": 2.43
+    },
+    {
+     "location": 24,
+     "length": 5,
+     "start": 2.43,
+     "end": 2.82
+    },
+    {
+     "location": 30,
+     "length": 5,
+     "start": 2.82,
+     "end": 3.32
+    },
+    {
+     "location": 36,
+     "length": 1,
+     "start": 3.32,
+     "end": 3.43
+    },
+    {
+     "location": 38,
+     "length": 4,
+     "start": 3.58,
+     "end": 4.08
+    },
+    {
+     "location": 43,
+     "length": 3,
+     "start": 4.08,
+     "end": 4.21
+    },
+    {
+     "location": 47,
+     "length": 6,
+     "start": 4.3,
+     "end": 4.66
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-eiffel/lifts": {
+   "file": "read-paris-eiffel-lifts",
+   "text": "Big wheels pull the lifts up and down the tower's legs.",
+   "duration": 4.96,
+   "match": 1.0,
+   "heard": "Big wheels pull the lifts up and down the tower's legs.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.12,
+     "end": 0.44
+    },
+    {
+     "location": 4,
+     "length": 6,
+     "start": 0.44,
+     "end": 1.0
+    },
+    {
+     "location": 11,
+     "length": 4,
+     "start": 1.24,
+     "end": 1.56
+    },
+    {
+     "location": 16,
+     "length": 3,
+     "start": 1.56,
+     "end": 1.8
+    },
+    {
+     "location": 20,
+     "length": 5,
+     "start": 1.8,
+     "end": 2.13
+    },
+    {
+     "location": 26,
+     "length": 2,
+     "start": 2.38,
+     "end": 2.52
+    },
+    {
+     "location": 29,
+     "length": 3,
+     "start": 2.58,
+     "end": 3.17
+    },
+    {
+     "location": 33,
+     "length": 4,
+     "start": 3.46,
+     "end": 3.54
+    },
+    {
+     "location": 38,
+     "length": 3,
+     "start": 3.54,
+     "end": 3.62
+    },
+    {
+     "location": 42,
+     "length": 7,
+     "start": 3.62,
+     "end": 4.36
+    },
+    {
+     "location": 50,
+     "length": 4,
+     "start": 4.45,
+     "end": 4.56
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-eiffel/name": {
+   "file": "read-paris-eiffel-name",
+   "text": "Mr. Gustave Eiffel's company built it, so it has his name.",
+   "duration": 5.9,
+   "match": 1.0,
+   "heard": "Mr. Gustave Eiffel's company built it, so it has his name.",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.0,
+     "end": 0.72
+    },
+    {
+     "location": 4,
+     "length": 7,
+     "start": 0.82,
+     "end": 1.57
+    },
+    {
+     "location": 12,
+     "length": 8,
+     "start": 1.64,
+     "end": 2.5
+    },
+    {
+     "location": 21,
+     "length": 7,
+     "start": 2.5,
+     "end": 2.77
+    },
+    {
+     "location": 29,
+     "length": 5,
+     "start": 3.2,
+     "end": 3.54
+    },
+    {
+     "location": 35,
+     "length": 2,
+     "start": 3.63,
+     "end": 3.71
+    },
+    {
+     "location": 39,
+     "length": 2,
+     "start": 4.18,
+     "end": 4.46
+    },
+    {
+     "location": 42,
+     "length": 2,
+     "start": 4.46,
+     "end": 4.62
+    },
+    {
+     "location": 45,
+     "length": 3,
+     "start": 4.62,
+     "end": 4.94
+    },
+    {
+     "location": 49,
+     "length": 3,
+     "start": 4.94,
+     "end": 5.26
+    },
+    {
+     "location": 53,
+     "length": 4,
+     "start": 5.26,
+     "end": 5.52
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-eiffel/painters": {
+   "file": "read-paris-eiffel-painters",
+   "text": "Painters paint the whole tower by hand every seven years.",
+   "duration": 5.01,
+   "match": 1.0,
+   "heard": "Painters paint the whole tower by hand every seven years.",
+   "words": [
+    {
+     "location": 0,
+     "length": 8,
+     "start": 0.0,
+     "end": 0.72
+    },
+    {
+     "location": 9,
+     "length": 5,
+     "start": 1.06,
+     "end": 1.32
+    },
+    {
+     "location": 15,
+     "length": 3,
+     "start": 1.42,
+     "end": 1.66
+    },
+    {
+     "location": 19,
+     "length": 5,
+     "start": 1.66,
+     "end": 2.06
+    },
+    {
+     "location": 25,
+     "length": 5,
+     "start": 2.06,
+     "end": 2.32
+    },
+    {
+     "location": 31,
+     "length": 2,
+     "start": 2.32,
+     "end": 2.62
+    },
+    {
+     "location": 34,
+     "length": 4,
+     "start": 2.62,
+     "end": 2.93
+    },
+    {
+     "location": 39,
+     "length": 5,
+     "start": 3.26,
+     "end": 3.7
+    },
+    {
+     "location": 45,
+     "length": 5,
+     "start": 3.7,
+     "end": 4.06
+    },
+    {
+     "location": 51,
+     "length": 5,
+     "start": 4.06,
+     "end": 4.42
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-eiffel/rivets": {
+   "file": "read-paris-eiffel-rivets",
+   "text": "Millions of little metal bolts called rivets hold it together.",
+   "duration": 5.3,
+   "match": 1.0,
+   "heard": "Millions of little metal bolts called rivets hold it together.",
+   "words": [
+    {
+     "location": 0,
+     "length": 8,
+     "start": 0.0,
+     "end": 0.7
+    },
+    {
+     "location": 9,
+     "length": 2,
+     "start": 0.7,
+     "end": 1.04
+    },
+    {
+     "location": 12,
+     "length": 6,
+     "start": 1.04,
+     "end": 1.42
+    },
+    {
+     "location": 19,
+     "length": 5,
+     "start": 1.42,
+     "end": 1.93
+    },
+    {
+     "location": 25,
+     "length": 5,
+     "start": 2.0,
+     "end": 2.16
+    },
+    {
+     "location": 31,
+     "length": 6,
+     "start": 2.56,
+     "end": 3.25
+    },
+    {
+     "location": 38,
+     "length": 6,
+     "start": 3.32,
+     "end": 3.48
+    },
+    {
+     "location": 45,
+     "length": 4,
+     "start": 3.98,
+     "end": 4.33
+    },
+    {
+     "location": 50,
+     "length": 2,
+     "start": 4.41,
+     "end": 4.52
+    },
+    {
+     "location": 53,
+     "length": 8,
+     "start": 4.52,
+     "end": 4.78
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-eiffel/stairs": {
+   "file": "read-paris-eiffel-stairs",
+   "text": "You can climb 674 steps up to the second floor. Phew!",
+   "duration": 5.8,
+   "match": 1.0,
+   "heard": "You can climb 674 steps up to the second floor. Phew!",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.0,
+     "end": 0.38
+    },
+    {
+     "location": 4,
+     "length": 3,
+     "start": 0.38,
+     "end": 0.68
+    },
+    {
+     "location": 8,
+     "length": 5,
+     "start": 0.68,
+     "end": 1.04
+    },
+    {
+     "location": 14,
+     "length": 3,
+     "start": 1.04,
+     "end": 2.89
+    },
+    {
+     "location": 18,
+     "length": 5,
+     "start": 2.95,
+     "end": 3.09
+    },
+    {
+     "location": 24,
+     "length": 2,
+     "start": 3.16,
+     "end": 3.4
+    },
+    {
+     "location": 27,
+     "length": 2,
+     "start": 3.4,
+     "end": 3.56
+    },
+    {
+     "location": 30,
+     "length": 3,
+     "start": 3.56,
+     "end": 3.76
+    },
+    {
+     "location": 34,
+     "length": 6,
+     "start": 3.76,
+     "end": 4.04
+    },
+    {
+     "location": 41,
+     "length": 5,
+     "start": 4.04,
+     "end": 4.34
+    },
+    {
+     "location": 48,
+     "length": 4,
+     "start": 5.04,
+     "end": 5.36
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-eiffel/twinkle": {
+   "file": "read-paris-eiffel-twinkle",
+   "text": "At night, the tower sparkles for five minutes every hour.",
+   "duration": 4.8,
+   "match": 1.0,
+   "heard": "At night, the tower sparkles for five minutes every hour.",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.0,
+     "end": 0.34
+    },
+    {
+     "location": 3,
+     "length": 5,
+     "start": 0.34,
+     "end": 0.62
+    },
+    {
+     "location": 10,
+     "length": 3,
+     "start": 1.07,
+     "end": 1.46
+    },
+    {
+     "location": 14,
+     "length": 5,
+     "start": 1.46,
+     "end": 1.68
+    },
+    {
+     "location": 20,
+     "length": 8,
+     "start": 1.68,
+     "end": 2.32
+    },
+    {
+     "location": 29,
+     "length": 3,
+     "start": 2.32,
+     "end": 2.49
+    },
+    {
+     "location": 33,
+     "length": 4,
+     "start": 2.63,
+     "end": 2.98
+    },
+    {
+     "location": 38,
+     "length": 7,
+     "start": 2.98,
+     "end": 3.34
+    },
+    {
+     "location": 46,
+     "length": 5,
+     "start": 3.43,
+     "end": 3.86
+    },
+    {
+     "location": 52,
+     "length": 4,
+     "start": 3.86,
+     "end": 4.1
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-eiffel/welcome": {
+   "file": "read-paris-eiffel-welcome",
+   "text": "This is the Eiffel Tower. People call it the Iron Lady.",
+   "duration": 5.76,
+   "match": 1.0,
+   "heard": "This is the Eiffel Tower. People call it the Iron Lady.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.16,
+     "end": 0.55
+    },
+    {
+     "location": 5,
+     "length": 2,
+     "start": 0.82,
+     "end": 1.11
+    },
+    {
+     "location": 8,
+     "length": 3,
+     "start": 1.21,
+     "end": 1.38
+    },
+    {
+     "location": 12,
+     "length": 6,
+     "start": 1.47,
+     "end": 1.7
+    },
+    {
+     "location": 19,
+     "length": 5,
+     "start": 1.7,
+     "end": 1.97
+    },
+    {
+     "location": 26,
+     "length": 6,
+     "start": 2.8,
+     "end": 3.08
+    },
+    {
+     "location": 33,
+     "length": 4,
+     "start": 3.08,
+     "end": 3.44
+    },
+    {
+     "location": 38,
+     "length": 2,
+     "start": 3.44,
+     "end": 3.52
+    },
+    {
+     "location": 41,
+     "length": 3,
+     "start": 3.85,
+     "end": 4.0
+    },
+    {
+     "location": 45,
+     "length": 4,
+     "start": 4.12,
+     "end": 4.6
+    },
+    {
+     "location": 50,
+     "length": 4,
+     "start": 4.6,
+     "end": 4.88
     }
    ],
    "style": "40b5f639d1"
@@ -3175,6 +4927,4206 @@
      "length": 3,
      "start": 2.97,
      "end": 3.05
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-jardin/carousel": {
+   "file": "read-paris-jardin-carousel",
+   "text": "The old carousel has horses, carriages and a painted roof.",
+   "duration": 5.66,
+   "match": 1.0,
+   "heard": "The old carousel has horses, carriages and a painted roof.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.13,
+     "end": 0.25
+    },
+    {
+     "location": 4,
+     "length": 3,
+     "start": 0.38,
+     "end": 0.94
+    },
+    {
+     "location": 8,
+     "length": 8,
+     "start": 0.94,
+     "end": 1.54
+    },
+    {
+     "location": 17,
+     "length": 3,
+     "start": 1.54,
+     "end": 1.9
+    },
+    {
+     "location": 21,
+     "length": 6,
+     "start": 2.02,
+     "end": 3.67
+    },
+    {
+     "location": 29,
+     "length": 9,
+     "start": 4.06,
+     "end": 4.14
+    },
+    {
+     "location": 39,
+     "length": 3,
+     "start": 4.14,
+     "end": 4.3
+    },
+    {
+     "location": 43,
+     "length": 1,
+     "start": 4.43,
+     "end": 4.98
+    },
+    {
+     "location": 45,
+     "length": 7,
+     "start": 4.98,
+     "end": 5.06
+    },
+    {
+     "location": 53,
+     "length": 4,
+     "start": 5.06,
+     "end": 5.18
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-jardin/geese": {
+   "file": "read-paris-jardin-geese",
+   "text": "Goose families waddle along the paths with their babies.",
+   "duration": 4.92,
+   "match": 1.0,
+   "heard": "Goose families waddle along the paths with their babies.",
+   "words": [
+    {
+     "location": 0,
+     "length": 5,
+     "start": 0.14,
+     "end": 0.6
+    },
+    {
+     "location": 6,
+     "length": 8,
+     "start": 0.6,
+     "end": 1.14
+    },
+    {
+     "location": 15,
+     "length": 6,
+     "start": 1.14,
+     "end": 1.65
+    },
+    {
+     "location": 22,
+     "length": 5,
+     "start": 1.71,
+     "end": 2.06
+    },
+    {
+     "location": 28,
+     "length": 3,
+     "start": 2.06,
+     "end": 2.17
+    },
+    {
+     "location": 32,
+     "length": 5,
+     "start": 2.26,
+     "end": 2.82
+    },
+    {
+     "location": 38,
+     "length": 4,
+     "start": 3.2,
+     "end": 3.32
+    },
+    {
+     "location": 43,
+     "length": 5,
+     "start": 3.4,
+     "end": 3.57
+    },
+    {
+     "location": 49,
+     "length": 6,
+     "start": 3.64,
+     "end": 4.14
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-jardin/goodbye": {
+   "file": "read-paris-jardin-goodbye",
+   "text": "So many rides and animals! Au revoir, little park!",
+   "duration": 4.46,
+   "match": 1.0,
+   "heard": "So many rides and animals! Au revoir, little park!",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.0,
+     "end": 0.42
+    },
+    {
+     "location": 3,
+     "length": 4,
+     "start": 0.42,
+     "end": 0.72
+    },
+    {
+     "location": 8,
+     "length": 5,
+     "start": 0.72,
+     "end": 1.37
+    },
+    {
+     "location": 14,
+     "length": 3,
+     "start": 1.43,
+     "end": 1.58
+    },
+    {
+     "location": 18,
+     "length": 7,
+     "start": 1.58,
+     "end": 1.98
+    },
+    {
+     "location": 27,
+     "length": 2,
+     "start": 2.78,
+     "end": 2.86
+    },
+    {
+     "location": 30,
+     "length": 6,
+     "start": 2.86,
+     "end": 3.17
+    },
+    {
+     "location": 38,
+     "length": 6,
+     "start": 3.35,
+     "end": 3.7
+    },
+    {
+     "location": 45,
+     "length": 4,
+     "start": 3.7,
+     "end": 3.92
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-jardin/history": {
+   "file": "read-paris-jardin-history",
+   "text": "The park opened more than 160 years ago, in 1860.",
+   "duration": 5.52,
+   "match": 1.0,
+   "heard": "The park opened more than 160 years ago, in 1860.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.1,
+     "end": 0.2
+    },
+    {
+     "location": 4,
+     "length": 4,
+     "start": 0.28,
+     "end": 0.67
+    },
+    {
+     "location": 9,
+     "length": 6,
+     "start": 1.02,
+     "end": 1.44
+    },
+    {
+     "location": 16,
+     "length": 4,
+     "start": 1.44,
+     "end": 1.72
+    },
+    {
+     "location": 21,
+     "length": 4,
+     "start": 1.72,
+     "end": 2.02
+    },
+    {
+     "location": 26,
+     "length": 3,
+     "start": 2.02,
+     "end": 2.86
+    },
+    {
+     "location": 30,
+     "length": 5,
+     "start": 2.86,
+     "end": 3.47
+    },
+    {
+     "location": 36,
+     "length": 3,
+     "start": 3.96,
+     "end": 4.14
+    },
+    {
+     "location": 41,
+     "length": 2,
+     "start": 4.26,
+     "end": 4.4
+    },
+    {
+     "location": 44,
+     "length": 4,
+     "start": 4.52,
+     "end": 5.28
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-jardin/korea": {
+   "file": "read-paris-jardin-korea",
+   "text": "A little garden from Korea has a pretty house by a pond.",
+   "duration": 4.84,
+   "match": 1.0,
+   "heard": "A little garden from Korea has a pretty house by a pond.",
+   "words": [
+    {
+     "location": 0,
+     "length": 1,
+     "start": 0.0,
+     "end": 0.36
+    },
+    {
+     "location": 2,
+     "length": 6,
+     "start": 0.36,
+     "end": 0.74
+    },
+    {
+     "location": 9,
+     "length": 6,
+     "start": 0.74,
+     "end": 1.06
+    },
+    {
+     "location": 16,
+     "length": 4,
+     "start": 1.06,
+     "end": 1.52
+    },
+    {
+     "location": 21,
+     "length": 5,
+     "start": 1.52,
+     "end": 2.07
+    },
+    {
+     "location": 27,
+     "length": 3,
+     "start": 2.46,
+     "end": 2.69
+    },
+    {
+     "location": 31,
+     "length": 1,
+     "start": 2.78,
+     "end": 3.18
+    },
+    {
+     "location": 33,
+     "length": 6,
+     "start": 3.18,
+     "end": 3.26
+    },
+    {
+     "location": 40,
+     "length": 5,
+     "start": 3.26,
+     "end": 3.52
+    },
+    {
+     "location": 46,
+     "length": 2,
+     "start": 3.52,
+     "end": 3.8
+    },
+    {
+     "location": 49,
+     "length": 1,
+     "start": 3.8,
+     "end": 4.26
+    },
+    {
+     "location": 51,
+     "length": 4,
+     "start": 4.26,
+     "end": 4.34
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-jardin/parrots": {
+   "file": "read-paris-jardin-parrots",
+   "text": "Bright orange and yellow parrots chatter in their big home.",
+   "duration": 4.65,
+   "match": 1.0,
+   "heard": "Bright orange and yellow parrots chatter in their big home.",
+   "words": [
+    {
+     "location": 0,
+     "length": 6,
+     "start": 0.14,
+     "end": 0.58
+    },
+    {
+     "location": 7,
+     "length": 6,
+     "start": 0.58,
+     "end": 1.08
+    },
+    {
+     "location": 14,
+     "length": 3,
+     "start": 1.08,
+     "end": 1.38
+    },
+    {
+     "location": 18,
+     "length": 6,
+     "start": 1.38,
+     "end": 1.64
+    },
+    {
+     "location": 25,
+     "length": 7,
+     "start": 1.64,
+     "end": 2.12
+    },
+    {
+     "location": 33,
+     "length": 7,
+     "start": 2.47,
+     "end": 2.86
+    },
+    {
+     "location": 41,
+     "length": 2,
+     "start": 2.86,
+     "end": 3.1
+    },
+    {
+     "location": 44,
+     "length": 5,
+     "start": 3.1,
+     "end": 3.23
+    },
+    {
+     "location": 50,
+     "length": 3,
+     "start": 3.34,
+     "end": 3.66
+    },
+    {
+     "location": 54,
+     "length": 4,
+     "start": 3.66,
+     "end": 3.96
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-jardin/peacock": {
+   "file": "read-paris-jardin-peacock",
+   "text": "Peacocks walk freely around the park. Look at those feathers!",
+   "duration": 5.06,
+   "match": 1.0,
+   "heard": "Peacocks walk freely around the park. Look at those feathers!",
+   "words": [
+    {
+     "location": 0,
+     "length": 8,
+     "start": 0.06,
+     "end": 0.56
+    },
+    {
+     "location": 9,
+     "length": 4,
+     "start": 0.63,
+     "end": 0.98
+    },
+    {
+     "location": 14,
+     "length": 6,
+     "start": 1.04,
+     "end": 1.7
+    },
+    {
+     "location": 21,
+     "length": 6,
+     "start": 1.7,
+     "end": 2.08
+    },
+    {
+     "location": 28,
+     "length": 3,
+     "start": 2.08,
+     "end": 2.38
+    },
+    {
+     "location": 32,
+     "length": 4,
+     "start": 3.24,
+     "end": 3.68
+    },
+    {
+     "location": 38,
+     "length": 4,
+     "start": 3.75,
+     "end": 3.83
+    },
+    {
+     "location": 43,
+     "length": 2,
+     "start": 3.83,
+     "end": 3.91
+    },
+    {
+     "location": 46,
+     "length": 5,
+     "start": 3.91,
+     "end": 4.14
+    },
+    {
+     "location": 52,
+     "length": 8,
+     "start": 4.14,
+     "end": 4.42
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-jardin/peahen": {
+   "file": "read-paris-jardin-peahen",
+   "text": "A white peahen walks with her four fluffy chicks.",
+   "duration": 5.4,
+   "match": 1.0,
+   "heard": "A white peahen walks with her four fluffy chicks.",
+   "words": [
+    {
+     "location": 0,
+     "length": 1,
+     "start": 0.0,
+     "end": 0.38
+    },
+    {
+     "location": 2,
+     "length": 5,
+     "start": 0.38,
+     "end": 0.5
+    },
+    {
+     "location": 8,
+     "length": 6,
+     "start": 0.9,
+     "end": 1.51
+    },
+    {
+     "location": 15,
+     "length": 5,
+     "start": 1.98,
+     "end": 2.54
+    },
+    {
+     "location": 21,
+     "length": 4,
+     "start": 2.77,
+     "end": 2.98
+    },
+    {
+     "location": 26,
+     "length": 3,
+     "start": 2.98,
+     "end": 3.24
+    },
+    {
+     "location": 30,
+     "length": 4,
+     "start": 3.24,
+     "end": 3.68
+    },
+    {
+     "location": 35,
+     "length": 6,
+     "start": 3.68,
+     "end": 4.29
+    },
+    {
+     "location": 42,
+     "length": 6,
+     "start": 4.45,
+     "end": 4.54
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-jardin/puppets": {
+   "file": "read-paris-jardin-puppets",
+   "text": "Children laugh at a puppet show in the little theater.",
+   "duration": 4.1,
+   "match": 1.0,
+   "heard": "Children laugh at a puppet show in the little theater.",
+   "words": [
+    {
+     "location": 0,
+     "length": 8,
+     "start": 0.0,
+     "end": 0.6
+    },
+    {
+     "location": 9,
+     "length": 5,
+     "start": 0.6,
+     "end": 1.33
+    },
+    {
+     "location": 15,
+     "length": 2,
+     "start": 1.39,
+     "end": 1.6
+    },
+    {
+     "location": 18,
+     "length": 1,
+     "start": 1.6,
+     "end": 1.68
+    },
+    {
+     "location": 20,
+     "length": 6,
+     "start": 1.68,
+     "end": 1.76
+    },
+    {
+     "location": 27,
+     "length": 4,
+     "start": 1.76,
+     "end": 2.03
+    },
+    {
+     "location": 32,
+     "length": 2,
+     "start": 2.42,
+     "end": 2.6
+    },
+    {
+     "location": 35,
+     "length": 3,
+     "start": 2.6,
+     "end": 2.84
+    },
+    {
+     "location": 39,
+     "length": 6,
+     "start": 2.84,
+     "end": 3.05
+    },
+    {
+     "location": 46,
+     "length": 7,
+     "start": 3.14,
+     "end": 3.46
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-jardin/river": {
+   "file": "read-paris-jardin-river",
+   "text": "Little boats float slowly along the Enchanted River.",
+   "duration": 5.16,
+   "match": 1.0,
+   "heard": "Little boats float slowly along the Enchanted River.",
+   "words": [
+    {
+     "location": 0,
+     "length": 6,
+     "start": 0.0,
+     "end": 0.68
+    },
+    {
+     "location": 7,
+     "length": 5,
+     "start": 0.76,
+     "end": 0.94
+    },
+    {
+     "location": 13,
+     "length": 5,
+     "start": 1.32,
+     "end": 1.8
+    },
+    {
+     "location": 19,
+     "length": 6,
+     "start": 1.8,
+     "end": 2.4
+    },
+    {
+     "location": 26,
+     "length": 5,
+     "start": 2.76,
+     "end": 3.08
+    },
+    {
+     "location": 32,
+     "length": 3,
+     "start": 3.08,
+     "end": 3.44
+    },
+    {
+     "location": 36,
+     "length": 9,
+     "start": 3.44,
+     "end": 3.94
+    },
+    {
+     "location": 46,
+     "length": 5,
+     "start": 3.94,
+     "end": 4.28
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-jardin/train": {
+   "file": "read-paris-jardin-train",
+   "text": "A little train takes you into the park. Choo choo!",
+   "duration": 4.51,
+   "match": 1.0,
+   "heard": "A little train takes you into the park. Choo choo!",
+   "words": [
+    {
+     "location": 0,
+     "length": 1,
+     "start": 0.0,
+     "end": 0.34
+    },
+    {
+     "location": 2,
+     "length": 6,
+     "start": 0.34,
+     "end": 0.7
+    },
+    {
+     "location": 9,
+     "length": 5,
+     "start": 0.7,
+     "end": 1.1
+    },
+    {
+     "location": 15,
+     "length": 5,
+     "start": 1.1,
+     "end": 1.54
+    },
+    {
+     "location": 21,
+     "length": 3,
+     "start": 1.54,
+     "end": 1.76
+    },
+    {
+     "location": 25,
+     "length": 4,
+     "start": 1.76,
+     "end": 2.02
+    },
+    {
+     "location": 30,
+     "length": 3,
+     "start": 2.02,
+     "end": 2.26
+    },
+    {
+     "location": 34,
+     "length": 4,
+     "start": 2.26,
+     "end": 2.37
+    },
+    {
+     "location": 40,
+     "length": 4,
+     "start": 3.22,
+     "end": 3.78
+    },
+    {
+     "location": 45,
+     "length": 4,
+     "start": 3.78,
+     "end": 4.08
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-jardin/welcome": {
+   "file": "read-paris-jardin-welcome",
+   "text": "This is the Jardin d'Acclimatation, a big park for kids.",
+   "duration": 5.06,
+   "match": 0.857,
+   "heard": "This is the Jardin d'Acclimatation, a big park for kids.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.0,
+     "end": 0.5
+    },
+    {
+     "location": 5,
+     "length": 2,
+     "start": 0.57,
+     "end": 0.8
+    },
+    {
+     "location": 8,
+     "length": 3,
+     "start": 0.8,
+     "end": 1.24
+    },
+    {
+     "location": 12,
+     "length": 6,
+     "start": 1.24,
+     "end": 1.44
+    },
+    {
+     "location": 19,
+     "length": 15,
+     "start": 1.44,
+     "end": 3.03
+    },
+    {
+     "location": 36,
+     "length": 1,
+     "start": 3.14,
+     "end": 3.22
+    },
+    {
+     "location": 38,
+     "length": 3,
+     "start": 3.22,
+     "end": 3.37
+    },
+    {
+     "location": 42,
+     "length": 4,
+     "start": 3.43,
+     "end": 3.74
+    },
+    {
+     "location": 47,
+     "length": 3,
+     "start": 3.74,
+     "end": 4.19
+    },
+    {
+     "location": 51,
+     "length": 4,
+     "start": 4.25,
+     "end": 4.34
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-louvre/coffins": {
+   "file": "read-paris-louvre-coffins",
+   "text": "These painted coffins belonged to kings of ancient Egypt.",
+   "duration": 5.44,
+   "match": 1.0,
+   "heard": "These painted coffins belonged to kings of ancient Egypt.",
+   "words": [
+    {
+     "location": 0,
+     "length": 5,
+     "start": 0.0,
+     "end": 0.64
+    },
+    {
+     "location": 6,
+     "length": 7,
+     "start": 0.64,
+     "end": 1.37
+    },
+    {
+     "location": 14,
+     "length": 7,
+     "start": 1.45,
+     "end": 1.74
+    },
+    {
+     "location": 22,
+     "length": 8,
+     "start": 1.99,
+     "end": 2.61
+    },
+    {
+     "location": 31,
+     "length": 2,
+     "start": 2.68,
+     "end": 3.44
+    },
+    {
+     "location": 34,
+     "length": 5,
+     "start": 3.63,
+     "end": 3.71
+    },
+    {
+     "location": 40,
+     "length": 2,
+     "start": 3.71,
+     "end": 3.86
+    },
+    {
+     "location": 43,
+     "length": 7,
+     "start": 3.86,
+     "end": 4.09
+    },
+    {
+     "location": 51,
+     "length": 5,
+     "start": 4.16,
+     "end": 4.6
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-louvre/copyist": {
+   "file": "read-paris-louvre-copyist",
+   "text": "Artists come to copy famous paintings with their own brushes.",
+   "duration": 4.96,
+   "match": 1.0,
+   "heard": "Artists come to copy famous paintings with their own brushes.",
+   "words": [
+    {
+     "location": 0,
+     "length": 7,
+     "start": 0.0,
+     "end": 0.63
+    },
+    {
+     "location": 8,
+     "length": 4,
+     "start": 0.76,
+     "end": 1.17
+    },
+    {
+     "location": 13,
+     "length": 2,
+     "start": 1.23,
+     "end": 1.67
+    },
+    {
+     "location": 16,
+     "length": 4,
+     "start": 1.83,
+     "end": 1.91
+    },
+    {
+     "location": 21,
+     "length": 6,
+     "start": 1.91,
+     "end": 2.22
+    },
+    {
+     "location": 28,
+     "length": 9,
+     "start": 2.22,
+     "end": 2.75
+    },
+    {
+     "location": 38,
+     "length": 4,
+     "start": 2.97,
+     "end": 3.07
+    },
+    {
+     "location": 43,
+     "length": 5,
+     "start": 3.15,
+     "end": 3.3
+    },
+    {
+     "location": 49,
+     "length": 3,
+     "start": 3.42,
+     "end": 3.9
+    },
+    {
+     "location": 53,
+     "length": 7,
+     "start": 3.9,
+     "end": 4.16
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-louvre/goodbye": {
+   "file": "read-paris-louvre-goodbye",
+   "text": "It is too big to see in one day. Au revoir!",
+   "duration": 5.25,
+   "match": 1.0,
+   "heard": "It is too big to see in one day. Au revoir!",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.0,
+     "end": 0.2
+    },
+    {
+     "location": 3,
+     "length": 2,
+     "start": 0.2,
+     "end": 0.38
+    },
+    {
+     "location": 6,
+     "length": 3,
+     "start": 0.5,
+     "end": 0.94
+    },
+    {
+     "location": 10,
+     "length": 3,
+     "start": 0.94,
+     "end": 1.14
+    },
+    {
+     "location": 14,
+     "length": 2,
+     "start": 1.64,
+     "end": 1.94
+    },
+    {
+     "location": 17,
+     "length": 3,
+     "start": 1.94,
+     "end": 2.28
+    },
+    {
+     "location": 21,
+     "length": 2,
+     "start": 2.28,
+     "end": 2.48
+    },
+    {
+     "location": 24,
+     "length": 3,
+     "start": 2.48,
+     "end": 2.72
+    },
+    {
+     "location": 28,
+     "length": 3,
+     "start": 2.72,
+     "end": 2.92
+    },
+    {
+     "location": 33,
+     "length": 2,
+     "start": 4.02,
+     "end": 4.4
+    },
+    {
+     "location": 36,
+     "length": 6,
+     "start": 4.4,
+     "end": 4.48
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-louvre/inverted": {
+   "file": "read-paris-louvre-inverted",
+   "text": "Inside, an upside-down pyramid almost touches a tiny one.",
+   "duration": 4.96,
+   "match": 1.0,
+   "heard": "Inside, an upside-down pyramid almost touches a tiny one.",
+   "words": [
+    {
+     "location": 0,
+     "length": 6,
+     "start": 0.0,
+     "end": 1.16
+    },
+    {
+     "location": 8,
+     "length": 2,
+     "start": 1.26,
+     "end": 1.52
+    },
+    {
+     "location": 11,
+     "length": 6,
+     "start": 1.52,
+     "end": 1.78
+    },
+    {
+     "location": 18,
+     "length": 4,
+     "start": 1.78,
+     "end": 2.28
+    },
+    {
+     "location": 23,
+     "length": 7,
+     "start": 2.28,
+     "end": 2.59
+    },
+    {
+     "location": 31,
+     "length": 6,
+     "start": 3.01,
+     "end": 3.54
+    },
+    {
+     "location": 38,
+     "length": 7,
+     "start": 3.54,
+     "end": 3.97
+    },
+    {
+     "location": 46,
+     "length": 1,
+     "start": 4.03,
+     "end": 4.26
+    },
+    {
+     "location": 48,
+     "length": 4,
+     "start": 4.26,
+     "end": 4.36
+    },
+    {
+     "location": 53,
+     "length": 3,
+     "start": 4.36,
+     "end": 4.59
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-louvre/kids": {
+   "file": "read-paris-louvre-kids",
+   "text": "Kids can explore art on big touch tables, too.",
+   "duration": 5.16,
+   "match": 1.0,
+   "heard": "Kids can explore art on big touch tables, too.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.0,
+     "end": 0.44
+    },
+    {
+     "location": 5,
+     "length": 3,
+     "start": 0.44,
+     "end": 1.01
+    },
+    {
+     "location": 9,
+     "length": 7,
+     "start": 1.08,
+     "end": 1.43
+    },
+    {
+     "location": 17,
+     "length": 3,
+     "start": 1.55,
+     "end": 1.91
+    },
+    {
+     "location": 21,
+     "length": 2,
+     "start": 2.22,
+     "end": 2.64
+    },
+    {
+     "location": 24,
+     "length": 3,
+     "start": 2.64,
+     "end": 2.88
+    },
+    {
+     "location": 28,
+     "length": 5,
+     "start": 2.95,
+     "end": 3.36
+    },
+    {
+     "location": 34,
+     "length": 6,
+     "start": 3.36,
+     "end": 3.84
+    },
+    {
+     "location": 42,
+     "length": 3,
+     "start": 3.91,
+     "end": 4.22
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-louvre/longhall": {
+   "file": "read-paris-louvre-longhall",
+   "text": "One hall is so long, you can hardly see the end!",
+   "duration": 5.01,
+   "match": 1.0,
+   "heard": "One hall is so long, you can hardly see the end!",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.0,
+     "end": 0.52
+    },
+    {
+     "location": 4,
+     "length": 4,
+     "start": 0.52,
+     "end": 0.96
+    },
+    {
+     "location": 9,
+     "length": 2,
+     "start": 1.21,
+     "end": 1.56
+    },
+    {
+     "location": 12,
+     "length": 2,
+     "start": 1.56,
+     "end": 1.94
+    },
+    {
+     "location": 15,
+     "length": 4,
+     "start": 1.94,
+     "end": 2.31
+    },
+    {
+     "location": 21,
+     "length": 3,
+     "start": 2.73,
+     "end": 2.98
+    },
+    {
+     "location": 25,
+     "length": 3,
+     "start": 2.98,
+     "end": 3.3
+    },
+    {
+     "location": 29,
+     "length": 6,
+     "start": 3.3,
+     "end": 3.66
+    },
+    {
+     "location": 36,
+     "length": 3,
+     "start": 3.66,
+     "end": 4.06
+    },
+    {
+     "location": 40,
+     "length": 3,
+     "start": 4.06,
+     "end": 4.48
+    },
+    {
+     "location": 44,
+     "length": 3,
+     "start": 4.48,
+     "end": 4.56
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-louvre/mona": {
+   "file": "read-paris-louvre-mona",
+   "text": "Everyone wants to see the Mona Lisa. She is quite small!",
+   "duration": 5.25,
+   "match": 1.0,
+   "heard": "Everyone wants to see the Mona Lisa. She is quite small!",
+   "words": [
+    {
+     "location": 0,
+     "length": 8,
+     "start": 0.28,
+     "end": 0.82
+    },
+    {
+     "location": 9,
+     "length": 5,
+     "start": 0.82,
+     "end": 1.26
+    },
+    {
+     "location": 15,
+     "length": 2,
+     "start": 1.26,
+     "end": 1.46
+    },
+    {
+     "location": 18,
+     "length": 3,
+     "start": 1.46,
+     "end": 1.66
+    },
+    {
+     "location": 22,
+     "length": 3,
+     "start": 1.66,
+     "end": 1.86
+    },
+    {
+     "location": 26,
+     "length": 4,
+     "start": 1.86,
+     "end": 2.16
+    },
+    {
+     "location": 31,
+     "length": 4,
+     "start": 2.16,
+     "end": 2.45
+    },
+    {
+     "location": 37,
+     "length": 3,
+     "start": 3.12,
+     "end": 3.42
+    },
+    {
+     "location": 41,
+     "length": 2,
+     "start": 3.42,
+     "end": 3.76
+    },
+    {
+     "location": 44,
+     "length": 5,
+     "start": 3.76,
+     "end": 4.08
+    },
+    {
+     "location": 50,
+     "length": 5,
+     "start": 4.08,
+     "end": 4.46
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-louvre/palace": {
+   "file": "read-paris-louvre-palace",
+   "text": "Long ago, the Louvre was a palace where kings lived.",
+   "duration": 4.6,
+   "match": 1.0,
+   "heard": "Long ago, the Louvre was a palace where kings lived.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.0,
+     "end": 0.58
+    },
+    {
+     "location": 5,
+     "length": 3,
+     "start": 0.58,
+     "end": 1.12
+    },
+    {
+     "location": 10,
+     "length": 3,
+     "start": 2.18,
+     "end": 2.26
+    },
+    {
+     "location": 14,
+     "length": 6,
+     "start": 2.26,
+     "end": 2.34
+    },
+    {
+     "location": 21,
+     "length": 3,
+     "start": 2.34,
+     "end": 2.48
+    },
+    {
+     "location": 25,
+     "length": 1,
+     "start": 2.56,
+     "end": 3.08
+    },
+    {
+     "location": 27,
+     "length": 6,
+     "start": 3.08,
+     "end": 3.16
+    },
+    {
+     "location": 34,
+     "length": 5,
+     "start": 3.16,
+     "end": 3.34
+    },
+    {
+     "location": 40,
+     "length": 5,
+     "start": 3.4,
+     "end": 3.86
+    },
+    {
+     "location": 46,
+     "length": 5,
+     "start": 3.86,
+     "end": 4.15
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-louvre/sphinx": {
+   "file": "read-paris-louvre-sphinx",
+   "text": "A giant sphinx has a lion's body and a king's face.",
+   "duration": 5.16,
+   "match": 1.0,
+   "heard": "A giant sphinx has a lion's body and a king's face.",
+   "words": [
+    {
+     "location": 0,
+     "length": 1,
+     "start": 0.42,
+     "end": 0.82
+    },
+    {
+     "location": 2,
+     "length": 5,
+     "start": 0.82,
+     "end": 1.58
+    },
+    {
+     "location": 8,
+     "length": 6,
+     "start": 1.64,
+     "end": 1.79
+    },
+    {
+     "location": 15,
+     "length": 3,
+     "start": 2.1,
+     "end": 2.32
+    },
+    {
+     "location": 19,
+     "length": 1,
+     "start": 2.32,
+     "end": 2.84
+    },
+    {
+     "location": 21,
+     "length": 6,
+     "start": 2.84,
+     "end": 3.02
+    },
+    {
+     "location": 28,
+     "length": 4,
+     "start": 3.02,
+     "end": 3.31
+    },
+    {
+     "location": 33,
+     "length": 3,
+     "start": 3.62,
+     "end": 3.84
+    },
+    {
+     "location": 37,
+     "length": 1,
+     "start": 3.94,
+     "end": 4.28
+    },
+    {
+     "location": 39,
+     "length": 6,
+     "start": 4.28,
+     "end": 4.58
+    },
+    {
+     "location": 46,
+     "length": 4,
+     "start": 4.58,
+     "end": 4.84
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-louvre/venus": {
+   "file": "read-paris-louvre-venus",
+   "text": "Venus de Milo is famous, even though she has no arms.",
+   "duration": 5.61,
+   "match": 1.0,
+   "heard": "Venus de Milo is famous, even though she has no arms.",
+   "words": [
+    {
+     "location": 0,
+     "length": 5,
+     "start": 0.0,
+     "end": 0.76
+    },
+    {
+     "location": 6,
+     "length": 2,
+     "start": 0.88,
+     "end": 1.14
+    },
+    {
+     "location": 9,
+     "length": 4,
+     "start": 1.14,
+     "end": 1.68
+    },
+    {
+     "location": 14,
+     "length": 2,
+     "start": 2.06,
+     "end": 2.36
+    },
+    {
+     "location": 17,
+     "length": 6,
+     "start": 2.36,
+     "end": 2.9
+    },
+    {
+     "location": 25,
+     "length": 4,
+     "start": 3.51,
+     "end": 3.82
+    },
+    {
+     "location": 30,
+     "length": 6,
+     "start": 3.82,
+     "end": 4.1
+    },
+    {
+     "location": 37,
+     "length": 3,
+     "start": 4.1,
+     "end": 4.28
+    },
+    {
+     "location": 41,
+     "length": 3,
+     "start": 4.28,
+     "end": 4.58
+    },
+    {
+     "location": 45,
+     "length": 2,
+     "start": 4.58,
+     "end": 4.96
+    },
+    {
+     "location": 48,
+     "length": 4,
+     "start": 4.96,
+     "end": 5.32
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-louvre/victory": {
+   "file": "read-paris-louvre-victory",
+   "text": "This stone lady has big wings but no head.",
+   "duration": 4.96,
+   "match": 1.0,
+   "heard": "This stone lady has big wings but no head.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.14,
+     "end": 0.48
+    },
+    {
+     "location": 5,
+     "length": 5,
+     "start": 0.6,
+     "end": 1.24
+    },
+    {
+     "location": 11,
+     "length": 4,
+     "start": 1.24,
+     "end": 1.6
+    },
+    {
+     "location": 16,
+     "length": 3,
+     "start": 1.91,
+     "end": 2.29
+    },
+    {
+     "location": 20,
+     "length": 3,
+     "start": 2.37,
+     "end": 2.72
+    },
+    {
+     "location": 24,
+     "length": 5,
+     "start": 2.72,
+     "end": 3.2
+    },
+    {
+     "location": 30,
+     "length": 3,
+     "start": 3.56,
+     "end": 3.76
+    },
+    {
+     "location": 34,
+     "length": 2,
+     "start": 3.76,
+     "end": 4.26
+    },
+    {
+     "location": 37,
+     "length": 4,
+     "start": 4.26,
+     "end": 4.5
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-louvre/welcome": {
+   "file": "read-paris-louvre-welcome",
+   "text": "This is the Louvre. Its door is a big glass pyramid!",
+   "duration": 4.65,
+   "match": 1.0,
+   "heard": "This is the Louvre. Its door is a big glass pyramid!",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.0,
+     "end": 0.49
+    },
+    {
+     "location": 5,
+     "length": 2,
+     "start": 0.56,
+     "end": 0.8
+    },
+    {
+     "location": 8,
+     "length": 3,
+     "start": 0.8,
+     "end": 1.24
+    },
+    {
+     "location": 12,
+     "length": 6,
+     "start": 1.24,
+     "end": 1.32
+    },
+    {
+     "location": 20,
+     "length": 3,
+     "start": 2.0,
+     "end": 2.34
+    },
+    {
+     "location": 24,
+     "length": 4,
+     "start": 2.34,
+     "end": 2.7
+    },
+    {
+     "location": 29,
+     "length": 2,
+     "start": 2.8,
+     "end": 3.08
+    },
+    {
+     "location": 32,
+     "length": 1,
+     "start": 3.18,
+     "end": 3.34
+    },
+    {
+     "location": 34,
+     "length": 3,
+     "start": 3.34,
+     "end": 3.43
+    },
+    {
+     "location": 38,
+     "length": 5,
+     "start": 3.5,
+     "end": 3.9
+    },
+    {
+     "location": 44,
+     "length": 7,
+     "start": 3.96,
+     "end": 4.36
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-notre-dame/bells": {
+   "file": "read-paris-notre-dame-bells",
+   "text": "The biggest bell is called Emmanuel. It is heavier than two elephants!",
+   "duration": 6.21,
+   "match": 1.0,
+   "heard": "The biggest bell is called Emmanuel. It is heavier than two elephants!",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.0,
+     "end": 0.34
+    },
+    {
+     "location": 4,
+     "length": 7,
+     "start": 0.43,
+     "end": 0.86
+    },
+    {
+     "location": 12,
+     "length": 4,
+     "start": 0.86,
+     "end": 1.28
+    },
+    {
+     "location": 17,
+     "length": 2,
+     "start": 1.35,
+     "end": 1.72
+    },
+    {
+     "location": 20,
+     "length": 6,
+     "start": 1.72,
+     "end": 1.91
+    },
+    {
+     "location": 27,
+     "length": 8,
+     "start": 1.97,
+     "end": 2.66
+    },
+    {
+     "location": 37,
+     "length": 2,
+     "start": 3.34,
+     "end": 3.52
+    },
+    {
+     "location": 40,
+     "length": 2,
+     "start": 3.52,
+     "end": 3.84
+    },
+    {
+     "location": 43,
+     "length": 7,
+     "start": 3.84,
+     "end": 4.26
+    },
+    {
+     "location": 51,
+     "length": 4,
+     "start": 4.46,
+     "end": 4.71
+    },
+    {
+     "location": 56,
+     "length": 3,
+     "start": 4.79,
+     "end": 5.2
+    },
+    {
+     "location": 60,
+     "length": 9,
+     "start": 5.26,
+     "end": 5.66
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-notre-dame/chimeras": {
+   "file": "read-paris-notre-dame-chimeras",
+   "text": "Some stone monsters just sit and look down at Paris.",
+   "duration": 6.0,
+   "match": 1.0,
+   "heard": "Some stone monsters just sit and look down at Paris.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.0,
+     "end": 0.65
+    },
+    {
+     "location": 5,
+     "length": 5,
+     "start": 0.77,
+     "end": 1.52
+    },
+    {
+     "location": 11,
+     "length": 8,
+     "start": 1.52,
+     "end": 2.24
+    },
+    {
+     "location": 20,
+     "length": 4,
+     "start": 2.54,
+     "end": 3.17
+    },
+    {
+     "location": 25,
+     "length": 3,
+     "start": 3.26,
+     "end": 3.34
+    },
+    {
+     "location": 29,
+     "length": 3,
+     "start": 3.81,
+     "end": 4.18
+    },
+    {
+     "location": 33,
+     "length": 4,
+     "start": 4.18,
+     "end": 4.33
+    },
+    {
+     "location": 38,
+     "length": 4,
+     "start": 4.39,
+     "end": 4.8
+    },
+    {
+     "location": 43,
+     "length": 2,
+     "start": 4.91,
+     "end": 5.03
+    },
+    {
+     "location": 46,
+     "length": 5,
+     "start": 5.13,
+     "end": 5.62
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-notre-dame/fire": {
+   "file": "read-paris-notre-dame-fire",
+   "text": "One day the roof caught fire. Brave firefighters saved the church.",
+   "duration": 6.12,
+   "match": 1.0,
+   "heard": "One day the roof caught fire. Brave firefighters saved the church.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.0,
+     "end": 0.5
+    },
+    {
+     "location": 4,
+     "length": 3,
+     "start": 0.5,
+     "end": 0.82
+    },
+    {
+     "location": 8,
+     "length": 3,
+     "start": 1.21,
+     "end": 1.46
+    },
+    {
+     "location": 12,
+     "length": 4,
+     "start": 1.46,
+     "end": 1.74
+    },
+    {
+     "location": 17,
+     "length": 6,
+     "start": 1.83,
+     "end": 2.07
+    },
+    {
+     "location": 24,
+     "length": 4,
+     "start": 2.25,
+     "end": 3.69
+    },
+    {
+     "location": 30,
+     "length": 5,
+     "start": 3.75,
+     "end": 4.02
+    },
+    {
+     "location": 36,
+     "length": 12,
+     "start": 4.11,
+     "end": 4.51
+    },
+    {
+     "location": 49,
+     "length": 5,
+     "start": 4.73,
+     "end": 5.2
+    },
+    {
+     "location": 55,
+     "length": 3,
+     "start": 5.26,
+     "end": 5.64
+    },
+    {
+     "location": 59,
+     "length": 6,
+     "start": 5.74,
+     "end": 5.82
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-notre-dame/gargoyles": {
+   "file": "read-paris-notre-dame-gargoyles",
+   "text": "Gargoyles are stone monsters. Rain comes out of their mouths!",
+   "duration": 6.55,
+   "match": 1.0,
+   "heard": "Gargoyles are stone monsters. Rain comes out of their mouths!",
+   "words": [
+    {
+     "location": 0,
+     "length": 9,
+     "start": 0.6,
+     "end": 1.11
+    },
+    {
+     "location": 10,
+     "length": 3,
+     "start": 1.41,
+     "end": 1.88
+    },
+    {
+     "location": 14,
+     "length": 5,
+     "start": 1.96,
+     "end": 2.42
+    },
+    {
+     "location": 20,
+     "length": 8,
+     "start": 2.42,
+     "end": 4.37
+    },
+    {
+     "location": 30,
+     "length": 4,
+     "start": 4.7,
+     "end": 4.78
+    },
+    {
+     "location": 35,
+     "length": 5,
+     "start": 4.78,
+     "end": 5.06
+    },
+    {
+     "location": 41,
+     "length": 3,
+     "start": 5.06,
+     "end": 5.26
+    },
+    {
+     "location": 45,
+     "length": 2,
+     "start": 5.26,
+     "end": 5.42
+    },
+    {
+     "location": 48,
+     "length": 5,
+     "start": 5.42,
+     "end": 5.6
+    },
+    {
+     "location": 54,
+     "length": 6,
+     "start": 5.6,
+     "end": 6.02
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-notre-dame/goodbye": {
+   "file": "read-paris-notre-dame-goodbye",
+   "text": "Au revoir! Step on this star to come back one day.",
+   "duration": 5.06,
+   "match": 1.0,
+   "heard": "Au revoir! Step on this star to come back one day.",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.84,
+     "end": 1.44
+    },
+    {
+     "location": 3,
+     "length": 6,
+     "start": 2.29,
+     "end": 2.62
+    },
+    {
+     "location": 11,
+     "length": 4,
+     "start": 2.68,
+     "end": 2.76
+    },
+    {
+     "location": 16,
+     "length": 2,
+     "start": 2.76,
+     "end": 2.94
+    },
+    {
+     "location": 19,
+     "length": 4,
+     "start": 2.94,
+     "end": 3.2
+    },
+    {
+     "location": 24,
+     "length": 4,
+     "start": 3.2,
+     "end": 3.5
+    },
+    {
+     "location": 29,
+     "length": 2,
+     "start": 3.56,
+     "end": 3.76
+    },
+    {
+     "location": 32,
+     "length": 4,
+     "start": 3.76,
+     "end": 4.0
+    },
+    {
+     "location": 37,
+     "length": 4,
+     "start": 4.0,
+     "end": 4.22
+    },
+    {
+     "location": 42,
+     "length": 3,
+     "start": 4.22,
+     "end": 4.54
+    },
+    {
+     "location": 46,
+     "length": 3,
+     "start": 4.54,
+     "end": 4.69
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-notre-dame/island": {
+   "file": "read-paris-notre-dame-island",
+   "text": "Notre-Dame stands on an island in the river Seine.",
+   "duration": 5.52,
+   "match": 1.0,
+   "heard": "Notre-Dame stands on an island in the river Seine.",
+   "words": [
+    {
+     "location": 0,
+     "length": 5,
+     "start": 0.0,
+     "end": 0.8
+    },
+    {
+     "location": 6,
+     "length": 4,
+     "start": 0.8,
+     "end": 1.12
+    },
+    {
+     "location": 11,
+     "length": 6,
+     "start": 1.5,
+     "end": 2.14
+    },
+    {
+     "location": 18,
+     "length": 2,
+     "start": 2.14,
+     "end": 2.49
+    },
+    {
+     "location": 21,
+     "length": 2,
+     "start": 2.55,
+     "end": 3.12
+    },
+    {
+     "location": 24,
+     "length": 6,
+     "start": 3.4,
+     "end": 3.48
+    },
+    {
+     "location": 31,
+     "length": 2,
+     "start": 3.48,
+     "end": 3.6
+    },
+    {
+     "location": 34,
+     "length": 3,
+     "start": 3.6,
+     "end": 3.96
+    },
+    {
+     "location": 38,
+     "length": 5,
+     "start": 3.96,
+     "end": 4.28
+    },
+    {
+     "location": 44,
+     "length": 5,
+     "start": 4.28,
+     "end": 4.56
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-notre-dame/open": {
+   "file": "read-paris-notre-dame-open",
+   "text": "In 2024, Notre-Dame opened its doors again. Hooray!",
+   "duration": 6.4,
+   "match": 1.0,
+   "heard": "In 2024, Notre-Dame opened its doors again. Hooray!",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.52,
+     "end": 0.8
+    },
+    {
+     "location": 3,
+     "length": 4,
+     "start": 0.8,
+     "end": 1.96
+    },
+    {
+     "location": 9,
+     "length": 5,
+     "start": 3.0,
+     "end": 3.08
+    },
+    {
+     "location": 15,
+     "length": 4,
+     "start": 3.08,
+     "end": 3.37
+    },
+    {
+     "location": 20,
+     "length": 6,
+     "start": 3.49,
+     "end": 3.88
+    },
+    {
+     "location": 27,
+     "length": 3,
+     "start": 3.88,
+     "end": 4.2
+    },
+    {
+     "location": 31,
+     "length": 5,
+     "start": 4.2,
+     "end": 4.46
+    },
+    {
+     "location": 37,
+     "length": 5,
+     "start": 4.46,
+     "end": 4.96
+    },
+    {
+     "location": 44,
+     "length": 6,
+     "start": 6.06,
+     "end": 6.14
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-notre-dame/rebuild": {
+   "file": "read-paris-notre-dame-rebuild",
+   "text": "Many helpers worked for five years to fix it.",
+   "duration": 4.56,
+   "match": 1.0,
+   "heard": "Many helpers worked for five years to fix it.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.0,
+     "end": 0.77
+    },
+    {
+     "location": 5,
+     "length": 7,
+     "start": 0.83,
+     "end": 1.17
+    },
+    {
+     "location": 13,
+     "length": 6,
+     "start": 1.4,
+     "end": 1.82
+    },
+    {
+     "location": 20,
+     "length": 3,
+     "start": 1.82,
+     "end": 2.26
+    },
+    {
+     "location": 24,
+     "length": 4,
+     "start": 2.26,
+     "end": 2.7
+    },
+    {
+     "location": 29,
+     "length": 5,
+     "start": 2.7,
+     "end": 3.19
+    },
+    {
+     "location": 35,
+     "length": 2,
+     "start": 3.52,
+     "end": 3.82
+    },
+    {
+     "location": 38,
+     "length": 3,
+     "start": 3.82,
+     "end": 4.13
+    },
+    {
+     "location": 42,
+     "length": 2,
+     "start": 4.22,
+     "end": 4.3
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-notre-dame/rooster": {
+   "file": "read-paris-notre-dame-rooster",
+   "text": "Now a golden rooster sits on top of the tall spire.",
+   "duration": 5.16,
+   "match": 1.0,
+   "heard": "Now a golden rooster sits on top of the tall spire.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.0,
+     "end": 0.45
+    },
+    {
+     "location": 4,
+     "length": 1,
+     "start": 0.52,
+     "end": 0.66
+    },
+    {
+     "location": 6,
+     "length": 6,
+     "start": 0.76,
+     "end": 1.28
+    },
+    {
+     "location": 13,
+     "length": 7,
+     "start": 1.28,
+     "end": 1.83
+    },
+    {
+     "location": 21,
+     "length": 4,
+     "start": 2.23,
+     "end": 2.7
+    },
+    {
+     "location": 26,
+     "length": 2,
+     "start": 2.7,
+     "end": 3.02
+    },
+    {
+     "location": 29,
+     "length": 3,
+     "start": 3.02,
+     "end": 3.35
+    },
+    {
+     "location": 33,
+     "length": 2,
+     "start": 3.43,
+     "end": 3.51
+    },
+    {
+     "location": 36,
+     "length": 3,
+     "start": 3.6,
+     "end": 3.68
+    },
+    {
+     "location": 40,
+     "length": 4,
+     "start": 3.68,
+     "end": 4.12
+    },
+    {
+     "location": 45,
+     "length": 5,
+     "start": 4.12,
+     "end": 4.57
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-notre-dame/rose": {
+   "file": "read-paris-notre-dame-rose",
+   "text": "This round window looks like a giant flower made of glass.",
+   "duration": 4.36,
+   "match": 1.0,
+   "heard": "This round window looks like a giant flower made of glass.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.06,
+     "end": 0.4
+    },
+    {
+     "location": 5,
+     "length": 5,
+     "start": 0.4,
+     "end": 0.74
+    },
+    {
+     "location": 11,
+     "length": 6,
+     "start": 0.74,
+     "end": 1.13
+    },
+    {
+     "location": 18,
+     "length": 5,
+     "start": 1.48,
+     "end": 1.78
+    },
+    {
+     "location": 24,
+     "length": 4,
+     "start": 1.78,
+     "end": 2.02
+    },
+    {
+     "location": 29,
+     "length": 1,
+     "start": 2.02,
+     "end": 2.56
+    },
+    {
+     "location": 31,
+     "length": 5,
+     "start": 2.56,
+     "end": 2.64
+    },
+    {
+     "location": 37,
+     "length": 6,
+     "start": 2.64,
+     "end": 3.01
+    },
+    {
+     "location": 44,
+     "length": 4,
+     "start": 3.19,
+     "end": 3.5
+    },
+    {
+     "location": 49,
+     "length": 2,
+     "start": 3.5,
+     "end": 4.08
+    },
+    {
+     "location": 52,
+     "length": 5,
+     "start": 4.08,
+     "end": 4.16
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-notre-dame/story": {
+   "file": "read-paris-notre-dame-story",
+   "text": "In a famous story, a kind man rings the bells here.",
+   "duration": 4.65,
+   "match": 1.0,
+   "heard": "In a famous story, a kind man rings the bells here.",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.0,
+     "end": 0.2
+    },
+    {
+     "location": 3,
+     "length": 1,
+     "start": 0.2,
+     "end": 0.33
+    },
+    {
+     "location": 5,
+     "length": 6,
+     "start": 0.47,
+     "end": 0.92
+    },
+    {
+     "location": 12,
+     "length": 5,
+     "start": 0.92,
+     "end": 1.92
+    },
+    {
+     "location": 19,
+     "length": 1,
+     "start": 2.01,
+     "end": 2.09
+    },
+    {
+     "location": 21,
+     "length": 4,
+     "start": 2.09,
+     "end": 2.52
+    },
+    {
+     "location": 26,
+     "length": 3,
+     "start": 2.52,
+     "end": 2.88
+    },
+    {
+     "location": 30,
+     "length": 5,
+     "start": 3.0,
+     "end": 3.4
+    },
+    {
+     "location": 36,
+     "length": 3,
+     "start": 3.4,
+     "end": 3.68
+    },
+    {
+     "location": 40,
+     "length": 5,
+     "start": 3.68,
+     "end": 3.92
+    },
+    {
+     "location": 46,
+     "length": 4,
+     "start": 3.92,
+     "end": 4.2
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-notre-dame/welcome": {
+   "file": "read-paris-notre-dame-welcome",
+   "text": "This is Notre-Dame. It is a very old church in Paris.",
+   "duration": 6.16,
+   "match": 1.0,
+   "heard": "This is Notre-Dame. It is a very old church in Paris.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.15,
+     "end": 0.52
+    },
+    {
+     "location": 5,
+     "length": 2,
+     "start": 0.93,
+     "end": 1.34
+    },
+    {
+     "location": 8,
+     "length": 5,
+     "start": 1.34,
+     "end": 1.68
+    },
+    {
+     "location": 14,
+     "length": 4,
+     "start": 1.68,
+     "end": 2.05
+    },
+    {
+     "location": 20,
+     "length": 2,
+     "start": 2.91,
+     "end": 3.06
+    },
+    {
+     "location": 23,
+     "length": 2,
+     "start": 3.06,
+     "end": 3.2
+    },
+    {
+     "location": 26,
+     "length": 1,
+     "start": 3.2,
+     "end": 3.44
+    },
+    {
+     "location": 28,
+     "length": 4,
+     "start": 3.44,
+     "end": 3.77
+    },
+    {
+     "location": 33,
+     "length": 3,
+     "start": 3.87,
+     "end": 4.16
+    },
+    {
+     "location": 37,
+     "length": 6,
+     "start": 4.22,
+     "end": 4.71
+    },
+    {
+     "location": 44,
+     "length": 2,
+     "start": 5.11,
+     "end": 5.31
+    },
+    {
+     "location": 47,
+     "length": 5,
+     "start": 5.37,
+     "end": 5.86
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-seine/alex": {
+   "file": "read-paris-seine-alex",
+   "text": "Golden statues shine on top of the fanciest bridge.",
+   "duration": 5.8,
+   "match": 1.0,
+   "heard": "Golden statues shine on top of the fanciest bridge.",
+   "words": [
+    {
+     "location": 0,
+     "length": 6,
+     "start": 0.18,
+     "end": 0.78
+    },
+    {
+     "location": 7,
+     "length": 7,
+     "start": 0.78,
+     "end": 1.48
+    },
+    {
+     "location": 15,
+     "length": 5,
+     "start": 1.67,
+     "end": 2.26
+    },
+    {
+     "location": 21,
+     "length": 2,
+     "start": 2.26,
+     "end": 2.78
+    },
+    {
+     "location": 24,
+     "length": 3,
+     "start": 2.78,
+     "end": 2.86
+    },
+    {
+     "location": 28,
+     "length": 2,
+     "start": 2.86,
+     "end": 3.01
+    },
+    {
+     "location": 31,
+     "length": 3,
+     "start": 3.15,
+     "end": 3.4
+    },
+    {
+     "location": 35,
+     "length": 8,
+     "start": 3.4,
+     "end": 3.76
+    },
+    {
+     "location": 44,
+     "length": 6,
+     "start": 3.76,
+     "end": 4.18
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-seine/bouquin": {
+   "file": "read-paris-seine-bouquin",
+   "text": "Green boxes by the river are full of old books.",
+   "duration": 5.44,
+   "match": 1.0,
+   "heard": "Green boxes by the river are full of old books.",
+   "words": [
+    {
+     "location": 0,
+     "length": 5,
+     "start": 0.18,
+     "end": 0.72
+    },
+    {
+     "location": 6,
+     "length": 5,
+     "start": 0.72,
+     "end": 1.14
+    },
+    {
+     "location": 12,
+     "length": 2,
+     "start": 1.14,
+     "end": 1.58
+    },
+    {
+     "location": 15,
+     "length": 3,
+     "start": 1.58,
+     "end": 2.03
+    },
+    {
+     "location": 19,
+     "length": 5,
+     "start": 2.33,
+     "end": 2.41
+    },
+    {
+     "location": 25,
+     "length": 3,
+     "start": 2.41,
+     "end": 2.7
+    },
+    {
+     "location": 29,
+     "length": 4,
+     "start": 2.7,
+     "end": 3.04
+    },
+    {
+     "location": 34,
+     "length": 2,
+     "start": 3.04,
+     "end": 3.32
+    },
+    {
+     "location": 37,
+     "length": 3,
+     "start": 3.41,
+     "end": 3.83
+    },
+    {
+     "location": 41,
+     "length": 5,
+     "start": 3.89,
+     "end": 4.2
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-seine/faces": {
+   "file": "read-paris-seine-faces",
+   "text": "Hundreds of funny stone faces grin down at the boats.",
+   "duration": 5.3,
+   "match": 1.0,
+   "heard": "Hundreds of funny stone faces grin down at the boats.",
+   "words": [
+    {
+     "location": 0,
+     "length": 8,
+     "start": 0.12,
+     "end": 0.69
+    },
+    {
+     "location": 9,
+     "length": 2,
+     "start": 0.76,
+     "end": 0.93
+    },
+    {
+     "location": 12,
+     "length": 5,
+     "start": 1.17,
+     "end": 1.58
+    },
+    {
+     "location": 18,
+     "length": 5,
+     "start": 1.58,
+     "end": 1.98
+    },
+    {
+     "location": 24,
+     "length": 5,
+     "start": 2.08,
+     "end": 2.61
+    },
+    {
+     "location": 30,
+     "length": 4,
+     "start": 2.89,
+     "end": 3.3
+    },
+    {
+     "location": 35,
+     "length": 4,
+     "start": 3.3,
+     "end": 3.78
+    },
+    {
+     "location": 40,
+     "length": 2,
+     "start": 3.86,
+     "end": 3.96
+    },
+    {
+     "location": 43,
+     "length": 3,
+     "start": 3.96,
+     "end": 4.19
+    },
+    {
+     "location": 47,
+     "length": 5,
+     "start": 4.27,
+     "end": 4.38
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-seine/goodbye": {
+   "file": "read-paris-seine-goodbye",
+   "text": "The boat turns near the Eiffel Tower. Au revoir, Seine!",
+   "duration": 5.11,
+   "match": 1.0,
+   "heard": "The boat turns near the Eiffel Tower. Au revoir, Seine!",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.0,
+     "end": 0.26
+    },
+    {
+     "location": 4,
+     "length": 4,
+     "start": 0.35,
+     "end": 0.61
+    },
+    {
+     "location": 9,
+     "length": 5,
+     "start": 0.93,
+     "end": 1.52
+    },
+    {
+     "location": 15,
+     "length": 4,
+     "start": 1.52,
+     "end": 1.94
+    },
+    {
+     "location": 20,
+     "length": 3,
+     "start": 2.02,
+     "end": 2.28
+    },
+    {
+     "location": 24,
+     "length": 6,
+     "start": 2.28,
+     "end": 2.74
+    },
+    {
+     "location": 31,
+     "length": 5,
+     "start": 3.47,
+     "end": 3.55
+    },
+    {
+     "location": 38,
+     "length": 2,
+     "start": 3.88,
+     "end": 3.96
+    },
+    {
+     "location": 41,
+     "length": 6,
+     "start": 3.96,
+     "end": 4.1
+    },
+    {
+     "location": 49,
+     "length": 5,
+     "start": 4.62,
+     "end": 4.7
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-seine/houseboat": {
+   "file": "read-paris-seine-houseboat",
+   "text": "Some people live on boats. Their gardens float with them!",
+   "duration": 4.92,
+   "match": 1.0,
+   "heard": "Some people live on boats. Their gardens float with them!",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.0,
+     "end": 0.6
+    },
+    {
+     "location": 5,
+     "length": 6,
+     "start": 0.66,
+     "end": 0.82
+    },
+    {
+     "location": 12,
+     "length": 4,
+     "start": 0.82,
+     "end": 1.04
+    },
+    {
+     "location": 17,
+     "length": 2,
+     "start": 1.04,
+     "end": 1.44
+    },
+    {
+     "location": 20,
+     "length": 5,
+     "start": 1.54,
+     "end": 1.71
+    },
+    {
+     "location": 27,
+     "length": 5,
+     "start": 2.5,
+     "end": 2.88
+    },
+    {
+     "location": 33,
+     "length": 7,
+     "start": 2.88,
+     "end": 3.44
+    },
+    {
+     "location": 41,
+     "length": 5,
+     "start": 3.57,
+     "end": 3.91
+    },
+    {
+     "location": 47,
+     "length": 4,
+     "start": 4.16,
+     "end": 4.3
+    },
+    {
+     "location": 52,
+     "length": 4,
+     "start": 4.45,
+     "end": 4.68
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-seine/liberty": {
+   "file": "read-paris-seine-liberty",
+   "text": "A small Statue of Liberty looks across the sea to New York.",
+   "duration": 5.01,
+   "match": 1.0,
+   "heard": "A small Statue of Liberty looks across the sea to New York.",
+   "words": [
+    {
+     "location": 0,
+     "length": 1,
+     "start": 0.0,
+     "end": 0.28
+    },
+    {
+     "location": 2,
+     "length": 5,
+     "start": 0.28,
+     "end": 0.84
+    },
+    {
+     "location": 8,
+     "length": 6,
+     "start": 0.84,
+     "end": 1.32
+    },
+    {
+     "location": 15,
+     "length": 2,
+     "start": 1.32,
+     "end": 1.56
+    },
+    {
+     "location": 18,
+     "length": 7,
+     "start": 1.56,
+     "end": 1.87
+    },
+    {
+     "location": 26,
+     "length": 5,
+     "start": 2.25,
+     "end": 2.6
+    },
+    {
+     "location": 32,
+     "length": 6,
+     "start": 2.6,
+     "end": 3.04
+    },
+    {
+     "location": 39,
+     "length": 3,
+     "start": 3.04,
+     "end": 3.34
+    },
+    {
+     "location": 43,
+     "length": 3,
+     "start": 3.34,
+     "end": 3.58
+    },
+    {
+     "location": 47,
+     "length": 2,
+     "start": 3.88,
+     "end": 4.16
+    },
+    {
+     "location": 50,
+     "length": 3,
+     "start": 4.16,
+     "end": 4.42
+    },
+    {
+     "location": 54,
+     "length": 4,
+     "start": 4.42,
+     "end": 4.57
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-seine/olympics": {
+   "file": "read-paris-seine-olympics",
+   "text": "In 2024, Olympic athletes rode boats down the river!",
+   "duration": 6.12,
+   "match": 1.0,
+   "heard": "In 2024, Olympic athletes rode boats down the river!",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.0,
+     "end": 0.38
+    },
+    {
+     "location": 3,
+     "length": 4,
+     "start": 0.38,
+     "end": 1.72
+    },
+    {
+     "location": 9,
+     "length": 7,
+     "start": 2.38,
+     "end": 3.11
+    },
+    {
+     "location": 17,
+     "length": 8,
+     "start": 3.19,
+     "end": 3.57
+    },
+    {
+     "location": 26,
+     "length": 4,
+     "start": 3.81,
+     "end": 4.26
+    },
+    {
+     "location": 31,
+     "length": 5,
+     "start": 4.34,
+     "end": 4.78
+    },
+    {
+     "location": 37,
+     "length": 4,
+     "start": 5.07,
+     "end": 5.38
+    },
+    {
+     "location": 42,
+     "length": 3,
+     "start": 5.38,
+     "end": 5.64
+    },
+    {
+     "location": 46,
+     "length": 5,
+     "start": 5.64,
+     "end": 5.8
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-seine/pontneuf": {
+   "file": "read-paris-seine-pontneuf",
+   "text": "Pont Neuf means 'New Bridge,' but it is the oldest!",
+   "duration": 7.0,
+   "match": 1.0,
+   "heard": "Pont Neuf means New Bridge, but it is the oldest!",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.37,
+     "end": 0.74
+    },
+    {
+     "location": 5,
+     "length": 4,
+     "start": 0.9,
+     "end": 1.38
+    },
+    {
+     "location": 10,
+     "length": 5,
+     "start": 1.68,
+     "end": 2.18
+    },
+    {
+     "location": 16,
+     "length": 4,
+     "start": 2.4,
+     "end": 3.2
+    },
+    {
+     "location": 21,
+     "length": 6,
+     "start": 3.27,
+     "end": 3.38
+    },
+    {
+     "location": 30,
+     "length": 3,
+     "start": 4.19,
+     "end": 4.43
+    },
+    {
+     "location": 34,
+     "length": 2,
+     "start": 4.54,
+     "end": 4.92
+    },
+    {
+     "location": 37,
+     "length": 2,
+     "start": 5.24,
+     "end": 5.5
+    },
+    {
+     "location": 40,
+     "length": 3,
+     "start": 5.5,
+     "end": 5.65
+    },
+    {
+     "location": 44,
+     "length": 6,
+     "start": 5.82,
+     "end": 6.48
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-seine/swans": {
+   "file": "read-paris-seine-swans",
+   "text": "Swan Island is a long, skinny island in the river.",
+   "duration": 4.8,
+   "match": 1.0,
+   "heard": "Swan Island is a long, skinny island in the river.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.0,
+     "end": 0.78
+    },
+    {
+     "location": 5,
+     "length": 6,
+     "start": 0.78,
+     "end": 1.19
+    },
+    {
+     "location": 12,
+     "length": 2,
+     "start": 1.48,
+     "end": 1.68
+    },
+    {
+     "location": 15,
+     "length": 1,
+     "start": 1.68,
+     "end": 1.98
+    },
+    {
+     "location": 17,
+     "length": 4,
+     "start": 1.98,
+     "end": 2.7
+    },
+    {
+     "location": 23,
+     "length": 6,
+     "start": 3.18,
+     "end": 3.26
+    },
+    {
+     "location": 30,
+     "length": 6,
+     "start": 3.26,
+     "end": 3.61
+    },
+    {
+     "location": 37,
+     "length": 2,
+     "start": 3.93,
+     "end": 4.14
+    },
+    {
+     "location": 40,
+     "length": 3,
+     "start": 4.14,
+     "end": 4.36
+    },
+    {
+     "location": 44,
+     "length": 5,
+     "start": 4.36,
+     "end": 4.48
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-seine/wave": {
+   "file": "read-paris-seine-wave",
+   "text": "People on the boat wave to people on the bridges.",
+   "duration": 3.76,
+   "match": 1.0,
+   "heard": "People on the boat wave to people on the bridges.",
+   "words": [
+    {
+     "location": 0,
+     "length": 6,
+     "start": 0.34,
+     "end": 0.72
+    },
+    {
+     "location": 7,
+     "length": 2,
+     "start": 0.72,
+     "end": 0.92
+    },
+    {
+     "location": 10,
+     "length": 3,
+     "start": 0.92,
+     "end": 1.1
+    },
+    {
+     "location": 14,
+     "length": 4,
+     "start": 1.1,
+     "end": 1.34
+    },
+    {
+     "location": 19,
+     "length": 4,
+     "start": 1.7,
+     "end": 2.1
+    },
+    {
+     "location": 24,
+     "length": 2,
+     "start": 2.1,
+     "end": 2.44
+    },
+    {
+     "location": 27,
+     "length": 6,
+     "start": 2.44,
+     "end": 2.62
+    },
+    {
+     "location": 34,
+     "length": 2,
+     "start": 2.62,
+     "end": 2.88
+    },
+    {
+     "location": 37,
+     "length": 3,
+     "start": 2.88,
+     "end": 3.14
+    },
+    {
+     "location": 41,
+     "length": 7,
+     "start": 3.14,
+     "end": 3.22
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-seine/welcome": {
+   "file": "read-paris-seine-welcome",
+   "text": "Let's ride a big boat on the Seine River!",
+   "duration": 4.2,
+   "match": 1.0,
+   "heard": "Let's ride a big boat on the Seine River!",
+   "words": [
+    {
+     "location": 0,
+     "length": 5,
+     "start": 0.0,
+     "end": 0.64
+    },
+    {
+     "location": 6,
+     "length": 4,
+     "start": 0.64,
+     "end": 0.95
+    },
+    {
+     "location": 11,
+     "length": 1,
+     "start": 1.01,
+     "end": 1.2
+    },
+    {
+     "location": 13,
+     "length": 3,
+     "start": 1.35,
+     "end": 1.99
+    },
+    {
+     "location": 17,
+     "length": 4,
+     "start": 2.07,
+     "end": 2.15
+    },
+    {
+     "location": 22,
+     "length": 2,
+     "start": 2.48,
+     "end": 2.72
+    },
+    {
+     "location": 25,
+     "length": 3,
+     "start": 2.72,
+     "end": 3.3
+    },
+    {
+     "location": 29,
+     "length": 5,
+     "start": 3.3,
+     "end": 3.38
+    },
+    {
+     "location": 35,
+     "length": 5,
+     "start": 3.56,
+     "end": 3.92
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-seine/zouave": {
+   "file": "read-paris-seine-zouave",
+   "text": "This stone soldier helps people see how high the water is.",
+   "duration": 6.16,
+   "match": 1.0,
+   "heard": "This stone soldier helps people see how high the water is.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.07,
+     "end": 0.5
+    },
+    {
+     "location": 5,
+     "length": 5,
+     "start": 0.5,
+     "end": 1.0
+    },
+    {
+     "location": 11,
+     "length": 7,
+     "start": 1.0,
+     "end": 1.47
+    },
+    {
+     "location": 19,
+     "length": 5,
+     "start": 1.8,
+     "end": 2.12
+    },
+    {
+     "location": 25,
+     "length": 6,
+     "start": 2.12,
+     "end": 2.54
+    },
+    {
+     "location": 32,
+     "length": 3,
+     "start": 2.54,
+     "end": 2.9
+    },
+    {
+     "location": 36,
+     "length": 3,
+     "start": 2.9,
+     "end": 3.34
+    },
+    {
+     "location": 40,
+     "length": 4,
+     "start": 3.34,
+     "end": 3.62
+    },
+    {
+     "location": 45,
+     "length": 3,
+     "start": 3.62,
+     "end": 4.04
+    },
+    {
+     "location": 49,
+     "length": 5,
+     "start": 4.04,
+     "end": 4.12
+    },
+    {
+     "location": 55,
+     "length": 2,
+     "start": 4.12,
+     "end": 4.49
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-versailles/apollo": {
+   "file": "read-paris-versailles-apollo",
+   "text": "Apollo drives his horses right out of the water!",
+   "duration": 4.56,
+   "match": 1.0,
+   "heard": "Apollo drives his horses right out of the water!",
+   "words": [
+    {
+     "location": 0,
+     "length": 6,
+     "start": 0.0,
+     "end": 0.73
+    },
+    {
+     "location": 7,
+     "length": 6,
+     "start": 0.92,
+     "end": 1.46
+    },
+    {
+     "location": 14,
+     "length": 3,
+     "start": 1.46,
+     "end": 2.25
+    },
+    {
+     "location": 18,
+     "length": 6,
+     "start": 2.54,
+     "end": 2.62
+    },
+    {
+     "location": 25,
+     "length": 5,
+     "start": 2.62,
+     "end": 2.99
+    },
+    {
+     "location": 31,
+     "length": 3,
+     "start": 3.28,
+     "end": 3.52
+    },
+    {
+     "location": 35,
+     "length": 2,
+     "start": 3.52,
+     "end": 3.7
+    },
+    {
+     "location": 38,
+     "length": 3,
+     "start": 3.7,
+     "end": 3.84
+    },
+    {
+     "location": 42,
+     "length": 5,
+     "start": 3.84,
+     "end": 4.04
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-versailles/bedroom": {
+   "file": "read-paris-versailles-bedroom",
+   "text": "People came to watch the king get out of bed!",
+   "duration": 4.05,
+   "match": 1.0,
+   "heard": "People came to watch the king get out of bed!",
+   "words": [
+    {
+     "location": 0,
+     "length": 6,
+     "start": 0.32,
+     "end": 0.8
+    },
+    {
+     "location": 7,
+     "length": 4,
+     "start": 0.8,
+     "end": 1.2
+    },
+    {
+     "location": 12,
+     "length": 2,
+     "start": 1.2,
+     "end": 1.54
+    },
+    {
+     "location": 15,
+     "length": 5,
+     "start": 1.54,
+     "end": 1.84
+    },
+    {
+     "location": 21,
+     "length": 3,
+     "start": 1.84,
+     "end": 2.06
+    },
+    {
+     "location": 25,
+     "length": 4,
+     "start": 2.06,
+     "end": 2.36
+    },
+    {
+     "location": 30,
+     "length": 3,
+     "start": 2.36,
+     "end": 2.62
+    },
+    {
+     "location": 34,
+     "length": 3,
+     "start": 2.62,
+     "end": 2.82
+    },
+    {
+     "location": 38,
+     "length": 2,
+     "start": 2.82,
+     "end": 3.26
+    },
+    {
+     "location": 41,
+     "length": 3,
+     "start": 3.26,
+     "end": 3.34
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-versailles/canal": {
+   "file": "read-paris-versailles-canal",
+   "text": "You can row a little boat on the Grand Canal.",
+   "duration": 4.36,
+   "match": 1.0,
+   "heard": "You can row a little boat on the Grand Canal.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.0,
+     "end": 0.38
+    },
+    {
+     "location": 4,
+     "length": 3,
+     "start": 0.38,
+     "end": 0.78
+    },
+    {
+     "location": 8,
+     "length": 3,
+     "start": 0.78,
+     "end": 1.06
+    },
+    {
+     "location": 12,
+     "length": 1,
+     "start": 1.06,
+     "end": 1.36
+    },
+    {
+     "location": 14,
+     "length": 6,
+     "start": 1.36,
+     "end": 1.53
+    },
+    {
+     "location": 21,
+     "length": 4,
+     "start": 1.59,
+     "end": 1.98
+    },
+    {
+     "location": 26,
+     "length": 2,
+     "start": 2.13,
+     "end": 2.34
+    },
+    {
+     "location": 29,
+     "length": 3,
+     "start": 2.34,
+     "end": 2.56
+    },
+    {
+     "location": 33,
+     "length": 5,
+     "start": 2.56,
+     "end": 2.85
+    },
+    {
+     "location": 39,
+     "length": 5,
+     "start": 2.91,
+     "end": 3.16
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-versailles/farm": {
+   "file": "read-paris-versailles-farm",
+   "text": "Her little farm still has animals, like goats and sheep.",
+   "duration": 5.25,
+   "match": 1.0,
+   "heard": "Her little farm still has animals, like goats and sheep.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.64,
+     "end": 0.94
+    },
+    {
+     "location": 4,
+     "length": 6,
+     "start": 0.94,
+     "end": 1.38
+    },
+    {
+     "location": 11,
+     "length": 4,
+     "start": 1.38,
+     "end": 1.72
+    },
+    {
+     "location": 16,
+     "length": 5,
+     "start": 1.72,
+     "end": 2.22
+    },
+    {
+     "location": 22,
+     "length": 3,
+     "start": 2.22,
+     "end": 2.58
+    },
+    {
+     "location": 26,
+     "length": 7,
+     "start": 2.58,
+     "end": 3.62
+    },
+    {
+     "location": 35,
+     "length": 4,
+     "start": 3.68,
+     "end": 4.0
+    },
+    {
+     "location": 40,
+     "length": 5,
+     "start": 4.06,
+     "end": 4.23
+    },
+    {
+     "location": 46,
+     "length": 3,
+     "start": 4.44,
+     "end": 4.74
+    },
+    {
+     "location": 50,
+     "length": 5,
+     "start": 4.74,
+     "end": 4.88
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-versailles/gardens": {
+   "file": "read-paris-versailles-gardens",
+   "text": "The gardens are huge, with paths, ponds and trimmed trees.",
+   "duration": 6.04,
+   "match": 1.0,
+   "heard": "The gardens are huge, with paths, ponds and trimmed trees.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.0,
+     "end": 0.3
+    },
+    {
+     "location": 4,
+     "length": 7,
+     "start": 0.36,
+     "end": 0.88
+    },
+    {
+     "location": 12,
+     "length": 3,
+     "start": 0.88,
+     "end": 1.4
+    },
+    {
+     "location": 16,
+     "length": 4,
+     "start": 1.4,
+     "end": 2.46
+    },
+    {
+     "location": 22,
+     "length": 4,
+     "start": 2.6,
+     "end": 3.22
+    },
+    {
+     "location": 27,
+     "length": 5,
+     "start": 3.51,
+     "end": 4.06
+    },
+    {
+     "location": 34,
+     "length": 5,
+     "start": 4.36,
+     "end": 4.44
+    },
+    {
+     "location": 40,
+     "length": 3,
+     "start": 4.44,
+     "end": 4.7
+    },
+    {
+     "location": 44,
+     "length": 7,
+     "start": 4.7,
+     "end": 5.13
+    },
+    {
+     "location": 52,
+     "length": 5,
+     "start": 5.19,
+     "end": 5.76
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-versailles/gate": {
+   "file": "read-paris-versailles-gate",
+   "text": "The big front gate shines with real gold leaf!",
+   "duration": 4.75,
+   "match": 1.0,
+   "heard": "The big front gate shines with real gold leaf!",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.1,
+     "end": 0.24
+    },
+    {
+     "location": 4,
+     "length": 3,
+     "start": 0.32,
+     "end": 0.63
+    },
+    {
+     "location": 8,
+     "length": 5,
+     "start": 0.72,
+     "end": 0.89
+    },
+    {
+     "location": 14,
+     "length": 4,
+     "start": 0.95,
+     "end": 1.17
+    },
+    {
+     "location": 19,
+     "length": 6,
+     "start": 1.55,
+     "end": 2.08
+    },
+    {
+     "location": 26,
+     "length": 4,
+     "start": 2.08,
+     "end": 2.42
+    },
+    {
+     "location": 31,
+     "length": 4,
+     "start": 2.42,
+     "end": 2.96
+    },
+    {
+     "location": 36,
+     "length": 4,
+     "start": 2.96,
+     "end": 3.42
+    },
+    {
+     "location": 41,
+     "length": 4,
+     "start": 3.42,
+     "end": 3.64
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-versailles/goodbye": {
+   "file": "read-paris-versailles-goodbye",
+   "text": "What a big, shiny palace! Au revoir, Versailles!",
+   "duration": 4.6,
+   "match": 1.0,
+   "heard": "What a big, shiny palace! Au revoir, Versailles!",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.0,
+     "end": 0.29
+    },
+    {
+     "location": 5,
+     "length": 1,
+     "start": 0.47,
+     "end": 0.57
+    },
+    {
+     "location": 7,
+     "length": 3,
+     "start": 0.8,
+     "end": 1.42
+    },
+    {
+     "location": 12,
+     "length": 5,
+     "start": 1.42,
+     "end": 1.82
+    },
+    {
+     "location": 18,
+     "length": 6,
+     "start": 1.82,
+     "end": 2.34
+    },
+    {
+     "location": 26,
+     "length": 2,
+     "start": 3.26,
+     "end": 3.34
+    },
+    {
+     "location": 29,
+     "length": 6,
+     "start": 3.34,
+     "end": 3.64
+    },
+    {
+     "location": 37,
+     "length": 10,
+     "start": 3.96,
+     "end": 4.3
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-versailles/hamlet": {
+   "file": "read-paris-versailles-hamlet",
+   "text": "Queen Marie Antoinette built a pretend village to play farm.",
+   "duration": 5.4,
+   "match": 1.0,
+   "heard": "Queen Marie Antoinette built a pretend village to play farm.",
+   "words": [
+    {
+     "location": 0,
+     "length": 5,
+     "start": 0.0,
+     "end": 0.62
+    },
+    {
+     "location": 6,
+     "length": 5,
+     "start": 0.62,
+     "end": 1.16
+    },
+    {
+     "location": 12,
+     "length": 10,
+     "start": 1.16,
+     "end": 1.68
+    },
+    {
+     "location": 23,
+     "length": 5,
+     "start": 2.18,
+     "end": 2.63
+    },
+    {
+     "location": 29,
+     "length": 1,
+     "start": 2.7,
+     "end": 2.94
+    },
+    {
+     "location": 31,
+     "length": 7,
+     "start": 3.01,
+     "end": 3.4
+    },
+    {
+     "location": 39,
+     "length": 7,
+     "start": 3.4,
+     "end": 3.86
+    },
+    {
+     "location": 47,
+     "length": 2,
+     "start": 4.15,
+     "end": 4.36
+    },
+    {
+     "location": 50,
+     "length": 4,
+     "start": 4.36,
+     "end": 4.57
+    },
+    {
+     "location": 55,
+     "length": 4,
+     "start": 4.68,
+     "end": 4.9
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-versailles/king": {
+   "file": "read-paris-versailles-king",
+   "text": "King Louis XIV was called the Sun King.",
+   "duration": 4.7,
+   "match": 1.0,
+   "heard": "King Louis XIV was called the Sun King.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.0,
+     "end": 0.44
+    },
+    {
+     "location": 5,
+     "length": 5,
+     "start": 0.58,
+     "end": 1.02
+    },
+    {
+     "location": 11,
+     "length": 3,
+     "start": 1.28,
+     "end": 2.11
+    },
+    {
+     "location": 15,
+     "length": 3,
+     "start": 2.39,
+     "end": 2.66
+    },
+    {
+     "location": 19,
+     "length": 6,
+     "start": 2.66,
+     "end": 2.99
+    },
+    {
+     "location": 26,
+     "length": 3,
+     "start": 3.25,
+     "end": 3.62
+    },
+    {
+     "location": 30,
+     "length": 3,
+     "start": 3.62,
+     "end": 3.92
+    },
+    {
+     "location": 34,
+     "length": 4,
+     "start": 3.92,
+     "end": 4.22
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-versailles/mirrors": {
+   "file": "read-paris-versailles-mirrors",
+   "text": "The Hall of Mirrors has 357 mirrors. Wave to yourself!",
+   "duration": 6.21,
+   "match": 1.0,
+   "heard": "The Hall of Mirrors has 357 mirrors. Wave to yourself!",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.12,
+     "end": 0.38
+    },
+    {
+     "location": 4,
+     "length": 4,
+     "start": 0.38,
+     "end": 0.76
+    },
+    {
+     "location": 9,
+     "length": 2,
+     "start": 0.83,
+     "end": 1.63
+    },
+    {
+     "location": 12,
+     "length": 7,
+     "start": 1.79,
+     "end": 1.87
+    },
+    {
+     "location": 20,
+     "length": 3,
+     "start": 1.87,
+     "end": 2.05
+    },
+    {
+     "location": 24,
+     "length": 3,
+     "start": 2.11,
+     "end": 3.78
+    },
+    {
+     "location": 28,
+     "length": 7,
+     "start": 3.78,
+     "end": 4.25
+    },
+    {
+     "location": 37,
+     "length": 4,
+     "start": 4.66,
+     "end": 5.08
+    },
+    {
+     "location": 42,
+     "length": 2,
+     "start": 5.08,
+     "end": 5.3
+    },
+    {
+     "location": 45,
+     "length": 8,
+     "start": 5.3,
+     "end": 5.69
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-versailles/orange": {
+   "file": "read-paris-versailles-orange",
+   "text": "Orange trees live in big boxes. In winter they go inside.",
+   "duration": 5.35,
+   "match": 1.0,
+   "heard": "Orange trees live in big boxes. In winter they go inside.",
+   "words": [
+    {
+     "location": 0,
+     "length": 6,
+     "start": 0.0,
+     "end": 0.52
+    },
+    {
+     "location": 7,
+     "length": 5,
+     "start": 0.52,
+     "end": 0.98
+    },
+    {
+     "location": 13,
+     "length": 4,
+     "start": 0.98,
+     "end": 1.28
+    },
+    {
+     "location": 18,
+     "length": 2,
+     "start": 1.28,
+     "end": 1.44
+    },
+    {
+     "location": 21,
+     "length": 3,
+     "start": 1.54,
+     "end": 1.88
+    },
+    {
+     "location": 25,
+     "length": 5,
+     "start": 1.88,
+     "end": 2.46
+    },
+    {
+     "location": 32,
+     "length": 2,
+     "start": 3.03,
+     "end": 3.34
+    },
+    {
+     "location": 35,
+     "length": 6,
+     "start": 3.34,
+     "end": 3.66
+    },
+    {
+     "location": 42,
+     "length": 4,
+     "start": 4.0,
+     "end": 4.24
+    },
+    {
+     "location": 47,
+     "length": 2,
+     "start": 4.24,
+     "end": 4.52
+    },
+    {
+     "location": 50,
+     "length": 6,
+     "start": 4.52,
+     "end": 4.98
+    }
+   ],
+   "style": "40b5f639d1"
+  },
+  "paris-versailles/welcome": {
+   "file": "read-paris-versailles-welcome",
+   "text": "This is Versailles, a giant palace near Paris.",
+   "duration": 4.1,
+   "match": 1.0,
+   "heard": "This is Versailles, a giant palace near Paris.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.0,
+     "end": 0.51
+    },
+    {
+     "location": 5,
+     "length": 2,
+     "start": 0.58,
+     "end": 0.94
+    },
+    {
+     "location": 8,
+     "length": 10,
+     "start": 0.94,
+     "end": 1.47
+    },
+    {
+     "location": 20,
+     "length": 1,
+     "start": 1.81,
+     "end": 2.26
+    },
+    {
+     "location": 22,
+     "length": 5,
+     "start": 2.26,
+     "end": 2.39
+    },
+    {
+     "location": 28,
+     "length": 6,
+     "start": 2.49,
+     "end": 2.94
+    },
+    {
+     "location": 35,
+     "length": 4,
+     "start": 2.94,
+     "end": 3.32
+    },
+    {
+     "location": 40,
+     "length": 5,
+     "start": 3.32,
+     "end": 3.72
     }
    ],
    "style": "40b5f639d1"
