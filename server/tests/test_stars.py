@@ -1,4 +1,4 @@
-"""Stars for curious questions: the validation rules, the give_star tool, storage and endpoints."""
+"""Stars for curious questions: the validation rules, awarding answered questions, storage and endpoints."""
 
 import asyncio
 import json
@@ -171,12 +171,12 @@ def test_status_line_and_instructions(keeper, clock):
     for text in ("Why is it so tall?", "How do you get up?"):
         hear(keeper, text, clock=clock)
         keeper.judge("question")
-    assert "Do not call give_star" in keeper.status_line(PAGE)
+    assert "Don't mention stars" in keeper.status_line(PAGE)
     assert "still has stars" in keeper.status_line(OTHER_PAGE)
-    assert "Do not call give_star" in keeper.status_line({})
+    assert "Don't mention stars" in keeper.status_line({})
     text = realtime_instructions(PAGE, stars=keeper.status_line(PAGE))
     assert STAR_RULES in text and "Great question, that's a star!" in text
-    assert "give_star" not in realtime_instructions(PAGE)
+    assert "Great question" not in realtime_instructions(PAGE)
 
 
 def test_payload_has_no_transcript(keeper, clock):
@@ -187,116 +187,19 @@ def test_payload_has_no_transcript(keeper, clock):
     assert "brown" not in json.dumps(data)
 
 
-# --- waiting for the transcript ------------------------------------------------------------------
+# --- follow-ups --------------------------------------------------------------------------------
 
 
-async def test_claim_waits_for_the_turns_transcript():
-    keeper = StarKeeper(rules=StarRules(wait_s=2.0))
-    keeper.speech_started()  # he is talking; the transcript is not in yet
-
-    async def later():
-        await asyncio.sleep(0.05)
-        keeper.heard(UserTurn(text="Why is the tower brown?", context=PAGE), TurnDecision.RESPOND)
-
-    task = asyncio.ensure_future(later())
-    award = await keeper.claim("question")
-    await task
-    assert isinstance(award, StarAward) and award.stars == 2
-
-
-async def test_claim_gives_up_when_no_transcript_comes():
-    keeper = StarKeeper(rules=StarRules(wait_s=0.05))
-    keeper.speech_started()
-    assert await keeper.claim("question") == "no new question heard"
-
-
-async def test_claim_judges_the_new_turn_not_the_old_one():
-    keeper = StarKeeper(rules=StarRules(wait_s=1.0, cooldown_s=0))
-    keeper.heard(UserTurn(text="What is at the top?", context=PAGE), TurnDecision.RESPOND)
-    keeper.speech_started()
-
-    async def later():
-        await asyncio.sleep(0.05)
-        keeper.heard(UserTurn(text="Eiffel Tower is tall", context=PAGE), TurnDecision.LISTEN)
-
-    task = asyncio.ensure_future(later())
-    assert await keeper.claim("question") == "that was reading or not meant for Milo"
-    await task
-
-
-# --- the tool ----------------------------------------------------------------------------------
-
-
-async def _yes():
-    return True
-
-
-async def _no():
-    return False
-
-
-async def test_give_star_hands_the_award_on_and_stays_quiet(keeper, clock):
-    hear(keeper, "Why is it brown?", clock=clock)
-    got = []
-    result = await agent_mod.give_star_result(keeper, "question", "color", got.append, _yes)
-    assert len(got) == 1 and got[0].stars == 2
-    assert result.reply_required is False and "Star given" in result.output
-
-
-async def test_give_star_rejected_tells_the_model_not_to_mention_it(keeper, clock):
-    hear(keeper, "Hi Milo", clock=clock)
-    got = []
-    result = await agent_mod.give_star_result(keeper, "question", "", got.append, _yes)
-    assert got == [] and result.reply_required is False and "No star" in result.output
-
-
-async def test_give_star_alone_still_gets_him_an_answer(keeper, clock):
-    hear(keeper, "Why is it brown?", clock=clock)
-    result = await agent_mod.give_star_result(keeper, "question", "", lambda a: None, _no)
-    assert result.reply_required is True and "answer" in result.output
-
-
-async def test_give_star_alone_never_waits_long_for_the_check(keeper):
-    keeper.rules = StarRules(wait_s=5.0)
-    keeper.speech_started()  # the transcript hasn't arrived yet
-    got = []
-    started = asyncio.get_running_loop().time()
-    result = await agent_mod.give_star_result(keeper, "question", "", got.append, _no, quick_s=0.05)
-    assert asyncio.get_running_loop().time() - started < 1.0
-    assert result.reply_required is True and "Don't mention stars" in result.output
-    keeper.heard(UserTurn(text="Why is the tower brown?", context=PAGE), TurnDecision.RESPOND)
-    for _ in range(50):
-        if got:
-            break
-        await asyncio.sleep(0.01)
-    assert len(got) == 1, "a late but real star still reaches the app"
-
-
-async def test_give_star_award_survives_the_tool_being_cancelled(keeper):
-    keeper.rules = StarRules(wait_s=5.0)
-    keeper.speech_started()
-    got = []
-
-    async def slow_playout():
-        await asyncio.sleep(10)
-        return True
-
-    tool = asyncio.ensure_future(agent_mod.give_star_result(keeper, "question", "", got.append, slow_playout))
-    await asyncio.sleep(0.01)
-    tool.cancel()  # he barged in
-    keeper.heard(UserTurn(text="Why is the tower brown?", context=PAGE), TurnDecision.RESPOND)
-    for _ in range(50):
-        if got:
-            break
-        await asyncio.sleep(0.01)
-    assert len(got) == 1
-
-
-async def test_give_star_treats_unknown_kinds_as_questions(keeper, clock):
-    hear(keeper, "Why is it brown?", clock=clock)
-    got = []
-    await agent_mod.give_star_result(keeper, None, None, got.append, _yes)
-    assert got[0].kind == "question" and got[0].reason == ""
+def test_next_question_on_the_starred_page_is_a_follow_up(keeper, clock):
+    hear(keeper, "What is on top of the tower?", clock=clock)
+    assert keeper.kind_for_next() == "question"
+    keeper.judge(keeper.kind_for_next())
+    hear(keeper, "What color is the top part?", clock=clock)
+    assert keeper.kind_for_next() == "follow_up"
+    hear(keeper, "What is in this park?", context=OTHER_PAGE, clock=clock)
+    assert keeper.kind_for_next() == "question"
+    hear(keeper, "What color is the top part?", clock=clock, gap=keeper.rules.followup_s + 1)
+    assert keeper.kind_for_next() == "question"
 
 
 class FakeParticipant:
@@ -333,6 +236,95 @@ async def test_star_game_sends_awards_to_the_app_and_the_server(clock):
     assert refreshed == [True]  # the page is full now, so the model's instructions change
 
 
+def new_game(clock, **kw):
+    ctx = FakeCtx()
+    game = agent_mod.StarGame(ctx, StarKeeper(device_id="ipad-1", clock=clock), report=_report_ok, **kw)
+    return ctx, game
+
+
+async def _report_ok(award):
+    return True
+
+
+def ask(game, clock, text, decision=TurnDecision.RESPOND, context=PAGE):
+    clock.t += 12.0
+    game.keeper.speech_started()
+    clock.t += 1.0
+    game.realtime_decision(UserTurn(text=text, context=dict(context)), decision)
+
+
+async def settle():
+    for _ in range(5):
+        await asyncio.sleep(0)
+
+
+async def test_realtime_star_comes_once_milo_answers(clock):
+    ctx, game = new_game(clock)
+    ask(game, clock, "Why is the tower brown?")
+    await settle()
+    assert game.keeper.awards == []  # he hasn't answered yet
+    clock.t += 0.5
+    game.milo_started_speaking()
+    await game.drain()
+    assert [a.stars for a in game.keeper.awards] == [2]
+    assert ctx.room.local_participant.sent[0][0]["stars"] == 2
+
+
+async def test_realtime_answer_already_under_way_counts(clock):
+    ctx, game = new_game(clock)
+    clock.t += 12.0
+    game.keeper.speech_started()
+    clock.t += 0.8
+    game.milo_started_speaking()  # the realtime reply starts before the guard has decided
+    clock.t += 0.4
+    game.realtime_decision(UserTurn(text="Why is the tower brown?", context=dict(PAGE)), TurnDecision.RESPOND)
+    await game.drain()
+    assert len(game.keeper.awards) == 1
+
+
+async def test_realtime_no_answer_no_star(clock):
+    _, game = new_game(clock, answer_wait_s=0.05)
+    clock.t += 12.0
+    game.keeper.speech_started()
+    game.milo_started_speaking()  # an older answer, before he asked
+    clock.t += 1.0
+    game.realtime_decision(UserTurn(text="Why is the tower brown?", context=dict(PAGE)), TurnDecision.RESPOND)
+    task = asyncio.ensure_future(game.drain())
+    for _ in range(20):
+        clock.t += 0.01
+        await asyncio.sleep(0.01)
+    await task
+    assert game.keeper.awards == []
+
+
+async def test_realtime_ignored_turns_never_wait_or_earn(clock):
+    _, game = new_game(clock)
+    ask(game, clock, "Did you call the plumber about the sink?", decision=TurnDecision.IGNORE)
+    ask(game, clock, "The Eiffel Tower is tall", decision=TurnDecision.LISTEN)
+    assert game._tasks == set()
+    game.milo_started_speaking()
+    await game.drain()
+    assert game.keeper.awards == []
+
+
+async def test_realtime_newer_question_wins(clock):
+    _, game = new_game(clock)
+    ask(game, clock, "Why is the tower brown?")
+    ask(game, clock, "How tall is the tower?")
+    game.milo_started_speaking()
+    await game.drain()
+    assert len(game.keeper.awards) == 1 and game.keeper.awards[0].words == 5
+
+
+async def test_stars_can_be_turned_off(clock):
+    _, game = new_game(clock, enabled=False)
+    ask(game, clock, "Why is the tower brown?")
+    game.pipeline_decision(UserTurn(text="How tall is the tower?", context=dict(PAGE)), TurnDecision.RESPOND)
+    game.milo_started_speaking()
+    await game.drain()
+    assert game.keeper.awards == []
+
+
 async def test_pipeline_awards_answered_questions_directly(clock):
     ctx = FakeCtx()
 
@@ -347,16 +339,17 @@ async def test_pipeline_awards_answered_questions_directly(clock):
     assert game.keeper.total() == 2 and len(ctx.room.local_participant.sent) == 1
 
 
-def test_speaking_marks_a_turn_pending(clock):
+async def test_watch_tracks_who_is_speaking(clock):
     game = agent_mod.StarGame(None, StarKeeper(clock=clock))
     handlers = {}
     session = type("S", (), {"on": lambda self, name, fn: handlers.__setitem__(name, fn)})()
     game.watch(session)
-    game.keeper.heard(UserTurn(text="hello there you", context=PAGE), TurnDecision.RESPOND)
     clock.t += 1
-    assert not game.keeper.pending()
     handlers["user_state_changed"](type("E", (), {"new_state": "speaking"})())
-    assert game.keeper.pending()
+    assert game.keeper.speech_at == clock.t
+    clock.t += 2
+    handlers["agent_state_changed"](type("E", (), {"new_state": "speaking"})())
+    assert game._answered_at == clock.t
 
 
 async def test_report_star_goes_to_the_stars_endpoint(monkeypatch, keeper, clock):

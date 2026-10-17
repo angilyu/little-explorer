@@ -175,15 +175,18 @@ device, set its address in the Grown-ups corner (e.g. `http://<your-mac>.local:8
 ### Stars and the Passport
 
 He earns stars for curious questions, not for talking a lot. Milo decides what counts as a real question about
-the book and calls a `give_star` tool alongside his answer, starting with "Great question, that's a star!". The
-agent (`stars.py`) checks every award before it counts, using the input transcription:
+the book: his relevance check (the same one that decides whether he answers at all) lets it through and he
+answers it, starting with "Great question, that's a star!". The agent (`stars.py`) checks every award before it
+counts, using the input transcription; nothing the model says can hand out a star:
 
 - 1 star for a question (at least 3 words, not reading the page aloud, not "hi Milo" or other small talk).
-- +1 for a long question (8+ words) or a "why"/"how" question; +1 for a follow-up on the same page.
+- +1 for a long question (8+ words) or a "why"/"how" question; +1 for a follow-up (the same page as the last
+  star, within 90 seconds).
 - At most 3 stars per page per session (`PIP_STAR_PAGE_CAP`) and 8 seconds between stars (`PIP_STAR_COOLDOWN_S`;
   `PIP_STAR_LONG_WORDS` sets "long").
-- The check never holds up Milo's voice: it runs in the background and a late star still reaches the app.
-  `PIP_STARS=0` turns the game off on the agent (no tool, no awards).
+- There is no model tool, so the game never delays Milo's reply (a tool call made gpt-realtime answer in a
+  second response). The star is checked off the voice path once Milo starts answering. `PIP_STARS=0` turns the
+  game off on the agent.
 
 Checked awards go to the app on the `milo.star` data topic (a star flies into the counter by the Milo switch
 with a soft chime) and to the token server (`POST /stars`, report key), which keeps them in the database by

@@ -239,15 +239,12 @@ REALTIME_RULES = """How listening works (very important):
 """
 
 
-STAR_RULES = """Stars (a game that rewards curious questions):
+STAR_RULES = """Stars (a game that rewards curious questions; the app hands them out, you just cheer):
 - When he asks you a real, curious question about the book, the page, the photo, the city or
-  travel, start talking and call give_star in the same response as your spoken answer, never on its
-  own and never instead of answering. Use kind
-  "follow_up" when he asks more about the thing he just asked about.
-- When you call give_star, begin your answer with "Great question, that's a star!", then answer.
-- Never call give_star for reading the page aloud, answers to your questions, greetings, "how are
-  you", noise, or anything that is not his question. One call per question. Don't talk about
-  stars at any other time.
+  travel, begin your answer with "Great question, that's a star!", then answer.
+- Never say it for reading the page aloud, answers to your questions, greetings, "how are you",
+  noise, or anything that is not his question, or when the stars line says this page has all its
+  stars. Don't talk about stars at any other time.
 """
 
 
