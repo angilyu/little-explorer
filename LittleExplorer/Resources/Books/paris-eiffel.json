@@ -1,0 +1,204 @@
+{
+  "id": "paris-eiffel",
+  "city": "Paris",
+  "country": "France",
+  "flagImage": "paris-flag.png",
+  "flag": "🇫🇷",
+  "theme": "Eiffel Tower",
+  "coverColor": "#8A5A44",
+  "tagline": "Stairs, sparkles and a secret room",
+  "pages": [
+    {
+      "id": "welcome",
+      "text": "This is the Eiffel Tower. People call it the Iron Lady.",
+      "about": "The Eiffel Tower (EYE-fel) is made of iron and is about 330 meters tall, as tall as an 81-story building. It was built for a big World's Fair in 1889. For 41 years it was the tallest building in the whole world, until the Chrysler Building in New York beat it in 1930. Millions of people visit it every year. The French call it 'la Dame de Fer', the Iron Lady.",
+      "emoji": "🗼",
+      "photo": {
+        "commonsTitle": "File:Eiffel tower from trocadero.jpg",
+        "query": "Eiffel Tower from Trocadero",
+        "file": "paris-eiffel-welcome.jpg",
+        "author": "NonOmnisMoriar",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Eiffel_tower_from_trocadero.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "build",
+      "text": "Workers built the tower in just two years.",
+      "about": "Building started in January 1887 and finished in March 1889, in about two years and two months. That was very fast! The tower is made of 18,038 iron pieces. Each piece was made in a factory first, then carried to Paris and fitted together like a giant building kit. This old photo shows the four legs in 1887, just starting to grow toward the sky.",
+      "emoji": "🏗️",
+      "photo": {
+        "commonsTitle": "File:Eiffelturm 1887.jpg",
+        "query": "Eiffel Tower construction 1887",
+        "file": "paris-eiffel-build.jpg",
+        "author": "Unknown author",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Eiffelturm_1887.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "rivets",
+      "text": "Millions of little metal bolts called rivets hold it together.",
+      "about": "About 2.5 million rivets hold the iron pieces together. A rivet is a little metal pin. Workers heated each rivet until it glowed red-hot, pushed it into a hole, and hammered the end flat. When it cooled down, it shrank and squeezed the pieces tight. Teams of four workers did each rivet together. If you look closely at the tower, you can see the little round rivet heads everywhere, like buttons.",
+      "emoji": "🔩",
+      "photo": {
+        "commonsTitle": "File:Détail structure tour Eiffel Paris.JPG",
+        "query": "Eiffel Tower iron structure detail",
+        "file": "paris-eiffel-rivets.jpg",
+        "author": "Thesupermat",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:D%C3%A9tail_structure_tour_Eiffel_Paris.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "name",
+      "text": "Mr. Gustave Eiffel's company built it, so it has his name.",
+      "about": "Gustave Eiffel was a French engineer who was very good at building iron bridges. Two engineers in his company, Maurice Koechlin and Émile Nouguier, drew the first idea for the tower, and Eiffel's company built it. Lots of people did not like it at first and called it ugly! It was only supposed to stand for 20 years. It was saved because it was so useful as a giant radio antenna.",
+      "emoji": "🎩",
+      "photo": {
+        "commonsTitle": "File:M. Gustave Eiffel (14382067242) (cropped).jpg",
+        "query": "Gustave Eiffel portrait",
+        "file": "paris-eiffel-name.jpg",
+        "author": "USMC Archives from Quantico, USA",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:M._Gustave_Eiffel_(14382067242)_(cropped).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "painters",
+      "text": "Painters paint the whole tower by hand every seven years.",
+      "about": "Paint keeps the iron from rusting, so the tower gets a new coat about every seven years. Painters use brushes, not sprays, and they wear safety ropes high up in the air. A paint job uses about 60 tonnes of paint! The tower has not always been brown: long ago it was reddish, then yellow, then brown. It is painted a little lighter at the top and darker at the bottom, so it looks the same color against the sky.",
+      "emoji": "🎨",
+      "photo": {
+        "commonsTitle": "File:Eiffelturm PICT0101.JPG",
+        "query": "Eiffel Tower painters paint",
+        "file": "paris-eiffel-painters.jpg",
+        "author": "Muesse",
+        "license": "CC BY 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Eiffelturm_PICT0101.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "grow",
+      "text": "On hot summer days, the tower grows a tiny bit taller!",
+      "about": "When iron gets hot, it gets a tiny bit bigger. Scientists call this expanding. On hot summer days, the Eiffel Tower grows a few millimeters taller, about as thick as a coin or two. When it gets cold, it shrinks back. The sun also warms one side more than the other, so the very top moves a tiny bit during the day, away from the sun. It is much too small for visitors to feel.",
+      "emoji": "🌞",
+      "photo": {
+        "commonsTitle": "File:Eiffel Tower, Paris 7th 002.JPG",
+        "query": "Eiffel Tower summer",
+        "file": "paris-eiffel-grow.jpg",
+        "author": "Moonik",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Eiffel_Tower,_Paris_7th_002.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "stairs",
+      "text": "You can climb 674 steps up to the second floor. Phew!",
+      "about": "Visitors can walk up the stairs from the ground to the second floor. That is 674 steps! It is like climbing a very tall building, and your legs will feel it. On the way you can see the iron beams all around you and Paris getting smaller below. To go higher, to the very top, everybody has to take a lift. Some people even run up the stairs in a race.",
+      "emoji": "🪜",
+      "photo": {
+        "commonsTitle": "File:Eiffel Tower stair, 23 July 2009.jpg",
+        "query": "Eiffel Tower stairs",
+        "file": "paris-eiffel-stairs.jpg",
+        "author": "CaBLe27",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Eiffel_Tower_stair,_23_July_2009.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "lifts",
+      "text": "Big wheels pull the lifts up and down the tower's legs.",
+      "about": "The tower's legs are curved, so some lifts have to ride up at a slant, like a train going up a hill. Giant wheels and strong cables pull them. Some of the machines that move the lifts are very old, from 1899, and they still work today! You can see the big wheels at the bottom of the tower. Other lifts go straight up from the second floor to the top.",
+      "emoji": "🛗",
+      "photo": {
+        "commonsTitle": "File:Paris Eiffel Tower elevator wheel 01a.jpg",
+        "query": "Eiffel Tower elevator machinery wheel",
+        "file": "paris-eiffel-lifts.jpg",
+        "author": "Vania Teofilo",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Paris_Eiffel_Tower_elevator_wheel_01a.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "fireworks",
+      "text": "On special nights, fireworks fill the sky around the tower.",
+      "about": "Every year on July 14th, France's national holiday called Bastille Day, there is a huge fireworks show at the Eiffel Tower. Thousands of people sit on the grass to watch, and the music plays while colors burst all around the tower. Sometimes there are fireworks on New Year's Eve, too. In this picture, golden fireworks are shooting up like fountains around the tower.",
+      "emoji": "🎆",
+      "photo": {
+        "commonsTitle": "File:2011 Fireworks on Eiffel Tower 01.jpg",
+        "query": "Eiffel Tower fireworks",
+        "file": "paris-eiffel-fireworks.jpg",
+        "author": "Yann Caradec from Paris, France",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:2011_Fireworks_on_Eiffel_Tower_01.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "apartment",
+      "text": "At the top, Mr. Eiffel had a secret little apartment.",
+      "about": "Near the very top, Gustave Eiffel built himself a small apartment with wallpaper and wooden furniture. He used it to meet important guests and to do science experiments about weather and wind. In 1889 the famous inventor Thomas Edison visited him there and gave him a phonograph, a machine that plays recorded sounds. Today you can peek through the window and see wax models of Eiffel, his daughter Claire, and Edison.",
+      "emoji": "🛋️",
+      "photo": {
+        "commonsTitle": "File:Gustave Eiffel and Thomas Edison.jpg",
+        "query": "Gustave Eiffel apartment wax figures Edison",
+        "file": "paris-eiffel-apartment.jpg",
+        "author": "Vic Lic",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Gustave_Eiffel_and_Thomas_Edison.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "twinkle",
+      "text": "At night, the tower sparkles for five minutes every hour.",
+      "about": "At night the tower glows golden. Then, at the start of every hour, 20,000 little lights twinkle all over it for five minutes, like glitter! The sparkles began in the year 2000 to celebrate the new millennium, and people liked them so much that they stayed. In this picture from 2024, giant Olympic rings hang on the tower for the Paris Olympic Games.",
+      "emoji": "✨",
+      "photo": {
+        "commonsTitle": "File:Eiffel Tower at Night 2024 Olympics.jpg",
+        "query": "Eiffel Tower night lights Olympics",
+        "file": "paris-eiffel-twinkle.jpg",
+        "author": "Quirkyquail",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Eiffel_Tower_at_Night_2024_Olympics.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "goodbye",
+      "text": "From the top, you can see all of Paris. Au revoir!",
+      "about": "The top floor is 276 meters high. From up there, the cars look like ants and the river Seine looks like a ribbon. On a clear day you can see very far, over the rooftops, parks and churches of Paris. It can be windy up there! Au revoir (oh ruh-VWAHR) means goodbye in French. Which floor of the tower would you like to visit?",
+      "emoji": "👋",
+      "photo": {
+        "commonsTitle": "File:Eiffel Tower View - panoramio - arthursmello (2).jpg",
+        "query": "view from Eiffel Tower Paris",
+        "file": "paris-eiffel-goodbye.jpg",
+        "author": "arthursmello",
+        "license": "CC BY 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Eiffel_Tower_View_-_panoramio_-_arthursmello_(2).jpg",
+        "verified": true
+      }
+    }
+  ]
+}

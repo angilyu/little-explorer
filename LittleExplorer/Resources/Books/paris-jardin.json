@@ -1,0 +1,204 @@
+{
+  "id": "paris-jardin",
+  "city": "Paris",
+  "country": "France",
+  "flagImage": "paris-flag.png",
+  "flag": "🇫🇷",
+  "theme": "Jardin d'Acclimatation",
+  "coverColor": "#4E9A43",
+  "tagline": "Little trains, peacocks and rides",
+  "pages": [
+    {
+      "id": "welcome",
+      "text": "This is the Jardin d'Acclimatation, a big park for kids.",
+      "about": "The Jardin d'Acclimatation (zhar-DAN dah-klee-mah-tah-SYOHN) is a big amusement park and garden in the Bois de Boulogne, a forest at the edge of Paris. It has rides, playgrounds, animals, gardens and shows. The funny glass building that looks like a ship with sails, in the back of this picture, is the Fondation Louis Vuitton, an art museum right next to the park.",
+      "emoji": "🎡",
+      "photo": {
+        "commonsTitle": "File:Fondation Louis Vuitton 5.jpg",
+        "query": "Jardin d'Acclimatation Paris",
+        "file": "paris-jardin-welcome.jpg",
+        "author": "Moktarama",
+        "license": "CC BY 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Fondation_Louis_Vuitton_5.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "train",
+      "text": "A little train takes you into the park. Choo choo!",
+      "about": "The Petit Train (puh-TEE TRAN) is a little open train that has carried children to the park since 1878, more than 140 years! It starts near Porte Maillot in Paris and rolls slowly through the trees of the Bois de Boulogne to the park gate. In autumn the leaves around the tracks turn orange and yellow, just like in this picture.",
+      "emoji": "🚂",
+      "photo": {
+        "commonsTitle": "File:Le petit train - Flickr - besopha.jpg",
+        "query": "petit train Jardin d'Acclimatation",
+        "file": "paris-jardin-train.jpg",
+        "author": "besopha",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Le_petit_train_-_Flickr_-_besopha.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "history",
+      "text": "The park opened more than 160 years ago, in 1860.",
+      "about": "Emperor Napoleon III and Empress Eugénie opened the park on October 6th, 1860. 'Acclimatation' means helping plants and animals from faraway places get used to a new home and new weather. People came in fancy clothes to see new plants and animals they had never seen before. This drawing shows what the park looked like when it was brand new.",
+      "emoji": "📜",
+      "photo": {
+        "commonsTitle": "File:Corbel031 Le Jardin d'Acclimatation en 1860.jpg",
+        "query": "Jardin d'Acclimatation 1860",
+        "file": "paris-jardin-history.jpg",
+        "author": "A. Provost illustrateur, scan by Havang(nl)",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Corbel031_Le_Jardin_d%27Acclimatation_en_1860.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "peacock",
+      "text": "Peacocks walk freely around the park. Look at those feathers!",
+      "about": "Peacocks are not in cages here. They walk on the paths and lawns, right next to families! The boy peacock has a very long tail with shiny blue and green 'eye' spots. When he wants to show off, he lifts it up into a giant fan and shakes it. Peacocks can also make a very loud call that sounds a bit like 'may-AWE!' It is best to look at them but not chase them.",
+      "emoji": "🦚",
+      "photo": {
+        "commonsTitle": "File:Jardin d'acclimatation, Paris 16e 8.jpg",
+        "query": "peacock Jardin d'Acclimatation",
+        "file": "paris-jardin-peacock.jpg",
+        "author": "Celette",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Jardin_d%27acclimatation,_Paris_16e_8.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "peahen",
+      "text": "A white peahen walks with her four fluffy chicks.",
+      "about": "A girl peacock is called a peahen, and the babies are called peachicks. Most peacocks are blue and green, but some are all white, like this mother. White peacocks are not sick or old; they are just born with white feathers. The chicks stay close to their mother and follow her everywhere while she teaches them to find seeds and bugs.",
+      "emoji": "🐣",
+      "photo": {
+        "commonsTitle": "File:Paons blancs du Jardin d'Acclimation.jpg",
+        "query": "white peahen chicks Jardin d'Acclimatation",
+        "file": "paris-jardin-peahen.jpg",
+        "author": "Tangopaso",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Paons_blancs_du_Jardin_d%27Acclimation.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "geese",
+      "text": "Goose families waddle along the paths with their babies.",
+      "about": "Baby geese are called goslings. They are fluffy and yellow-gray, and they walk in a line between their mom and dad. The park also has a little farm, where children can meet goats, sheep, donkeys, hens and rabbits, and learn how farm animals are cared for. Which farm animal would you like to feed?",
+      "emoji": "🪿",
+      "photo": {
+        "commonsTitle": "File:Jardin d'acclimatation, Paris 16e 18.jpg",
+        "query": "geese goslings Jardin d'Acclimatation",
+        "file": "paris-jardin-geese.jpg",
+        "author": "Celette",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Jardin_d%27acclimatation,_Paris_16e_18.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "parrots",
+      "text": "Bright orange and yellow parrots chatter in their big home.",
+      "about": "These birds are called sun conures (KON-yurs). They are small parrots from South America, and their feathers are as bright as the sun. They love to chatter and squawk to each other, and they use their strong curved beaks to crack seeds and even to climb. The park has had a big birdhouse, called an aviary, since it opened in 1860.",
+      "emoji": "🦜",
+      "photo": {
+        "commonsTitle": "File:Conures soleil.jpg",
+        "query": "sun conures parrots",
+        "file": "paris-jardin-parrots.jpg",
+        "author": "Thomon",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Conures_soleil.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "river",
+      "text": "Little boats float slowly along the Enchanted River.",
+      "about": "The Enchanted River, la Rivière Enchantée, is one of the oldest rides in the park. You sit in a little boat that floats gently along a winding stream, under bridges and past trees and flowers. There are no motors pushing it fast; the water does the work. Your grandparents might have ridden it when they were little, too!",
+      "emoji": "🛶",
+      "photo": {
+        "commonsTitle": "File:Paris - Jardin d'Acclimatation - Attraction de la Rivière Enchantée, bateau.jpg",
+        "query": "Rivière Enchantée boat",
+        "file": "paris-jardin-river.jpg",
+        "author": "Romainbehar",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Paris_-_Jardin_d%27Acclimatation_-_Attraction_de_la_Rivi%C3%A8re_Enchant%C3%A9e,_bateau.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "carousel",
+      "text": "The old carousel has horses, carriages and a painted roof.",
+      "about": "A carousel is called a manège (mah-NEHZH) in French. This one has painted wooden horses that go up and down, and fancy carriages for people who want to sit. The roof is painted with horses and dancers, and music plays while it goes round and round. Would you choose a horse or a carriage?",
+      "emoji": "🎠",
+      "photo": {
+        "commonsTitle": "File:Jardin d'Acclimatation 106.jpg",
+        "query": "carousel Jardin d'Acclimatation",
+        "file": "paris-jardin-carousel.jpg",
+        "author": "Jeremy Thompson",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Jardin_d%27Acclimatation_106.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "puppets",
+      "text": "Children laugh at a puppet show in the little theater.",
+      "about": "The park has a puppet theater with a red curtain. The most famous French puppet is called Guignol (gee-NYOL). He was invented in the city of Lyon more than 200 years ago. During the show, kids shout to help Guignol, like 'Watch out, he's behind you!' Puppet shows are a very old French tradition for children.",
+      "emoji": "🎭",
+      "photo": {
+        "commonsTitle": "File:Guignol.jpg",
+        "query": "Guignol puppet theatre Jardin d'Acclimatation",
+        "file": "paris-jardin-puppets.jpg",
+        "author": "Kuxu76",
+        "license": "CC BY 2.5",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.5",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Guignol.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "korea",
+      "text": "A little garden from Korea has a pretty house by a pond.",
+      "about": "The Garden of Seoul is a quiet Korean garden inside the park. The city of Seoul in South Korea gave it to Paris as a present, and it opened in 2002. Workers came from Korea to build it with Korean wood and stone. The little open house by the pond is called a pavilion. Its roof curves up at the corners, like a smile.",
+      "emoji": "🏯",
+      "photo": {
+        "commonsTitle": "File:France IDF 75 Jardin acclimatation 02.jpg",
+        "query": "Jardin de Séoul pavilion",
+        "file": "paris-jardin-korea.jpg",
+        "author": "Calips",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:France_IDF_75_Jardin_acclimatation_02.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "goodbye",
+      "text": "So many rides and animals! Au revoir, little park!",
+      "about": "The park has more than 40 rides and lots of playgrounds, from gentle ones for little kids to faster ones for big kids. Families come for a whole day, with snacks and picnics under the trees. Au revoir (oh ruh-VWAHR) means goodbye in French. What would you do first: ride the little train, see the peacocks, or go on a ride?",
+      "emoji": "👋",
+      "photo": {
+        "commonsTitle": "File:Jardin d'acclimatation, Paris 16e 10.jpg",
+        "query": "Jardin d'Acclimatation carousel",
+        "file": "paris-jardin-goodbye.jpg",
+        "author": "Celette",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Jardin_d%27acclimatation,_Paris_16e_10.jpg",
+        "verified": true
+      }
+    }
+  ]
+}
