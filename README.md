@@ -182,6 +182,8 @@ agent (`stars.py`) checks every award before it counts, using the input transcri
 - +1 for a long question (8+ words) or a "why"/"how" question; +1 for a follow-up on the same page.
 - At most 3 stars per page per session (`PIP_STAR_PAGE_CAP`) and 8 seconds between stars (`PIP_STAR_COOLDOWN_S`;
   `PIP_STAR_LONG_WORDS` sets "long").
+- The check never holds up Milo's voice: it runs in the background and a late star still reaches the app.
+  `PIP_STARS=0` turns the game off on the agent (no tool, no awards).
 
 Checked awards go to the app on the `milo.star` data topic (a star flies into the counter by the Milo switch
 with a soft chime) and to the token server (`POST /stars`, report key), which keeps them in the database by

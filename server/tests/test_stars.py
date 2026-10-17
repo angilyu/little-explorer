@@ -256,6 +256,42 @@ async def test_give_star_alone_still_gets_him_an_answer(keeper, clock):
     assert result.reply_required is True and "answer" in result.output
 
 
+async def test_give_star_alone_never_waits_long_for_the_check(keeper):
+    keeper.rules = StarRules(wait_s=5.0)
+    keeper.speech_started()  # the transcript hasn't arrived yet
+    got = []
+    started = asyncio.get_running_loop().time()
+    result = await agent_mod.give_star_result(keeper, "question", "", got.append, _no, quick_s=0.05)
+    assert asyncio.get_running_loop().time() - started < 1.0
+    assert result.reply_required is True and "Don't mention stars" in result.output
+    keeper.heard(UserTurn(text="Why is the tower brown?", context=PAGE), TurnDecision.RESPOND)
+    for _ in range(50):
+        if got:
+            break
+        await asyncio.sleep(0.01)
+    assert len(got) == 1, "a late but real star still reaches the app"
+
+
+async def test_give_star_award_survives_the_tool_being_cancelled(keeper):
+    keeper.rules = StarRules(wait_s=5.0)
+    keeper.speech_started()
+    got = []
+
+    async def slow_playout():
+        await asyncio.sleep(10)
+        return True
+
+    tool = asyncio.ensure_future(agent_mod.give_star_result(keeper, "question", "", got.append, slow_playout))
+    await asyncio.sleep(0.01)
+    tool.cancel()  # he barged in
+    keeper.heard(UserTurn(text="Why is the tower brown?", context=PAGE), TurnDecision.RESPOND)
+    for _ in range(50):
+        if got:
+            break
+        await asyncio.sleep(0.01)
+    assert len(got) == 1
+
+
 async def test_give_star_treats_unknown_kinds_as_questions(keeper, clock):
     hear(keeper, "Why is it brown?", clock=clock)
     got = []
