@@ -121,13 +121,27 @@ def test_french_book_teaches_a_phrase_per_page_with_fresh_photos():
 
     book = load_books()["paris-french"]
     assert book.city == "Paris" and len(book.pages) == 12 and book.pages[-1].id == "goodbye"
-    for page in book.pages[1:]:
-        assert re.search(r"\([^)]*[A-Z]{2,}[^)]*\)", page.text), f"{page.id} needs a sound-it-out hint"
+    assert book.pages[2].text == "Merci means thank you. Say it a lot!"
     _, page = lookup({"book": "paris-french", "page": "croissant"})
     assert "Un croissant" in page.text and "Pretend I'm the baker" in page.about
 
 
-def test_narration_reads_french_phrase_and_hint_as_separate_takes():
+def test_visible_text_has_no_pronunciation_hints():
+    # The read-aloud voice says each word, so pages don't spell out sounds like "Honu (HO-noo)".
+    import json
+    import re
+
+    from little_explorer_agent.content import content_dir
+
+    for path in content_dir().glob("*.json"):
+        book = json.loads(path.read_text(encoding="utf-8"))
+        for label in (book["city"], book.get("theme", ""), book.get("tagline", "")):
+            assert not re.search(r"[()]", label), f"{book['id']}: {label!r}"
+        for page in book["pages"]:
+            assert not re.search(r"[()]", page["text"]), f"{book['id']}/{page['id']}: {page['text']!r}"
+
+
+def test_narration_reads_french_book_phrase_by_phrase():
     import importlib.util
     from pathlib import Path
 
@@ -136,10 +150,9 @@ def test_narration_reads_french_phrase_and_hint_as_separate_takes():
     narration = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(narration)
 
-    text = "Ask the baker: Un croissant (kwah-SAHN), s'il vous plaît!"
-    assert [spoken for spoken, _ in narration.phrases(text)] == [
-        "Ask the baker", "Un croissant", "kwah-SAHN", "s'il vous plaît!"]
-    assert sum(len(words) for _, words in narration.phrases(text)) == 10
+    text = "Ask the baker: Un croissant, s'il vous plaît!"
+    assert [spoken for spoken, _ in narration.phrases(text)] == ["Ask the baker", "Un croissant", "s'il vous plaît!"]
+    assert sum(len(words) for _, words in narration.phrases(text)) == 8
     # Books without their own narration note keep the shared style, so their clips aren't regenerated.
     assert narration.style_hash() == narration.style_hash("", False) != narration.style_hash("note", True)
 
@@ -163,7 +176,7 @@ def test_tahoe_and_hawaii_are_new_destinations_with_fresh_photos():
     _, page = lookup({"book": "tahoe-heavenly", "page": "two-states"})
     assert "California into Nevada" in page.text
     _, page = lookup({"book": "hawaii", "page": "honu"})
-    assert "Honu (HO-noo)" in page.text and "touch" in page.about
+    assert page.text.startswith("Honu means sea turtle") and "touch" in page.about
     assert raw["hawaii"]["narration"]["phraseByPhrase"] is True
 
 

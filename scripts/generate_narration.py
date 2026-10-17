@@ -12,8 +12,8 @@ For each page the script
 
 Needs ffmpeg (`brew install ffmpeg`).
 
-A book can add its own reading note and read phrase by phrase, e.g. the French book, where each phrase
-is followed by a sound-it-out hint that a single take sometimes skips:
+A book can add its own reading note and read phrase by phrase, e.g. the French book, so each short
+phrase is its own take and the French is said natively:
 
     "narration": {"instructions": "Say every French phrase in native Parisian French...", "phraseByPhrase": true}
 
@@ -258,7 +258,7 @@ def snap_to_pauses(text: str, words: list[dict], gaps: list[tuple[float, float]]
 
 def phrases(text: str) -> list[tuple[str, list[re.Match]]]:
     """Split a page into short spoken phrases at punctuation and brackets, e.g.
-    "Merci (mair-SEE) means thank you." -> "Merci" / "mair-SEE" / "means thank you."."""
+    "Ask the baker: Un croissant, s'il vous plaît!" -> "Ask the baker" / "Un croissant" / "s'il vous plaît!"."""
     tokens = [m for m in TOKEN.finditer(text) if norm(m.group())]
     groups, current = [], tokens[:1]
     for prev, tok in zip(tokens, tokens[1:]):
@@ -286,9 +286,9 @@ def decode(audio: bytes, wav: Path) -> array.array:
 
 
 def speak_phrases(text: str, key: str, extra: str, out: Path) -> tuple[list[dict], float]:
-    """Read a page one phrase at a time and join the takes with short pauses, so a French phrase and its
-    sound-it-out hint are both always spoken (a single take sometimes skips the hint) and every word's
-    time is known exactly. Writes 16-bit mono wav to ``out``; returns the word timings and duration."""
+    """Read a page one phrase at a time and join the takes with short pauses, so every phrase is
+    always spoken (a single take sometimes skips a word) and every word's time is known exactly.
+    Writes 16-bit mono wav to ``out``; returns the word timings and duration."""
     samples, words = array.array("h", [0] * int(RATE * 0.15)), []
     for spoken, group in phrases(text):
         tmp = out.with_name(out.stem + "-phrase.wav")

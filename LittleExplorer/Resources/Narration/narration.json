@@ -1350,8 +1350,8 @@
   },
   "hawaii-honolulu/waikiki": {
    "file": "read-hawaii-honolulu-waikiki",
-   "text": "Waikīkī (why-kee-KEE) beach has gentle waves for learning to surf.",
-   "duration": 7.84,
+   "text": "Waikīkī beach has gentle waves for learning to surf.",
+   "duration": 4.9,
    "match": 1.0,
    "heard": "(phrase by phrase)",
    "words": [
@@ -1359,73 +1359,55 @@
      "location": 0,
      "length": 7,
      "start": 0.15,
-     "end": 1.93
+     "end": 0.874
     },
     {
-     "location": 9,
-     "length": 3,
-     "start": 2.28,
-     "end": 2.903
-    },
-    {
-     "location": 13,
-     "length": 3,
-     "start": 2.903,
-     "end": 3.527
-    },
-    {
-     "location": 17,
-     "length": 3,
-     "start": 3.527,
-     "end": 4.15
-    },
-    {
-     "location": 22,
+     "location": 8,
      "length": 5,
-     "start": 4.5,
-     "end": 4.922
+     "start": 0.874,
+     "end": 1.392
     },
     {
-     "location": 28,
+     "location": 14,
      "length": 3,
-     "start": 4.922,
-     "end": 5.176
+     "start": 1.392,
+     "end": 1.702
     },
     {
-     "location": 32,
+     "location": 18,
      "length": 6,
-     "start": 5.176,
-     "end": 5.682
+     "start": 1.702,
+     "end": 2.323
     },
     {
-     "location": 39,
+     "location": 25,
      "length": 5,
-     "start": 5.682,
-     "end": 6.104
+     "start": 2.323,
+     "end": 2.841
     },
     {
-     "location": 45,
+     "location": 31,
      "length": 3,
-     "start": 6.104,
-     "end": 6.358
+     "start": 2.841,
+     "end": 3.151
     },
     {
-     "location": 49,
+     "location": 35,
      "length": 8,
-     "start": 6.358,
-     "end": 7.033
+     "start": 3.151,
+     "end": 3.979
     },
     {
-     "location": 58,
+     "location": 44,
      "length": 2,
-     "start": 7.033,
-     "end": 7.202
+     "start": 3.979,
+     "end": 4.186
     },
     {
-     "location": 61,
+     "location": 47,
      "length": 4,
-     "start": 7.202,
-     "end": 7.54
+     "start": 4.186,
+     "end": 4.6
     }
    ],
    "lufs": -16.0,
@@ -1722,8 +1704,8 @@
   },
   "hawaii/honu": {
    "file": "read-hawaii-honu",
-   "text": "Honu (HO-noo) means sea turtle. They nap on beaches!",
-   "duration": 7.36,
+   "text": "Honu means sea turtle. They nap on beaches!",
+   "duration": 5.02,
    "match": 1.0,
    "heard": "(phrase by phrase)",
    "words": [
@@ -1731,61 +1713,49 @@
      "location": 0,
      "length": 4,
      "start": 0.15,
-     "end": 0.6
+     "end": 0.688
     },
     {
-     "location": 6,
-     "length": 2,
-     "start": 0.95,
-     "end": 1.506
-    },
-    {
-     "location": 9,
-     "length": 3,
-     "start": 1.506,
-     "end": 2.34
-    },
-    {
-     "location": 14,
+     "location": 5,
      "length": 5,
-     "start": 2.69,
-     "end": 3.322
+     "start": 0.688,
+     "end": 1.36
     },
     {
-     "location": 20,
+     "location": 11,
      "length": 3,
-     "start": 3.322,
-     "end": 3.701
+     "start": 1.36,
+     "end": 1.763
     },
     {
-     "location": 24,
+     "location": 15,
      "length": 6,
-     "start": 3.701,
-     "end": 4.46
+     "start": 1.763,
+     "end": 2.57
+    },
+    {
+     "location": 23,
+     "length": 4,
+     "start": 3.07,
+     "end": 3.482
+    },
+    {
+     "location": 28,
+     "length": 3,
+     "start": 3.482,
+     "end": 3.792
     },
     {
      "location": 32,
-     "length": 4,
-     "start": 4.96,
-     "end": 5.485
-    },
-    {
-     "location": 37,
-     "length": 3,
-     "start": 5.485,
-     "end": 5.879
-    },
-    {
-     "location": 41,
      "length": 2,
-     "start": 5.879,
-     "end": 6.141
+     "start": 3.792,
+     "end": 3.998
     },
     {
-     "location": 44,
+     "location": 35,
      "length": 7,
-     "start": 6.141,
-     "end": 7.06
+     "start": 3.998,
+     "end": 4.72
     }
    ],
    "lufs": -16.0,
@@ -1905,8 +1875,8 @@
   },
   "hawaii/nene": {
    "file": "read-hawaii-nene",
-   "text": "The nēnē (NAY-nay) goose is Hawaii's state bird.",
-   "duration": 5.91,
+   "text": "The nēnē goose is Hawaii's state bird.",
+   "duration": 3.74,
    "match": 1.0,
    "heard": "(phrase by phrase)",
    "words": [
@@ -1914,55 +1884,43 @@
      "location": 0,
      "length": 3,
      "start": 0.15,
-     "end": 0.587
+     "end": 0.479
     },
     {
      "location": 4,
      "length": 4,
-     "start": 0.587,
-     "end": 1.17
+     "start": 0.479,
+     "end": 0.918
     },
     {
-     "location": 10,
-     "length": 3,
-     "start": 1.52,
-     "end": 2.035
-    },
-    {
-     "location": 14,
-     "length": 3,
-     "start": 2.035,
-     "end": 2.55
-    },
-    {
-     "location": 19,
+     "location": 9,
      "length": 5,
-     "start": 2.9,
-     "end": 3.489
+     "start": 0.918,
+     "end": 1.466
     },
     {
-     "location": 25,
+     "location": 15,
      "length": 2,
-     "start": 3.489,
-     "end": 3.725
+     "start": 1.466,
+     "end": 1.685
     },
     {
-     "location": 28,
+     "location": 18,
      "length": 8,
-     "start": 3.725,
-     "end": 4.55
+     "start": 1.685,
+     "end": 2.453
     },
     {
-     "location": 37,
+     "location": 27,
      "length": 5,
-     "start": 4.55,
-     "end": 5.139
+     "start": 2.453,
+     "end": 3.001
     },
     {
-     "location": 43,
+     "location": 33,
      "length": 4,
-     "start": 5.139,
-     "end": 5.61
+     "start": 3.001,
+     "end": 3.44
     }
    ],
    "lufs": -16.0,
@@ -5726,8 +5684,8 @@
   },
   "paris-french/bonjour": {
    "file": "read-paris-french-bonjour",
-   "text": "Bonjour (bon-ZHOOR) means hello. Say it in shops!",
-   "duration": 7.18,
+   "text": "Bonjour means hello. Say it in shops!",
+   "duration": 5.38,
    "match": 1.0,
    "heard": "(phrase by phrase)",
    "words": [
@@ -5735,55 +5693,43 @@
      "location": 0,
      "length": 7,
      "start": 0.15,
-     "end": 0.74
+     "end": 1.373
     },
     {
-     "location": 9,
+     "location": 8,
+     "length": 5,
+     "start": 1.373,
+     "end": 2.246
+    },
+    {
+     "location": 14,
+     "length": 5,
+     "start": 2.246,
+     "end": 3.12
+    },
+    {
+     "location": 21,
      "length": 3,
-     "start": 1.09,
-     "end": 1.562
+     "start": 3.62,
+     "end": 3.985
     },
     {
-     "location": 13,
-     "length": 5,
-     "start": 1.562,
-     "end": 2.35
-    },
-    {
-     "location": 20,
-     "length": 5,
-     "start": 2.7,
-     "end": 3.41
-    },
-    {
-     "location": 26,
-     "length": 5,
-     "start": 3.41,
-     "end": 4.12
-    },
-    {
-     "location": 33,
-     "length": 3,
-     "start": 4.62,
-     "end": 5.185
-    },
-    {
-     "location": 37,
+     "location": 25,
      "length": 2,
-     "start": 5.185,
-     "end": 5.562
+     "start": 3.985,
+     "end": 4.228
     },
     {
-     "location": 40,
+     "location": 28,
      "length": 2,
-     "start": 5.562,
-     "end": 5.938
+     "start": 4.228,
+     "end": 4.472
     },
     {
-     "location": 43,
+     "location": 31,
      "length": 5,
-     "start": 5.938,
-     "end": 6.88
+     "start": 4.472,
+     "end": 5.08
     }
    ],
    "lufs": -16.0,
@@ -5791,8 +5737,8 @@
   },
   "paris-french/croissant": {
    "file": "read-paris-french-croissant",
-   "text": "Ask the baker: Un croissant (kwah-SAHN), s'il vous plaît!",
-   "duration": 6.11,
+   "text": "Ask the baker: Un croissant, s'il vous plaît!",
+   "duration": 4.72,
    "match": 1.0,
    "heard": "(phrase by phrase)",
    "words": [
@@ -5800,61 +5746,49 @@
      "location": 0,
      "length": 3,
      "start": 0.15,
-     "end": 0.548
+     "end": 0.45
     },
     {
      "location": 4,
      "length": 3,
-     "start": 0.548,
-     "end": 0.946
+     "start": 0.45,
+     "end": 0.75
     },
     {
      "location": 8,
      "length": 5,
-     "start": 0.946,
-     "end": 1.61
+     "start": 0.75,
+     "end": 1.25
     },
     {
      "location": 15,
      "length": 2,
-     "start": 1.96,
-     "end": 2.138
+     "start": 1.6,
+     "end": 1.769
     },
     {
      "location": 18,
      "length": 9,
-     "start": 2.138,
-     "end": 2.94
+     "start": 1.769,
+     "end": 2.53
     },
     {
      "location": 29,
      "length": 4,
-     "start": 3.29,
-     "end": 3.875
+     "start": 2.88,
+     "end": 3.265
     },
     {
      "location": 34,
      "length": 4,
-     "start": 3.875,
-     "end": 4.46
+     "start": 3.265,
+     "end": 3.778
     },
     {
-     "location": 41,
-     "length": 4,
-     "start": 4.81,
-     "end": 5.06
-    },
-    {
-     "location": 46,
-     "length": 4,
-     "start": 5.06,
-     "end": 5.393
-    },
-    {
-     "location": 51,
+     "location": 39,
      "length": 5,
-     "start": 5.393,
-     "end": 5.81
+     "start": 3.778,
+     "end": 4.42
     }
    ],
    "lufs": -16.0,
@@ -5862,8 +5796,8 @@
   },
   "paris-french/excusez": {
    "file": "read-paris-french-excusez",
-   "text": "Excusez-moi (ex-kew-zay MWAH) means excuse me.",
-   "duration": 6.5,
+   "text": "Excusez-moi means excuse me.",
+   "duration": 3.08,
    "match": 1.0,
    "heard": "(phrase by phrase)",
    "words": [
@@ -5871,55 +5805,31 @@
      "location": 0,
      "length": 7,
      "start": 0.15,
-     "end": 0.878
+     "end": 0.95
     },
     {
      "location": 8,
      "length": 3,
-     "start": 0.878,
-     "end": 1.19
+     "start": 0.95,
+     "end": 1.293
     },
     {
-     "location": 13,
-     "length": 2,
-     "start": 1.54,
-     "end": 1.955
-    },
-    {
-     "location": 16,
-     "length": 3,
-     "start": 1.955,
-     "end": 2.578
-    },
-    {
-     "location": 20,
-     "length": 3,
-     "start": 2.578,
-     "end": 3.2
-    },
-    {
-     "location": 24,
-     "length": 4,
-     "start": 3.2,
-     "end": 4.03
-    },
-    {
-     "location": 30,
+     "location": 12,
      "length": 5,
-     "start": 4.38,
-     "end": 5.08
+     "start": 1.293,
+     "end": 1.865
     },
     {
-     "location": 36,
+     "location": 18,
      "length": 6,
-     "start": 5.08,
-     "end": 5.92
+     "start": 1.865,
+     "end": 2.551
     },
     {
-     "location": 43,
+     "location": 25,
      "length": 2,
-     "start": 5.92,
-     "end": 6.2
+     "start": 2.551,
+     "end": 2.78
     }
    ],
    "lufs": -16.0,
@@ -5927,8 +5837,8 @@
   },
   "paris-french/goodbye": {
    "file": "read-paris-french-goodbye",
-   "text": "Au revoir (oh ruh-VWAR) means goodbye. See you soon!",
-   "duration": 6.89,
+   "text": "Au revoir means goodbye. See you soon!",
+   "duration": 4.49,
    "match": 1.0,
    "heard": "(phrase by phrase)",
    "words": [
@@ -5936,61 +5846,43 @@
      "location": 0,
      "length": 2,
      "start": 0.15,
-     "end": 0.302
+     "end": 0.412
     },
     {
      "location": 3,
      "length": 6,
-     "start": 0.302,
-     "end": 0.76
+     "start": 0.412,
+     "end": 1.198
     },
     {
-     "location": 11,
-     "length": 2,
-     "start": 1.11,
-     "end": 1.521
-    },
-    {
-     "location": 14,
-     "length": 3,
-     "start": 1.521,
-     "end": 2.138
-    },
-    {
-     "location": 18,
-     "length": 4,
-     "start": 2.138,
-     "end": 2.96
-    },
-    {
-     "location": 24,
+     "location": 10,
      "length": 5,
-     "start": 3.31,
-     "end": 4.027
+     "start": 1.198,
+     "end": 1.853
     },
     {
-     "location": 30,
+     "location": 16,
      "length": 7,
-     "start": 4.027,
-     "end": 5.03
+     "start": 1.853,
+     "end": 2.77
     },
     {
-     "location": 39,
+     "location": 25,
      "length": 3,
-     "start": 5.53,
-     "end": 5.848
+     "start": 3.27,
+     "end": 3.546
     },
     {
-     "location": 43,
+     "location": 29,
      "length": 3,
-     "start": 5.848,
-     "end": 6.166
+     "start": 3.546,
+     "end": 3.822
     },
     {
-     "location": 47,
+     "location": 33,
      "length": 4,
-     "start": 6.166,
-     "end": 6.59
+     "start": 3.822,
+     "end": 4.19
     }
    ],
    "lufs": -16.0,
@@ -5998,8 +5890,8 @@
   },
   "paris-french/jaime": {
    "file": "read-paris-french-jaime",
-   "text": "J'aime la glace (zhem lah GLASS) means I love ice cream.",
-   "duration": 7.1,
+   "text": "J'aime la glace means I love ice cream.",
+   "duration": 3.73,
    "match": 1.0,
    "heard": "(phrase by phrase)",
    "words": [
@@ -6007,67 +5899,49 @@
      "location": 0,
      "length": 6,
      "start": 0.15,
-     "end": 0.771
+     "end": 0.679
     },
     {
      "location": 7,
      "length": 2,
-     "start": 0.771,
-     "end": 1.019
+     "start": 0.679,
+     "end": 0.891
     },
     {
      "location": 10,
      "length": 5,
-     "start": 1.019,
-     "end": 1.64
+     "start": 0.891,
+     "end": 1.42
     },
     {
-     "location": 17,
-     "length": 4,
-     "start": 1.99,
-     "end": 2.773
+     "location": 16,
+     "length": 5,
+     "start": 1.42,
+     "end": 1.949
     },
     {
      "location": 22,
-     "length": 3,
-     "start": 2.773,
-     "end": 3.361
+     "length": 1,
+     "start": 1.949,
+     "end": 2.16
     },
     {
-     "location": 26,
-     "length": 5,
-     "start": 3.361,
-     "end": 4.34
+     "location": 24,
+     "length": 4,
+     "start": 2.16,
+     "end": 2.584
+    },
+    {
+     "location": 29,
+     "length": 3,
+     "start": 2.584,
+     "end": 2.901
     },
     {
      "location": 33,
      "length": 5,
-     "start": 4.69,
-     "end": 5.245
-    },
-    {
-     "location": 39,
-     "length": 1,
-     "start": 5.245,
-     "end": 5.467
-    },
-    {
-     "location": 41,
-     "length": 4,
-     "start": 5.467,
-     "end": 5.912
-    },
-    {
-     "location": 46,
-     "length": 3,
-     "start": 5.912,
-     "end": 6.245
-    },
-    {
-     "location": 50,
-     "length": 5,
-     "start": 6.245,
-     "end": 6.8
+     "start": 2.901,
+     "end": 3.43
     }
    ],
    "lufs": -16.0,
@@ -6075,8 +5949,8 @@
   },
   "paris-french/merci": {
    "file": "read-paris-french-merci",
-   "text": "Merci (mair-SEE) means thank you. Say it a lot!",
-   "duration": 6.23,
+   "text": "Merci means thank you. Say it a lot!",
+   "duration": 4.27,
    "match": 1.0,
    "heard": "(phrase by phrase)",
    "words": [
@@ -6084,61 +5958,49 @@
      "location": 0,
      "length": 5,
      "start": 0.15,
-     "end": 0.87
+     "end": 0.769
     },
     {
-     "location": 7,
-     "length": 4,
-     "start": 1.22,
-     "end": 1.9
+     "location": 6,
+     "length": 5,
+     "start": 0.769,
+     "end": 1.389
     },
     {
      "location": 12,
-     "length": 3,
-     "start": 1.9,
-     "end": 2.41
+     "length": 5,
+     "start": 1.389,
+     "end": 2.008
     },
     {
-     "location": 17,
-     "length": 5,
-     "start": 2.76,
-     "end": 3.329
+     "location": 18,
+     "length": 3,
+     "start": 2.008,
+     "end": 2.38
     },
     {
      "location": 23,
-     "length": 5,
-     "start": 3.329,
-     "end": 3.898
-    },
-    {
-     "location": 29,
      "length": 3,
-     "start": 3.898,
-     "end": 4.24
+     "start": 2.88,
+     "end": 3.207
     },
     {
-     "location": 34,
-     "length": 3,
-     "start": 4.74,
-     "end": 5.097
-    },
-    {
-     "location": 38,
+     "location": 27,
      "length": 2,
-     "start": 5.097,
-     "end": 5.335
+     "start": 3.207,
+     "end": 3.425
     },
     {
-     "location": 41,
+     "location": 30,
      "length": 1,
-     "start": 5.335,
-     "end": 5.573
+     "start": 3.425,
+     "end": 3.643
     },
     {
-     "location": 43,
+     "location": 32,
      "length": 3,
-     "start": 5.573,
-     "end": 5.93
+     "start": 3.643,
+     "end": 3.97
     }
    ],
    "lufs": -16.0,
@@ -6146,8 +6008,8 @@
   },
   "paris-french/name": {
    "file": "read-paris-french-name",
-   "text": "Je m'appelle (zhuh mah-PELL) means my name is.",
-   "duration": 7.5,
+   "text": "Je m'appelle means my name is.",
+   "duration": 3.27,
    "match": 1.0,
    "heard": "(phrase by phrase)",
    "words": [
@@ -6155,55 +6017,37 @@
      "location": 0,
      "length": 2,
      "start": 0.15,
-     "end": 0.458
+     "end": 0.395
     },
     {
      "location": 3,
      "length": 9,
-     "start": 0.458,
-     "end": 1.69
+     "start": 0.395,
+     "end": 1.376
     },
     {
-     "location": 14,
-     "length": 4,
-     "start": 2.04,
-     "end": 2.855
+     "location": 13,
+     "length": 5,
+     "start": 1.376,
+     "end": 1.989
     },
     {
      "location": 19,
-     "length": 3,
-     "start": 2.855,
-     "end": 3.465
-    },
-    {
-     "location": 23,
-     "length": 4,
-     "start": 3.465,
-     "end": 4.28
-    },
-    {
-     "location": 29,
-     "length": 5,
-     "start": 4.63,
-     "end": 5.618
-    },
-    {
-     "location": 35,
      "length": 2,
-     "start": 5.618,
-     "end": 6.014
+     "start": 1.989,
+     "end": 2.234
     },
     {
-     "location": 38,
+     "location": 22,
      "length": 4,
-     "start": 6.014,
-     "end": 6.805
+     "start": 2.234,
+     "end": 2.725
     },
     {
-     "location": 43,
+     "location": 27,
      "length": 2,
-     "start": 6.805,
-     "end": 7.2
+     "start": 2.725,
+     "end": 2.97
     }
    ],
    "lufs": -16.0,
@@ -6211,8 +6055,8 @@
   },
   "paris-french/numbers": {
    "file": "read-paris-french-numbers",
-   "text": "Count with me: un (UHN), deux (DUH), trois (TWAH)!",
-   "duration": 5.73,
+   "text": "Count with me: un, deux, trois!",
+   "duration": 3.55,
    "match": 1.0,
    "heard": "(phrase by phrase)",
    "words": [
@@ -6220,55 +6064,37 @@
      "location": 0,
      "length": 5,
      "start": 0.15,
-     "end": 0.518
+     "end": 0.691
     },
     {
      "location": 6,
      "length": 4,
-     "start": 0.518,
-     "end": 0.813
+     "start": 0.691,
+     "end": 1.124
     },
     {
      "location": 11,
      "length": 2,
-     "start": 0.813,
-     "end": 0.96
+     "start": 1.124,
+     "end": 1.34
     },
     {
      "location": 15,
      "length": 2,
-     "start": 1.31,
-     "end": 1.56
+     "start": 1.69,
+     "end": 1.94
     },
     {
      "location": 19,
-     "length": 3,
-     "start": 1.91,
-     "end": 2.31
+     "length": 4,
+     "start": 2.29,
+     "end": 2.54
     },
     {
      "location": 25,
-     "length": 4,
-     "start": 2.66,
-     "end": 3.06
-    },
-    {
-     "location": 31,
-     "length": 3,
-     "start": 3.41,
-     "end": 3.83
-    },
-    {
-     "location": 37,
      "length": 5,
-     "start": 4.18,
-     "end": 4.58
-    },
-    {
-     "location": 44,
-     "length": 4,
-     "start": 4.93,
-     "end": 5.43
+     "start": 2.89,
+     "end": 3.25
     }
    ],
    "lufs": -16.0,
@@ -6276,8 +6102,8 @@
   },
   "paris-french/ouinon": {
    "file": "read-paris-french-ouinon",
-   "text": "Oui (WEE) means yes, and non (NOHN) means no.",
-   "duration": 7.87,
+   "text": "Oui means yes, and non means no.",
+   "duration": 5.08,
    "match": 1.0,
    "heard": "(phrase by phrase)",
    "words": [
@@ -6285,55 +6111,43 @@
      "location": 0,
      "length": 3,
      "start": 0.15,
-     "end": 0.43
+     "end": 0.734
     },
     {
-     "location": 5,
-     "length": 3,
-     "start": 0.78,
-     "end": 1.15
+     "location": 4,
+     "length": 5,
+     "start": 0.734,
+     "end": 1.706
     },
     {
      "location": 10,
+     "length": 3,
+     "start": 1.706,
+     "end": 2.29
+    },
+    {
+     "location": 15,
+     "length": 3,
+     "start": 2.64,
+     "end": 3.134
+    },
+    {
+     "location": 19,
+     "length": 3,
+     "start": 3.134,
+     "end": 3.628
+    },
+    {
+     "location": 23,
      "length": 5,
-     "start": 1.5,
-     "end": 2.388
+     "start": 3.628,
+     "end": 4.451
     },
     {
-     "location": 16,
-     "length": 3,
-     "start": 2.388,
-     "end": 2.92
-    },
-    {
-     "location": 21,
-     "length": 3,
-     "start": 3.27,
-     "end": 3.87
-    },
-    {
-     "location": 25,
-     "length": 3,
-     "start": 3.87,
-     "end": 4.47
-    },
-    {
-     "location": 30,
-     "length": 4,
-     "start": 4.82,
-     "end": 5.47
-    },
-    {
-     "location": 36,
-     "length": 5,
-     "start": 5.82,
-     "end": 7.07
-    },
-    {
-     "location": 42,
+     "location": 29,
      "length": 2,
-     "start": 7.07,
-     "end": 7.57
+     "start": 4.451,
+     "end": 4.78
     }
    ],
    "lufs": -16.0,
@@ -6341,8 +6155,8 @@
   },
   "paris-french/please": {
    "file": "read-paris-french-please",
-   "text": "S'il vous plaît (seel voo PLAY) means please.",
-   "duration": 5.33,
+   "text": "S'il vous plaît means please.",
+   "duration": 3.6,
    "match": 1.0,
    "heard": "(phrase by phrase)",
    "words": [
@@ -6350,49 +6164,31 @@
      "location": 0,
      "length": 4,
      "start": 0.15,
-     "end": 0.48
+     "end": 0.561
     },
     {
      "location": 5,
      "length": 4,
-     "start": 0.48,
-     "end": 0.92
+     "start": 0.561,
+     "end": 1.109
     },
     {
      "location": 10,
      "length": 5,
-     "start": 0.92,
-     "end": 1.47
+     "start": 1.109,
+     "end": 1.793
     },
     {
-     "location": 17,
-     "length": 4,
-     "start": 1.82,
-     "end": 2.413
+     "location": 16,
+     "length": 5,
+     "start": 1.793,
+     "end": 2.478
     },
     {
      "location": 22,
-     "length": 3,
-     "start": 2.413,
-     "end": 2.857
-    },
-    {
-     "location": 26,
-     "length": 4,
-     "start": 2.857,
-     "end": 3.45
-    },
-    {
-     "location": 32,
-     "length": 5,
-     "start": 3.8,
-     "end": 4.359
-    },
-    {
-     "location": 38,
      "length": 6,
-     "start": 4.359,
-     "end": 5.03
+     "start": 2.478,
+     "end": 3.3
     }
    ],
    "lufs": -16.0,
@@ -6400,8 +6196,8 @@
   },
   "paris-french/toilettes": {
    "file": "read-paris-french-toilettes",
-   "text": "Where is the toilet? Où sont les toilettes (oo sohn lay twah-LET)?",
-   "duration": 8.42,
+   "text": "Where is the toilet? Où sont les toilettes?",
+   "duration": 4.11,
    "match": 1.0,
    "heard": "(phrase by phrase)",
    "words": [
@@ -6409,79 +6205,49 @@
      "location": 0,
      "length": 5,
      "start": 0.15,
-     "end": 0.681
+     "end": 0.703
     },
     {
      "location": 6,
      "length": 2,
-     "start": 0.681,
-     "end": 0.894
+     "start": 0.703,
+     "end": 0.924
     },
     {
      "location": 9,
      "length": 3,
-     "start": 0.894,
-     "end": 1.212
+     "start": 0.924,
+     "end": 1.256
     },
     {
      "location": 13,
      "length": 6,
-     "start": 1.212,
-     "end": 1.85
+     "start": 1.256,
+     "end": 1.92
     },
     {
      "location": 21,
      "length": 2,
-     "start": 2.35,
-     "end": 2.551
+     "start": 2.42,
+     "end": 2.574
     },
     {
      "location": 24,
      "length": 4,
-     "start": 2.551,
-     "end": 2.953
+     "start": 2.574,
+     "end": 2.883
     },
     {
      "location": 29,
      "length": 3,
-     "start": 2.953,
-     "end": 3.255
+     "start": 2.883,
+     "end": 3.115
     },
     {
      "location": 33,
      "length": 9,
-     "start": 3.255,
-     "end": 4.16
-    },
-    {
-     "location": 44,
-     "length": 2,
-     "start": 4.51,
-     "end": 4.961
-    },
-    {
-     "location": 47,
-     "length": 4,
-     "start": 4.961,
-     "end": 5.864
-    },
-    {
-     "location": 52,
-     "length": 3,
-     "start": 5.864,
-     "end": 6.541
-    },
-    {
-     "location": 56,
-     "length": 4,
-     "start": 6.541,
-     "end": 7.443
-    },
-    {
-     "location": 61,
-     "length": 3,
-     "start": 7.443,
-     "end": 8.12
+     "start": 3.115,
+     "end": 3.81
     }
    ],
    "lufs": -16.0,
