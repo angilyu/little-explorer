@@ -24,11 +24,13 @@ trap 'rm -rf "$work"' EXIT
 auth=(-allowProvisioningUpdates -authenticationKeyPath "$ASC_KEY_PATH"
       -authenticationKeyID "$ASC_KEY_ID" -authenticationKeyIssuerID "$ASC_ISSUER_ID")
 
+# Archive unsigned; the export signs it for App Store distribution, which (unlike a development
+# profile) doesn't need any registered devices.
 echo "Archiving build $build..."
 xcodebuild -project LittleExplorer.xcodeproj -scheme LittleExplorer -configuration Release \
   -destination 'generic/platform=iOS' -archivePath "$work/LittleExplorer.xcarchive" \
   -derivedDataPath "$work/dd" DEVELOPMENT_TEAM="$TEAM" CURRENT_PROJECT_VERSION="$build" \
-  "${auth[@]}" -quiet archive
+  CODE_SIGNING_ALLOWED=NO -quiet archive
 
 cat > "$work/export.plist" <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
