@@ -30,6 +30,6 @@ chmod 600 "$secrets"
 if [[ -f livekit.toml ]]; then
   lk agent deploy --secrets-file "$secrets" -y .
 else
-  lk agent create --secrets-file "$secrets" -y .
+  lk agent create --region "${LK_AGENT_REGION:-us-east}" --secrets-file "$secrets" -y .
 fi
 lk agent status .
