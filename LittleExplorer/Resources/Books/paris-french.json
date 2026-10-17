@@ -1,0 +1,208 @@
+{
+ "id": "paris-french",
+ "city": "Paris",
+ "country": "France",
+ "flagImage": "paris-flag.png",
+ "flag": "🇫🇷",
+ "theme": "Speak French",
+ "coverColor": "#4A5FD0",
+ "tagline": "Bonjour, merci and a croissant, please!",
+ "narration": {
+  "instructions": "Say every French word and phrase in natural, native Parisian French, never anglicized. A short hint like mair-SEE or bon-ZHOOR is how to sound out the French word: say it slowly and clearly, syllable by syllable, as a French speaker would.",
+  "phraseByPhrase": true
+ },
+ "pages": [
+  {
+   "id": "welcome",
+   "text": "In France, people speak French. Let's learn some words!",
+   "about": "France's language is French. Grown-ups and children in France love it when visitors try a few French words, even if they are not perfect. This photo shows the Café de Flore, a famous old café in Paris that has served hot chocolate and coffee for more than 130 years. In this book Francis learns words he can really use on a trip: in shops, at the bakery, on the métro and on the train. Tell him that trying is the most important part, and that every page has a word to say out loud.",
+   "emoji": "👋",
+   "photo": {
+    "commonsTitle": "File:Café de Flore.jpg",
+    "query": "",
+    "file": "paris-french-welcome.jpg",
+    "author": "Arnaud 25",
+    "license": "Public domain",
+    "licenseUrl": null,
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Caf%C3%A9_de_Flore.jpg",
+    "verified": true
+   }
+  },
+  {
+   "id": "bonjour",
+   "text": "Bonjour (bon-ZHOOR) means hello. Say it in shops!",
+   "about": "Bonjour means hello or good day. In France it is polite to say bonjour every time you walk into a shop, before asking for anything, and the shopkeeper says it back. The photo shows À la Mère de Famille, the oldest chocolate shop in Paris, open since 1761. The 'j' sounds soft, like the 's' in 'treasure'. Invite him to say it, then play: pretend you are the chocolate shop keeper and greet him with 'Bonjour!' so he can say it back. In the evening, people say bonsoir (bon-SWAHR), good evening.",
+   "emoji": "🛍️",
+   "photo": {
+    "commonsTitle": "File:Paris 9 - Épicerie fine À la mère de famille -1.JPG",
+    "query": "",
+    "file": "paris-french-bonjour.jpg",
+    "author": "MOSSOT",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Paris_9_-_%C3%89picerie_fine_%C3%80_la_m%C3%A8re_de_famille_-1.JPG",
+    "verified": true
+   }
+  },
+  {
+   "id": "merci",
+   "text": "Merci (mair-SEE) means thank you. Say it a lot!",
+   "about": "Merci means thank you. 'Merci beaucoup' (mair-SEE boh-KOO) means thank you very much. The photo shows the market street Rue Cler in Paris, with fruit and vegetables piled up outside the shops, like watermelon and strawberries. People say merci when they pay, when someone holds a door and when they get their change. Ask him to say merci, and then try merci beaucoup. Play a game: hand him a pretend strawberry and wait for his merci.",
+   "emoji": "🍓",
+   "photo": {
+    "commonsTitle": "File:Marché, Rue Cler, 75007 Paris, France 2014.jpg",
+    "query": "",
+    "file": "paris-french-merci.jpg",
+    "author": "besopha",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:March%C3%A9,_Rue_Cler,_75007_Paris,_France_2014.jpg",
+    "verified": true
+   }
+  },
+  {
+   "id": "please",
+   "text": "S'il vous plaît (seel voo PLAY) means please.",
+   "about": "S'il vous plaît means please, and people say it when asking for something. Kids can also say it to a grown-up they don't know. The photo shows a crêpe maker in Paris. Crêpes are very thin pancakes from Brittany, in the west of France, cooked on a big round hot plate and filled with sugar, chocolate spread or jam. Help him say the three little words slowly: seel, voo, play. Then let him order: 'Une crêpe au chocolat, s'il vous plaît!'",
+   "emoji": "🥞",
+   "photo": {
+    "commonsTitle": "File:Creperie paris 2009.jpg",
+    "query": "",
+    "file": "paris-french-please.jpg",
+    "author": "Kaldari",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Creperie_paris_2009.jpg",
+    "verified": true
+   }
+  },
+  {
+   "id": "croissant",
+   "text": "Ask the baker: Un croissant (kwah-SAHN), s'il vous plaît!",
+   "about": "In France a bakery is called a boulangerie (boo-lahn-zhuh-REE). Families buy croissants and long baguettes there, often every morning. In French the 'r' is soft and made at the back of the throat, and the end of croissant is quiet: kwah-SAHN, no 't' sound. Role-play is perfect here: say 'Pretend I'm the baker! Bonjour!' and let him ask for 'un croissant, s'il vous plaît', then answer 'Voilà!' and wait for his merci. A pain au chocolat is a croissant-like roll with chocolate inside.",
+   "emoji": "🥐",
+   "photo": {
+    "commonsTitle": "File:APileOfCroissants.jpg",
+    "query": "",
+    "file": "paris-french-croissant.jpg",
+    "author": "Raysonho @ Open Grid Scheduler / Grid Engine",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:APileOfCroissants.jpg",
+    "verified": true
+   }
+  },
+  {
+   "id": "ouinon",
+   "text": "Oui (WEE) means yes, and non (NOHN) means no.",
+   "about": "Oui means yes and non means no. The 'n' at the end of non is said through the nose and is very soft. The photo shows a carousel, a manège (mah-NEZH) in French, with a funny cow among the horses. Paris has carousels in many parks and squares, and children ride them all year. Play a yes-or-no game in French: 'Do you want to ride the cow?' and let him answer oui or non. Ask a few silly questions too, like 'Does a cow say meow?' so he gets to shout non.",
+   "emoji": "🎠",
+   "photo": {
+    "commonsTitle": "File:Carrousel Halles Paris 020109 01.jpg",
+    "query": "",
+    "file": "paris-french-ouinon.jpg",
+    "author": "Vassil",
+    "license": "Public domain",
+    "licenseUrl": null,
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Carrousel_Halles_Paris_020109_01.jpg",
+    "verified": true
+   }
+  },
+  {
+   "id": "name",
+   "text": "Je m'appelle (zhuh mah-PELL) means my name is.",
+   "about": "Je m'appelle means 'my name is'. To ask someone's name, say 'Comment tu t'appelles?' (koh-MAHN too tah-PELL). The photo shows Guignol, a famous French puppet, more than 200 years old, invented in the city of Lyon. Guignol puppet shows still play in parks in Paris, and the children shout to warn Guignol when the bad guy sneaks up. Invite him to introduce himself like Guignol: 'Je m'appelle' and his first name only. Milo can answer with 'Je m'appelle Milo!'",
+   "emoji": "🎭",
+   "photo": {
+    "commonsTitle": "File:Guignol-R.jpg",
+    "query": "",
+    "file": "paris-french-name.jpg",
+    "author": "Mesnierp",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Guignol-R.jpg",
+    "verified": true
+   }
+  },
+  {
+   "id": "toilettes",
+   "text": "Where is the toilet? Où sont les toilettes (oo sohn lay twah-LET)?",
+   "about": "Où sont les toilettes means 'where are the toilets?' It is one of the most useful questions for a trip! In French, people say toilets as a plural word. The photo shows a public toilet on a Paris sidewalk. Paris has hundreds of them, they are free, and after each visit the little room washes and cleans itself all by itself. Help him say it slowly, oo sohn lay twah-LET, and then practise: he asks Milo, and Milo points the way, 'Là-bas!' (lah-BAH), over there.",
+   "emoji": "🚻",
+   "photo": {
+    "commonsTitle": "File:Toilettes Publiques Rue Départ - Paris XIV (FR75) - 2022-07-07 - 2.jpg",
+    "query": "",
+    "file": "paris-french-toilettes.jpg",
+    "author": "Chabe01",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Toilettes_Publiques_Rue_D%C3%A9part_-_Paris_XIV_(FR75)_-_2022-07-07_-_2.jpg",
+    "verified": true
+   }
+  },
+  {
+   "id": "numbers",
+   "text": "Count with me: un (UHN), deux (DUH), trois (TWAH)!",
+   "about": "Un, deux, trois are one, two, three. Then come quatre (KAT-ruh), cinq (SANK), six (SEESS), sept (SET), huit (WEET), neuf (NUHF) and dix (DEES). The photo shows macarons, little round French cookies made of two crunchy-soft shells with a creamy filling in the middle. They come in every colour: pistachio green, raspberry pink, lemon yellow. Count the colours together in French, and if he likes, go all the way to dix. Cheer for every number he says.",
+   "emoji": "🔢",
+   "photo": {
+    "commonsTitle": "File:120329-A-ON889-050 (6896018536).jpg",
+    "query": "",
+    "file": "paris-french-numbers.jpg",
+    "author": "U.S. Army Corps of Engineers Norfolk District from United States",
+    "license": "Public domain",
+    "licenseUrl": null,
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:120329-A-ON889-050_(6896018536).jpg",
+    "verified": true
+   }
+  },
+  {
+   "id": "jaime",
+   "text": "J'aime la glace (zhem lah GLASS) means I love ice cream.",
+   "about": "J'aime means 'I like' or 'I love', and la glace is ice cream. A famous ice cream shop in Paris, Berthillon, is on a little island in the river Seine, and people line up for it. Flavours have fun French names: chocolat, vanille (vah-NEE), fraise (FREZ) for strawberry. Ask him what he loves and help him say it in French, like 'J'aime la glace au chocolat' or 'J'aime les trains'. Encourage a whole sentence and celebrate his try.",
+   "emoji": "🍦",
+   "photo": {
+    "commonsTitle": "File:Five flavours of icecream.jpg",
+    "query": "",
+    "file": "paris-french-jaime.jpg",
+    "author": "Sally V",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Five_flavours_of_icecream.jpg",
+    "verified": true
+   }
+  },
+  {
+   "id": "excusez",
+   "text": "Excusez-moi (ex-kew-zay MWAH) means excuse me.",
+   "about": "Excusez-moi means excuse me. Say it to get someone's attention, to ask a question, or to get past people. On a busy train, many French people simply say 'Pardon!' (par-DOHN). The photo shows the Paris métro, the underground trains. It opened in 1900 and has more than 300 stations; some trains even run on rubber tyres. Pretend to be on a crowded métro: he says 'Excusez-moi' to get to the door. The 'u' in excusez is said with round lips, like whistling.",
+   "emoji": "🚇",
+   "photo": {
+    "commonsTitle": "File:Rame Station Métro Porte Chapelle Ligne 12 - Paris XVIII (FR75) - 2022-06-01 - 2.jpg",
+    "query": "",
+    "file": "paris-french-excusez.jpg",
+    "author": "Chabe01",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Rame_Station_M%C3%A9tro_Porte_Chapelle_Ligne_12_-_Paris_XVIII_(FR75)_-_2022-06-01_-_2.jpg",
+    "verified": true
+   }
+  },
+  {
+   "id": "goodbye",
+   "text": "Au revoir (oh ruh-VWAR) means goodbye. See you soon!",
+   "about": "Au revoir means goodbye, and it means 'until we see each other again'. Friends also say salut (sah-LEW) for hi and bye, and à bientôt (ah byan-TOH) for see you soon. The photo shows a TGV at the Gare de Lyon, a big Paris station. TGV trains are super fast, up to 320 kilometres per hour, and take families all over France. Let him say goodbye in French, then do a quick review: bonjour, merci, s'il vous plaît, oui, non. Every try is a win, so celebrate!",
+   "emoji": "🚄",
+   "photo": {
+    "commonsTitle": "File:Paris Gare de Lyon TGV Duplex 228 (9843295516).jpg",
+    "query": "",
+    "file": "paris-french-goodbye.jpg",
+    "author": "Rob Dammers",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Paris_Gare_de_Lyon_TGV_Duplex_228_(9843295516).jpg",
+    "verified": true
+   }
+  }
+ ]
+}
