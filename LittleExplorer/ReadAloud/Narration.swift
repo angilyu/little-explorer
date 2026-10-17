@@ -94,7 +94,6 @@ final class ClipPlayer: NSObject, NarrationPlayer, @preconcurrency AVAudioPlayer
     func play(_ narration: Narration) -> Bool {
         stop()
         guard let url = (library ?? NarrationLibrary.current).url(for: narration), let player = try? AVAudioPlayer(contentsOf: url) else { return false }
-        AudioSessionSetup.configureForReading()
         player.delegate = self
         player.prepareToPlay()
         guard player.play() else { return false }
@@ -134,16 +133,5 @@ final class ClipPlayer: NSObject, NarrationPlayer, @preconcurrency AVAudioPlayer
         guard player === self.player else { return }
         stop()
         events?.finished()
-    }
-}
-
-enum AudioSessionSetup {
-    /// When voice mode is on, LiveKit already owns a play-and-record session, so leave it alone.
-    /// Otherwise use a playback session so the sentence is heard even with the silent switch on.
-    static func configureForReading() {
-        let session = AVAudioSession.sharedInstance()
-        guard session.category != .playAndRecord else { return }
-        try? session.setCategory(.playback, mode: .spokenAudio, options: [.duckOthers])
-        try? session.setActive(true)
     }
 }

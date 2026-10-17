@@ -39,14 +39,17 @@ final class ReadAloudController {
     @ObservationIgnored private let engine: SpeechEngine
     @ObservationIgnored private let player: NarrationPlayer
     @ObservationIgnored private let narrations: (_ pageId: String, _ text: String) -> Narration?
+    @ObservationIgnored private let audioSession: ReadingAudioSession
     @ObservationIgnored private lazy var voice: AVSpeechSynthesisVoice? = Self.bestVoice(from: AVSpeechSynthesisVoice.speechVoices())
 
     init(
         engine: SpeechEngine? = nil,
         player: NarrationPlayer? = nil,
-        narrations: ((String, String) -> Narration?)? = nil
+        narrations: ((String, String) -> Narration?)? = nil,
+        audioSession: ReadingAudioSession? = nil
     ) {
         self.engine = engine ?? SystemSpeechEngine()
+        self.audioSession = audioSession ?? makeReadingAudioSession()
         self.player = player ?? ClipPlayer()
         self.narrations = narrations ?? { NarrationLibrary.current.narration(for: $0, text: $1) }
         let events = EngineEvents(
@@ -71,6 +74,7 @@ final class ReadAloudController {
         self.text = text
         spokenRange = nil
         onSpeakingChanged?(true)
+        audioSession.begin()
         if let clip = narrations(pageId, text), player.play(clip) {
             usingClip = true
             Self.log.info("read aloud \(pageId, privacy: .public): natural voice clip")
@@ -102,6 +106,7 @@ final class ReadAloudController {
         text = nil
         spokenRange = nil
         usingClip = false
+        audioSession.end()
         onSpeakingChanged?(false)
     }
 
@@ -138,7 +143,6 @@ final class SystemSpeechEngine: NSObject, SpeechEngine, @preconcurrency AVSpeech
     }
 
     func speak(_ text: String, voice: AVSpeechSynthesisVoice?, rate: Float) {
-        AudioSessionSetup.configureForReading()
         let utterance = AVSpeechUtterance(string: text)
         utterance.voice = voice
         utterance.rate = rate
