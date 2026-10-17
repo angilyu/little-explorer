@@ -23,8 +23,8 @@ final class VoiceModeController {
     /// A gentle note shown after Milo turned itself off (a nap after a quiet spell, or rest for the day).
     private(set) var notice: String?
 
-    static let napNotice = "Milo is taking a nap — tap to talk again"
-    static let restNotice = "Milo needs a rest today. Let's talk again tomorrow!"
+    nonisolated static let napNotice = "Milo is taking a nap — tap to talk again"
+    nonisolated static let restNotice = "Milo needs a rest today. Let's talk again tomorrow!"
 
     @ObservationIgnored private let makeTransport: @MainActor () -> VoiceTransport
     @ObservationIgnored private var transport: VoiceTransport?

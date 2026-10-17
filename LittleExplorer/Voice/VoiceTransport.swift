@@ -71,9 +71,9 @@ final class DemoVoiceTransport: VoiceTransport {
         let activity = activity
         await MainActor.run { onEvent?(.buddyActivity(activity)) }
         guard let endReason else { return }
-        Task { [weak self] in
+        Task { @MainActor [weak self] in
             try? await Task.sleep(nanoseconds: 1_000_000_000)
-            await MainActor.run { self?.onEvent?(.ended(reason: endReason)) }
+            self?.onEvent?(.ended(reason: endReason))
         }
     }
 
