@@ -29,5 +29,6 @@ jobs:
         with:
           python-version: "3.12"
           enable-cache: false
-      - run: uv sync
-      - run: uv run pytest -q
+      # Test against the pinned versions the agent image ships (requirements.txt), not the newest matches.
+      - run: uv venv && uv pip install -r requirements.txt -e . pytest pytest-asyncio
+      - run: uv run --no-sync pytest -q
