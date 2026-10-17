@@ -6,7 +6,7 @@ final class ContentTests: XCTestCase {
     private func books() throws -> [Book] { try BookLibrary.loadBundled() }
 
     func testLoadsAllBooksInShelfOrder() throws {
-        XCTAssertEqual(try books().map(\.id), ["paris", "paris-food", "paris-fun", "paris-notre-dame", "london", "barcelona"])
+        XCTAssertEqual(try books().map(\.id), ["paris", "paris-food", "paris-fun", "paris-notre-dame", "london", "london-big-ben", "barcelona"])
     }
 
     func testParisHasFourThemedBooks() throws {
@@ -26,18 +26,21 @@ final class ContentTests: XCTestCase {
         let shelves = BookLibrary.shelves(try books())
         XCTAssertEqual(shelves.map(\.city), ["Paris", "London", "Barcelona"])
         XCTAssertEqual(shelves[0].books.map(\.id), ["paris", "paris-food", "paris-fun", "paris-notre-dame"])
-        XCTAssertEqual(shelves[1].books.map(\.id), ["london"])
+        XCTAssertEqual(shelves[1].books.map(\.id), ["london", "london-big-ben"])
+        XCTAssertEqual(shelves[1].books.map(\.coverTitle), ["London", "Big Ben"])
         XCTAssertEqual(shelves[2].books.map(\.id), ["barcelona"])
     }
 
     func testShelfRowsPackOneBookCitiesSideBySide() throws {
-        let shelves = BookLibrary.shelves(try books())
+        let shelves = BookLibrary.shelves(try books().filter { $0.id != "london-big-ben" })
         let cities = { (rows: [[CityShelf]]) in rows.map { $0.map(\.city) } }
         XCTAssertEqual(cities(BookLibrary.rows(shelves, columns: 3)), [["Paris"], ["London", "Barcelona"]])
         XCTAssertEqual(cities(BookLibrary.rows(shelves, columns: 2)), [["Paris"], ["London", "Barcelona"]])
         XCTAssertEqual(cities(BookLibrary.rows(shelves, columns: 1)), [["Paris"], ["London"], ["Barcelona"]])
         let reordered = [shelves[1], shelves[0], shelves[2]]
         XCTAssertEqual(cities(BookLibrary.rows(reordered, columns: 3)), [["London"], ["Paris"], ["Barcelona"]])
+        let all = BookLibrary.shelves(try books())
+        XCTAssertEqual(cities(BookLibrary.rows(all, columns: 3)), [["Paris"], ["London"], ["Barcelona"]])
     }
 
     func testEachBookHasTenToFourteenUniquePages() throws {

@@ -3,7 +3,7 @@ from little_explorer_agent.content import load_books, lookup
 
 def test_loads_all_books_from_app_resources():
     books = load_books()
-    assert {"paris", "paris-food", "paris-fun", "paris-notre-dame", "london", "barcelona"} <= set(books)
+    assert {"paris", "paris-food", "paris-fun", "paris-notre-dame", "london", "london-big-ben", "barcelona"} <= set(books)
     for book in books.values():
         assert 10 <= len(book.pages) <= 14
         for page in book.pages:
@@ -44,7 +44,7 @@ async def test_refresh_remote_swaps_in_server_books(monkeypatch):
         assert await content.refresh_remote(base, max_age=0) is False  # same version
         assert await content.refresh_remote(base) is False  # checked moments ago
     books = content.current_books()
-    assert set(books) == {"paris", "paris-food", "paris-fun", "paris-notre-dame", "london", "barcelona"}
+    assert set(books) == {"paris", "paris-food", "paris-fun", "paris-notre-dame", "london", "london-big-ben", "barcelona"}
     book, page = content.lookup({"book": "paris", "page": books["paris"].pages[1].id})
     assert page is books["paris"].pages[1]
 
@@ -65,3 +65,10 @@ def test_notre_dame_pages_give_milo_context():
     assert book.theme == "Notre-Dame" and book.city == "Paris"
     assert "firefighters" in page.text and "safe and open again" in page.about
     assert [p.id for p in books["paris-notre-dame"].pages][-1] == "goodbye"
+
+
+def test_big_ben_book_sits_on_the_london_shelf():
+    books = load_books()
+    book, page = lookup({"book": "london-big-ben", "page": "penny"})
+    assert book.theme == "Big Ben" and book.city == books["london"].city
+    assert "pennies" in page.about and "pendulum" in page.text

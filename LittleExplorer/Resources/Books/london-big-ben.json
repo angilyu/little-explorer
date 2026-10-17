@@ -1,0 +1,204 @@
+{
+  "id": "london-big-ben",
+  "city": "London",
+  "country": "England, United Kingdom",
+  "flagImage": "london-flag.png",
+  "flag": "🇬🇧",
+  "theme": "Big Ben",
+  "coverColor": "#1D3F6E",
+  "tagline": "Bongs, bells and a giant clock",
+  "pages": [
+    {
+      "id": "welcome",
+      "text": "This tall clock tower is in London, by the river.",
+      "about": "This is the famous clock tower at the Houses of Parliament in London, where the country's leaders meet to make laws. It stands beside the river Thames. The tower is 96 meters tall, as tall as 21 red double-decker buses stacked on top of each other, and it has 11 floors. It was finished in 1859, more than 160 years ago. Most people call the whole tower 'Big Ben', but the next pages explain the secret.",
+      "emoji": "🕰️",
+      "photo": {
+        "commonsTitle": "File:Big Ben Elizabeth Tower London 2023 01.jpg",
+        "query": "Elizabeth Tower Big Ben London",
+        "file": "london-big-ben-welcome.jpg",
+        "author": "Julian Herzog (Website)",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Big_Ben_Elizabeth_Tower_London_2023_01.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "bell",
+      "text": "Big Ben is the name of the giant bell inside.",
+      "about": "Big Ben is really the name of the biggest bell hanging at the top of the tower, in a room called the belfry. It weighs about 13.7 tonnes, about as much as two big elephants. It was made in 1858 at the Whitechapel bell foundry in London. Soon after it started ringing, Big Ben cracked! Instead of making a new bell, workers turned it a little so the hammer hits a different spot, and used a lighter hammer. It still has the crack today, which gives it its special sound. The picture is an old drawing of the bell and its hammer from 1859.",
+      "emoji": "🔔",
+      "photo": {
+        "commonsTitle": "File:BIg Ben - Whitechapel Foundary drawing.jpg",
+        "query": "Big Ben bell drawing Whitechapel",
+        "file": "london-big-ben-bell.jpg",
+        "author": "Whitechapel Bell Foundry",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:BIg_Ben_-_Whitechapel_Foundary_drawing.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "tower",
+      "text": "The tower has its own name. It is the Elizabeth Tower.",
+      "about": "For a long time the tower was just called the Clock Tower. In 2012 it was renamed the Elizabeth Tower to celebrate Queen Elizabeth the Second, who had been queen for 60 years. From 2017 to 2022 builders covered it in scaffolding and fixed it up. They cleaned the stone, regilded the gold, and painted the clock hands and numbers a deep blue color called Prussian blue, the color they were long ago. This photo shows the tower just after it was fixed.",
+      "emoji": "🏰",
+      "photo": {
+        "commonsTitle": "File:Newly restored Elizabeth Tower 2022-12-27.jpg",
+        "query": "restored Elizabeth Tower 2022",
+        "file": "london-big-ben-tower.jpg",
+        "author": "Nate Loper",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Newly_restored_Elizabeth_Tower_2022-12-27.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "name",
+      "text": "The bell may be named after a big man called Ben.",
+      "about": "Nobody is completely sure where the name Big Ben came from. Many people think it was named after Sir Benjamin Hall, the man in charge of building works when the bell was hung; he was a large, tall man. Others think it was named after Ben Caunt, a famous heavyweight boxer of the time. Either way, it was a big Ben! The picture is a portrait of Benjamin Hall. Ask him who he would name a giant bell after.",
+      "emoji": "🎩",
+      "photo": {
+        "commonsTitle": "File:Sir Benjamin Hall (5236488).jpg",
+        "query": "Sir Benjamin Hall portrait",
+        "file": "london-big-ben-name.jpg",
+        "author": "T W Harland",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sir_Benjamin_Hall_(5236488).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "clock-face",
+      "text": "Each clock face is wider than a giraffe is tall!",
+      "about": "The tower has four clock faces, one on each side, so people can see the time from every direction. Each face is 7 meters across. A tall giraffe is about 5 meters tall, so the clock face is even wider than that. Each face is made of 324 pieces of milky white glass in an iron frame, and at night it glows with lights from behind. The numbers on the face are each about 60 centimeters long, as long as a 6-year-old's arm and a bit more.",
+      "emoji": "🦒",
+      "photo": {
+        "commonsTitle": "File:Big Ben Clock.jpg",
+        "query": "Big Ben clock face close up",
+        "file": "london-big-ben-clock-face.jpg",
+        "author": "Rijksoverheid (Government of the Netherlands)",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Big_Ben_Clock.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "hands",
+      "text": "The long minute hand is longer than two grown-ups!",
+      "about": "Each minute hand is 4.2 meters long, longer than two grown-ups lying head to toe, and weighs about 100 kilograms. It is made of thin copper so it isn't too heavy to move. The short hour hands are 2.7 meters long and heavier, about 300 kilograms. Every year the tip of each minute hand travels about 190 kilometers going round and round. Under the clock face are Latin words asking God to keep Queen Victoria safe.",
+      "emoji": "⏰",
+      "photo": {
+        "commonsTitle": "File:London Big Ben Inner Clock Face 1070925-PSD.jpg",
+        "query": "Big Ben clock face hands",
+        "file": "london-big-ben-hands.jpg",
+        "author": "Ermell",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:London_Big_Ben_Inner_Clock_Face_1070925-PSD.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "bong",
+      "text": "Bong, bong, bong! At three o'clock, Big Ben bongs three times.",
+      "about": "Every hour, a big hammer weighing about 200 kilograms swings and hits Big Ben from the outside. The bell doesn't swing; it stays still. It bongs once for each hour, so at three o'clock it bongs three times, and at twelve o'clock it bongs twelve times. Its musical note is E. People in London can hear it a long way away. You can practise bonging with him: count the bongs for his favourite time.",
+      "emoji": "🔨",
+      "photo": {
+        "commonsTitle": "File:Big Ben at sunset - 2014-10-27 17-30.jpg",
+        "query": "Big Ben at sunset",
+        "file": "london-big-ben-bong.jpg",
+        "author": "Colin",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Big_Ben_at_sunset_-_2014-10-27_17-30.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "chimes",
+      "text": "Four small bells play a tune. People hear it on the radio!",
+      "about": "Big Ben has four smaller friends in the belfry called the quarter bells. Every 15 minutes they play part of a famous tune called the Westminster Chimes (ding-dong-ding-dong), and on the hour they play the whole tune before Big Ben bongs. Since 1923, the BBC has played the real bells live on the radio, so people all over the country, and the world, can hear them, especially at New Year when everyone counts down to midnight. The picture is an old radio from the 1930s, like the ones families listened to long ago.",
+      "emoji": "📻",
+      "photo": {
+        "commonsTitle": "File:Radio (AM 1999.54.1-1).jpg",
+        "query": "1930s cathedral radio",
+        "file": "london-big-ben-chimes.jpg",
+        "author": "Auckland Museum",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Radio_(AM_1999.54.1-1).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "penny",
+      "text": "Old coins on the swinging pendulum keep the clock on time.",
+      "about": "Inside the tower is the clock's machine, as big as a car and weighing 5 tonnes, with a long pendulum that swings once every 2 seconds. To make the clock exactly right, the clock keepers put old pennies on the pendulum. Adding one penny makes the clock speed up by a tiny bit, less than half a second a day. Taking one off slows it down. Clever and simple! The photo shows the big clock machine.",
+      "emoji": "🪙",
+      "photo": {
+        "commonsTitle": "File:Big Ben clock mechanism.jpg",
+        "query": "Great Clock of Westminster mechanism",
+        "file": "london-big-ben-penny.jpg",
+        "author": "Paulobrad",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Big_Ben_clock_mechanism.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "light",
+      "text": "A light at the top shines when Parliament is working.",
+      "about": "Above the clock faces, near the very top of the tower, is a lantern called the Ayrton Light (AIR-tun). When the people in Parliament are working late after dark, the light is switched on, so everyone in London can look up and see that they are still busy. People say Queen Victoria asked for it so she could see from her palace whether they were working. In the photo the lantern is glowing at the top, above the green-lit stonework.",
+      "emoji": "💡",
+      "photo": {
+        "commonsTitle": "File:Ayrton Light.jpg",
+        "query": "Ayrton Light Elizabeth Tower",
+        "file": "london-big-ben-light.jpg",
+        "author": "Morn; original photo by JSilv99",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ayrton_Light.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "steps",
+      "text": "It takes 334 steps to climb up to the bell. Phew!",
+      "about": "There is no lift for visitors inside the tower, just a winding staircase. It is 334 steps to the belfry where Big Ben hangs, and 399 steps to the light at the very top. The people who look after the clock climb up these stairs. If he likes counting, ask how many steps he thinks there are at his home, or how long it would take him to climb 334.",
+      "emoji": "🪜",
+      "photo": {
+        "commonsTitle": "File:Big Ben dial.JPG",
+        "query": "Elizabeth Tower looking up",
+        "file": "london-big-ben-steps.jpg",
+        "author": "Uukgoblin",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Big_Ben_dial.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "goodbye",
+      "text": "Goodbye, Big Ben! Wave from the bridge over the river Thames.",
+      "about": "Right next to the tower is Westminster Bridge, which crosses the river Thames. It is painted green, the same color as the seats in the House of Commons inside Parliament. From the bridge you get one of the best views of the tower, and you can hear Big Ben bong. Ask him what time he'd like to hear Big Ben, and where he'd like to go next.",
+      "emoji": "👋",
+      "photo": {
+        "commonsTitle": "File:Big Ben and Westminster Bridge at night.jpg",
+        "query": "Westminster Bridge Big Ben night",
+        "file": "london-big-ben-goodbye.jpg",
+        "author": "raduranga",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Big_Ben_and_Westminster_Bridge_at_night.jpg",
+        "verified": true
+      }
+    }
+  ]
+}
