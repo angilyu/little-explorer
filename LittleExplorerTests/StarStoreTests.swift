@@ -95,6 +95,15 @@ final class StarStoreTests: XCTestCase {
         XCTAssertTrue(stamps.contains { $0.city == "London" && !$0.stamped })
     }
 
+    func testTravelShelfGetsNoCityStamp() throws {
+        let store = StarStore(defaults: defaults)
+        store.merge([award("t", book: "travel-flight", city: "Travel")])
+        let stamps = store.stamps(shelves: try shelves())
+        XCTAssertFalse(stamps.contains { $0.city == "Travel" })
+        XCTAssertEqual(stamps.map(\.city), ["Paris", "London", "Barcelona", "Lake Tahoe", "Hawaii"])
+        XCTAssertEqual(store.total, 1)
+    }
+
     func testCuriousCatAndBigTalkerBadges() throws {
         let store = StarStore(defaults: defaults)
         store.merge((0..<10).map { award("q\($0)", long: $0 < 4) })

@@ -48,6 +48,12 @@ class Book:
     country: str
     pages: tuple[Page, ...]
     theme: str = ""
+    kind: str = ""
+
+    @property
+    def is_travel(self) -> bool:
+        """A general travel book (flights, packing, hotels…) rather than a book about one place."""
+        return self.kind == "travel"
 
     def page(self, page_id: str) -> Page | None:
         return next((p for p in self.pages if p.id == page_id), None)
@@ -69,6 +75,7 @@ def _parse_book(data: Mapping[str, Any]) -> Book:
         country=data.get("country", ""),
         pages=pages,
         theme=data.get("theme") or "",
+        kind=data.get("kind") or "",
     )
 
 

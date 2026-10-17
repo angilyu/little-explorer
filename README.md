@@ -13,7 +13,7 @@ iPad versions are in [`docs/screenshots`](docs/screenshots).
 
 ## Books
 
-The first screen is a shelf with every book, grouped by city. Tap a cover to open it.
+The first screen is a shelf with every book, grouped by city, with a general Travel shelf last. Tap a cover to open it.
 
 | City | Book (`id`) | Theme |
 |---|---|---|
@@ -35,10 +35,18 @@ The first screen is a shelf with every book, grouped by city. Tap a cover to ope
 | Lake Tahoe | Northstar (`tahoe-northstar`) | Winter: the village ice rink, s'mores by the fire, chairlifts through the pines, a far-off lake view, ski school, corduroy snow, night snowcats, tubing, snowy pines, cocoa |
 | Hawaii | Hawaii (`hawaii`) | Volcano islands, the eight-stripe flag, Kīlauea lava, black sand, honu turtles (look, don't touch), leis, hula stories, ancient surfing, humpback whales, shave ice, the humuhumunukunukuāpuaʻa, the nēnē goose, what aloha means |
 | Hawaii | Honolulu (`hawaii-honolulu`) | Waikīkī's gentle surf, Diamond Head crater, ʻIolani Palace, King Kamehameha's long leis, Duke's statue, Hanauma Bay fish, outrigger canoes, Aloha Tower, the aquarium, spam musubi |
+| Travel | Take a Flight (`travel-flight`) | Check-in and the moving belt, the scanner that sees inside bags, the boarding pass, watching planes at the gate, the window seat, the seatbelt light, a snack when ears pop, above the clouds, two pilots, the cabin crew, wheels down |
+| Travel | Pack Your Bag (`travel-packing`) | A checklist, rolling clothes, toothbrush, a teddy from home, a backpack with a snack and a book, small bottles in a clear bag, weighing the bag, a name tag, packing for the weather, zipping it shut |
+| Travel | Passport (`travel-passport`) | What a passport is, the calm-face photo, cover colors, pretty pages and secret glowing marks, entry stamps, passport control, e-gates, a grown-up keeps it safe, kids' passports renewing sooner |
+| Travel | Hotel Stay (`travel-hotel`) | The front desk, the luggage cart, the key card, the lift, how room numbers show the floor, quiet hallways, no bed jumping, the view, Do Not Disturb, towel animals, the breakfast buffet, the pool with a grown-up |
+| Travel | Jet Lag (`travel-jetlag`) | Clocks around the world, day here and night there, time zones, the body clock, sleepy days and owl nights, why flying east is harder, sunshine, water, short naps, eating and sleeping at the new time (no medicine advice) |
 
 Books are JSON files in [`LittleExplorer/Resources/Books`](LittleExplorer/Resources/Books) with 10–14 pages each.
 Every page has a 4–12 word sentence, hidden `about` notes for Milo, and a photo. The shelf order is `BookLibrary.order`.
 A city with several books shows them under one city heading; `theme` is the title on the cover.
+Travel books have `"city": "Travel"` and `"kind": "travel"`: they share one Travel shelf with an airplane
+badge (`travel-flag.png`), Milo is told they are general travel books rather than about one city, and they
+don't give a Passport stamp.
 
 Hearts are stored on the device as `<book id>/<page id>`, so each themed book keeps its own hearts.
 Grown-ups can see the loved pages for every book behind the parent gate (lock button).
@@ -60,7 +68,7 @@ Pin a specific file by setting the page's `photo.commonsTitle`.
 
 The speaker button (bottom-right of every page) reads the sentence in a natural voice, the same OpenAI voice as Milo
 (`gpt-4o-mini-tts`, "coral"), styled like a grown-up reading a picture book to a 6-year-old: warm, clear and a little slow.
-The clips are made ahead of time and bundled (about 8 MB of AAC for all 225 pages), so reading aloud works offline
+The clips are made ahead of time and bundled (about 10 MB of AAC for all 291 pages), so reading aloud works offline
 and the app never holds an API key. Each word is highlighted as it's spoken. Tap again to stop. Speech also stops when
 the page turns or the book closes. When voice mode is on, the microphone is muted while the app reads, so Milo doesn't
 mistake the app's voice for the child.
@@ -210,7 +218,7 @@ device id. The app saves them locally and, on launch, merges back the server's c
 access key), so stars survive a reinstall. Only counts, kinds, book, page and time are stored, never what he said.
 
 The library's top corner shows his total; tapping it opens the Passport: a stamp for each city he has asked
-about, plus Curious Cat (10 questions), Big Talker (5 long questions) and an Expert badge for asking in every
+about (not the Travel shelf), plus Curious Cat (10 questions), Big Talker (5 long questions) and an Expert badge for asking in every
 book of a city (e.g. Paris Expert). The last page of each book shows the stars from that book. `tools/devices.py`
 lists stars per device. Pipeline mode gives stars too, but Milo doesn't announce them.
 

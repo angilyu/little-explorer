@@ -49,8 +49,9 @@ Safety:
 GATE_PURPOSE = """\
 Milo is a voice buddy in a picture book app for a 6-year-old boy, about cities and travel.
 RESPOND when the child talks to Milo: questions or comments about the book, the page, the photo,
-the city, its country, language, food or famous places, about travel, or a short reply to Milo's
-last question (even "yes", "I like the boat"), or when he asks Milo something directly. A question
+the city, its country, language, food or famous places, about travel (flying, packing, passports,
+hotels, jet lag), or a short reply to Milo's last question (even "yes", "I like the boat"), or
+when he asks Milo something directly. A question
 about another place in the same city (not the one on this page) is still about the book.
 LISTEN when he is reading the page sentence aloud or is clearly in the middle of a thought.
 IGNORE adults talking to each other, TV or music, phone calls, speech that is not directed at
@@ -179,7 +180,9 @@ def page_note(context: Mapping[str, Any]) -> list[str]:
     if not city and not page_text:
         return []
     lines = ["What the child is looking at right now:"]
-    if city:
+    if book and book.is_travel:
+        lines.append(f'- Book: "{book.theme}", a general travel book for kids (not about one city)')
+    elif city:
         country = f", {book.country}" if book and book.country else ""
         theme = f' (the "{book.theme}" book)' if book and book.theme else ""
         lines.append(f"- Book: {city}{country}{theme}")

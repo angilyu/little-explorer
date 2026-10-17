@@ -1,0 +1,221 @@
+{
+  "id": "travel-jetlag",
+  "city": "Travel",
+  "country": "Around the world",
+  "kind": "travel",
+  "flagImage": "travel-flag.png",
+  "flag": "✈️",
+  "theme": "Jet Lag",
+  "coverColor": "#312E81",
+  "tagline": "When your body clock gets mixed up",
+  "pages": [
+    {
+      "id": "welcome",
+      "text": "Different clocks show different times around the world.",
+      "about": "This wall in a hotel in Albania has clocks for cities around the world, and each clock shows a different time! That is because when it is morning in one place, it can be evening somewhere else. When you fly very far, your body has to get used to a whole new time. That mixed-up feeling is called jet lag, and in this book we will learn how to beat it.",
+      "emoji": "🕰️",
+      "photo": {
+        "commonsTitle": "File:DSC-0415-hotel-colosseo-shkoder-albania-august-2017.jpg",
+        "query": "world clocks wall hotel",
+        "file": "travel-jetlag-welcome.jpg",
+        "author": "Rakoon",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:DSC-0415-hotel-colosseo-shkoder-albania-august-2017.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "day-and-night",
+      "text": "When it is day here, it is night there.",
+      "about": "The Earth is a giant ball that spins around once every day. The side facing the Sun has daytime, and the side facing away has nighttime. This photo was taken by astronauts on the space station and shows the line where day turns into night. Francis, when you eat lunch, children on the other side of the world might be fast asleep!",
+      "emoji": "🌍",
+      "photo": {
+        "commonsTitle": "File:From Day Into Night.jpg",
+        "query": "earth day night line from space",
+        "file": "travel-jetlag-day-and-night.jpg",
+        "author": "Christina Koch, NASA",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:From_Day_Into_Night.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "time-zones",
+      "text": "The world is split into time zones.",
+      "about": "To keep clocks matching the Sun, people split the world into time zones, like slices of an orange. There are about 24 main slices, one for each hour of the day. Each time you move one slice east, the clock goes forward about one hour. On this colorful map, each patch of color shows places that share the same clock time.",
+      "emoji": "🗺️",
+      "photo": {
+        "commonsTitle": "File:Standard Time Zones of The World.jpg",
+        "query": "world time zones map",
+        "file": "travel-jetlag-time-zones.jpg",
+        "author": "Zviad Kelenjeridze",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Standard_Time_Zones_of_The_World.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "long-flight",
+      "text": "A fast plane zooms across many time zones.",
+      "about": "Long ago, people traveled by ship or train, so they crossed time zones slowly and their bodies kept up. Today a big jet like this Boeing 787 can cross many time zones in just one day. The plane is so fast that your body clock cannot keep up with all those changes. That is how jet lag happens!",
+      "emoji": "✈️",
+      "photo": {
+        "commonsTitle": "File:Boeing 787-9 Dreamliner PH-BHP (51009491128).jpg",
+        "query": "boeing 787 in flight blue sky",
+        "file": "travel-jetlag-long-flight.jpg",
+        "author": "kees torn",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Boeing_787-9_Dreamliner_PH-BHP_(51009491128).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "body-clock",
+      "text": "Your body has a clock inside it.",
+      "about": "Deep in your brain there is a tiny body clock. You cannot see it, but it tells you when to feel sleepy, when to wake up and when to feel hungry. Scientists call this your circadian rhythm, which means about a day. After a long flight, your body clock is still set to home time, even though the clocks around you say something else.",
+      "emoji": "⏰",
+      "photo": {
+        "commonsTitle": "File:Alarm Clocks.jpg",
+        "query": "colorful alarm clocks",
+        "file": "travel-jetlag-body-clock.jpg",
+        "author": "Nefrit Lazurit",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Alarm_Clocks.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "sleepy-day",
+      "text": "You might feel sleepy in the daytime.",
+      "about": "With jet lag, you might feel very sleepy in the middle of the day, just like this yawning cat. That is because back home it is nighttime, and your body clock says, time for bed! You might also feel hungry at funny times, a bit grumpy or wobbly. That is completely normal, and it goes away.",
+      "emoji": "🥱",
+      "photo": {
+        "commonsTitle": "File:Cat nap (572513063).jpg",
+        "query": "cat yawning",
+        "file": "travel-jetlag-sleepy-day.jpg",
+        "author": "Dwight Sipler",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Cat_nap_(572513063).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "awake-night",
+      "text": "Or wide awake at night, like an owl!",
+      "about": "Jet lag can also flip the other way. When it is dark and time for bed, you might feel wide awake like this little owl with big yellow eyes. That is because back home it is still daytime. Lying quietly in bed with the lights off, listening to a calm story, can help your body learn that now it is night.",
+      "emoji": "🦉",
+      "photo": {
+        "commonsTitle": "File:African scops owl (Otus senegalensis) at Kruger National Park, South Africa. - 51255955957.jpg",
+        "query": "scops owl night",
+        "file": "travel-jetlag-awake-night.jpg",
+        "author": "Derek Keats",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:African_scops_owl_(Otus_senegalensis)_at_Kruger_National_Park,_South_Africa._-_51255955957.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "east-and-west",
+      "text": "Flying east toward the sunrise is often harder.",
+      "about": "When you fly east, toward where the Sun rises, the day gets shorter and you have to go to sleep earlier than your body wants. When you fly west, the day gets longer, and staying up a bit later is usually easier. So many people find that flying east gives them more jet lag. This photo shows an airplane wing flying into a glowing orange sunrise.",
+      "emoji": "🌅",
+      "photo": {
+        "commonsTitle": "File:Flying through the sunrise - Flickr - Lenny K Photography.jpg",
+        "query": "airplane wing sunrise",
+        "file": "travel-jetlag-east-and-west.jpg",
+        "author": "Lenny K Photography",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Flying_through_the_sunrise_-_Flickr_-_Lenny_K_Photography.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "sunshine",
+      "text": "Go outside and play in the sunshine.",
+      "about": "Daylight is like a reset button for your body clock. Playing outside in the daytime, especially in the morning sunshine, helps your body learn the new time faster. Running, swimming and exploring keep you busy and awake until bedtime. These children are running into the sea as the Sun rises over a beach in Kenya.",
+      "emoji": "☀️",
+      "photo": {
+        "commonsTitle": "File:Kids At Indian Ocean Beach Mombasa At Sunrise.jpg",
+        "query": "children beach sunrise silhouette",
+        "file": "travel-jetlag-sunshine.jpg",
+        "author": "Kkariithi",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Kids_At_Indian_Ocean_Beach_Mombasa_At_Sunrise.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "drink-water",
+      "text": "Drink lots of water, like this thirsty cat.",
+      "about": "The air inside an airplane is very dry, so it is easy to get thirsty without noticing. Drinking water on the plane and after you land helps you feel more awake and less tired. You can carry your own water bottle and take little sips often. This cat has found a glass of water, but you should use your own cup!",
+      "emoji": "💧",
+      "photo": {
+        "commonsTitle": "File:Conformal Cats (8074241727).jpg",
+        "query": "cat drinking from glass",
+        "file": "travel-jetlag-drink-water.jpg",
+        "author": "Steve Jurvetson",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Conformal_Cats_(8074241727).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "short-nap",
+      "text": "A short nap is fine, not a long one.",
+      "about": "If you feel super sleepy in the afternoon, a short nap can help, just a little rest like this dog is having. But a very long nap in the daytime can make it hard to fall asleep at night. So grown-ups usually keep jet lag naps short and wake you up gently. Then it is back to exploring!",
+      "emoji": "😴",
+      "photo": {
+        "commonsTitle": "File:Benji - Flickr - Stiller Beobachter (3).jpg",
+        "query": "dog sleeping",
+        "file": "travel-jetlag-short-nap.jpg",
+        "author": "Stiller Beobachter",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Benji_-_Flickr_-_Stiller_Beobachter_(3).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "bedtime",
+      "text": "Eat and sleep at the new time.",
+      "about": "One of the best tricks is to eat meals and go to bed at the new local time, even if your tummy and eyes disagree at first. When the Moon comes out where you are, it is bedtime there. A dark, cool, quiet room helps you sleep. Each night your body clock moves a little closer to the new time.",
+      "emoji": "🌙",
+      "photo": {
+        "commonsTitle": "File:Crescent Moon (2558144570).jpg",
+        "query": "crescent moon night sky",
+        "file": "travel-jetlag-bedtime.jpg",
+        "author": "xlibber",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Crescent_Moon_(2558144570).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "goodbye",
+      "text": "In a few days, your body clock catches up!",
+      "about": "Jet lag does not last forever. Often it takes a few days, and a common rule of thumb is about one day for each time zone you crossed. Then one morning you will wake up feeling bright and ready for adventure. Goodbye, jet lag, and hello, new places!",
+      "emoji": "🌄",
+      "photo": {
+        "commonsTitle": "File:Sunrise over the Pullu Padam with a Morning drizzle.jpg",
+        "query": "sunrise over fields",
+        "file": "travel-jetlag-goodbye.jpg",
+        "author": "Jan J George",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sunrise_over_the_Pullu_Padam_with_a_Morning_drizzle.jpg",
+        "verified": true
+      }
+    }
+  ]
+}

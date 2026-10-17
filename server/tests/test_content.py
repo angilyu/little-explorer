@@ -3,7 +3,7 @@ from little_explorer_agent.content import load_books, lookup
 
 def test_loads_all_books_from_app_resources():
     books = load_books()
-    assert {"paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "paris-french", "london", "london-big-ben", "barcelona", "tahoe", "tahoe-heavenly", "tahoe-northstar", "hawaii", "hawaii-honolulu"} <= set(books)
+    assert {"paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "paris-french", "london", "london-big-ben", "barcelona", "tahoe", "tahoe-heavenly", "tahoe-northstar", "hawaii", "hawaii-honolulu", "travel-flight", "travel-packing", "travel-passport", "travel-hotel", "travel-jetlag"} <= set(books)
     for book in books.values():
         assert 10 <= len(book.pages) <= 14
         for page in book.pages:
@@ -47,7 +47,7 @@ async def test_refresh_remote_swaps_in_server_books(monkeypatch):
         assert await content.refresh_remote(base, max_age=0) is False  # same version
         assert await content.refresh_remote(base) is False  # checked moments ago
     books = content.current_books()
-    assert set(books) == {"paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "paris-french", "london", "london-big-ben", "barcelona", "tahoe", "tahoe-heavenly", "tahoe-northstar", "hawaii", "hawaii-honolulu"}
+    assert set(books) == {"paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "paris-french", "london", "london-big-ben", "barcelona", "tahoe", "tahoe-heavenly", "tahoe-northstar", "hawaii", "hawaii-honolulu", "travel-flight", "travel-packing", "travel-passport", "travel-hotel", "travel-jetlag"}
     book, page = content.lookup({"book": "paris", "page": books["paris"].pages[1].id})
     assert page is books["paris"].pages[1]
 
@@ -165,3 +165,29 @@ def test_tahoe_and_hawaii_are_new_destinations_with_fresh_photos():
     _, page = lookup({"book": "hawaii", "page": "honu"})
     assert "Honu (HO-noo)" in page.text and "touch" in page.about
     assert raw["hawaii"]["narration"]["phraseByPhrase"] is True
+
+
+def test_travel_books_are_a_general_shelf_not_a_city():
+    import json
+
+    from little_explorer_agent.buddy import page_note
+    from little_explorer_agent.content import content_dir
+
+    books = load_books()
+    travel = ["travel-flight", "travel-packing", "travel-passport", "travel-hotel", "travel-jetlag"]
+    raw = {p.stem: json.loads(p.read_text(encoding="utf-8")) for p in content_dir().glob("*.json")}
+    old_titles = {pg["photo"]["commonsTitle"] for bid, b in raw.items() if bid not in travel for pg in b["pages"]}
+    assert [b for b, book in books.items() if book.is_travel] == sorted(travel)
+    assert [books[b].theme for b in travel] == ["Take a Flight", "Pack Your Bag", "Passport", "Hotel Stay", "Jet Lag"]
+    for bid in travel:
+        book = books[bid]
+        assert book.city == "Travel" and book.kind == "travel" and book.pages[-1].id == "goodbye"
+        assert not {pg["photo"]["commonsTitle"] for pg in raw[bid]["pages"]} & old_titles, f"{bid} reuses a photo"
+        assert all(pg["photo"]["verified"] for pg in raw[bid]["pages"])
+        assert raw[bid]["flagImage"] == "travel-flag.png"
+    jetlag = " ".join(p.text + " " + p.about for p in books["travel-jetlag"].pages).lower()
+    assert "melatonin" not in jetlag and "medicine" not in jetlag.replace("no medicine", "")
+    note = page_note({"book": "travel-flight", "page": books["travel-flight"].pages[1].id, "city": "Travel"})
+    assert note[1] == '- Book: "Take a Flight", a general travel book for kids (not about one city)'
+    assert not books["paris"].is_travel
+    assert page_note({"book": "paris", "page": "welcome"})[1].startswith("- Book: Paris, France")

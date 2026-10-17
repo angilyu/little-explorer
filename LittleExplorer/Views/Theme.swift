@@ -30,7 +30,7 @@ extension Color {
     }
 }
 
-/// The country's flag as a small picture with a white border.
+/// The country's flag (or the Travel shelf's airplane badge) as a small picture with a white border.
 struct FlagBadge: View {
     let book: Book
     var height: CGFloat = 32
@@ -46,7 +46,7 @@ struct FlagBadge: View {
                     RoundedRectangle(cornerRadius: height * 0.15, style: .continuous)
                         .strokeBorder(.white, lineWidth: 2)
                 )
-                .accessibilityLabel("Flag of \(book.country)")
+                .accessibilityLabel(book.isTravel ? "Travel" : "Flag of \(book.country)")
         }
     }
 }

@@ -7,7 +7,7 @@ enum ContentError: Error, Equatable {
 
 enum BookLibrary {
     /// Reading order of the books on the shelf when library.json is missing.
-    static let order = ["paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "paris-french", "london", "london-big-ben", "barcelona", "tahoe", "tahoe-heavenly", "tahoe-northstar", "hawaii", "hawaii-honolulu"]
+    static let order = ["paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "paris-french", "london", "london-big-ben", "barcelona", "tahoe", "tahoe-heavenly", "tahoe-northstar", "hawaii", "hawaii-honolulu", "travel-flight", "travel-packing", "travel-passport", "travel-hotel", "travel-jetlag"]
 
     private struct Shelf: Decodable { let order: [String] }
 
@@ -80,4 +80,6 @@ struct CityShelf: Identifiable, Hashable {
 
     var id: String { city }
     var flagBook: Book { books[0] }
+    /// The general Travel shelf (flights, packing, hotels…) rather than a place.
+    var isTravel: Bool { books.allSatisfy(\.isTravel) }
 }

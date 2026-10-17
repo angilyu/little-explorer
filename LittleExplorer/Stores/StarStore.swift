@@ -135,8 +135,9 @@ final class StarStore {
         return fresh.count
     }
 
+    /// One stamp per place; the Travel shelf isn't a place, so it gets no stamp.
     func stamps(shelves: [CityShelf]) -> [PassportStamp] {
-        shelves.map { PassportStamp(city: $0.city, flagBook: $0.flagBook, stamped: hasAsked(inCity: $0.city)) }
+        shelves.filter { !$0.isTravel }.map { PassportStamp(city: $0.city, flagBook: $0.flagBook, stamped: hasAsked(inCity: $0.city)) }
     }
 
     /// Curious Cat (10 questions), Big Talker (5 long questions), and an Expert badge for each city

@@ -1,0 +1,237 @@
+{
+  "id": "travel-flight",
+  "city": "Travel",
+  "country": "Around the world",
+  "kind": "travel",
+  "flagImage": "travel-flag.png",
+  "flag": "✈️",
+  "theme": "Take a Flight",
+  "coverColor": "#0E7490",
+  "tagline": "Wings, clouds and a window seat",
+  "pages": [
+    {
+      "id": "welcome",
+      "text": "Let us go on a big plane trip today!",
+      "about": "Taking a flight is one of the fastest ways to get far away: a jet plane can cross a whole country in just a few hours. Big passenger planes like this one fly at about 900 kilometers (560 miles) an hour, high above the clouds. Flying is also very, very safe, because pilots, crew and engineers check everything again and again before every trip. This photo shows a Jetstar Airbus A320 jet flying through a blue sky with its wheels tucked away. Ask Francis: if you could fly anywhere in the world, where would you go?",
+      "emoji": "✈️",
+      "photo": {
+        "commonsTitle": "File:Jetstar Airbus A320 in flight (6768081249).jpg",
+        "query": "Airbus A320 in flight blue sky",
+        "file": "travel-flight-welcome.jpg",
+        "author": "Jetstar Airways (jetstar.com)",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Jetstar_Airbus_A320_in_flight_(6768081249).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "check-in",
+      "text": "First we check in and give them our big bag.",
+      "about": "At the airport, the first stop is the check-in desk, where an airline worker looks at your ticket and takes your big suitcase. They stick a paper bag tag on it with a three-letter code for the airport where it is going, like LAX for Los Angeles or CDG for Paris. That little code helps the bag find the right plane, even though it travels separately from you. This photo shows a check-in hall at San José airport in Costa Rica, with people lining up at the counters. Ask Francis: can he guess what three letters might be on a bag going home?",
+      "emoji": "🧳",
+      "photo": {
+        "commonsTitle": "File:American Airlines.Airport Check-in.SJO.2005.jpg",
+        "query": "airport check-in counter",
+        "file": "travel-flight-check-in.jpg",
+        "author": "Alex Steffler (alex-s)",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:American_Airlines.Airport_Check-in.SJO.2005.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "conveyor",
+      "text": "Our bag rides away on a long moving belt.",
+      "about": "After check-in, your suitcase rides off on a conveyor belt, a long moving rubber road hidden behind the walls. Machines read the bag tag and send each bag down the right path, a bit like a giant train set, until workers load it under the plane. When you land, the bags come back out on a baggage belt that goes round and round so you can grab yours. This photo shows a baggage belt at Suvarnabhumi Airport in Bangkok, Thailand. Idea for Francis: put a bright ribbon or sticker on your suitcase so you can spot it fast on the belt.",
+      "emoji": "🛄",
+      "photo": {
+        "commonsTitle": "File:Afbeelding 115.jpg",
+        "query": "airport baggage conveyor belt",
+        "file": "travel-flight-conveyor.jpg",
+        "author": "Jarcje",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Afbeelding_115.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "security",
+      "text": "Our bags go through a scanner that sees inside.",
+      "about": "Next comes security, which helps keep everyone on the plane safe. Your backpack goes on a belt through an X-ray machine, which lets the staff peek inside without opening it. Then you walk through a special arch, one at a time, while a grown-up stays right with you. This photo shows the security area at Istanbul Airport in Turkey, with the scanner belts and walk-through arches. Ask Francis: what do you think your backpack looks like on the X-ray screen?",
+      "emoji": "🔍",
+      "photo": {
+        "commonsTitle": "File:Istanbul Airport, ISL interior.jpg",
+        "query": "airport security checkpoint scanner",
+        "file": "travel-flight-security.jpg",
+        "author": "Elgaard",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Istanbul_Airport,_ISL_interior.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "boarding-pass",
+      "text": "A boarding pass tells us our gate and seat.",
+      "about": "A boarding pass is your ticket to get on the plane. It shows your name, your flight number, the gate where the plane waits, your seat number and the time to get on. It can be printed on paper or shown on a phone, like the one in this photo, which is for a flight from Windhoek in Namibia to Frankfurt in Germany. The square code on it gets scanned at the gate with a happy beep. Idea for Francis: look for the seat number on a boarding pass, like 23A, where the letter A is often a window seat.",
+      "emoji": "🎫",
+      "photo": {
+        "commonsTitle": "File:Eurowings Discover Apple Wallet Boarding Pass - WDH to FRA - Flight 4Y133.jpg",
+        "query": "boarding pass on phone",
+        "file": "travel-flight-boarding-pass.jpg",
+        "author": "Wiki.cullin",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Eurowings_Discover_Apple_Wallet_Boarding_Pass_-_WDH_to_FRA_-_Flight_4Y133.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "gate",
+      "text": "At the gate, we watch the planes out the window.",
+      "about": "The gate is the waiting room where you sit before getting on your plane. Most gates have huge windows, so you can watch planes taxi, take off and land, and see little trucks carrying bags and food. When it is time, the crew calls people to board, often families with small children first. This photo shows rows of empty seats at a gate at San Francisco airport, with a big window looking out at the runway. Ask Francis: how many planes can you count out the window while you wait?",
+      "emoji": "🪟",
+      "photo": {
+        "commonsTitle": "File:Empty seats at SFO (7771062866).jpg",
+        "query": "airport gate waiting area window",
+        "file": "travel-flight-gate.jpg",
+        "author": "Angelo DeSantis",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Empty_seats_at_SFO_(7771062866).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "window-seat",
+      "text": "I sit by the window and look at the wing.",
+      "about": "A window seat lets you look outside the whole flight. You can often see the big wing, and if you watch closely during takeoff and landing, parts of the wing slide and tilt to help the plane go up or slow down. From up high, roads look like strings, cars look like ants and lakes shine like mirrors. This photo was taken from a window seat and shows the plane's wing glowing in a golden sunset. Idea for Francis: wave goodbye to the airport out the window as the plane lifts off.",
+      "emoji": "💺",
+      "photo": {
+        "commonsTitle": "File:Alem-do-Infinito RafaelDesterro.jpg",
+        "query": "airplane window view wing sunset",
+        "file": "travel-flight-window-seat.jpg",
+        "author": "Rafael Desterro",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Alem-do-Infinito_RafaelDesterro.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "seatbelt",
+      "text": "Click! When the light is on, we buckle up.",
+      "about": "Every seat on a plane has a seatbelt that buckles across your lap with a click. Above your seat there is a little light with a seatbelt picture, and when it turns on, everyone stays seated with their belt done up. It goes on for takeoff, landing, and sometimes when the air gets a little bumpy, which is normal and nothing to worry about. This photo shows a red airplane seatbelt fastened on someone's lap. Idea for Francis: be the family seatbelt checker and make sure everyone hears the click.",
+      "emoji": "🔔",
+      "photo": {
+        "commonsTitle": "File:Airplane seat belt 1.jpg",
+        "query": "airplane seat belt",
+        "file": "travel-flight-seatbelt.jpg",
+        "author": "Daniel Schwen",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Airplane_seat_belt_1.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "snack",
+      "text": "A snack on my tray helps when my ears pop.",
+      "about": "When the plane climbs up or comes down, the air pressure around you changes, and your ears can feel full or go pop. Swallowing, yawning, chewing a snack or sipping a drink helps your ears even out, so a snack is a good friend at takeoff and landing. The tray table folds down from the seat in front of you to hold your food. This photo shows a little meal tray on a plane with a cup of water and a snack. Ask Francis: can you do a big, silly yawn to help your ears?",
+      "emoji": "🥨",
+      "photo": {
+        "commonsTitle": "File:2008-05-06 - Plateau repas dans un avion.jpg",
+        "query": "airplane meal tray table",
+        "file": "travel-flight-snack.jpg",
+        "author": "Paul.schrepfer",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:2008-05-06_-_Plateau_repas_dans_un_avion.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "clouds",
+      "text": "Now we fly above the clouds like a bird.",
+      "about": "Big jets fly about 10 to 12 kilometers (35,000 to 40,000 feet) up, which is higher than most clouds. That means that in the daytime it is almost always sunny up there, even if it is raining on the ground below. From above, clouds can look like a soft white blanket, fluffy mountains or a sea of cotton. This photo was taken from a plane just after takeoff from Washington Dulles Airport and shows the flat top of a cloud layer. Ask Francis: what shapes can you spot in the clouds?",
+      "emoji": "☁️",
+      "photo": {
+        "commonsTitle": "File:2021-10-05 12 47 17 The top of a stratus cloud layer over Ashburn, Loudoun County, Virginia viewed from an airplane which had just taken off from Washington Dulles International Airport.jpg",
+        "query": "clouds seen from airplane",
+        "file": "travel-flight-clouds.jpg",
+        "author": "Famartin",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:2021-10-05_12_47_17_The_top_of_a_stratus_cloud_layer_over_Ashburn,_Loudoun_County,_Virginia_viewed_from_an_airplane_which_had_just_taken_off_from_Washington_Dulles_International_Airport.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "pilots",
+      "text": "Two pilots sit up front and fly the plane.",
+      "about": "The pilots sit in the cockpit at the very front of the plane. There are usually two of them, the captain and the first officer, and they take turns and check each other's work. They have trained for years, use lots of screens and buttons, and talk by radio to air traffic controllers who guide every plane safely through the sky. This photo shows the cockpit of a plane coming in to land at Orly airport in Paris, with the runway ahead. Idea for Francis: sometimes, after landing, kids can say hello to the pilots at the door.",
+      "emoji": "👩‍✈️",
+      "photo": {
+        "commonsTitle": "File:Approaching ORY, in the cockpit.jpg",
+        "query": "airplane cockpit approach",
+        "file": "travel-flight-pilots.jpg",
+        "author": "Olivier Cleynen",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Approaching_ORY,_in_the_cockpit.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "crew",
+      "text": "The cabin crew keeps us safe and comfy.",
+      "about": "The cabin crew, also called flight attendants, are the helpers who look after everyone in the cabin. Their most important job is safety: they show how to buckle up, check that bags are stowed and know exactly what to do if anything unusual happens. They also bring drinks and snacks, and they are happy to help if you need anything. This photo shows two crew members pushing a cart down the aisle to serve passengers. Ask Francis: what would you like to ask for when the cart comes by?",
+      "emoji": "🧃",
+      "photo": {
+        "commonsTitle": "File:Germanwings - Service.jpg",
+        "query": "flight attendants serving cabin aisle",
+        "file": "travel-flight-crew.jpg",
+        "author": "Oxfordian Kissuth",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Germanwings_-_Service.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "landing",
+      "text": "Wheels down, and we land with a gentle bump!",
+      "about": "Near the end of the flight, the plane slowly comes down and the pilots lower the wheels, which you might hear as a rumble under your feet. The wheels touch the runway with a little bump, and then the engines get loud for a moment to help the plane slow down. That roar is normal and means everything is working. This photo shows a big Boeing 747 coming in to land with all its wheels down. Idea for Francis: count down from ten together as the ground gets closer.",
+      "emoji": "🛬",
+      "photo": {
+        "commonsTitle": "File:A9C-HAK Boeing B747SP-Z5 - Bahrain Royal Flight (21112765516).jpg",
+        "query": "airplane landing gear down",
+        "file": "travel-flight-landing.jpg",
+        "author": "flybyeigenheer",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:A9C-HAK_Boeing_B747SP-Z5_-_Bahrain_Royal_Flight_(21112765516).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "goodbye",
+      "text": "Bye, plane! Thank you for the fun trip.",
+      "about": "When the plane stops at the gate and the seatbelt light goes off, everyone gathers their things and walks out to explore a brand-new place. Many people say thank you to the crew and pilots on the way out. Every trip by plane is a little adventure, from the check-in desk all the way to the bump of landing. This photo shows the curved tip of a plane wing glowing in the sunset. Ask Francis: what was your favorite part of the flight?",
+      "emoji": "👋",
+      "photo": {
+        "commonsTitle": "File:Airbus A320 family shraklet.png",
+        "query": "airplane wingtip sunset",
+        "file": "travel-flight-goodbye.png",
+        "author": "Simone Previdi",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Airbus_A320_family_shraklet.png",
+        "verified": true
+      }
+    }
+  ]
+}

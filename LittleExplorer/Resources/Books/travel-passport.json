@@ -1,0 +1,221 @@
+{
+  "id": "travel-passport",
+  "city": "Travel",
+  "country": "Around the world",
+  "kind": "travel",
+  "flagImage": "travel-flag.png",
+  "flag": "✈️",
+  "theme": "Passport",
+  "coverColor": "#7A1F3D",
+  "tagline": "A little book that opens the world",
+  "pages": [
+    {
+      "id": "welcome",
+      "text": "This little book helps us visit other countries.",
+      "about": "A passport is a small, official book that you carry when you travel from one country to another. Every country makes its own passports for its own people, and they are about the size of a grown-up's hand. Without one, you usually cannot fly to another country, so it is one of the most important things to bring. This photo shows a dark blue Japanese passport with a golden flower on the cover, lying on a wooden table. Ask Francis: which country would you like your passport to take you to first?",
+      "emoji": "🛂",
+      "photo": {
+        "commonsTitle": "File:Japanese biometric passport.jpg",
+        "query": "passport cover on table",
+        "file": "travel-passport-welcome.jpg",
+        "author": "Staka",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Japanese_biometric_passport.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "who-you-are",
+      "text": "A passport shows who you are and where you are from.",
+      "about": "Inside a passport there is a special page with your photo, your name, your birthday and the country you belong to. It proves who you are to people in other countries, kind of like a name badge that the whole world trusts. Even babies and kids need their very own passport to travel abroad; they cannot share a grown-up's. This photo shows the red cover of a Swiss passport, with the white Swiss cross on it. Ask Francis: what country is written on your passport?",
+      "emoji": "🪪",
+      "photo": {
+        "commonsTitle": "File:Swiss Pass 2010.jpg",
+        "query": "Swiss passport cover red",
+        "file": "travel-passport-who-you-are.jpg",
+        "author": "SDE.",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Swiss_Pass_2010.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "photo",
+      "text": "For the photo, look straight ahead with a calm face.",
+      "about": "Every passport has a photo of its owner, and it has special rules. You look straight at the camera with your eyes open, your mouth closed and a calm, everyday face, without a big grin, so that the officers can easily match the photo to your real face. The background is plain, often white or light blue, and hats and sunglasses come off. This photo shows a sheet of passport-style photos from a photo booth in Japan, all with the same calm face. Idea for Francis: practice your calm passport face in the mirror, then do your silliest face afterward!",
+      "emoji": "📸",
+      "photo": {
+        "commonsTitle": "File:Shomeishashin passport photo s8jo WATANABE Hachijo.jpg",
+        "query": "passport photo booth sheet",
+        "file": "travel-passport-photo.jpg",
+        "author": "8joKeaton",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Shomeishashin_passport_photo_s8jo_WATANABE_Hachijo.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "colors",
+      "text": "Passports can be red, blue, green or black.",
+      "about": "Passports from different countries come in just a few main colors: red or burgundy, blue, green and black. Many European countries use burgundy red, the United States uses dark blue, and lots of countries in Africa and the Middle East use green. Each cover usually has the country's name and its emblem printed in shiny gold. This photo shows a big circle of people from many countries holding out their passports together at a meeting in Poland, in lots of different colors. Ask Francis: how many colors can you count in the photo?",
+      "emoji": "🌈",
+      "photo": {
+        "commonsTitle": "File:Wikimedian Passports at Wikimania 2024.jpg",
+        "query": "many passports different colors",
+        "file": "travel-passport-colors.jpg",
+        "author": "Ahmad Ali Karim",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Wikimedian_Passports_at_Wikimania_2024.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "pretty-pages",
+      "text": "The pages inside have pretty pictures on them.",
+      "about": "Most of a passport is made of blank pages for stamps and visas, and many countries decorate them with beautiful pictures. The pictures often show famous places, animals or art from that country, so the passport is a little picture book too. The pages are printed in soft colors with very fine lines that are hard to copy. This photo shows two pages from a 2024 South Korean passport, decorated with tall stone pagodas from an old temple. Ask Francis: if you designed passport pages, what pictures would you draw?",
+      "emoji": "🖼️",
+      "photo": {
+        "commonsTitle": "File:2024 South Korean passport Visas Page 14 - 15.jpg",
+        "query": "passport visa pages design",
+        "file": "travel-passport-pretty-pages.jpg",
+        "author": "Ranch9613",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:2024_South_Korean_passport_Visas_Page_14_-_15.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "secret-marks",
+      "text": "Some pictures glow in a special light!",
+      "about": "Passports have secret security marks that make them very hard to copy. Some pictures are printed with special ink that you cannot see in normal light but that glows bright under an ultraviolet (UV) lamp, and there are also tiny letters, see-through pictures and special threads. Border officers use special lamps and machines to check that a passport is real. This photo shows a page from a United States passport shining under ultraviolet light, where a hidden picture glows green. Ask Francis: if you could hide a secret glowing picture, what would it be?",
+      "emoji": "🔦",
+      "photo": {
+        "commonsTitle": "File:United States Passport Visa Pages.jpg",
+        "query": "passport page ultraviolet light security",
+        "file": "travel-passport-secret-marks.jpg",
+        "author": "Tony Webster",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:United_States_Passport_Visa_Pages.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "stamps",
+      "text": "Some countries give us a stamp when we come in.",
+      "about": "When you arrive in some countries, or leave them, an officer presses an ink stamp onto a page of your passport. The stamp usually shows the date and the place, and many have fun shapes like ovals, rectangles or even little airplanes. Not every country stamps passports anymore, because some now record your trip on a computer instead, so every stamp you get is a little treasure. This photo shows two passport pages covered in colorful stamps from many trips. Ask Francis: what shape would your dream passport stamp be?",
+      "emoji": "🌍",
+      "photo": {
+        "commonsTitle": "File:Passport pages 30-31.jpg",
+        "query": "passport pages with stamps",
+        "file": "travel-passport-stamps.jpg",
+        "author": "Jon Rawlinson",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Passport_pages_30-31.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "officer-stamp",
+      "text": "Thump! The officer stamps a page in the passport.",
+      "about": "At passport control, an officer checks your passport and may press a stamp into it with a satisfying thump. The stamp shows the date you arrived and which airport or border you came through. The officer might ask a grown-up a few simple questions, like where you are going, and it is fine to say hello and smile. This photo shows an officer at Dulles Airport near Washington, D.C., wearing blue gloves and stamping a passport. Idea for Francis: listen for the thump of the stamp next time you travel.",
+      "emoji": "👮",
+      "photo": {
+        "commonsTitle": "File:200313-H-NI589-371 (49656143321).jpg",
+        "query": "officer stamping passport airport",
+        "file": "travel-passport-officer-stamp.jpg",
+        "author": "U.S. Customs and Border Protection",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:200313-H-NI589-371_(49656143321).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "passport-control",
+      "text": "We wait in line to show our passports.",
+      "about": "Passport control, also called the border, is the place at the airport where officers check passports before you enter or leave a country. You wait in line, then go up to the desk with your grown-up and hand over your passports. The officer looks at the photo, looks at your face to see that they match, and then says you can go on. This photo shows the passport control desks at Copenhagen Airport in Denmark. Idea for Francis: help a grown-up hold the passports while you wait, then hand yours over yourself.",
+      "emoji": "🧍",
+      "photo": {
+        "commonsTitle": "File:Border control at Copenhagen Airport.jpg",
+        "query": "passport control desks airport",
+        "file": "travel-passport-passport-control.jpg",
+        "author": "hirotomo t",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Border_control_at_Copenhagen_Airport.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "e-gates",
+      "text": "Some airports have gates that scan your passport.",
+      "about": "Many passports have a tiny computer chip hidden inside the cover, holding the same information as the photo page. At some airports, travelers can use e-gates: you put your passport on a scanner, a camera looks at your face, and if everything matches, the little gate opens by itself. Young children usually go to a desk with an officer instead, together with their grown-up. This photo shows a row of ePassport gates at Heathrow Airport in London. Ask Francis: would you rather talk to an officer or watch a robot gate open?",
+      "emoji": "🚪",
+      "photo": {
+        "commonsTitle": "File:Heathrow Terminal 4 ePassport gates.jpg",
+        "query": "ePassport gates airport",
+        "file": "travel-passport-e-gates.jpg",
+        "author": "Home Office",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Heathrow_Terminal_4_ePassport_gates.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "keep-safe",
+      "text": "A grown-up keeps our passports safe on the trip.",
+      "about": "A passport is very precious, so on a trip a grown-up usually keeps the whole family's passports together in a safe place, like a zipped pocket or a hotel safe. You only take it out when someone official asks to see it, like at check-in or passport control. If a passport gets lost, it can be replaced, but it takes time and makes the trip trickier, so everyone takes good care of them. This photo shows a hand holding a dark blue United States passport. Ask Francis: where would be a good, safe spot to keep passports in your bag?",
+      "emoji": "🔐",
+      "photo": {
+        "commonsTitle": "File:USA Passport cover (222286429).jpg",
+        "query": "hand holding US passport",
+        "file": "travel-passport-keep-safe.jpg",
+        "author": "Chris Corwin",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:USA_Passport_cover_(222286429).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "expiry",
+      "text": "Kids get a new passport more often than grown-ups.",
+      "about": "Every passport has an expiry date, which is the last day it can be used, so people need a new one after some years. In the United States, a passport for a grown-up lasts 10 years, but a passport for a child under 16 lasts only 5 years, because kids' faces change so much as they grow. Fun fact: Francis also has a passport in his Little Explorer app that collects stars and stamps when he asks Milo questions, but that one is a game passport, and it is different from a real passport for traveling. This photo shows an older and a newer United States passport side by side, held in a hand. Ask Francis: how do you think your face will look different in five years?",
+      "emoji": "📅",
+      "photo": {
+        "commonsTitle": "File:US old and new passport booklet cover versions.png",
+        "query": "US old and new passport covers",
+        "file": "travel-passport-expiry.png",
+        "author": "Department of State",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:US_old_and_new_passport_booklet_cover_versions.png",
+        "verified": true
+      }
+    },
+    {
+      "id": "goodbye",
+      "text": "Bye, passport! Let us fill you with more stamps.",
+      "about": "A passport is like a diary of your travels: every stamp and visa tells a little story of a place you have been. People often love flipping through old passports and remembering their trips. Wherever Francis goes next, his passport will be ready to come along. This photo shows a close-up of a passport page with travel stamps on it. Ask Francis: which country's stamp would you like to collect next?",
+      "emoji": "👋",
+      "photo": {
+        "commonsTitle": "File:My newest stamp.jpg",
+        "query": "new passport stamp close-up",
+        "file": "travel-passport-goodbye.jpg",
+        "author": "james",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:My_newest_stamp.jpg",
+        "verified": true
+      }
+    }
+  ]
+}

@@ -11,7 +11,11 @@ struct Book: Codable, Identifiable, Hashable {
     let tagline: String
     /// What this book is about when a city has more than one, e.g. "Yummy Paris".
     var theme: String? = nil
+    /// "travel" for general travel books (the Travel shelf) that aren't about one place; nil for city books.
+    var kind: String? = nil
     let pages: [BookPage]
+
+    var isTravel: Bool { kind == "travel" }
 
     var coverPage: BookPage { pages[0] }
     /// "Paris: Yummy Paris" style name for lists; just the city when there is no theme.
