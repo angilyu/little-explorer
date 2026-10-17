@@ -1,0 +1,223 @@
+{
+  "id": "tahoe-northstar",
+  "city": "Lake Tahoe",
+  "country": "California and Nevada, USA",
+  "flagImage": "tahoe-flag.png",
+  "flag": "🇺🇸",
+  "theme": "Northstar",
+  "coverColor": "#2E5E4E",
+  "tagline": "Snowy pines, skating and s'mores",
+  "narration": {
+    "instructions": "Say local names the way people at Lake Tahoe say them: Tahoe (TAH-ho), Nevada (neh-VAD-uh, rhymes with 'had'), Truckee (TRUCK-ee), Vikingsholm (VIKE-ings-home)."
+  },
+  "pages": [
+    {
+      "id": "welcome",
+      "text": "Northstar is a snowy mountain full of tall pine trees.",
+      "about": "Northstar California is a ski resort near the town of Truckee (TRUCK-ee), a short drive north of Lake Tahoe. It opened in 1972 on land where loggers once cut trees for lumber, and today it has thick forests of pine and fir trees between its ski runs. It gets about 350 inches of snow in a normal winter. This photo shows Northstar's snowy slopes and trees. Ask Francis: how many trees do you think grow on a whole mountain?",
+      "emoji": "🌲",
+      "photo": {
+        "commonsTitle": "File:Northstar-At-Tahoe, Truckee, United States (Unsplash).jpg",
+        "query": "Northstar California ski resort",
+        "file": "tahoe-northstar-welcome.jpg",
+        "author": "Wil Stewart",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Northstar-At-Tahoe,_Truckee,_United_States_(Unsplash).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "village",
+      "text": "At the bottom is a cozy village full of shops.",
+      "about": "At the bottom of the mountain is the Village at Northstar, a little town just for visitors. It has shops, restaurants, warm fireplaces and twinkly lights in the evening. From the village, a gondola carries people up to the middle of the mountain. This photo shows the Northstar village in winter. Ask Francis: what would you want to buy in a mountain village?",
+      "emoji": "🏘️",
+      "photo": {
+        "commonsTitle": "File:Northstar California 7 2024-01-10.jpg",
+        "query": "Northstar village",
+        "file": "tahoe-northstar-village.jpg",
+        "author": "Fastily",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Northstar_California_7_2024-01-10.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "ice-rink",
+      "text": "You can ice skate on a rink in the village!",
+      "about": "In the middle of the village is an outdoor ice skating rink, about 9,000 square feet, which is bigger than a basketball court. You can rent skates, or skate for free if you bring your own. Fire pits sit around the edge of the rink, so families can warm up and watch the skaters. This photo shows the rink at Northstar. Ask Francis: can you glide on one foot?",
+      "emoji": "⛸️",
+      "photo": {
+        "commonsTitle": "File:Ice Skating Rink in Tahoe.jpg",
+        "query": "Northstar ice rink",
+        "file": "tahoe-northstar-ice-rink.jpg",
+        "author": "Tahoe Signature Properties",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ice_Skating_Rink_in_Tahoe.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "smores",
+      "text": "Toast a marshmallow by the fire for a gooey s'more!",
+      "about": "A s'more is a sweet snack: a toasted marshmallow and a piece of chocolate squished between two graham crackers. Its name comes from 'some more', because everyone always wants some more! Northstar says that on winter afternoons its 'Marshmallow Ambassadors' hand out free marshmallows for roasting at the fire pits by the rink. This photo of a s'more by a campfire was taken somewhere else. Remember: a grown-up helps, and you stay back from the flames.",
+      "emoji": "🔥",
+      "photo": {
+        "commonsTitle": "File:MA S'more next to dugout canoe BW - 53864291637.jpg",
+        "query": "s'more campfire marshmallow",
+        "file": "tahoe-northstar-smores.jpg",
+        "author": "vastateparksstaff",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:MA_S%27more_next_to_dugout_canoe_BW_-_53864291637.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "chairlift",
+      "text": "Chairlifts carry skiers up through the snowy trees.",
+      "about": "Northstar has about 19 lifts, including a gondola and many chairlifts. Riders sit on a moving chair, lower a safety bar, and float up over the snow while pine trees go by underneath. At the top, they slide off and ski back down. This photo shows a chairlift at Northstar. Ask Francis: would you be brave enough to look down?",
+      "emoji": "🚡",
+      "photo": {
+        "commonsTitle": "File:Northstar California 10.jpg",
+        "query": "Northstar chairlift",
+        "file": "tahoe-northstar-chairlift.jpg",
+        "author": "Leijurv",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Northstar_California_10.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "lake-view",
+      "text": "From up high, you can spot Lake Tahoe far away.",
+      "about": "Northstar is a few miles north of Lake Tahoe, so from the higher runs you can see the blue lake peeking out between the mountains. On a clear day it looks like a giant blue puddle in the forest. This photo was taken at Northstar looking toward the lake. Ask Francis: can you find the lake in the picture?",
+      "emoji": "👀",
+      "photo": {
+        "commonsTitle": "File:Northstar Lake Tahoe.png",
+        "query": "Northstar view Lake Tahoe",
+        "file": "tahoe-northstar-lake-view.png",
+        "author": "ZaBanker",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Northstar_Lake_Tahoe.png",
+        "verified": true
+      }
+    },
+    {
+      "id": "ski-school",
+      "text": "At ski school, kids wear helmets and learn together.",
+      "about": "Northstar has a ski and snowboard school with special areas for kids to practice on gentle snow. Little snowboarders may get to try a small practice park with tiny bumps and rails, which the resort has called a Riglet Park. Everyone wears a helmet to protect their head, and teachers show them how to stop and turn. This photo shows children in a ski lesson at another mountain, not Northstar. Ask Francis: skis or snowboard?",
+      "emoji": "⛑️",
+      "photo": {
+        "commonsTitle": "File:Skischule Krainer-Wulschnigkl.jpg",
+        "query": "children ski school",
+        "file": "tahoe-northstar-ski-school.jpg",
+        "author": "Bad Kleinkirchheim",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Skischule_Krainer-Wulschnigkl.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "corduroy",
+      "text": "Smooth stripes on the snow look like corduroy pants!",
+      "about": "Early in the morning, many runs are covered in neat little stripes. Skiers call this 'corduroy' (KOR-duh-roy), because it looks like the bumpy stripes on corduroy pants. The stripes are made by machines that comb the snow flat during the night. This photo shows a smooth, striped run between the pine trees at Northstar. Ask Francis: would you like to make the very first tracks?",
+      "emoji": "〰️",
+      "photo": {
+        "commonsTitle": "File:Northstar California 7 2024-03-26.jpg",
+        "query": "Northstar groomed run corduroy",
+        "file": "tahoe-northstar-corduroy.jpg",
+        "author": "Fastily",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Northstar_California_7_2024-03-26.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "snowcat",
+      "text": "At night, big snowcats comb the snow smooth.",
+      "about": "A snowcat is a big snow machine that rolls on wide tracks, like a tank, so it does not sink into the snow. At night, when the skiers are gone, drivers take snowcats up the mountain with a big blade in front and a comb behind to smooth out the bumps. That is how the corduroy stripes are made! This photo shows a snowcat with its bright lights on at night, at another ski area. Ask Francis: what color would your snowcat be?",
+      "emoji": "🚜",
+      "photo": {
+        "commonsTitle": "File:Snowcat Prinoth T4S.jpg",
+        "query": "snowcat groomer night",
+        "file": "tahoe-northstar-snowcat.jpg",
+        "author": "Marcello Perathoner",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Snowcat_Prinoth_T4S.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "tubing",
+      "text": "Slide down a snowy lane on a big round tube!",
+      "about": "Northstar has a snow tubing hill in the middle of the mountain, near the top of the gondola from the village. You sit in a big round tube and slide down a special lane, and you do not need to know how to ski. Riders must follow the rules and go one at a time. This tubing photo was taken at another snowy hill, not Northstar. Ask Francis: should we race?",
+      "emoji": "🛷",
+      "photo": {
+        "commonsTitle": "File:Snow tubing 2.jpg",
+        "query": "snow tubing lanes",
+        "file": "tahoe-northstar-tubing.jpg",
+        "author": "NativeForeigner",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Snow_tubing_2.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "pines",
+      "text": "Snow piles up on the pine trees like frosting.",
+      "about": "After a big storm, thick snow sits on every branch of the tall pine and fir trees, like frosting on a cake. Northstar is known for its runs that wind through the forest. Pine trees stay green all winter long, which is why they are called evergreens. This photo shows snowy trees on Northstar's East Ridge. Ask Francis: what shape does a snowy tree remind you of?",
+      "emoji": "🌲",
+      "photo": {
+        "commonsTitle": "File:Northstar California East Ridge 2019.jpg",
+        "query": "Northstar snowy trees",
+        "file": "tahoe-northstar-pines.jpg",
+        "author": "Leijurv",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Northstar_California_East_Ridge_2019.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "cocoa",
+      "text": "Hot cocoa with tiny marshmallow hearts warms you up!",
+      "about": "When fingers and toes get cold, it is time for a warm drink. Hot cocoa is made from chocolate and warm milk, and marshmallows float on top and slowly melt. Some cafes even add marshmallows shaped like little hearts, like in this photo, which was taken somewhere else, not at Northstar. Ask Francis: how many marshmallow hearts can you count?",
+      "emoji": "☕",
+      "photo": {
+        "commonsTitle": "File:Heart Shaped Marshmallows in Hot Chocolate.jpg",
+        "query": "hot chocolate heart marshmallows",
+        "file": "tahoe-northstar-cocoa.jpg",
+        "author": "Fisharefriends06",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Heart_Shaped_Marshmallows_in_Hot_Chocolate.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "goodbye",
+      "text": "Goodbye, Northstar! See you on the snowy slopes.",
+      "about": "What a snowy day! We skated in the village, toasted marshmallows, rode the lifts and slid on tubes. This photo shows a sunny run at Northstar, with mountains and valleys stretching far away. When the snow melts in spring, Northstar turns into a place for mountain biking and hiking. Ask Francis: what will you do first when you come back?",
+      "emoji": "👋",
+      "photo": {
+        "commonsTitle": "File:Northstar California 8 2024-03-26.jpg",
+        "query": "Northstar ski run view",
+        "file": "tahoe-northstar-goodbye.jpg",
+        "author": "Fastily",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Northstar_California_8_2024-03-26.jpg",
+        "verified": true
+      }
+    }
+  ]
+}

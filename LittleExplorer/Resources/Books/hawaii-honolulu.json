@@ -1,0 +1,208 @@
+{
+  "id": "hawaii-honolulu",
+  "city": "Hawaii",
+  "country": "USA",
+  "flagImage": "hawaii-flag.png",
+  "flag": "🇺🇸",
+  "theme": "Honolulu",
+  "coverColor": "#D94F8A",
+  "tagline": "Beaches, palaces and an old volcano",
+  "narration": {
+    "instructions": "Say every Hawaiian word the way people in Hawaii say it, warmly and naturally, never anglicized: Aloha (ah-LOH-hah), Honu (HO-noo), lei (lay), hula (HOO-lah), nēnē (NAY-nay), Waikīkī (why-kee-KEE), Honolulu (ho-no-LOO-loo), musubi (moo-soo-bee), Kamehameha (kah-may-hah-MAY-hah). A short hint like HO-noo is how to sound out the word: say it slowly and clearly, syllable by syllable.",
+    "phraseByPhrase": true
+  },
+  "pages": [
+    {
+      "id": "welcome",
+      "text": "Honolulu is the biggest city in Hawaii.",
+      "about": "Honolulu (hoh-noh-LOO-loo) is the capital and the biggest city of Hawaii, on the island of Oʻahu (oh-AH-hoo). The name Honolulu means sheltered bay, a calm place where boats are safe from big waves. In this photo you can see tall buildings by the beach and the old volcano Diamond Head behind them. Lots of people live here, and visitors come from all over the world.",
+      "emoji": "🏙️",
+      "photo": {
+        "commonsTitle": "File:Skyline, Honolulu, Oahu, Hawaii LCCN2010630461.tif",
+        "query": "Honolulu skyline Diamond Head",
+        "file": "hawaii-honolulu-welcome.jpg",
+        "author": "Carol M. Highsmith",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Skyline,_Honolulu,_Oahu,_Hawaii_LCCN2010630461.tif",
+        "verified": true
+      }
+    },
+    {
+      "id": "waikiki",
+      "text": "Waikīkī (why-kee-KEE) beach has gentle waves for learning to surf.",
+      "about": "Waikīkī (why-kee-KEE) is Honolulu's most famous beach. Its waves roll in slowly and gently, so it is a great place to learn surfing. Long ago, Hawaiian kings and queens came here to surf and relax. Can you spot the surfers out in the water, with the big green mountain behind them?",
+      "emoji": "🏄",
+      "photo": {
+        "commonsTitle": "File:Halekulani03.JPG",
+        "query": "Waikiki beach surfers Diamond Head",
+        "file": "hawaii-honolulu-waikiki.jpg",
+        "author": "ErgoSum88",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Halekulani03.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "diamond-head",
+      "text": "Diamond Head is an old volcano you can climb.",
+      "about": "Diamond Head is an old volcano crater, a giant bowl shape made by explosions hundreds of thousands of years ago. It will not erupt again. Its Hawaiian name is Lēʻahi (lay-AH-hee). Long ago, British sailors saw shiny crystals in the rocks and thought they were diamonds, but they were not! Today families hike up a trail with stairs and a tunnel to the top, where they can see all of Waikīkī (why-kee-KEE).",
+      "emoji": "⛰️",
+      "photo": {
+        "commonsTitle": "File:Aerial view of Waikiki Beach and Honolulu, Hawaii, Highsmith.tif",
+        "query": "Diamond Head crater aerial",
+        "file": "hawaii-honolulu-diamond-head.jpg",
+        "author": "Carol M. Highsmith",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Aerial_view_of_Waikiki_Beach_and_Honolulu,_Hawaii,_Highsmith.tif",
+        "verified": true
+      }
+    },
+    {
+      "id": "palace",
+      "text": "Kings and queens of Hawaii lived in this palace.",
+      "about": "This is ʻIolani (ee-oh-LAH-nee) Palace, home of Hawaii's last king and queen, King Kalākaua (kah-LAH-kow-ah) and Queen Liliʻuokalani (lee-LEE-oo-oh-kah-LAH-nee). It is the only royal palace in the whole United States. It had electric lights and a telephone even before the White House did! Today it is a museum where visitors can walk through the royal rooms.",
+      "emoji": "👑",
+      "photo": {
+        "commonsTitle": "File:Iolani Palace (15536110307).jpg",
+        "query": "Iolani Palace Honolulu",
+        "file": "hawaii-honolulu-palace.jpg",
+        "author": "Jason Raia",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Iolani_Palace_(15536110307).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "kamehameha",
+      "text": "This king's statue wears very long flower leis.",
+      "about": "This is a statue of King Kamehameha (kah-may-hah-MAY-hah), who brought all the islands of Hawaii together as one kingdom long ago. It stands across the street from ʻIolani (ee-oh-LAH-nee) Palace. Every year on June 11, King Kamehameha Day, people drape the statue with very long leis (lays), some much longer than a grown-up is tall! There is also a big parade.",
+      "emoji": "🌸",
+      "photo": {
+        "commonsTitle": "File:King Kamehameha Day - Leis on Statue (7474417888).jpg",
+        "query": "King Kamehameha statue leis",
+        "file": "hawaii-honolulu-kamehameha.jpg",
+        "author": "Daniel Ramirez",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:King_Kamehameha_Day_-_Leis_on_Statue_(7474417888).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "duke",
+      "text": "Duke loved to surf and swim at Waikīkī.",
+      "about": "This is a statue of Duke Kahanamoku (kah-hah-nah-MOH-koo). Duke was his real name! He was a Hawaiian swimmer who won Olympic medals and taught people all over the world how to surf. His statue stands on Waikīkī (why-kee-KEE) beach with a surfboard behind him and arms wide open, as if he is welcoming you. People often hang fresh leis (lays) on his arms.",
+      "emoji": "🏄‍♂️",
+      "photo": {
+        "commonsTitle": "File:Duke Paoa Kahanamoku statue (51872593206).jpg",
+        "query": "Duke Kahanamoku statue Waikiki",
+        "file": "hawaii-honolulu-duke.jpg",
+        "author": "Gage Skidmore",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Duke_Paoa_Kahanamoku_statue_(51872593206).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "hanauma",
+      "text": "Colorful fish swim in this round bay.",
+      "about": "This is Hanauma (hah-NOW-mah) Bay. It is shaped like a bowl because it is inside an old volcano crater, and the ocean broke through one side. Under the water there are coral reefs and hundreds of kinds of fish, plus sea turtles. People snorkel here with masks to see the fish, but they never touch the coral. The bay is protected so the fish stay safe.",
+      "emoji": "🐟",
+      "photo": {
+        "commonsTitle": "File:Hanauma Bay 2 Oahu Hawaii Photo Don Ramey Logan.jpg",
+        "query": "Hanauma Bay Oahu",
+        "file": "hawaii-honolulu-hanauma.jpg",
+        "author": "Don Ramey Logan",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Hanauma_Bay_2_Oahu_Hawaii_Photo_Don_Ramey_Logan.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "canoe",
+      "text": "Paddlers race in long outrigger canoes.",
+      "about": "These are outrigger canoes, and paddling them is a favorite sport in Hawaii. The extra float on the side is called an ama (AH-mah), and it keeps the canoe from tipping over. Long ago, Hawaiians traveled between the islands in big canoes. These paddlers are lining up for a race in Hawaiʻi Kai, part of Honolulu. Ready, set, paddle!",
+      "emoji": "🛶",
+      "photo": {
+        "commonsTitle": "File:Paddling the Pacific 121117-F-ZB240-145.jpg",
+        "query": "outrigger canoe race Hawaii Kai",
+        "file": "hawaii-honolulu-canoe.jpg",
+        "author": "Staff Sgt. Mike Meares",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Paddling_the_Pacific_121117-F-ZB240-145.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "aloha-tower",
+      "text": "Aloha Tower said hello to big ships.",
+      "about": "Aloha Tower stands at Honolulu Harbor and opened in 1926. It is 10 floors tall, and for many years it was the tallest building in Hawaii. When people arrived on big ships, the tower with its big clocks was the first thing they saw, a bit like a giant welcome sign. Its sides even say ALOHA (ah-LOH-hah)!",
+      "emoji": "🗼",
+      "photo": {
+        "commonsTitle": "File:Aloha Tower Honolulu. (10754440616).jpg",
+        "query": "Aloha Tower Honolulu",
+        "file": "hawaii-honolulu-aloha-tower.jpg",
+        "author": "Bernard Spragg",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Aloha_Tower_Honolulu._(10754440616).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "aquarium",
+      "text": "The aquarium has giant clams and bright fish.",
+      "about": "The Waikīkī (why-kee-KEE) Aquarium opened in 1904, more than 120 years ago. It is one of the oldest aquariums in the United States. Inside you can see fish, coral, jellyfish and giant clams like the wavy ones in this tank. A giant clam can grow bigger than a car tire! Which fish would you like to see?",
+      "emoji": "🐡",
+      "photo": {
+        "commonsTitle": "File:Giant clams and fish at Waikiki Aquarium.JPG",
+        "query": "Waikiki Aquarium giant clams",
+        "file": "hawaii-honolulu-aquarium.jpg",
+        "author": "Meowmeow10",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Giant_clams_and_fish_at_Waikiki_Aquarium.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "musubi",
+      "text": "Spam musubi is rice and meat wrapped in seaweed.",
+      "about": "Spam musubi (MOO-soo-bee) is a favorite snack in Honolulu. It is a slice of grilled Spam, a kind of canned meat, on a block of rice, wrapped with a strip of dried seaweed called nori. It came from Japanese rice balls, called musubi, mixed with food that was easy to find in Hawaii. You can buy one at many corner shops and eat it like a sandwich!",
+      "emoji": "🍙",
+      "photo": {
+        "commonsTitle": "File:Spam-musubi-hawaii-oct2015.jpg",
+        "query": "Spam musubi Hawaii",
+        "file": "hawaii-honolulu-musubi.jpg",
+        "author": "Nesnad",
+        "license": "CC BY 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Spam-musubi-hawaii-oct2015.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "goodbye",
+      "text": "Aloha, Honolulu! See you next time!",
+      "about": "Every evening, people gather on Waikīkī (why-kee-KEE) beach to watch the sun go down over the ocean. The palm trees turn into dark shapes against the orange sky. Aloha (ah-LOH-hah) means goodbye as well as hello and love, and Mahalo (mah-HAH-loh) means thank you. Aloha, Honolulu!",
+      "emoji": "🌅",
+      "photo": {
+        "commonsTitle": "File:Waikiki-Oahu-sunset-Janine-Sprout.jpg",
+        "query": "Waikiki sunset palm trees",
+        "file": "hawaii-honolulu-goodbye.jpg",
+        "author": "Janine Sprout",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Waikiki-Oahu-sunset-Janine-Sprout.jpg",
+        "verified": true
+      }
+    }
+  ]
+}
