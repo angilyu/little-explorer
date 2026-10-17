@@ -1,0 +1,204 @@
+{
+  "id": "paris-versailles",
+  "city": "Paris",
+  "country": "France",
+  "flagImage": "paris-flag.png",
+  "flag": "🇫🇷",
+  "theme": "Palace of Versailles",
+  "coverColor": "#9C7A1E",
+  "tagline": "Mirrors, fountains and a Sun King",
+  "pages": [
+    {
+      "id": "welcome",
+      "text": "This is Versailles, a giant palace near Paris.",
+      "about": "The Palace of Versailles (vair-SY) is about 20 kilometers from Paris. It began as a small hunting house, and then King Louis XIV made it enormous. It has about 2,300 rooms! In 1682 the king moved his whole court there, with thousands of people living and working in the palace. Today millions of visitors come every year to see its rooms and gardens.",
+      "emoji": "🏰",
+      "photo": {
+        "commonsTitle": "File:Parterre du Midi Garden pond and Palace of Versailles at golden hour with blue sky in France.jpg",
+        "query": "Palace of Versailles gardens",
+        "file": "paris-versailles-welcome.jpg",
+        "author": "Basile Morin",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Parterre_du_Midi_Garden_pond_and_Palace_of_Versailles_at_golden_hour_with_blue_sky_in_France.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "king",
+      "text": "King Louis XIV was called the Sun King.",
+      "about": "Louis XIV (Louis the Fourteenth) became king when he was only four years old! He was king for 72 years, longer than any other king in Europe. He chose the sun as his symbol, because everything turns around the sun, so people called him the Sun King. He loved dancing and even danced as the sun in a ballet. Look at his red-heeled shoes in this painting; they were very fashionable.",
+      "emoji": "☀️",
+      "photo": {
+        "commonsTitle": "File:Portrait of Louis XIV of France in Coronation Robes (by Hyacinthe Rigaud) - Louvre Museum.jpg",
+        "query": "Louis XIV Rigaud portrait",
+        "file": "paris-versailles-king.jpg",
+        "author": "Hyacinthe Rigaud",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Portrait_of_Louis_XIV_of_France_in_Coronation_Robes_(by_Hyacinthe_Rigaud)_-_Louvre_Museum.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "gate",
+      "text": "The big front gate shines with real gold leaf!",
+      "about": "The Royal Gate stands in front of the palace. It was destroyed long ago and rebuilt in 2008. Workers covered it with about 100,000 sheets of gold leaf. Gold leaf is gold hammered so thin that it is lighter than a feather. When the sun shines on the gate, it sparkles. It shows everyone that this was the home of a very rich and powerful king.",
+      "emoji": "✨",
+      "photo": {
+        "commonsTitle": "File:Palace of Versailles - Close-up of the Royal Gate and main facade with visitors.jpg",
+        "query": "Versailles Royal Gate gold",
+        "file": "paris-versailles-gate.jpg",
+        "author": "iMahesh",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Palace_of_Versailles_-_Close-up_of_the_Royal_Gate_and_main_facade_with_visitors.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "mirrors",
+      "text": "The Hall of Mirrors has 357 mirrors. Wave to yourself!",
+      "about": "The Hall of Mirrors is 73 meters long. On one side there are 17 big windows looking at the gardens. On the other side, 17 arches are filled with 357 mirrors that reflect the light. Long ago, mirrors were very expensive, so this room showed how rich France was. At night, thousands of candles in the chandeliers made the whole hall glitter.",
+      "emoji": "🪞",
+      "photo": {
+        "commonsTitle": "File:Chateau Versailles Galerie des Glaces.jpg",
+        "query": "Hall of Mirrors Versailles",
+        "file": "paris-versailles-mirrors.jpg",
+        "author": "Myrabella",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Chateau_Versailles_Galerie_des_Glaces.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "bedroom",
+      "text": "People came to watch the king get out of bed!",
+      "about": "Every morning, important people crowded into the king's bedroom to watch him wake up and get dressed. This was called the 'lever' (luh-VAY), which means getting up. Handing the king his shirt was a big honor! At night there was a going-to-bed ceremony, too. Imagine having lots of people watching you put on your socks!",
+      "emoji": "🛏️",
+      "photo": {
+        "commonsTitle": "File:Versailles Château de Versailles Innen Chambre du Roi 4.jpg",
+        "query": "King's bedchamber Versailles",
+        "file": "paris-versailles-bedroom.jpg",
+        "author": "Zairon",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Versailles_Ch%C3%A2teau_de_Versailles_Innen_Chambre_du_Roi_4.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "gardens",
+      "text": "The gardens are huge, with paths, ponds and trimmed trees.",
+      "about": "A gardener named André Le Nôtre designed the gardens for the king. They are so big that you could walk all day. There are long straight paths, ponds like mirrors, flower beds shaped like patterns, hundreds of statues, and trees trimmed into neat shapes. Many people rent bikes or ride a little train to get around.",
+      "emoji": "🌳",
+      "photo": {
+        "commonsTitle": "File:Versailles view from the Parterre d'eau.jpg",
+        "query": "Versailles gardens Parterre d'eau",
+        "file": "paris-versailles-gardens.jpg",
+        "author": "Paolo Costa Baldi",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Versailles_view_from_the_Parterre_d%27eau.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "orange",
+      "text": "Orange trees live in big boxes. In winter they go inside.",
+      "about": "The king loved orange trees, but they do not like cold weather. So the gardeners planted them in big wooden boxes. In summer the boxes stand outside in the sun. In winter, they are rolled into the Orangerie, a long building with thick walls that stays warm without any heaters. More than a thousand trees still live there, including lemon, palm and pomegranate trees. This is an old drawing of the orange tree garden.",
+      "emoji": "🍊",
+      "photo": {
+        "commonsTitle": "File:Gezicht op de sinaasappelbomen voor de Orangerie van het Paleis van Versailles A view of the orange-tree garden at Versailles (titel op object), RP-P-1932-385.jpg",
+        "query": "Versailles Orangerie orange trees",
+        "file": "paris-versailles-orange.jpg",
+        "author": "Rijksmuseum",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Gezicht_op_de_sinaasappelbomen_voor_de_Orangerie_van_het_Paleis_van_Versailles_A_view_of_the_orange-tree_garden_at_Versailles_(titel_op_object),_RP-P-1932-385.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "apollo",
+      "text": "Apollo drives his horses right out of the water!",
+      "about": "This golden fountain shows Apollo, the god of the sun, riding a chariot pulled by four horses. They are rising out of the water, as if the sun is coming up in the morning. It reminds everyone of the Sun King. Water was hard to get, so the fountains did not all run at once. Gardeners whistled to each other to turn the fountains on just before the king walked by!",
+      "emoji": "⛲",
+      "photo": {
+        "commonsTitle": "File:Versailles Bassin d'Apollon 001.jpg",
+        "query": "Apollo fountain Versailles",
+        "file": "paris-versailles-apollo.jpg",
+        "author": "Moonik",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Versailles_Bassin_d%27Apollon_001.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "canal",
+      "text": "You can row a little boat on the Grand Canal.",
+      "about": "The Grand Canal is a long lake shaped like a giant cross. It is more than 1.6 kilometers long. The king had real gondolas from Venice, with gondoliers to row them, and even little sailing ships for parties on the water. Today, visitors can rent rowing boats like these. Would you like to row, or ride in the back?",
+      "emoji": "🚣",
+      "photo": {
+        "commonsTitle": "File:Rowing boats in Grand Canal Versailles Aug 2026 01.jpg",
+        "query": "rowing boats Grand Canal Versailles",
+        "file": "paris-versailles-canal.jpg",
+        "author": "Heidi Meudt",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Rowing_boats_in_Grand_Canal_Versailles_Aug_2026_01.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "hamlet",
+      "text": "Queen Marie Antoinette built a pretend village to play farm.",
+      "about": "Queen Marie Antoinette wanted a place to rest away from the busy palace. So in the 1780s she built the Queen's Hamlet, a little pretend village with cottages, thatched roofs, a mill with a water wheel, a lake and a tower. It looks like a country village, but it was made for a queen. She came here to walk, have picnics and see the animals.",
+      "emoji": "🏡",
+      "photo": {
+        "commonsTitle": "File:Ferme2.jpg",
+        "query": "Queen's Hamlet Versailles",
+        "file": "paris-versailles-hamlet.jpg",
+        "author": "Urban (fr.wikipedia)",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ferme2.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "farm",
+      "text": "Her little farm still has animals, like goats and sheep.",
+      "about": "The Hamlet had a real working farm with cows, goats, sheep and hens. Today the farm still has animals, such as donkeys, goats, sheep and chickens, and children can see them when they visit. It is a nice, quiet place after the big, shiny palace. Which animal would you visit first?",
+      "emoji": "🐐",
+      "photo": {
+        "commonsTitle": "File:Palace Farm in Versailles.jpg",
+        "query": "Queen's Hamlet farm animals",
+        "file": "paris-versailles-farm.jpg",
+        "author": "DiscoA340",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Palace_Farm_in_Versailles.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "goodbye",
+      "text": "What a big, shiny palace! Au revoir, Versailles!",
+      "about": "Versailles was home to French kings and queens for about 100 years. Today it is a museum, and people from all over the world come to see the mirrors, the golden gate, the fountains and the gardens. Au revoir (oh ruh-VWAHR) means goodbye in French. If you were a king or queen, what would you build in your palace?",
+      "emoji": "👋",
+      "photo": {
+        "commonsTitle": "File:Château de Versailles (1).jpg",
+        "query": "Château de Versailles",
+        "file": "paris-versailles-goodbye.jpg",
+        "author": "Gzen92",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ch%C3%A2teau_de_Versailles_(1).jpg",
+        "verified": true
+      }
+    }
+  ]
+}

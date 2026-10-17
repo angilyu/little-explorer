@@ -1,0 +1,204 @@
+{
+  "id": "paris-seine",
+  "city": "Paris",
+  "country": "France",
+  "flagImage": "paris-flag.png",
+  "flag": "🇫🇷",
+  "theme": "Seine River Cruise",
+  "coverColor": "#1F9BB5",
+  "tagline": "Boats, bridges and green book boxes",
+  "pages": [
+    {
+      "id": "welcome",
+      "text": "Let's ride a big boat on the Seine River!",
+      "about": "The Seine (SEHN) is the river that flows right through the middle of Paris. Big tour boats called bateaux-mouches (bah-TOH MOOSH) carry visitors up and down the river. 'Mouche' means fly in French, but the name really comes from a part of the city of Lyon, called La Mouche, where these boats were first built. Many boats have glass roofs, so you can see everything.",
+      "emoji": "🛥️",
+      "photo": {
+        "commonsTitle": "File:Bateau-Mouche Notre-Dame.jpg",
+        "query": "bateau-mouche Seine",
+        "file": "paris-seine-welcome.jpg",
+        "author": "Jebulon",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bateau-Mouche_Notre-Dame.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "wave",
+      "text": "People on the boat wave to people on the bridges.",
+      "about": "Paris has 37 bridges over the Seine, and the boats go under many of them. It is a fun tradition to wave! People on the boats wave to people on the bridges and on the riverbanks, and they often wave back. A boat ride usually takes about one hour. Would you sit inside or up on the open deck?",
+      "emoji": "👋",
+      "photo": {
+        "commonsTitle": "File:Bateau Mouche and Pont Alexandre-III, Paris 17 August 2013.jpg",
+        "query": "Bateau Mouche Pont Alexandre III",
+        "file": "paris-seine-wave.jpg",
+        "author": "Shadowgate from Novara, ITALY",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bateau_Mouche_and_Pont_Alexandre-III,_Paris_17_August_2013.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "pontneuf",
+      "text": "Pont Neuf means 'New Bridge,' but it is the oldest!",
+      "about": "Pont Neuf (pohn NUHF) means New Bridge. It was finished in 1607, more than 400 years ago, so it is now the oldest bridge standing in Paris! When it was new, it was special because it had no houses on it and it had sidewalks to keep walkers away from horses and carriages. People came to shop, watch shows and meet friends on it.",
+      "emoji": "🌉",
+      "photo": {
+        "commonsTitle": "File:Pont Neuf Paris detail DSC00748.jpg",
+        "query": "Pont Neuf Paris",
+        "file": "paris-seine-pontneuf.jpg",
+        "author": "David Monniaux",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Pont_Neuf_Paris_detail_DSC00748.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "faces",
+      "text": "Hundreds of funny stone faces grin down at the boats.",
+      "about": "Along the sides of Pont Neuf there are 381 stone faces called mascarons (mass-kah-ROHN). Every face is different! Some are laughing, some are frowning, some look grumpy, and some look silly. From a boat, you can look up and try to spot them. Can you make a funny face like this one?",
+      "emoji": "😜",
+      "photo": {
+        "commonsTitle": "File:Macaron du pont-Neuf.jpg",
+        "query": "Pont Neuf mascaron",
+        "file": "paris-seine-faces.jpg",
+        "author": "Tangopaso",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Macaron_du_pont-Neuf.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "alex",
+      "text": "Golden statues shine on top of the fanciest bridge.",
+      "about": "Pont Alexandre III is the fanciest bridge in Paris. It was built for the World's Fair in 1900 and named after a Russian emperor, to celebrate friendship between France and Russia. At each corner there is a tall stone column with a golden statue on top, with winged horses. The bridge also has lamps, cherubs and sea creatures all along it.",
+      "emoji": "🌟",
+      "photo": {
+        "commonsTitle": "File:Renommée des Arts Frémiet Pont Alexandre III Paris.jpg",
+        "query": "Pont Alexandre III golden statue",
+        "file": "paris-seine-alex.jpg",
+        "author": "Jebulon",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Renomm%C3%A9e_des_Arts_Fr%C3%A9miet_Pont_Alexandre_III_Paris.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "zouave",
+      "text": "This stone soldier helps people see how high the water is.",
+      "about": "This statue on the Pont de l'Alma shows a Zouave, a kind of soldier from long ago with baggy trousers. Parisians use him to check the river! When it rains a lot, the water rises up his legs. In the great flood of 1910, the water came all the way up to his shoulders. When the water touches his feet, some riverside roads are closed.",
+      "emoji": "💂",
+      "photo": {
+        "commonsTitle": "File:Le zouave au pont de l'Alma à Paris.JPG",
+        "query": "Zouave statue Pont de l'Alma",
+        "file": "paris-seine-zouave.jpg",
+        "author": "Thesupermat",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Le_zouave_au_pont_de_l%27Alma_%C3%A0_Paris.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "houseboat",
+      "text": "Some people live on boats. Their gardens float with them!",
+      "about": "Along the river there are houseboats, called péniches (pay-NEESH). Many were once work boats that carried sand, coal or wheat. Now people have turned them into homes with kitchens, bedrooms and even gardens on the roof. They have mailboxes and doorbells, just like a house. Would you like to live on a boat?",
+      "emoji": "🏠",
+      "photo": {
+        "commonsTitle": "File:Péniche habitation sur la Seine.JPG",
+        "query": "houseboat péniche Seine",
+        "file": "paris-seine-houseboat.jpg",
+        "author": "Dinkum",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:P%C3%A9niche_habitation_sur_la_Seine.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "bouquin",
+      "text": "Green boxes by the river are full of old books.",
+      "about": "Along the river walls there are about 900 dark green boxes. They belong to the bouquinistes (boo-kee-NEEST), more than 200 booksellers who sell old books, comics, posters and postcards. Each morning they open the lids, and the boxes become little shops. At night they close and lock them. Booksellers have been selling books by the Seine for more than 400 years!",
+      "emoji": "📚",
+      "photo": {
+        "commonsTitle": "File:Wooden Box Shops Along The Seine.jpg",
+        "query": "bouquinistes boxes Seine",
+        "file": "paris-seine-bouquin.jpg",
+        "author": "Ingolfson",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Wooden_Box_Shops_Along_The_Seine.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "liberty",
+      "text": "A small Statue of Liberty looks across the sea to New York.",
+      "about": "France gave the big Statue of Liberty to the United States in 1886. Then Americans living in Paris gave this smaller copy back to France in 1889. It stands on a little island in the Seine and is about 11 meters tall. In 1937 it was turned around so that it faces west, toward its big sister in New York, across the ocean.",
+      "emoji": "🗽",
+      "photo": {
+        "commonsTitle": "File:Paris-ile-aux-cygnes-statue-de-la-liberte-tour-eiffel-seine.jpg",
+        "query": "Statue of Liberty replica Île aux Cygnes",
+        "file": "paris-seine-liberty.jpg",
+        "author": "Greudin",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Paris-ile-aux-cygnes-statue-de-la-liberte-tour-eiffel-seine.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "olympics",
+      "text": "In 2024, Olympic athletes rode boats down the river!",
+      "about": "For the Paris Olympic Games on July 26th, 2024, the opening parade did not happen in a stadium. Instead, about 85 boats carried thousands of athletes along the Seine for about 6 kilometers. They waved flags and cheered while people watched from the bridges and riverbanks. It was the first time the Olympics opened on a river!",
+      "emoji": "🏅",
+      "photo": {
+        "commonsTitle": "File:U S Olympic Team participates in 2024 Opening Ceremonies in Paris (8554774).jpg",
+        "query": "Olympic opening ceremony Seine boats",
+        "file": "paris-seine-olympics.jpg",
+        "author": "Sgt. 1st Class Kulani Lakanaria, U.S. Army",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:U_S_Olympic_Team_participates_in_2024_Opening_Ceremonies_in_Paris_(8554774).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "swans",
+      "text": "Swan Island is a long, skinny island in the river.",
+      "about": "Île aux Cygnes (eel oh SEEN-yuh) means Swan Island. It is only about 11 meters wide but 890 meters long, with a path and trees all the way along it. People made it in 1827 to protect a bridge. It is named after an older island where swans lived long ago. The little Statue of Liberty stands at the end of it.",
+      "emoji": "🦢",
+      "photo": {
+        "commonsTitle": "File:Île aux Cygnes, Paris 7.jpg",
+        "query": "Île aux Cygnes path",
+        "file": "paris-seine-swans.jpg",
+        "author": "Polymagou",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:%C3%8Ele_aux_Cygnes,_Paris_7.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "goodbye",
+      "text": "The boat turns near the Eiffel Tower. Au revoir, Seine!",
+      "about": "Many boat rides turn around near the Eiffel Tower and head back. At night, boats shine lights on the buildings, and the Eiffel Tower sparkles over the water. A boat ride is a great way to see lots of Paris without getting tired legs! Au revoir (oh ruh-VWAHR) means goodbye in French. What was your favorite thing you saw from the boat?",
+      "emoji": "🗼",
+      "photo": {
+        "commonsTitle": "File:Eiffel Tower from a bateaux mouche, Paris 17 August 2013 002.jpg",
+        "query": "Eiffel Tower from bateau mouche",
+        "file": "paris-seine-goodbye.jpg",
+        "author": "Shadowgate from Novara, ITALY",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Eiffel_Tower_from_a_bateaux_mouche,_Paris_17_August_2013_002.jpg",
+        "verified": true
+      }
+    }
+  ]
+}
