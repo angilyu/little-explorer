@@ -66,6 +66,7 @@ class Probe:
         self.agent_lines: list[tuple[float, str]] = []
         self.user_lines: list[tuple[float, str]] = []
         self.states: list[tuple[float, str]] = []
+        self.ended: str | None = None
         self.tasks: set[asyncio.Task] = set()
         self.t0 = time.monotonic()
         self.openai = AsyncOpenAI()
@@ -95,6 +96,9 @@ class Probe:
 
         @self.room.on("participant_attributes_changed")
         def _attrs(changed: dict[str, str], participant: rtc.Participant) -> None:
+            if reason := changed.get("milo.ended"):
+                self.ended = reason
+                print(f"[{self.now():5.1f}] Milo ended the session: {reason}")
             state = changed.get("lk.agent.state")
             if state:
                 self.states.append((self.now(), state))
@@ -176,7 +180,7 @@ class Probe:
     async def wait_reply(self, since: float, settle: float = 2.0, timeout: float = 45) -> None:
         """Wait for Milo to speak after ``since`` and go back to listening for ``settle`` seconds."""
         end = time.monotonic() + timeout
-        while time.monotonic() < end:
+        while time.monotonic() < end and not self.ended:
             spoke = any(when >= since and state == "speaking" for when, state in self.states)
             last = self.states[-1] if self.states else (0.0, "initializing")
             if spoke and last[1] == "listening" and self.now() - last[0] >= settle:
@@ -203,6 +207,21 @@ LATENCY_QUESTIONS = [
 
 def median(values: list[float]) -> str:
     return f"{statistics.median(values):.2f}s" if values else "n/a"
+
+
+async def idle_check(mode: str | None, limit_s: float = 60) -> int:
+    """Say nothing after the greeting; Milo should end the session as idle (PIP_IDLE_TIMEOUT_S, default 20 s)."""
+    probe = Probe()
+    await probe.connect(page_context("paris", 1), mode)
+    await probe.wait_reply(0, settle=0.5, timeout=60)
+    quiet_from = probe.now()
+    while probe.ended is None and probe.now() - quiet_from < limit_s:
+        await asyncio.sleep(0.2)
+    await probe.room.disconnect()
+    ok = probe.ended == "idle"
+    waited = probe.now() - quiet_from
+    print(f"\n  {'PASS' if ok else 'FAIL'}  silence -> Milo naps (ended={probe.ended!r} after {waited:.1f}s of quiet)")
+    return 0 if ok else 1
 
 
 async def main(mode: str | None, trials: int) -> int:
@@ -285,6 +304,8 @@ async def main(mode: str | None, trials: int) -> int:
 
     await probe.room.disconnect()
     print(f"\nRESULTS ({mode or 'agent default'} mode)")
+    if probe.ended:
+        print(f"  NOTE  Milo ended the session early ({probe.ended}); later checks could not run")
     for name, ok in results.items():
         print(f"  {'PASS' if ok else 'FAIL'}  {name}")
     print(f"  agent states seen: {sorted({s for _, s in probe.states})}")
@@ -297,5 +318,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--mode", choices=["pipeline", "realtime"], help="ask the token server for this engine")
     parser.add_argument("--trials", type=int, default=3, help="latency questions (and half as many barge-ins)")
+    parser.add_argument("--idle-check", action="store_true", help="stay silent and check that Milo naps")
     args = parser.parse_args()
-    sys.exit(asyncio.run(main(args.mode, args.trials)))
+    sys.exit(asyncio.run(idle_check(args.mode) if args.idle_check else main(args.mode, args.trials)))
