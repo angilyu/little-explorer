@@ -18,15 +18,22 @@ struct LibraryView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: regular ? 32 : 20) {
-                    header
-                    ForEach(BookLibrary.rows(BookLibrary.shelves(books), columns: columns), id: \.self) { row in
-                        shelfRow(row)
+            ScrollViewReader { proxy in
+                ScrollView {
+                    VStack(alignment: .leading, spacing: regular ? 32 : 20) {
+                        header
+                        ForEach(BookLibrary.rows(BookLibrary.shelves(books), columns: columns), id: \.self) { row in
+                            shelfRow(row)
+                        }
                     }
+                    .padding(.horizontal, regular ? 40 : 20)
+                    .padding(.vertical, regular ? 40 : 8)
                 }
-                .padding(.horizontal, regular ? 40 : 20)
-                .padding(.vertical, regular ? 40 : 8)
+                .task {
+                    guard let id = DemoLaunch.current?.shelfBook else { return }
+                    try? await Task.sleep(for: .milliseconds(600))
+                    proxy.scrollTo(id, anchor: .center)
+                }
             }
             .background(
                 LinearGradient(colors: [Theme.sky, Theme.paper], startPoint: .top, endPoint: .bottom)
@@ -98,6 +105,7 @@ struct LibraryView: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel(book.openLabel)
+        .id(book.id)
     }
 
     private var grownUpsButton: some View {
