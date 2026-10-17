@@ -3,7 +3,7 @@ from little_explorer_agent.content import load_books, lookup
 
 def test_loads_all_books_from_app_resources():
     books = load_books()
-    assert {"paris", "paris-food", "paris-fun", "london", "barcelona"} <= set(books)
+    assert {"paris", "paris-food", "paris-fun", "paris-notre-dame", "london", "barcelona"} <= set(books)
     for book in books.values():
         assert 10 <= len(book.pages) <= 14
         for page in book.pages:
@@ -24,7 +24,8 @@ def test_lookup_handles_unknown_context():
 
 def test_themed_paris_books_carry_their_theme():
     books = load_books()
-    assert [books[i].theme for i in ("paris", "paris-food", "paris-fun")] == ["Famous Places", "Yummy Paris", "Fun & Art"]
+    assert [books[i].theme for i in ("paris", "paris-food", "paris-fun", "paris-notre-dame")] == [
+        "Famous Places", "Yummy Paris", "Fun & Art", "Notre-Dame"]
     assert books["london"].theme == ""
 
 
@@ -43,7 +44,7 @@ async def test_refresh_remote_swaps_in_server_books(monkeypatch):
         assert await content.refresh_remote(base, max_age=0) is False  # same version
         assert await content.refresh_remote(base) is False  # checked moments ago
     books = content.current_books()
-    assert set(books) == {"paris", "paris-food", "paris-fun", "london", "barcelona"}
+    assert set(books) == {"paris", "paris-food", "paris-fun", "paris-notre-dame", "london", "barcelona"}
     book, page = content.lookup({"book": "paris", "page": books["paris"].pages[1].id})
     assert page is books["paris"].pages[1]
 
@@ -56,3 +57,11 @@ async def test_refresh_remote_keeps_books_when_server_is_down(monkeypatch):
     assert await content.refresh_remote("http://127.0.0.1:9/content", max_age=0, timeout=1) is False
     assert await content.refresh_remote("", max_age=0) is False
     assert content.current_books() == content.load_books()
+
+
+def test_notre_dame_pages_give_milo_context():
+    books = load_books()
+    book, page = lookup({"book": "paris-notre-dame", "page": "fire"})
+    assert book.theme == "Notre-Dame" and book.city == "Paris"
+    assert "firefighters" in page.text and "safe and open again" in page.about
+    assert [p.id for p in books["paris-notre-dame"].pages][-1] == "goodbye"

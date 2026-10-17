@@ -6,16 +6,16 @@ final class ContentTests: XCTestCase {
     private func books() throws -> [Book] { try BookLibrary.loadBundled() }
 
     func testLoadsAllBooksInShelfOrder() throws {
-        XCTAssertEqual(try books().map(\.id), ["paris", "paris-food", "paris-fun", "london", "barcelona"])
+        XCTAssertEqual(try books().map(\.id), ["paris", "paris-food", "paris-fun", "paris-notre-dame", "london", "barcelona"])
     }
 
-    func testParisHasThreeThemedBooks() throws {
+    func testParisHasFourThemedBooks() throws {
         let paris = try books().filter { $0.city == "Paris" }
-        XCTAssertEqual(paris.map(\.theme), ["Famous Places", "Yummy Paris", "Fun & Art"])
-        XCTAssertEqual(paris.map(\.coverTitle), ["Famous Places", "Yummy Paris", "Fun & Art"])
+        XCTAssertEqual(paris.map(\.theme), ["Famous Places", "Yummy Paris", "Fun & Art", "Notre-Dame"])
+        XCTAssertEqual(paris.map(\.coverTitle), ["Famous Places", "Yummy Paris", "Fun & Art", "Notre-Dame"])
         XCTAssertEqual(paris[1].shelfTitle, "Paris: Yummy Paris")
         XCTAssertEqual(paris[2].openLabel, "Open the Fun & Art book about Paris")
-        XCTAssertEqual(Set(paris.map(\.coverColor)).count, 3, "themed covers need different colors")
+        XCTAssertEqual(Set(paris.map(\.coverColor)).count, 4, "themed covers need different colors")
         let london = try XCTUnwrap(try books().first { $0.id == "london" })
         XCTAssertNil(london.theme)
         XCTAssertEqual(london.coverTitle, "London")
@@ -25,7 +25,7 @@ final class ContentTests: XCTestCase {
     func testShelvesGroupBooksByCityInOrder() throws {
         let shelves = BookLibrary.shelves(try books())
         XCTAssertEqual(shelves.map(\.city), ["Paris", "London", "Barcelona"])
-        XCTAssertEqual(shelves[0].books.map(\.id), ["paris", "paris-food", "paris-fun"])
+        XCTAssertEqual(shelves[0].books.map(\.id), ["paris", "paris-food", "paris-fun", "paris-notre-dame"])
         XCTAssertEqual(shelves[1].books.map(\.id), ["london"])
         XCTAssertEqual(shelves[2].books.map(\.id), ["barcelona"])
     }

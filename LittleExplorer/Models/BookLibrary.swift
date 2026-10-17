@@ -7,7 +7,7 @@ enum ContentError: Error, Equatable {
 
 enum BookLibrary {
     /// Reading order of the books on the shelf when library.json is missing.
-    static let order = ["paris", "paris-food", "paris-fun", "london", "barcelona"]
+    static let order = ["paris", "paris-food", "paris-fun", "paris-notre-dame", "london", "barcelona"]
 
     private struct Shelf: Decodable { let order: [String] }
 

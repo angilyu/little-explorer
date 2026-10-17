@@ -20,6 +20,7 @@ The first screen is a shelf with every book, grouped by city. Tap a cover to ope
 | Paris | Famous Places (`paris`) | The Seine, Eiffel Tower (repainting, sparkles), Louvre and Mona Lisa, Notre-Dame, Arc de Triomphe, toy sailboats |
 | Paris | Yummy Paris (`paris-food`) | Baguettes, pain au chocolat, macarons, crêpes, cheese, a market, a café, ice cream, snails, a picnic |
 | Paris | Fun & Art (`paris-fun`) | Carousels, puppet shows, a Seine boat, the Louvre's old castle, Orsay, Monet's water lilies, Montmartre painters and funicular, The Thinker, the river beach |
+| Paris | Notre-Dame (`paris-notre-dame`) | The island in the Seine, gargoyle rain spouts, chimeras, rose windows, the Emmanuel bell, the kind bell ringer, the 2019 fire and its firefighters, the rebuilders, the golden rooster on the spire, the 2024 reopening, Point Zéro |
 | London | London (`london`) | The Thames, Big Ben, Tower Bridge, buses, ravens, guards, London Eye, the Tube, the museum whale, fish and chips |
 | Barcelona | Barcelona (`barcelona`) | Beach, Sagrada Família, Casa Batlló, Park Güell's dragon, churros, human towers, football, the magic fountain |
 
