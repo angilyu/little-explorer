@@ -75,7 +75,7 @@ The agent lives in [`server/`](server) (LiveKit Agents + LangGraph; its voice st
 - **Noise:** background voices are cancelled, and an LLM relevance gate ignores noise, other people's conversations and off-topic talk.
 - **Patience:** Milo waits through his pauses and answers briefly and warmly, ending with an open question that invites a longer reply.
 
-Milo was first called Pip, so its settings keep the `PIP_` prefix. Milo has two voice engines. Pick one with `PIP_MODE` in the env file and restart the agent; the app doesn't change.
+Milo's settings start with `PIP_`. Milo has two voice engines. Pick one with `PIP_MODE` in the env file and restart the agent; the app doesn't change.
 
 - `PIP_MODE=pipeline` (default): streaming transcription (`gpt-realtime-whisper`) → reply (LangGraph) → `gpt-4o-mini-tts`.
   A local end-of-turn model decides when he has finished (0.5 s when his words sound done, up to 4 s mid-sentence).

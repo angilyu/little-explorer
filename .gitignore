@@ -25,5 +25,5 @@ __pycache__/
 server/KMS/
 server/content/
 
-# Local app config (Pip access key)
+# Local app config (Milo access key)
 Config/Local.xcconfig

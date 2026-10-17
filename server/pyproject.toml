@@ -1,7 +1,7 @@
 [project]
 name = "little-explorer-agent"
 version = "0.1.0"
-description = "Pip, the patient voice buddy for the Little Explorer picture books (LiveKit Agents + LangGraph)"
+description = "Milo, the patient voice buddy for the Little Explorer picture books (LiveKit Agents + LangGraph)"
 requires-python = ">=3.12"
 dependencies = [
     "livekit-agents[langchain,openai]~=1.8",
