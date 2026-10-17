@@ -121,7 +121,42 @@ prices per 1M tokens, kept in `usage.py` with the source link; override one with
 uv run python tools/usage_report.py   # total minutes, $, $/minute, $/session, per day and per model
 ```
 
-On a real device, set the token server address in the Grown-ups corner (e.g. `http://<your-mac>.local:8787`).
+The app uses the deployed server (`PIP_SERVER_URL` in `Config/Pip.xcconfig`). To try a local token server from a
+device, set its address in the Grown-ups corner (e.g. `http://<your-mac>.local:8787`).
+
+### Deploy
+
+Two free-tier pieces. The app only talks to the first; LiveKit dispatches the second.
+
+| Piece | Where | What it serves |
+|---|---|---|
+| Token and book server (`server/Dockerfile.web`) | Render web service `little-explorer-pip` (free plan), https://little-explorer-pip.onrender.com | `POST /token` (needs `Authorization: Bearer $PIP_ACCESS_KEY`), `/content/…` (books, photos, narration), `/healthz` |
+| Milo agent (`server/Dockerfile`) | LiveKit Cloud agent, `server/livekit.toml` | joins each room the token server creates |
+
+- **Render** builds from the repo root and redeploys on every push to its branch. Its env vars are
+  `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET`, `PIP_ACCESS_KEY` and `KEEPALIVE_SECONDS`, set in the
+  Render dashboard, not in git. A free service sleeps after 15 idle minutes, so with `KEEPALIVE_SECONDS` set the
+  server pings its own `/healthz` to stay awake (one always-on service fits in the free 750 hours a month). If it
+  does fall asleep (e.g. after a redeploy fails), the first token takes about a minute.
+- **Agent:** `scripts/deploy_agent.sh` reads the env file, uploads `OPENAI_API_KEY` and the `PIP_*` settings as
+  LiveKit secrets, and creates the agent (first run, region `$LK_AGENT_REGION`, default `us-east`) or deploys a
+  new version. Set `PIP_CONTENT_URL=https://little-explorer-pip.onrender.com/content` so Milo reads the same
+  books as the app. Stop any local `agent dev` worker afterwards; it would compete for the same rooms.
+  `lk agent status .` and `lk agent logs .` (from `server/`, with `LIVEKIT_*` in the environment) show it.
+- **Check it:** `TOKEN_URL=https://little-explorer-pip.onrender.com/token uv run python tools/e2e_smoke.py --mode realtime --trials 1`.
+
+### Update books without an app update
+
+The server publishes `content/manifest.json`, which lists every book, photo and narration clip with its SHA-256.
+On launch (and when it comes back to the foreground) the app compares it with its copy, downloads only the changed
+files, checks each hash, and switches to the new set in one step. If anything fails it keeps what it has; the
+books bundled in the app are the last fallback. Milo re-reads the books from the same server at most once a minute.
+
+1. Edit `LittleExplorer/Resources/Books/*.json` (or `library.json` for the shelf), add photos to
+   `Resources/Photos` and run `scripts/generate_narration.py` for new sentences.
+2. Push to the branch Render deploys. Render rebuilds; the next app launch picks the changes up.
+
+A new book must still use the existing page format; a format change needs an app update.
 
 ## Build and test the app
 
