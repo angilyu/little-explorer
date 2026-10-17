@@ -171,6 +171,21 @@ scripts/screenshots.sh <iphone-udid> <ipad-udid>   # regenerates docs/screenshot
 DEBUG builds accept launch arguments for screenshots: `-demoBook paris-food -demoPage 4 -demoLove`,
 `-demoVoice listening|live`, `-demoRead`.
 
+### Install on an iPhone or iPad (TestFlight)
+
+The app is "Little Explorer Kids" in App Store Connect, and every build goes to the internal TestFlight group
+"Family". Install **TestFlight** from the App Store on the device, sign in with the developer Apple ID, accept the
+invite, and turn on Automatic Updates for the app. New builds then install themselves; no cable is needed.
+
+```sh
+scripts/testflight.sh   # archive, sign for App Store distribution, upload, and wait for Apple's processing
+```
+
+It needs an App Store Connect API key (Admin role): the `.p8` in `~/.appstoreconnect/private_keys/`, and
+`ASC_KEY_ID` and `ASC_ISSUER_ID` in the environment or `~/.config/little-explorer/asc.env`. The build number is
+the date and time. `PIP_ACCESS_KEY` from `Config/Local.xcconfig` is built in, so keep TestFlight to internal
+testers. Book changes don't need a new build (see "Update books without an app update").
+
 > **Simulator note:** the iOS 26.2/26.3 simulators draw every emoji as a "?" box. Real devices are fine.
 >
 > **Voice in the simulator:** the simulator has no Apple echo cancellation, so the app uses WebRTC's

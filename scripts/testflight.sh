@@ -47,5 +47,21 @@ EOF
 
 echo "Uploading to App Store Connect..."
 xcodebuild -exportArchive -archivePath "$work/LittleExplorer.xcarchive" \
-  -exportOptionsPlist "$work/export.plist" -exportPath "$work/export" "${auth[@]}"
-echo "Uploaded build $build. It shows up in TestFlight after Apple finishes processing (usually 5-15 minutes)."
+  -exportOptionsPlist "$work/export.plist" -exportPath "$work/export" "${auth[@]}" 2>&1 | tee "$work/export.log" \
+  | grep -E "Upload succeeded|EXPORT|error"
+logs="$(sed -nE 's/.*Created bundle at path "([^"]+)".*/\1/p' "$work/export.log" | head -1)"
+delivery="$(grep -rhoE 'Delivery UUID: [0-9a-f-]+' "$logs" 2>/dev/null | head -1 | awk '{print $3}')"
+[[ -n "$delivery" ]] || { echo "Uploaded build $build, but couldn't find its delivery id to follow processing." >&2; exit 0; }
+
+# Apple checks the build after the upload; a rejection only shows up here (or in an email).
+echo "Uploaded build $build (delivery $delivery). Waiting for Apple to process it..."
+for _ in $(seq 1 60); do
+  status="$(xcrun altool --build-status --delivery-id "$delivery" --api-key "$ASC_KEY_ID" \
+    --api-issuer "$ASC_ISSUER_ID" --p8-file-path "$ASC_KEY_PATH" 2>&1)"
+  if grep -q "BUILD-STATUS: FAILED" <<<"$status"; then echo "$status" >&2; exit 1; fi
+  if grep -qE "BUILD-STATUS: (COMPLETE|VALID|SUCCESS)" <<<"$status"; then
+    echo "Build $build is ready in TestFlight."; exit 0
+  fi
+  sleep 30
+done
+echo "Still processing after 30 minutes; check App Store Connect." >&2
