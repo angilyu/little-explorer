@@ -1,6 +1,12 @@
 """LiveKit worker for Milo. Run: ``uv run python -m little_explorer_agent.agent dev``.
 
 ``PIP_MODE=pipeline`` (default) or ``PIP_MODE=realtime`` picks the voice engine; see :mod:`.modes`.
+
+Milo turns himself off after ``PIP_IDLE_TIMEOUT_S`` (20) seconds in which neither he nor the child
+spoke (0 disables), and says goodbye when the device's minutes for today run out (the token server
+passes ``remaining_s``). Either way he sets his ``milo.ended`` attribute to ``idle`` or ``limit`` so
+the app can switch its toggle off with the right message, then leaves the room. Each session's
+length and cost is reported to the token server for per-device usage (see :mod:`.usage`).
 """
 
 from __future__ import annotations
@@ -11,8 +17,11 @@ from .config import load_env
 
 load_env()
 
+import asyncio  # noqa: E402
 import inspect  # noqa: E402
 import os  # noqa: E402
+from collections.abc import Awaitable, Callable, Mapping  # noqa: E402
+from typing import Any  # noqa: E402
 
 from livekit.agents import AgentServer, AgentSession, JobContext, cli, function_tool, llm  # noqa: E402
 
@@ -33,14 +42,104 @@ from .buddy import (  # noqa: E402
     realtime_instructions,
 )
 from .content import refresh_remote  # noqa: E402
-from .modes import resolve_mode  # noqa: E402
+from .modes import parse_job_metadata, resolve_mode  # noqa: E402
 from .speech import speech_setup  # noqa: E402
-from .usage import UsageMeter  # noqa: E402
-from .voice import ContextStore, TurnDecision, UserTurn, preset_from_env  # noqa: E402
+from .usage import UsageMeter, report_usage  # noqa: E402
+from .voice import ContextStore, TurnDecision, UserTurn, VoicePreset, preset_from_env  # noqa: E402
 from .voice.realtime import RealtimeConfig, start_realtime_session  # noqa: E402
 from .voice.session import attach_room_context, start_graph_session  # noqa: E402
 
 log = logging.getLogger("little_explorer.agent")
+
+ENDED_ATTRIBUTE = "milo.ended"
+DEFAULT_IDLE_TIMEOUT_S = 20.0
+LIMIT_GOODBYE = "I'm getting sleepy, so it's time for me to rest. Let's explore more tomorrow. Bye-bye!"
+
+
+def idle_timeout(env: Mapping[str, str] | None = None) -> float | None:
+    """Seconds of silence from both sides before Milo turns off; None when ``PIP_IDLE_TIMEOUT_S=0``."""
+    env = os.environ if env is None else env
+    raw = (env.get("PIP_IDLE_TIMEOUT_S") or "").strip()
+    seconds = float(raw) if raw else DEFAULT_IDLE_TIMEOUT_S
+    return seconds if seconds > 0 else None
+
+
+def agent_preset(env: Mapping[str, str] | None = None) -> VoicePreset:
+    return preset_from_env().with_overrides(user_away_timeout=idle_timeout(env))
+
+
+class SessionEnder:
+    """Ends a session once, for ``idle`` (no voice for a while) or ``limit`` (today's minutes are
+    used up): optionally says goodbye, tells the app why via the ``milo.ended`` attribute, then
+    shuts the job down (the shutdown callback still reports usage)."""
+
+    def __init__(
+        self,
+        ctx: Any,
+        speak: Callable[[str], Awaitable[None]] | None = None,
+        *,
+        on_end: Callable[[str], None] | None = None,
+        goodbye_timeout: float = 12.0,
+    ) -> None:
+        self.ctx = ctx
+        self.speak = speak
+        self.on_end = on_end
+        self.goodbye_timeout = goodbye_timeout
+        self.reason: str | None = None
+        self._timer: asyncio.TimerHandle | None = None
+        self._tasks: set[asyncio.Task[None]] = set()
+
+    def watch(self, session: Any, remaining_s: float | None = None) -> None:
+        def on_user_state(ev: Any) -> None:
+            if getattr(ev, "new_state", None) == "away":
+                self._spawn("idle")
+
+        session.on("user_state_changed", on_user_state)
+        if remaining_s is not None:
+            loop = asyncio.get_running_loop()
+            self._timer = loop.call_later(max(remaining_s, 0.0), self._spawn, "limit", LIMIT_GOODBYE)
+
+    def cancel(self) -> None:
+        if self._timer is not None:
+            self._timer.cancel()
+            self._timer = None
+
+    def _spawn(self, reason: str, goodbye: str | None = None) -> None:
+        task = asyncio.ensure_future(self.end(reason, goodbye))
+        self._tasks.add(task)
+        task.add_done_callback(self._tasks.discard)
+
+    async def end(self, reason: str, goodbye: str | None = None) -> None:
+        if self.reason is not None:
+            return
+        self.reason = reason
+        self.cancel()
+        log.info("ending the session: %s", reason)
+        if self.on_end:
+            self.on_end(reason)
+        if goodbye and self.speak:
+            try:
+                await asyncio.wait_for(self.speak(goodbye), self.goodbye_timeout)
+            except Exception:  # noqa: BLE001 - leave anyway
+                log.warning("goodbye did not finish", exc_info=True)
+        try:
+            await self.ctx.room.local_participant.set_attributes({ENDED_ATTRIBUTE: reason})
+        except Exception:  # noqa: BLE001
+            log.warning("could not tell the app why Milo left", exc_info=True)
+        self.ctx.shutdown(reason=f"milo {reason}")
+
+
+def speaker(session: Any, mode: str) -> Callable[[str], Awaitable[None]]:
+    """Say ``text`` word for word in either engine and wait until it has played."""
+
+    async def speak(text: str) -> None:
+        if mode == "realtime":
+            handle = session.generate_reply(instructions=f'Say exactly: "{text}"')
+        else:
+            handle = session.say(text, allow_interruptions=False)
+        await handle.wait_for_playout()
+
+    return speak
 
 _graph = None
 
@@ -95,7 +194,7 @@ def make_realtime_guard(tracker: ReadingTracker, topic_gate: TopicGate | None) -
 
 async def _pipeline(ctx: JobContext) -> AgentSession:
     tracker = ReadingTracker()
-    preset, speech = speech_setup(preset_from_env())
+    preset, speech = speech_setup(agent_preset())
     return await start_graph_session(
         ctx,
         _shared_graph(),
@@ -115,7 +214,7 @@ async def _realtime(ctx: JobContext) -> AgentSession:
     return await start_realtime_session(
         ctx,
         config=realtime_config(),
-        preset=preset_from_env(),
+        preset=agent_preset(),
         instructions=realtime_instructions,
         tools=[stay_quiet],
         guard=make_realtime_guard(ReadingTracker(), default_topic_gate()),
@@ -131,22 +230,44 @@ def session_model(mode: str, env: dict[str, str] | None = None) -> str:
     return REPLY_MODEL.split(":", 1)[-1].split("@", 1)[0]
 
 
+def remaining_seconds(meta: Mapping[str, object]) -> float | None:
+    value = meta.get("remaining_s")
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return None
+    return float(value)
+
+
 async def entrypoint(ctx: JobContext) -> None:
     mode = resolve_mode(ctx.job.metadata)
-    log.info("Milo mode: %s", mode)
-    meter = UsageMeter(mode=mode, model=session_model(mode))
+    meta = parse_job_metadata(ctx.job.metadata)
+    device_id = str(meta.get("device_id") or "")
+    remaining_s = remaining_seconds(meta)
+    log.info("Milo mode: %s, device %s, %s s left today", mode, device_id or "?", remaining_s)
+    meter = UsageMeter(mode=mode, model=session_model(mode), room=ctx.job.room.name, device_id=device_id)
 
-    async def write_usage(_reason: str = "") -> None:
+    async def write_usage(reason: str = "") -> None:
         meter.finish()
+        await report_usage(meter.report(reason))
 
     # Runs on every job end, including the child leaving abruptly or the worker shutting down.
     ctx.add_shutdown_callback(write_usage)
     await refresh_remote()
     session = await (_realtime if mode == "realtime" else _pipeline)(ctx)
     meter.bind(session)
+
+    def note_reason(reason: str) -> None:
+        meter.ended_reason = reason
+
+    ender = SessionEnder(ctx, speaker(session, mode), on_end=note_reason)
+    ender.watch(session, remaining_s)
+    ctx.add_shutdown_callback(lambda: _cancel(ender))
     pages = ContextStore()
     pages.subscribe(lambda _changed: meter.on_context(pages.snapshot()))
     attach_room_context(pages, ctx.room)
+
+
+async def _cancel(ender: SessionEnder) -> None:
+    ender.cancel()
 
 
 def create_server() -> AgentServer:

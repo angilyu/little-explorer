@@ -8,6 +8,17 @@ engine for that room (otherwise the agent's ``PIP_MODE`` applies). Later page tu
 on the ``context`` data topic. When ``PIP_ACCESS_KEY`` is set, ``/token`` needs
 ``Authorization: Bearer <key>``, so a public deployment can't be used to run up the OpenAI bill.
 
+The app also sends ``"device": {"id", "name", "model"}``. Each device has a daily allowance (see
+:mod:`.devices`): a blocked device gets ``403 {"error": "blocked"}``, one that has used up today
+gets ``429 {"error": "limit"}``, both with a kid-friendly ``message``. Otherwise the participant
+identity is ``device-<id>`` and the agent learns the device and its remaining seconds through the
+dispatch metadata. Requests without a device count as the shared ``anonymous`` device.
+
+``POST /usage`` (``Authorization: Bearer $PIP_REPORT_KEY``) is how the agent reports each finished
+session. ``/admin/...`` (``Authorization: Bearer $PIP_ADMIN_KEY``) is for the owner, usually via
+``tools/devices.py``: ``GET /admin/devices``, ``GET /admin/usage?days=7`` and
+``POST /admin/devices/<id or name>`` with ``{"status", "label", "daily_limit_min"}``.
+
 It also serves the book content (see :mod:`.catalog`): ``GET /content/manifest.json`` and
 ``GET /content/<path>`` for each file in it, so books can change without an app update.
 
@@ -31,7 +42,8 @@ from . import AGENT_NAME
 from .catalog import build_manifest, content_files, resources_dir
 from .config import load_env
 from .content import BOOK_KEY, CITY_KEY, PAGE_KEY, PAGE_NUMBER_KEY, PAGE_TEXT_KEY
-from .modes import PipMode, mode_metadata, parse_mode
+from .devices import ANONYMOUS, REST_MESSAGE, STATUSES, Decision, DeviceStore, valid_device_id
+from .modes import PipMode, job_metadata, parse_mode
 
 log = logging.getLogger("little_explorer.tokens")
 
@@ -52,7 +64,10 @@ def clean_context(raw: object) -> dict[str, str]:
 
 
 def credentials(
-    identity: str | None = None, context: dict[str, str] | None = None, mode: PipMode | None = None
+    identity: str | None = None,
+    context: dict[str, str] | None = None,
+    mode: PipMode | None = None,
+    metadata: str | None = None,
 ) -> dict[str, str]:
     from .voice.tokens import mint_token
 
@@ -67,15 +82,16 @@ def credentials(
         name="Little Explorer",
         attributes=context or None,
         agent_name=AGENT_NAME,
-        agent_metadata=mode_metadata(mode) if mode else None,
+        agent_metadata=metadata if metadata is not None else job_metadata(mode),
         ttl=TOKEN_TTL,
     )
     return {"serverUrl": url, "participantToken": token, "roomName": room}
 
 
-def authorized(request: web.Request, access_key: str) -> bool:
+def authorized(request: web.Request, access_key: str, *, required: bool = False) -> bool:
+    """Bearer check. An unset key lets everyone in, unless ``required`` (then nobody)."""
     if not access_key:
-        return True
+        return not required
     header = request.headers.get("Authorization", "")
     scheme, _, supplied = header.partition(" ")
     return scheme.lower() == "bearer" and hmac.compare_digest(supplied.strip().encode(), access_key.encode())
@@ -96,13 +112,130 @@ async def handle_token(request: web.Request) -> web.Response:
     mode = parse_mode(body.get("pip_mode"))
     if body.get("pip_mode") is not None and mode is None:
         return web.json_response({"error": "bad pip_mode"}, status=400)
+    device = parse_device(body.get("device"))
+    if device is None:
+        return web.json_response({"error": "bad device"}, status=400)
+    device_id, name, model = device
+    decision = await check_device(request.app[STORE], device_id, name, model)
+    if not decision.allowed:
+        log.info("refused device %s: %s", device_id, decision.reason)
+        status = 403 if decision.reason == "blocked" else 429
+        return web.json_response({"error": decision.reason, "message": REST_MESSAGE}, status=status)
+    if device_id != ANONYMOUS or identity is None:
+        identity = f"device-{device_id}"
     try:
-        payload = credentials(identity, clean_context(body.get("context")), mode)
+        payload = credentials(
+            identity,
+            clean_context(body.get("context")),
+            metadata=job_metadata(mode, device_id, decision.remaining_s),
+        )
     except RuntimeError as exc:
         log.error("%s", exc)
         return web.json_response({"error": "token server is not configured"}, status=500)
-    log.info("token for room %s", payload["roomName"])
+    log.info("token for room %s, device %s, %.0f s left today", payload["roomName"], device_id, decision.remaining_s)
     return web.json_response(payload)
+
+
+def parse_device(raw: object) -> tuple[str, str, str] | None:
+    """``(id, name, model)`` from the request, ``anonymous`` if absent, None if malformed."""
+    if raw is None:
+        return ANONYMOUS, "", ""
+    if not isinstance(raw, dict) or not valid_device_id(raw.get("id")):
+        return None
+    name, model = raw.get("name"), raw.get("model")
+    return raw["id"], name if isinstance(name, str) else "", model if isinstance(model, str) else ""
+
+
+async def check_device(store: DeviceStore, device_id: str, name: str, model: str) -> Decision:
+    try:
+        return await asyncio.to_thread(store.check, device_id, name, model)
+    except Exception:
+        # Fail open so a database hiccup doesn't silence Milo, but only for an unknown device's day.
+        log.exception("device check failed; allowing a short session")
+        return Decision(True, "ok", store.limits.unknown_min * 60)
+
+
+async def _json_body(request: web.Request) -> dict | None:
+    try:
+        body = await request.json()
+    except ValueError:
+        return None
+    return body if isinstance(body, dict) else None
+
+
+async def handle_usage(request: web.Request) -> web.Response:
+    if not authorized(request, request.app[REPORT_KEY], required=True):
+        return web.json_response({"error": "unauthorized"}, status=401)
+    body = await _json_body(request)
+    if body is None:
+        return web.json_response({"error": "bad body"}, status=400)
+    try:
+        device = await asyncio.to_thread(request.app[STORE].record_session, body)
+    except ValueError as exc:
+        return web.json_response({"error": str(exc)}, status=400)
+    log.info("usage: room %s, device %s, %.0f s", body.get("room"), device.id, float(body.get("duration_s") or 0))
+    return web.json_response({"ok": True, "device_status": device.status})
+
+
+def _admin(request: web.Request) -> web.Response | None:
+    if not authorized(request, request.app[ADMIN_KEY], required=True):
+        return web.json_response({"error": "unauthorized"}, status=401)
+    return None
+
+
+async def handle_admin_devices(request: web.Request) -> web.Response:
+    if denied := _admin(request):
+        return denied
+    store = request.app[STORE]
+    return web.json_response(
+        {
+            "day": store.day_of(),
+            "limits": {"unknown_min": store.limits.unknown_min, "approved_min": store.limits.approved_min},
+            "devices": await asyncio.to_thread(store.summary),
+        }
+    )
+
+
+async def handle_admin_usage(request: web.Request) -> web.Response:
+    if denied := _admin(request):
+        return denied
+    try:
+        days = min(max(int(request.query.get("days", "7")), 1), 366)
+    except ValueError:
+        return web.json_response({"error": "days must be a number"}, status=400)
+    return web.json_response({"days": await asyncio.to_thread(request.app[STORE].usage_by_day, days)})
+
+
+async def handle_admin_update(request: web.Request) -> web.Response:
+    if denied := _admin(request):
+        return denied
+    body = await _json_body(request)
+    if body is None:
+        return web.json_response({"error": "bad body"}, status=400)
+    status = body.get("status")
+    if status is not None and status not in STATUSES:
+        return web.json_response({"error": f"status must be one of {', '.join(STATUSES)}"}, status=400)
+    label = body.get("label")
+    if label is not None and not isinstance(label, str):
+        return web.json_response({"error": "label must be text"}, status=400)
+    clear_limit = "daily_limit_min" in body and body["daily_limit_min"] is None
+    limit = body.get("daily_limit_min")
+    if limit is not None and (isinstance(limit, bool) or not isinstance(limit, (int, float))):
+        return web.json_response({"error": "daily_limit_min must be a number or null"}, status=400)
+    try:
+        device = await asyncio.to_thread(
+            request.app[STORE].update,
+            request.match_info["ref"],
+            status=status,
+            label=label,
+            daily_limit_min=limit,
+            clear_limit=clear_limit,
+        )
+    except LookupError as exc:
+        return web.json_response({"error": str(exc).strip("'\"")}, status=404)
+    except ValueError as exc:
+        return web.json_response({"error": str(exc)}, status=400)
+    return web.json_response({"device": {**device.__dict__, "display_name": device.display_name}})
 
 
 async def handle_health(_: web.Request) -> web.Response:
@@ -147,13 +280,26 @@ def keepalive_target(environ: dict[str, str] | os._Environ[str] = os.environ) ->
 
 
 ACCESS_KEY = web.AppKey("access_key", str)
+ADMIN_KEY = web.AppKey("admin_key", str)
+REPORT_KEY = web.AppKey("report_key", str)
+STORE = web.AppKey("device_store", DeviceStore)
 MANIFEST = web.AppKey("manifest", dict)
 FILES = web.AppKey("files", dict)
 
 
-def create_app(*, access_key: str | None = None, content_root: Path | None = None) -> web.Application:
+def create_app(
+    *,
+    access_key: str | None = None,
+    content_root: Path | None = None,
+    store: DeviceStore | None = None,
+    admin_key: str | None = None,
+    report_key: str | None = None,
+) -> web.Application:
     app = web.Application()
     app[ACCESS_KEY] = (os.environ.get("PIP_ACCESS_KEY", "") if access_key is None else access_key).strip()
+    app[ADMIN_KEY] = (os.environ.get("PIP_ADMIN_KEY", "") if admin_key is None else admin_key).strip()
+    app[REPORT_KEY] = (os.environ.get("PIP_REPORT_KEY", "") if report_key is None else report_key).strip()
+    app[STORE] = store or DeviceStore.from_env()
     root = content_root or resources_dir()
     app[MANIFEST] = build_manifest(root)
     app[FILES] = content_files(root)
@@ -161,6 +307,10 @@ def create_app(*, access_key: str | None = None, content_root: Path | None = Non
     app.router.add_get("/healthz", handle_health)
     app.router.add_get("/content/manifest.json", handle_manifest)
     app.router.add_get("/content/{path:.+}", handle_content_file)
+    app.router.add_post("/usage", handle_usage)
+    app.router.add_get("/admin/devices", handle_admin_devices)
+    app.router.add_get("/admin/usage", handle_admin_usage)
+    app.router.add_post("/admin/devices/{ref}", handle_admin_update)
 
     target = keepalive_target()
     if target:
@@ -184,6 +334,9 @@ def main() -> None:
     if not app[ACCESS_KEY] and host != "127.0.0.1":
         log.warning("PIP_ACCESS_KEY is not set: anyone who can reach this server can start Milo sessions")
     log.info("serving content version %s (%d files)", app[MANIFEST]["version"], len(app[FILES]))
+    log.info("device limits in %s storage: %s", app[STORE].kind, app[STORE].limits)
+    if not app[ADMIN_KEY] or not app[REPORT_KEY]:
+        log.warning("PIP_ADMIN_KEY or PIP_REPORT_KEY is not set: /admin or /usage is turned off")
     web.run_app(app, host=host, port=port)
 
 

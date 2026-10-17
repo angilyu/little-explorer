@@ -26,6 +26,7 @@ enum VoiceSettings {
 
 struct TokenRequest: Encodable {
     let context: [String: String]?
+    var device: DeviceInfo? = nil
 }
 
 struct VoiceCredentials: Decodable, Equatable {
@@ -39,6 +40,8 @@ struct TokenService {
     var baseURL: URL
     var accessKey: String? = VoiceSettings.accessKey
     var session: URLSession = .shared
+    /// Sent so the server can count Milo's minutes per device (and refuse a blocked one).
+    var device: DeviceInfo?
 
     /// `context` is the page open when voice mode starts; the server puts it in the token so the
     /// agent knows the page from its first word.
@@ -48,9 +51,11 @@ struct TokenService {
         request.timeoutInterval = 30
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         if let accessKey { request.setValue("Bearer \(accessKey)", forHTTPHeaderField: "Authorization") }
-        request.httpBody = try JSONEncoder().encode(TokenRequest(context: context?.attributes))
+        request.httpBody = try JSONEncoder().encode(TokenRequest(context: context?.attributes, device: device))
         let (data, response) = try await session.data(for: request)
         let status = (response as? HTTPURLResponse)?.statusCode ?? 0
+        // 403 = blocked device, 429 = used up today's minutes.
+        if status == 403 || status == 429 { throw VoiceError.resting }
         guard (200..<300).contains(status) else { throw VoiceError.tokenServer(status: status) }
         return try JSONDecoder().decode(VoiceCredentials.self, from: data)
     }

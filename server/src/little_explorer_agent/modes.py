@@ -32,13 +32,33 @@ def mode_metadata(mode: PipMode) -> str:
     return json.dumps({"pip_mode": mode})
 
 
+def job_metadata(
+    mode: PipMode | None = None, device_id: str | None = None, remaining_s: float | None = None
+) -> str | None:
+    """Dispatch metadata from the token server: the engine, the device, and how many seconds it
+    may still talk today (the agent ends the session then)."""
+    data: dict[str, object] = {}
+    if mode:
+        data["pip_mode"] = mode
+    if device_id:
+        data["device_id"] = device_id
+    if remaining_s is not None:
+        data["remaining_s"] = round(remaining_s, 1)
+    return json.dumps(data) if data else None
+
+
+def parse_job_metadata(raw: str | None) -> dict[str, object]:
+    if not raw:
+        return {}
+    try:
+        data = json.loads(raw)
+    except ValueError:
+        return {}
+    return data if isinstance(data, dict) else {}
+
+
 def resolve_mode(job_metadata: str | None = None, env: Mapping[str, str] | None = None) -> PipMode:
     env = os.environ if env is None else env
-    if job_metadata:
-        try:
-            data = json.loads(job_metadata)
-        except ValueError:
-            data = None
-        if isinstance(data, dict) and (mode := parse_mode(data.get("pip_mode"))):
-            return mode
+    if mode := parse_mode(parse_job_metadata(job_metadata).get("pip_mode")):
+        return mode
     return parse_mode(env.get("PIP_MODE")) or DEFAULT_MODE

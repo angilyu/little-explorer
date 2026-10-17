@@ -8,6 +8,7 @@ struct ParentCornerView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(ContentStore.self) private var content
     @AppStorage(VoiceSettings.tokenServerKey) private var tokenServer = VoiceSettings.defaultTokenServer
+    @State private var device: DeviceInfo?
 
     var body: some View {
         NavigationStack {
@@ -42,10 +43,18 @@ struct ParentCornerView: View {
                         .autocorrectionDisabled()
                         .keyboardType(.URL)
                     Button("Reset to default") { tokenServer = VoiceSettings.defaultTokenServer }
+                    if let device {
+                        LabeledContent("This device") {
+                            Text(device.id)
+                                .font(.caption.monospaced())
+                                .textSelection(.enabled)
+                        }
+                        Button("Copy device id") { UIPasteboard.general.string = device.id }
+                    }
                 } header: {
                     Text("Voice buddy (Milo)")
                 } footer: {
-                    Text("Milo's server hands out voice tokens and new books. The default is the hosted server; for a server on your Mac use http://127.0.0.1:8787 (simulator) or the Mac's address, e.g. http://192.168.1.20:8787. Audio is not recorded.")
+                    Text("Milo's server hands out voice tokens and new books. The default is the hosted server; for a server on your Mac use http://127.0.0.1:8787 (simulator) or the Mac's address, e.g. http://192.168.1.20:8787. Audio is not recorded. Milo's minutes are counted per device: approve this device with `tools/devices.py approve <id>` for the longer daily limit.")
                 }
 
                 Section {
@@ -80,6 +89,7 @@ struct ParentCornerView: View {
                 }
             }
             .navigationTitle("Grown-ups corner")
+            .task { device = DeviceIdentity.current() }
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } }
             }

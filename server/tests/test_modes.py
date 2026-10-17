@@ -53,9 +53,14 @@ def test_dispatch_metadata_beats_env():
     assert resolve_mode("[1, 2]", env={}) == "pipeline"
 
 
+class FakeRoomInfo:
+    name = "little-explorer-test"
+
+
 class FakeJob:
     def __init__(self, metadata):
         self.metadata = metadata
+        self.room = FakeRoomInfo()
 
 
 class FakeSession:
@@ -110,8 +115,9 @@ async def test_entrypoint_runs_the_chosen_engine(monkeypatch, tmp_path, metadata
     await agent_mod.entrypoint(ctx)
     assert ran == [expected]
     # Every session logs its usage when the job ends.
-    assert len(ctx.shutdown_callbacks) == 1
+    assert len(ctx.shutdown_callbacks) == 2
     await ctx.shutdown_callbacks[0]("room disconnected")
+    await ctx.shutdown_callbacks[1]()
     assert f",{expected}," in (tmp_path / "usage.csv").read_text()
 
 
@@ -161,7 +167,8 @@ async def test_token_can_ask_for_a_mode(client):
 async def test_token_without_mode_leaves_it_to_the_agent(client):
     resp = await client.post("/token", json={})
     dispatch = claims((await resp.json())["participantToken"])["roomConfig"]["agents"][0]
-    assert not dispatch.get("metadata")
+    assert "pip_mode" not in json.loads(dispatch["metadata"])
+    assert resolve_mode(dispatch["metadata"], env={"PIP_MODE": "realtime"}) == "realtime"
 
 
 async def test_token_rejects_unknown_mode(client):

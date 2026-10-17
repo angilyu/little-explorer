@@ -102,3 +102,37 @@ struct VoiceStatusView: View {
         }
     }
 }
+
+/// Shown after Milo turned itself off: a nap after a quiet spell, or rest for the day.
+/// Tapping it dismisses it; the mic button turns Milo back on.
+struct VoiceNoticeBanner: View {
+    let voice: VoiceModeController
+
+    var body: some View {
+        if !voice.isEnabled, let notice = voice.notice {
+            Button {
+                withAnimation { voice.dismissNotice() }
+            } label: {
+                HStack(spacing: 10) {
+                    Image(systemName: notice == VoiceModeController.restNotice ? "moon.stars.fill" : "zzz")
+                        .font(.system(size: 26, weight: .bold))
+                        .foregroundStyle(.purple)
+                    Text(notice)
+                        .font(.system(size: 20, weight: .bold, design: .rounded))
+                        .multilineTextAlignment(.leading)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .padding(.horizontal, 18)
+                .padding(.vertical, 12)
+                .background(Capsule().fill(.white))
+                .foregroundStyle(Theme.ink)
+                .shadow(color: .black.opacity(0.15), radius: 6, x: 0, y: 3)
+            }
+            .buttonStyle(.plain)
+            .padding(12)
+            .accessibilityLabel(notice)
+            .accessibilityHint("Tap to hide")
+            .transition(.move(edge: .top).combined(with: .opacity))
+        }
+    }
+}

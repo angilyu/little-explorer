@@ -1,5 +1,6 @@
 # Token + book-content server for Render (build context: the repo root).
-# Env: LIVEKIT_URL, LIVEKIT_API_KEY, LIVEKIT_API_SECRET, PIP_ACCESS_KEY, KEEPALIVE_SECONDS. Render sets PORT.
+# Env: LIVEKIT_URL, LIVEKIT_API_KEY, LIVEKIT_API_SECRET, PIP_ACCESS_KEY, KEEPALIVE_SECONDS,
+# DATABASE_URL (device usage), PIP_ADMIN_KEY, PIP_REPORT_KEY. Render sets PORT.
 FROM python:3.12-slim
 
 ENV PYTHONUNBUFFERED=1 \
@@ -8,6 +9,7 @@ ENV PYTHONUNBUFFERED=1 \
 
 WORKDIR /app
 RUN pip install --no-cache-dir aiohttp==3.14.3 livekit-api==1.2.1 python-dotenv==1.2.3 \
+        "psycopg[binary]==3.3.6" \
     && useradd --create-home --uid 10001 web
 
 COPY server/src ./src

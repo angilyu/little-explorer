@@ -121,6 +121,47 @@ prices per 1M tokens, kept in `usage.py` with the source link; override one with
 uv run python tools/usage_report.py   # total minutes, $, $/minute, $/session, per day and per model
 ```
 
+### Naps and daily limits per device
+
+**Naps.** When neither he nor Milo has said anything for 20 seconds (`PIP_IDLE_TIMEOUT_S`, `0` = never), Milo ends
+the session. The app switches the mic off and shows "Milo is taking a nap — tap to talk again". Reading aloud
+counts as talking. Tapping **Talk to Milo** starts a fresh session.
+
+**Devices.** The app sends a device id with every token request: its vendor id, saved in the Keychain so it
+survives a reinstall, plus the device name and model. The Grown-ups corner shows the id. The token server keeps
+each device's status and Milo minutes per day:
+
+| Status | Daily Milo time | When the time is used up |
+|---|---|---|
+| unknown (any new device) | 10 min (`PIP_LIMIT_UNKNOWN_MIN`) | blocked automatically |
+| approved | 60 min (`PIP_LIMIT_APPROVED_MIN`) | rests until tomorrow |
+| blocked | none | until you unblock it |
+
+Days run midnight to midnight in `PIP_TIMEZONE` (default `America/Los_Angeles`). A device that is blocked or
+out of time gets no token, and the app shows "Milo needs a rest today. Let's talk again tomorrow!". The token
+carries the time left, so a session that reaches the limit ends with a short goodbye from Milo. When a session
+ends, the agent reports its length and estimated cost to the token server (`POST /usage`, with `PIP_REPORT_KEY`),
+which stores it. Usage is stored per conversation, never transcripts or audio.
+
+Storage is Postgres when `DATABASE_URL` is set (production uses a free [Neon](https://neon.tech) database:
+Render's free disk is wiped on every deploy and restart, and Neon keeps the data, needs no server and costs
+nothing at this size). Without it, a local SQLite file is used (`PIP_DEVICES_DB`, default
+`~/.config/little-explorer/devices.sqlite3`). If the database can't be reached, tokens are still given out with
+the unknown-device limit.
+
+Check usage and manage devices with `tools/devices.py`. It calls the server's `/admin` endpoints with
+`PIP_ADMIN_KEY` from your env file (`--direct` uses `DATABASE_URL` instead). The admin key is never in the app.
+
+```sh
+uv run python tools/devices.py                      # devices: status, today, last 7 days, total minutes and $
+uv run python tools/devices.py usage --days 14      # minutes and $ per device per day
+uv run python tools/devices.py approve <id> --label "Leo's iPad"   # by id, or by name/label if unique
+uv run python tools/devices.py block <id or label>  # also: unblock, limit <ref> 30, limit <ref> default, rename
+```
+
+Approve your own devices after each has used Milo once (it appears in the list as unknown). iOS reports every
+iPad as just "iPad", so use the id shown in the Grown-ups corner (it has a copy button) and give it a label.
+
 The app uses the deployed server (`PIP_SERVER_URL` in `Config/Pip.xcconfig`). To try a local token server from a
 device, set its address in the Grown-ups corner (e.g. `http://<your-mac>.local:8787`).
 
@@ -134,14 +175,15 @@ Two free-tier pieces. The app only talks to the first; LiveKit dispatches the se
 | Milo agent (`server/Dockerfile`) | LiveKit Cloud agent, `server/livekit.toml` | joins each room the token server creates |
 
 - **Render** builds from the repo root and redeploys on every push to its branch. Its env vars are
-  `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET`, `PIP_ACCESS_KEY` and `KEEPALIVE_SECONDS`, set in the
-  Render dashboard, not in git. A free service sleeps after 15 idle minutes, so with `KEEPALIVE_SECONDS` set the
+  `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET`, `PIP_ACCESS_KEY`, `KEEPALIVE_SECONDS`, `DATABASE_URL`,
+  `PIP_ADMIN_KEY` and `PIP_REPORT_KEY`, set in the Render dashboard, not in git. A free service sleeps after 15 idle minutes, so with `KEEPALIVE_SECONDS` set the
   server pings its own `/healthz` to stay awake (one always-on service fits in the free 750 hours a month). If it
   does fall asleep (e.g. after a redeploy fails), the first token takes about a minute.
 - **Agent:** `scripts/deploy_agent.sh` reads the env file, uploads `OPENAI_API_KEY` and the `PIP_*` settings as
   LiveKit secrets, and creates the agent (first run, region `$LK_AGENT_REGION`, default `us-east`) or deploys a
   new version. Set `PIP_CONTENT_URL=https://little-explorer-pip.onrender.com/content` so Milo reads the same
-  books as the app. Stop any local `agent dev` worker afterwards; it would compete for the same rooms.
+  books as the app. Set `PIP_SERVER_URL=https://little-explorer-pip.onrender.com` and the same `PIP_REPORT_KEY`
+  as Render so Milo reports each device's minutes. Stop any local `agent dev` worker afterwards; it would compete for the same rooms.
   `lk agent status .` and `lk agent logs .` (from `server/`, with `LIVEKIT_*` in the environment) show it.
 - **Check it:** `TOKEN_URL=https://little-explorer-pip.onrender.com/token uv run python tools/e2e_smoke.py --mode realtime --trials 1`.
 
