@@ -1,0 +1,223 @@
+{
+  "id": "tahoe-heavenly",
+  "city": "Lake Tahoe",
+  "country": "California and Nevada, USA",
+  "flagImage": "tahoe-flag.png",
+  "flag": "🇺🇸",
+  "theme": "Heavenly",
+  "coverColor": "#5B7C99",
+  "tagline": "Skiing high above a giant blue lake",
+  "narration": {
+    "instructions": "Say local names the way people at Lake Tahoe say them: Tahoe (TAH-ho), Nevada (neh-VAD-uh, rhymes with 'had'), Truckee (TRUCK-ee), Vikingsholm (VIKE-ings-home)."
+  },
+  "pages": [
+    {
+      "id": "welcome",
+      "text": "Heavenly is a snowy mountain right above Lake Tahoe.",
+      "about": "Heavenly (HEV-un-lee) Mountain Resort is a big ski mountain right next to the town of South Lake Tahoe. It opened in 1955, and today it has about 97 ski runs and 30 lifts. Its highest point is 10,067 feet up, and from many runs you can see the blue lake far below while you ski. This photo, taken at Heavenly by the U.S. Forest Service, shows a skier with Lake Tahoe behind. Ask Francis: would you rather look at the lake or zoom down the hill?",
+      "emoji": "⛷️",
+      "photo": {
+        "commonsTitle": "File:HeavenlySkiResortLakeTahoe-LakeTahoeBasinMU-PRW-06 (52707339094).jpg",
+        "query": "Heavenly ski resort Lake Tahoe view",
+        "file": "tahoe-heavenly-welcome.jpg",
+        "author": "Region 5 Photography",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:HeavenlySkiResortLakeTahoe-LakeTahoeBasinMU-PRW-06_(52707339094).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "village",
+      "text": "The adventure starts down in the busy village.",
+      "about": "At the bottom of the mountain is Heavenly Village, in the middle of South Lake Tahoe. It has shops, restaurants and an ice rink, and it is where the big gondola starts its ride up the mountain. This photo shows the gondola station in the village, with its pointy wooden tower and the snowy mountain behind it. Ask Francis: can you find the top of the mountain where the gondola goes?",
+      "emoji": "🕰️",
+      "photo": {
+        "commonsTitle": "File:Heavenly Gondola Base.jpg",
+        "query": "Heavenly Village gondola base",
+        "file": "tahoe-heavenly-village.jpg",
+        "author": "ChrisRuvolo",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Heavenly_Gondola_Base.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "gondola",
+      "text": "Little gondola cabins carry you way up the mountain.",
+      "about": "A gondola (GON-doh-lah) is a little cabin that hangs from a strong steel cable and glides up the mountain. Heavenly's gondola starts in the village and rides about 2.4 miles, climbing to more than 9,000 feet. Skiers put their skis in a rack on the outside, then sit inside where it is warm. In this summer photo, a gondola cabin glides past the trees with Lake Tahoe shining behind it. Ask Francis: how many people do you think fit inside?",
+      "emoji": "🚠",
+      "photo": {
+        "commonsTitle": "File:Heavenly Gondola 2.jpg",
+        "query": "Heavenly gondola cabin",
+        "file": "tahoe-heavenly-gondola.jpg",
+        "author": "Mx. Granger",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Heavenly_Gondola_2.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "deck",
+      "text": "Partway up, a deck shows the whole lake below.",
+      "about": "Partway up the ride, you can hop off the gondola at the Observation Deck. From here you can see across Lake Tahoe and all the way to the snowy mountains on the other side. Many visitors say it is one of the best views anywhere around the lake. This photo was taken from the deck on a summer day. Ask Francis: can you find any boats or houses down by the water?",
+      "emoji": "🔭",
+      "photo": {
+        "commonsTitle": "File:Heavenly Observation Deck, Lake Tahoe, California, 20220814, 01.jpg",
+        "query": "Heavenly observation deck view",
+        "file": "tahoe-heavenly-deck.jpg",
+        "author": "Blake Everett Carroll",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Heavenly_Observation_Deck,_Lake_Tahoe,_California,_20220814,_01.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "two-states",
+      "text": "Here you can ski from California into Nevada!",
+      "about": "The line between California and Nevada runs right across Heavenly mountain. Heavenly even has two base areas in California and two in Nevada. That means you can start a ski run in one state and finish it in another! Signs on the mountain, like this 'Welcome to California' sign, show skiers where the state line is. Ask Francis: how many states can you visit in one morning?",
+      "emoji": "🗺️",
+      "photo": {
+        "commonsTitle": "File:Welcome to California sign, Heavenly resort, Lake Tahoe.jpg",
+        "query": "Heavenly state line sign",
+        "file": "tahoe-heavenly-two-states.jpg",
+        "author": "JMatazzoni (WMF)",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Welcome_to_California_sign,_Heavenly_resort,_Lake_Tahoe.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "chairlift",
+      "text": "Chairlifts swing skiers up to the top of the mountain.",
+      "about": "A chairlift is a row of chairs that hang from a moving cable. Skiers and snowboarders sit down, pull a safety bar over their laps, and ride up the mountain with their skis dangling. Heavenly has about 30 lifts in all, including fast chairlifts that hold six people. This photo shows Heavenly's Sky chair with snowy trees around it. Ask Francis: what would you see if you looked down from a chairlift?",
+      "emoji": "🪑",
+      "photo": {
+        "commonsTitle": "File:Heavenly Sky Chair - panoramio.jpg",
+        "query": "Heavenly Sky chairlift",
+        "file": "tahoe-heavenly-chairlift.jpg",
+        "author": "harley photo",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Heavenly_Sky_Chair_-_panoramio.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "ski-school",
+      "text": "Little skiers learn with a teacher at ski school.",
+      "about": "Heavenly has a ski and snowboard school where kids learn with friendly teachers called instructors. Everyone wears a helmet to keep their head safe and goggles to protect their eyes from the bright snow. Lessons start on gentle, flat slopes, so falling down is soft and part of the fun. This photo shows a ski lesson at a different mountain, not Heavenly. Ask Francis: what would you like to learn first, stopping or turning?",
+      "emoji": "🎿",
+      "photo": {
+        "commonsTitle": "File:Ski lesson (49299192016).jpg",
+        "query": "children ski lesson instructor",
+        "file": "tahoe-heavenly-ski-school.jpg",
+        "author": "Paolo Gamba",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ski_lesson_(49299192016).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "pizza-fries",
+      "text": "Pizza skis go slow, and french fry skis go fast!",
+      "about": "Ski teachers use a fun trick to explain how to control your skis. When you point your ski tips together in a V shape, it looks like a slice of pizza, and it helps you slow down and stop. When your skis are straight and side by side, they look like two french fries, and you go faster. This photo shows a young skier making a pizza shape, somewhere in Europe. Ask Francis: can you make a pizza shape with your feet?",
+      "emoji": "🍕",
+      "photo": {
+        "commonsTitle": "File:Kind beim Ski fahren.JPG",
+        "query": "child skiing snowplough wedge",
+        "file": "tahoe-heavenly-pizza-fries.jpg",
+        "author": "Werner100359",
+        "license": "CC BY 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Kind_beim_Ski_fahren.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "magic-carpet",
+      "text": "A magic carpet carries beginners up like a moving sidewalk.",
+      "about": "A magic carpet is not really magic: it is a long moving belt, like a sidewalk at the airport, laid right on the snow. Beginners just stand on it with their skis and ride slowly up a gentle hill. Heavenly has magic carpets in its learning areas. This photo shows little skiers at a ski school in France waiting for their turn. Ask Francis: which is easier, a magic carpet or a chairlift?",
+      "emoji": "🪄",
+      "photo": {
+        "commonsTitle": "File:ESF Piou Piou school, La Toussuire, 2023.jpg",
+        "query": "magic carpet ski school children",
+        "file": "tahoe-heavenly-magic-carpet.jpg",
+        "author": "DimiTalen",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:ESF_Piou_Piou_school,_La_Toussuire,_2023.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "tubing",
+      "text": "Whee! Zoom down the snowy hill on a big tube.",
+      "about": "At the top of Heavenly's gondola is an area called Adventure Peak, with a snow tubing hill. You sit in a big round rubber tube and slide down a smooth lane, then a magic carpet carries you and your tube back up. Bigger kids ride the main hill, and there is a small tubing area for little ones. This photo of tubing was taken at another snowy hill, not Heavenly. Ask Francis: would you go feet first or spin around?",
+      "emoji": "🛟",
+      "photo": {
+        "commonsTitle": "File:Otepää.JPG",
+        "query": "snow tubing hill",
+        "file": "tahoe-heavenly-tubing.jpg",
+        "author": "Maasaak",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Otep%C3%A4%C3%A4.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "snow-guns",
+      "text": "Snow guns blow fresh snow when the sky forgets.",
+      "about": "Heavenly gets about 360 inches of snow from the sky in a normal winter, but sometimes the snow is late. Then workers turn on snow guns, big machines that spray tiny drops of water into the freezing air. The drops freeze into little bits of ice that fall like snow. Heavenly has one of the biggest snowmaking systems in the area. This photo shows snow guns working at another ski hill. Ask Francis: what does homemade snow sound like?",
+      "emoji": "🌨️",
+      "photo": {
+        "commonsTitle": "File:Making Snow (4249408496).jpg",
+        "query": "snow guns making snow",
+        "file": "tahoe-heavenly-snow-guns.jpg",
+        "author": "Heidi G",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Making_Snow_(4249408496).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "cocoa",
+      "text": "Time to warm up with a mug of hot cocoa!",
+      "about": "After a cold day on the snow, skiers go inside the lodges to warm up. Hot cocoa is made from chocolate and warm milk, and some people add a big puff of marshmallows on top. Up high on the mountain, the cold air makes a warm drink taste even better. This photo of a cozy hot chocolate was not taken at Heavenly. Ask Francis: one marshmallow or lots of marshmallows?",
+      "emoji": "☕",
+      "photo": {
+        "commonsTitle": "File:Hot-chocolate-1906521 1920.jpg",
+        "query": "hot chocolate marshmallows winter",
+        "file": "tahoe-heavenly-cocoa.jpg",
+        "author": "JillWellington",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Hot-chocolate-1906521_1920.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "goodbye",
+      "text": "Goodbye, Heavenly! The snowy mountain glows pink at sunset.",
+      "about": "At sunset, the snow on the mountains around Lake Tahoe can turn pink and orange. This glow is called alpenglow (AL-pen-glow). This photo was taken at the top of Heavenly's gondola, looking out over the lake as the sun goes down. Then the gondola carries everyone back down to the village. Ask Francis: what was your favorite part of Heavenly?",
+      "emoji": "👋",
+      "photo": {
+        "commonsTitle": "File:Heavenly Mountain Resort - Top of the gondola alpenglow - Lake Tahoe.jpg",
+        "query": "Heavenly gondola top alpenglow",
+        "file": "tahoe-heavenly-goodbye.jpg",
+        "author": "Jonathan Cook-Fisher",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Heavenly_Mountain_Resort_-_Top_of_the_gondola_alpenglow_-_Lake_Tahoe.jpg",
+        "verified": true
+      }
+    }
+  ]
+}

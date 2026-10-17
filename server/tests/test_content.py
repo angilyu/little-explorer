@@ -3,7 +3,7 @@ from little_explorer_agent.content import load_books, lookup
 
 def test_loads_all_books_from_app_resources():
     books = load_books()
-    assert {"paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "paris-french", "london", "london-big-ben", "barcelona"} <= set(books)
+    assert {"paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "paris-french", "london", "london-big-ben", "barcelona", "tahoe", "tahoe-heavenly", "tahoe-northstar", "hawaii", "hawaii-honolulu"} <= set(books)
     for book in books.values():
         assert 10 <= len(book.pages) <= 14
         for page in book.pages:
@@ -47,7 +47,7 @@ async def test_refresh_remote_swaps_in_server_books(monkeypatch):
         assert await content.refresh_remote(base, max_age=0) is False  # same version
         assert await content.refresh_remote(base) is False  # checked moments ago
     books = content.current_books()
-    assert set(books) == {"paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "paris-french", "london", "london-big-ben", "barcelona"}
+    assert set(books) == {"paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "paris-french", "london", "london-big-ben", "barcelona", "tahoe", "tahoe-heavenly", "tahoe-northstar", "hawaii", "hawaii-honolulu"}
     book, page = content.lookup({"book": "paris", "page": books["paris"].pages[1].id})
     assert page is books["paris"].pages[1]
 
@@ -142,3 +142,26 @@ def test_narration_reads_french_phrase_and_hint_as_separate_takes():
     assert sum(len(words) for _, words in narration.phrases(text)) == 10
     # Books without their own narration note keep the shared style, so their clips aren't regenerated.
     assert narration.style_hash() == narration.style_hash("", False) != narration.style_hash("note", True)
+
+
+def test_tahoe_and_hawaii_are_new_destinations_with_fresh_photos():
+    import json
+
+    from little_explorer_agent.content import content_dir
+
+    books = load_books()
+    new = {"tahoe": "Lake Tahoe", "tahoe-heavenly": "Lake Tahoe", "tahoe-northstar": "Lake Tahoe",
+           "hawaii": "Hawaii", "hawaii-honolulu": "Hawaii"}
+    raw = {p.stem: json.loads(p.read_text(encoding="utf-8")) for p in content_dir().glob("*.json")}
+    old_titles = {pg["photo"]["commonsTitle"] for bid, b in raw.items() if bid not in new for pg in b["pages"]}
+    for bid, city in new.items():
+        book = books[bid]
+        assert book.city == city and book.pages[-1].id == "goodbye"
+        assert not {pg["photo"]["commonsTitle"] for pg in raw[bid]["pages"]} & old_titles, f"{bid} reuses a photo"
+        assert all(pg["photo"]["verified"] for pg in raw[bid]["pages"])
+    assert [books[b].theme for b in new] == ["", "Heavenly", "Northstar", "", "Honolulu"]
+    _, page = lookup({"book": "tahoe-heavenly", "page": "two-states"})
+    assert "California into Nevada" in page.text
+    _, page = lookup({"book": "hawaii", "page": "honu"})
+    assert "Honu (HO-noo)" in page.text and "touch" in page.about
+    assert raw["hawaii"]["narration"]["phraseByPhrase"] is True

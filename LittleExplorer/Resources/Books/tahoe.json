@@ -1,0 +1,238 @@
+{
+  "id": "tahoe",
+  "city": "Lake Tahoe",
+  "country": "California and Nevada, USA",
+  "flagImage": "tahoe-flag.png",
+  "flag": "🇺🇸",
+  "coverColor": "#1E7FCB",
+  "tagline": "A giant blue lake in the mountains",
+  "narration": {
+    "instructions": "Say local names the way people at Lake Tahoe say them: Tahoe (TAH-ho), Nevada (neh-VAD-uh, rhymes with 'had'), Truckee (TRUCK-ee), Vikingsholm (VIKE-ings-home)."
+  },
+  "pages": [
+    {
+      "id": "welcome",
+      "text": "Lake Tahoe is a giant blue lake in the mountains.",
+      "about": "Lake Tahoe (TAH-hoe) sits high in the Sierra Nevada (see-AIR-uh neh-VAH-duh) mountains, about 6,225 feet above the sea. It is about 22 miles long and 12 miles wide, so you cannot see all of it at once, and it is the biggest mountain lake in North America. The name comes from the Washoe people, who have lived here for thousands of years: their word Dáʔaw (DAH-ow) simply means 'the lake'. This photo shows big round rocks and tall pine trees on the Nevada shore. Ask Francis: if you could swim in a lake this big, how long would it take to cross?",
+      "emoji": "🏞️",
+      "photo": {
+        "commonsTitle": "File:Boulders and Pines, Lake Tahoe, Nevada (4721535436).jpg",
+        "query": "Lake Tahoe boulders pines Nevada",
+        "file": "tahoe-welcome.jpg",
+        "author": "Pink Sherbet Photography",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Boulders_and_Pines,_Lake_Tahoe,_Nevada_(4721535436).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "flag",
+      "text": "Lake Tahoe is in the USA. This is its flag.",
+      "about": "This is the flag of the United States of America. It has 50 white stars, one for each state, and 13 red and white stripes for the first 13 states. Lake Tahoe sits in two of those 50 states, California and Nevada, so two of the stars belong to Tahoe! People often call this flag the 'Stars and Stripes'.",
+      "emoji": "🇺🇸",
+      "photo": {
+        "file": "tahoe-flag.png",
+        "commonsTitle": "File:Flag of the United States.svg",
+        "query": null,
+        "author": "Dbenbenn and others",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Flag_of_the_United_States.svg",
+        "verified": true
+      }
+    },
+    {
+      "id": "two-states",
+      "text": "Part of the lake is in California, part in Nevada.",
+      "about": "An invisible line between two states runs right through the water. About two-thirds of the lake is in California and about one-third is in Nevada (neh-VAH-duh). In the town of Stateline you can stand with one foot in each state at the same time! This photo, taken from an airplane over Nevada, shows the lake tucked in between snowy mountains, with dry Nevada valleys in front. Can Francis find the lake hiding behind the mountains?",
+      "emoji": "🗺️",
+      "photo": {
+        "commonsTitle": "File:South Lake Tahoe, Nevada (21572265225).jpg",
+        "query": "South Lake Tahoe aerial",
+        "file": "tahoe-two-states.jpg",
+        "author": "Ken Lund",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:South_Lake_Tahoe,_Nevada_(21572265225).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "deep",
+      "text": "The lake is deeper than the Empire State Building is tall!",
+      "about": "At its deepest spot, Lake Tahoe goes down 1,645 feet (501 meters). The Empire State Building in New York, even with its pointy top, is only about 1,454 feet tall, so it could stand on the bottom and disappear under the water. Only Crater Lake in Oregon is deeper in the whole United States. Tahoe holds so much water that, if you poured it out, it would cover all of California about 14 inches deep. That is why the water in this photo looks such a dark, deep blue.",
+      "emoji": "🌊",
+      "photo": {
+        "commonsTitle": "File:Blue water, Lake Tahoe.jpg",
+        "query": "Lake Tahoe deep blue water",
+        "file": "tahoe-deep.jpg",
+        "author": "Downtowngal",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Blue_water,_Lake_Tahoe.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "clear",
+      "text": "The water is so clear you can see rocks below.",
+      "about": "Lake Tahoe is one of the clearest big lakes on Earth. Scientists check how clear it is by lowering a white plate called a Secchi disk (SEK-ee) into the water and watching until it disappears, often more than 60 feet down. The water stays clear because the hard granite rock around the lake does not make much mud, and the water is very cold. In this photo at Bliss Beach you can see the stones on the bottom through the water. Ask Francis: what color are the rocks under the water?",
+      "emoji": "🔍",
+      "photo": {
+        "commonsTitle": "File:Bliss Beach, Lake Tahoe, Clear Water 8-2010 (5758622831).jpg",
+        "query": "Lake Tahoe clear water rocks",
+        "file": "tahoe-clear.jpg",
+        "author": "inkknife_2000",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bliss_Beach,_Lake_Tahoe,_Clear_Water_8-2010_(5758622831).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "emerald-bay",
+      "text": "Emerald Bay has one tiny island with a stone teahouse.",
+      "about": "Emerald Bay is a long, narrow bay that was carved by giant rivers of ice called glaciers long ago. Its water often looks green, like an emerald jewel, which is how it got its name. In the middle sits Fannette (fan-NET) Island, the only island in all of Lake Tahoe. On top of the island are the ruins of a tiny stone teahouse, built around 1929, where a rich lady named Lora Knight took her guests by boat for tea. Can Francis spot the little island?",
+      "emoji": "🏝️",
+      "photo": {
+        "commonsTitle": "File:Emerald Bay 2011.jpg",
+        "query": "Emerald Bay Lake Tahoe Fannette Island",
+        "file": "tahoe-emerald-bay.jpg",
+        "author": "DimiTalen",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Emerald_Bay_2011.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "vikingsholm",
+      "text": "A castle-like house here has grass growing on its roof!",
+      "about": "Vikingsholm (VIE-kings-holm) is a big stone and wood house at the edge of Emerald Bay. It was built in 1929 for Lora Knight, the same lady who built the island teahouse, and it looks like an old house from Scandinavia, where the Vikings lived. It has 38 rooms, carved dragons, and roofs covered with soil so grass and flowers can grow on top. To visit, you walk down a steep trail about one mile long. Ask Francis: what would you plant on a roof?",
+      "emoji": "🏰",
+      "photo": {
+        "commonsTitle": "File:Vikingsholm Castle, Lake Tahoe, CA.jpg",
+        "query": "Vikingsholm Emerald Bay",
+        "file": "tahoe-vikingsholm.jpg",
+        "author": "DASH713",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Vikingsholm_Castle,_Lake_Tahoe,_CA.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "sand-harbor",
+      "text": "Big round boulders sit in the water at Sand Harbor.",
+      "about": "Sand Harbor is a beach park on the Nevada side of the lake, near the town of Incline Village. Huge, smooth granite boulders sit in the shallow water and along the shore, so people love to climb them, splash around them and take pictures. Wind, water and ice rounded off these rocks over a very, very long time. In summer there is even an outdoor theater here. Ask Francis: which boulder would you climb first?",
+      "emoji": "🪨",
+      "photo": {
+        "commonsTitle": "File:Sand Harbor, Lake Tahoe, NV 9-10 (19870063538).jpg",
+        "query": "Sand Harbor boulders Lake Tahoe",
+        "file": "tahoe-sand-harbor.jpg",
+        "author": "inkknife_2000",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sand_Harbor,_Lake_Tahoe,_NV_9-10_(19870063538).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "kayak",
+      "text": "In summer, people paddle kayaks on the bright blue water.",
+      "about": "When the snow melts, Lake Tahoe becomes a summer playground. People paddle kayaks (KYE-aks) and stand-up paddleboards, swim at sandy beaches and ride boats across the lake. The water stays chilly even in summer, so everyone wears a life jacket. These colorful kayaks are waiting on the shore at Sand Harbor. Ask Francis: what color kayak would you choose?",
+      "emoji": "🛶",
+      "photo": {
+        "commonsTitle": "File:Kayaks on Sand Harbor, Lake Tahoe 9-10 (29211162982).jpg",
+        "query": "kayaks Sand Harbor Lake Tahoe",
+        "file": "tahoe-kayak.jpg",
+        "author": "Don Graham",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Kayaks_on_Sand_Harbor,_Lake_Tahoe_9-10_(29211162982).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "bears",
+      "text": "Black bears live in the forests around the lake.",
+      "about": "American black bears live in the pine forests all around Lake Tahoe. Even though they are called black bears, many are brown, cinnamon or even blond! They have amazing noses that can smell food from far away, so people around Tahoe keep their trash in special metal 'bear boxes'. If you see a bear, watch it from far away, and never feed it. This photo shows a mother black bear with her three cubs, taken somewhere else, not at Tahoe.",
+      "emoji": "🐻",
+      "photo": {
+        "commonsTitle": "File:Mother with three cubs (1750419709).jpg",
+        "query": "black bear mother cubs",
+        "file": "tahoe-bears.jpg",
+        "author": "Jitze Couperus",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Mother_with_three_cubs_(1750419709).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "truckee-river",
+      "text": "Only one river, the Truckee, flows out of the lake.",
+      "about": "About 63 streams flow into Lake Tahoe, but only one river flows out: the Truckee (TRUCK-ee) River. It leaves the lake at Tahoe City through a small dam, which is shown in this photo, then travels about 120 miles until it ends in Pyramid Lake in Nevada. In summer, people float down the Truckee River on rafts and big tubes. Ask Francis: where do you think the water goes after it leaves the lake?",
+      "emoji": "🏞️",
+      "photo": {
+        "commonsTitle": "File:Lake Tahoe Dam 1.jpg",
+        "query": "Lake Tahoe Dam Truckee River Tahoe City",
+        "file": "tahoe-truckee-river.jpg",
+        "author": "Little Mountain 5",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Lake_Tahoe_Dam_1.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "snow",
+      "text": "Snow covers the mountains, but the big lake never freezes.",
+      "about": "In winter, lots of snow falls on the mountains around Lake Tahoe, and many ski resorts open up, like Heavenly and Northstar. But the lake itself never freezes over, because it is so big and so deep that the water keeps moving and never gets cold enough all at once. Only small, quiet spots, like Emerald Bay, sometimes get ice in very cold winters. Ask Francis: what would you build with all this snow?",
+      "emoji": "❄️",
+      "photo": {
+        "commonsTitle": "File:TahoeSnow.JPG",
+        "query": "Lake Tahoe snow winter",
+        "file": "tahoe-snow.jpg",
+        "author": "Dianncorbett",
+        "license": "CC BY 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:TahoeSnow.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "olympics",
+      "text": "The Winter Olympics happened near the lake in 1960!",
+      "about": "In 1960, the Winter Olympics were held at Squaw Valley, a ski area close to Lake Tahoe that is now called Palisades Tahoe, in a place called Olympic Valley. Athletes from about 30 countries came to ski, skate and race. Walt Disney, the man who made Mickey Mouse, helped plan the big opening show. This photo shows the snowy valley and mountains where the Games took place. Ask Francis: which winter sport would you try at the Olympics?",
+      "emoji": "🏅",
+      "photo": {
+        "commonsTitle": "File:Izgled of Squaw Valley California.JPG",
+        "query": "Squaw Valley Olympic Valley",
+        "file": "tahoe-olympics.jpg",
+        "author": "Vanka5",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Izgled_of_Squaw_Valley_California.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "goodbye",
+      "text": "Goodbye, big blue Lake Tahoe, see you again soon!",
+      "about": "A hiking path called the Tahoe Rim Trail goes all the way around the lake, high up in the mountains. It is 165 miles long, and hikers usually need about two weeks to walk the whole loop! This photo was taken on the trail near Mount Rose in Nevada, looking down at the lake. Ask Francis: what was your favorite part of Lake Tahoe, the deep blue water, the island, or the bears?",
+      "emoji": "👋",
+      "photo": {
+        "commonsTitle": "File:Between Relay Peak and Rose Knob Peak, Tahoe Rim Trail from Mount Rose, Nevada to Brockway Summit, California (50116352353).jpg",
+        "query": "Tahoe Rim Trail view lake",
+        "file": "tahoe-goodbye.jpg",
+        "author": "Ken Lund",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Between_Relay_Peak_and_Rose_Knob_Peak,_Tahoe_Rim_Trail_from_Mount_Rose,_Nevada_to_Brockway_Summit,_California_(50116352353).jpg",
+        "verified": true
+      }
+    }
+  ]
+}

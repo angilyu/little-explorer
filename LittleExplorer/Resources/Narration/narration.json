@@ -776,6 +776,1517 @@
    "style": "40b5f639d1",
    "lufs": -16.0
   },
+  "hawaii-honolulu/aloha-tower": {
+   "file": "read-hawaii-honolulu-aloha-tower",
+   "text": "Aloha Tower said hello to big ships.",
+   "duration": 4.84,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 5,
+     "start": 0.15,
+     "end": 0.907
+    },
+    {
+     "location": 6,
+     "length": 5,
+     "start": 0.907,
+     "end": 1.664
+    },
+    {
+     "location": 12,
+     "length": 4,
+     "start": 1.664,
+     "end": 2.269
+    },
+    {
+     "location": 17,
+     "length": 5,
+     "start": 2.269,
+     "end": 3.026
+    },
+    {
+     "location": 23,
+     "length": 2,
+     "start": 3.026,
+     "end": 3.329
+    },
+    {
+     "location": 26,
+     "length": 3,
+     "start": 3.329,
+     "end": 3.783
+    },
+    {
+     "location": 30,
+     "length": 5,
+     "start": 3.783,
+     "end": 4.54
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d3c59aef49"
+  },
+  "hawaii-honolulu/aquarium": {
+   "file": "read-hawaii-honolulu-aquarium",
+   "text": "The aquarium has giant clams and bright fish.",
+   "duration": 3.79,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.15,
+     "end": 0.421
+    },
+    {
+     "location": 4,
+     "length": 8,
+     "start": 0.421,
+     "end": 1.143
+    },
+    {
+     "location": 13,
+     "length": 3,
+     "start": 1.143,
+     "end": 1.414
+    },
+    {
+     "location": 17,
+     "length": 5,
+     "start": 1.414,
+     "end": 1.865
+    },
+    {
+     "location": 23,
+     "length": 5,
+     "start": 1.865,
+     "end": 2.316
+    },
+    {
+     "location": 29,
+     "length": 3,
+     "start": 2.316,
+     "end": 2.587
+    },
+    {
+     "location": 33,
+     "length": 6,
+     "start": 2.587,
+     "end": 3.129
+    },
+    {
+     "location": 40,
+     "length": 4,
+     "start": 3.129,
+     "end": 3.49
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d3c59aef49"
+  },
+  "hawaii-honolulu/canoe": {
+   "file": "read-hawaii-honolulu-canoe",
+   "text": "Paddlers race in long outrigger canoes.",
+   "duration": 3.51,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 8,
+     "start": 0.15,
+     "end": 0.892
+    },
+    {
+     "location": 9,
+     "length": 4,
+     "start": 0.892,
+     "end": 1.263
+    },
+    {
+     "location": 14,
+     "length": 2,
+     "start": 1.263,
+     "end": 1.448
+    },
+    {
+     "location": 17,
+     "length": 4,
+     "start": 1.448,
+     "end": 1.819
+    },
+    {
+     "location": 22,
+     "length": 9,
+     "start": 1.819,
+     "end": 2.654
+    },
+    {
+     "location": 32,
+     "length": 6,
+     "start": 2.654,
+     "end": 3.21
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d3c59aef49"
+  },
+  "hawaii-honolulu/diamond-head": {
+   "file": "read-hawaii-honolulu-diamond-head",
+   "text": "Diamond Head is an old volcano you can climb.",
+   "duration": 4.02,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 7,
+     "start": 0.15,
+     "end": 0.844
+    },
+    {
+     "location": 8,
+     "length": 4,
+     "start": 0.844,
+     "end": 1.241
+    },
+    {
+     "location": 13,
+     "length": 2,
+     "start": 1.241,
+     "end": 1.439
+    },
+    {
+     "location": 16,
+     "length": 2,
+     "start": 1.439,
+     "end": 1.637
+    },
+    {
+     "location": 19,
+     "length": 3,
+     "start": 1.637,
+     "end": 1.935
+    },
+    {
+     "location": 23,
+     "length": 7,
+     "start": 1.935,
+     "end": 2.629
+    },
+    {
+     "location": 31,
+     "length": 3,
+     "start": 2.629,
+     "end": 2.927
+    },
+    {
+     "location": 35,
+     "length": 3,
+     "start": 2.927,
+     "end": 3.224
+    },
+    {
+     "location": 39,
+     "length": 5,
+     "start": 3.224,
+     "end": 3.72
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d3c59aef49"
+  },
+  "hawaii-honolulu/duke": {
+   "file": "read-hawaii-honolulu-duke",
+   "text": "Duke loved to surf and swim at Waikīkī.",
+   "duration": 4.52,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.15,
+     "end": 0.675
+    },
+    {
+     "location": 5,
+     "length": 5,
+     "start": 0.675,
+     "end": 1.332
+    },
+    {
+     "location": 11,
+     "length": 2,
+     "start": 1.332,
+     "end": 1.594
+    },
+    {
+     "location": 14,
+     "length": 4,
+     "start": 1.594,
+     "end": 2.119
+    },
+    {
+     "location": 19,
+     "length": 3,
+     "start": 2.119,
+     "end": 2.513
+    },
+    {
+     "location": 23,
+     "length": 4,
+     "start": 2.513,
+     "end": 3.038
+    },
+    {
+     "location": 28,
+     "length": 2,
+     "start": 3.038,
+     "end": 3.301
+    },
+    {
+     "location": 31,
+     "length": 7,
+     "start": 3.301,
+     "end": 4.22
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d3c59aef49"
+  },
+  "hawaii-honolulu/goodbye": {
+   "file": "read-hawaii-honolulu-goodbye",
+   "text": "Aloha, Honolulu! See you next time!",
+   "duration": 3.91,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 5,
+     "start": 0.15,
+     "end": 0.82
+    },
+    {
+     "location": 7,
+     "length": 8,
+     "start": 1.17,
+     "end": 1.9
+    },
+    {
+     "location": 17,
+     "length": 3,
+     "start": 2.4,
+     "end": 2.659
+    },
+    {
+     "location": 21,
+     "length": 3,
+     "start": 2.659,
+     "end": 2.919
+    },
+    {
+     "location": 25,
+     "length": 4,
+     "start": 2.919,
+     "end": 3.264
+    },
+    {
+     "location": 30,
+     "length": 4,
+     "start": 3.264,
+     "end": 3.61
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d3c59aef49"
+  },
+  "hawaii-honolulu/hanauma": {
+   "file": "read-hawaii-honolulu-hanauma",
+   "text": "Colorful fish swim in this round bay.",
+   "duration": 3.09,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 8,
+     "start": 0.15,
+     "end": 0.854
+    },
+    {
+     "location": 9,
+     "length": 4,
+     "start": 0.854,
+     "end": 1.206
+    },
+    {
+     "location": 14,
+     "length": 4,
+     "start": 1.206,
+     "end": 1.558
+    },
+    {
+     "location": 19,
+     "length": 2,
+     "start": 1.558,
+     "end": 1.734
+    },
+    {
+     "location": 22,
+     "length": 4,
+     "start": 1.734,
+     "end": 2.086
+    },
+    {
+     "location": 27,
+     "length": 5,
+     "start": 2.086,
+     "end": 2.526
+    },
+    {
+     "location": 33,
+     "length": 3,
+     "start": 2.526,
+     "end": 2.79
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d3c59aef49"
+  },
+  "hawaii-honolulu/kamehameha": {
+   "file": "read-hawaii-honolulu-kamehameha",
+   "text": "This king's statue wears very long flower leis.",
+   "duration": 4.64,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.15,
+     "end": 0.591
+    },
+    {
+     "location": 5,
+     "length": 6,
+     "start": 0.591,
+     "end": 1.142
+    },
+    {
+     "location": 12,
+     "length": 6,
+     "start": 1.142,
+     "end": 1.804
+    },
+    {
+     "location": 19,
+     "length": 5,
+     "start": 1.804,
+     "end": 2.355
+    },
+    {
+     "location": 25,
+     "length": 4,
+     "start": 2.355,
+     "end": 2.796
+    },
+    {
+     "location": 30,
+     "length": 4,
+     "start": 2.796,
+     "end": 3.237
+    },
+    {
+     "location": 35,
+     "length": 6,
+     "start": 3.237,
+     "end": 3.899
+    },
+    {
+     "location": 42,
+     "length": 4,
+     "start": 3.899,
+     "end": 4.34
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d3c59aef49"
+  },
+  "hawaii-honolulu/musubi": {
+   "file": "read-hawaii-honolulu-musubi",
+   "text": "Spam musubi is rice and meat wrapped in seaweed.",
+   "duration": 4.41,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.15,
+     "end": 0.556
+    },
+    {
+     "location": 5,
+     "length": 6,
+     "start": 0.556,
+     "end": 1.165
+    },
+    {
+     "location": 12,
+     "length": 2,
+     "start": 1.165,
+     "end": 1.368
+    },
+    {
+     "location": 15,
+     "length": 4,
+     "start": 1.368,
+     "end": 1.775
+    },
+    {
+     "location": 20,
+     "length": 3,
+     "start": 1.775,
+     "end": 2.079
+    },
+    {
+     "location": 24,
+     "length": 4,
+     "start": 2.079,
+     "end": 2.485
+    },
+    {
+     "location": 29,
+     "length": 7,
+     "start": 2.485,
+     "end": 3.196
+    },
+    {
+     "location": 37,
+     "length": 2,
+     "start": 3.196,
+     "end": 3.399
+    },
+    {
+     "location": 40,
+     "length": 7,
+     "start": 3.399,
+     "end": 4.11
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d3c59aef49"
+  },
+  "hawaii-honolulu/palace": {
+   "file": "read-hawaii-honolulu-palace",
+   "text": "Kings and queens of Hawaii lived in this palace.",
+   "duration": 4.11,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 5,
+     "start": 0.15,
+     "end": 0.619
+    },
+    {
+     "location": 6,
+     "length": 3,
+     "start": 0.619,
+     "end": 0.901
+    },
+    {
+     "location": 10,
+     "length": 6,
+     "start": 0.901,
+     "end": 1.464
+    },
+    {
+     "location": 17,
+     "length": 2,
+     "start": 1.464,
+     "end": 1.652
+    },
+    {
+     "location": 20,
+     "length": 6,
+     "start": 1.652,
+     "end": 2.215
+    },
+    {
+     "location": 27,
+     "length": 5,
+     "start": 2.215,
+     "end": 2.684
+    },
+    {
+     "location": 33,
+     "length": 2,
+     "start": 2.684,
+     "end": 2.872
+    },
+    {
+     "location": 36,
+     "length": 4,
+     "start": 2.872,
+     "end": 3.247
+    },
+    {
+     "location": 41,
+     "length": 6,
+     "start": 3.247,
+     "end": 3.81
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d3c59aef49"
+  },
+  "hawaii-honolulu/waikiki": {
+   "file": "read-hawaii-honolulu-waikiki",
+   "text": "Waikīkī (why-kee-KEE) beach has gentle waves for learning to surf.",
+   "duration": 7.84,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 7,
+     "start": 0.15,
+     "end": 1.93
+    },
+    {
+     "location": 9,
+     "length": 3,
+     "start": 2.28,
+     "end": 2.903
+    },
+    {
+     "location": 13,
+     "length": 3,
+     "start": 2.903,
+     "end": 3.527
+    },
+    {
+     "location": 17,
+     "length": 3,
+     "start": 3.527,
+     "end": 4.15
+    },
+    {
+     "location": 22,
+     "length": 5,
+     "start": 4.5,
+     "end": 4.922
+    },
+    {
+     "location": 28,
+     "length": 3,
+     "start": 4.922,
+     "end": 5.176
+    },
+    {
+     "location": 32,
+     "length": 6,
+     "start": 5.176,
+     "end": 5.682
+    },
+    {
+     "location": 39,
+     "length": 5,
+     "start": 5.682,
+     "end": 6.104
+    },
+    {
+     "location": 45,
+     "length": 3,
+     "start": 6.104,
+     "end": 6.358
+    },
+    {
+     "location": 49,
+     "length": 8,
+     "start": 6.358,
+     "end": 7.033
+    },
+    {
+     "location": 58,
+     "length": 2,
+     "start": 7.033,
+     "end": 7.202
+    },
+    {
+     "location": 61,
+     "length": 4,
+     "start": 7.202,
+     "end": 7.54
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d3c59aef49"
+  },
+  "hawaii-honolulu/welcome": {
+   "file": "read-hawaii-honolulu-welcome",
+   "text": "Honolulu is the biggest city in Hawaii.",
+   "duration": 3.67,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 8,
+     "start": 0.15,
+     "end": 0.955
+    },
+    {
+     "location": 9,
+     "length": 2,
+     "start": 0.955,
+     "end": 1.156
+    },
+    {
+     "location": 12,
+     "length": 3,
+     "start": 1.156,
+     "end": 1.458
+    },
+    {
+     "location": 16,
+     "length": 7,
+     "start": 1.458,
+     "end": 2.163
+    },
+    {
+     "location": 24,
+     "length": 4,
+     "start": 2.163,
+     "end": 2.565
+    },
+    {
+     "location": 29,
+     "length": 2,
+     "start": 2.565,
+     "end": 2.766
+    },
+    {
+     "location": 32,
+     "length": 6,
+     "start": 2.766,
+     "end": 3.37
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d3c59aef49"
+  },
+  "hawaii/black-sand": {
+   "file": "read-hawaii-black-sand",
+   "text": "Some beaches here have soft black sand!",
+   "duration": 3.4,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.15,
+     "end": 0.519
+    },
+    {
+     "location": 5,
+     "length": 7,
+     "start": 0.519,
+     "end": 1.164
+    },
+    {
+     "location": 13,
+     "length": 4,
+     "start": 1.164,
+     "end": 1.533
+    },
+    {
+     "location": 18,
+     "length": 4,
+     "start": 1.533,
+     "end": 1.902
+    },
+    {
+     "location": 23,
+     "length": 4,
+     "start": 1.902,
+     "end": 2.27
+    },
+    {
+     "location": 28,
+     "length": 5,
+     "start": 2.27,
+     "end": 2.731
+    },
+    {
+     "location": 34,
+     "length": 4,
+     "start": 2.731,
+     "end": 3.1
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d3c59aef49"
+  },
+  "hawaii/fish": {
+   "file": "read-hawaii-fish",
+   "text": "Hawaii's state fish has a super long name!",
+   "duration": 3.67,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 8,
+     "start": 0.15,
+     "end": 0.813
+    },
+    {
+     "location": 9,
+     "length": 5,
+     "start": 0.813,
+     "end": 1.286
+    },
+    {
+     "location": 15,
+     "length": 4,
+     "start": 1.286,
+     "end": 1.665
+    },
+    {
+     "location": 20,
+     "length": 3,
+     "start": 1.665,
+     "end": 1.949
+    },
+    {
+     "location": 24,
+     "length": 1,
+     "start": 1.949,
+     "end": 2.139
+    },
+    {
+     "location": 26,
+     "length": 5,
+     "start": 2.139,
+     "end": 2.612
+    },
+    {
+     "location": 32,
+     "length": 4,
+     "start": 2.612,
+     "end": 2.991
+    },
+    {
+     "location": 37,
+     "length": 4,
+     "start": 2.991,
+     "end": 3.37
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d3c59aef49"
+  },
+  "hawaii/flag": {
+   "file": "read-hawaii-flag",
+   "text": "Hawaii's flag has eight stripes for eight big islands.",
+   "duration": 5.26,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 8,
+     "start": 0.15,
+     "end": 0.915
+    },
+    {
+     "location": 9,
+     "length": 4,
+     "start": 0.915,
+     "end": 1.353
+    },
+    {
+     "location": 14,
+     "length": 3,
+     "start": 1.353,
+     "end": 1.68
+    },
+    {
+     "location": 18,
+     "length": 5,
+     "start": 1.68,
+     "end": 2.227
+    },
+    {
+     "location": 24,
+     "length": 7,
+     "start": 2.227,
+     "end": 2.992
+    },
+    {
+     "location": 32,
+     "length": 3,
+     "start": 2.992,
+     "end": 3.32
+    },
+    {
+     "location": 36,
+     "length": 5,
+     "start": 3.32,
+     "end": 3.867
+    },
+    {
+     "location": 42,
+     "length": 3,
+     "start": 3.867,
+     "end": 4.195
+    },
+    {
+     "location": 46,
+     "length": 7,
+     "start": 4.195,
+     "end": 4.96
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d3c59aef49"
+  },
+  "hawaii/goodbye": {
+   "file": "read-hawaii-goodbye",
+   "text": "Aloha, Hawaii! Aloha means hello, goodbye and love.",
+   "duration": 7.15,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 5,
+     "start": 0.15,
+     "end": 0.83
+    },
+    {
+     "location": 7,
+     "length": 6,
+     "start": 1.18,
+     "end": 2.0
+    },
+    {
+     "location": 15,
+     "length": 5,
+     "start": 2.5,
+     "end": 3.293
+    },
+    {
+     "location": 21,
+     "length": 5,
+     "start": 3.293,
+     "end": 4.087
+    },
+    {
+     "location": 27,
+     "length": 5,
+     "start": 4.087,
+     "end": 4.88
+    },
+    {
+     "location": 34,
+     "length": 7,
+     "start": 5.23,
+     "end": 6.04
+    },
+    {
+     "location": 42,
+     "length": 3,
+     "start": 6.04,
+     "end": 6.387
+    },
+    {
+     "location": 46,
+     "length": 4,
+     "start": 6.387,
+     "end": 6.85
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d3c59aef49"
+  },
+  "hawaii/honu": {
+   "file": "read-hawaii-honu",
+   "text": "Honu (HO-noo) means sea turtle. They nap on beaches!",
+   "duration": 7.36,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.15,
+     "end": 0.6
+    },
+    {
+     "location": 6,
+     "length": 2,
+     "start": 0.95,
+     "end": 1.506
+    },
+    {
+     "location": 9,
+     "length": 3,
+     "start": 1.506,
+     "end": 2.34
+    },
+    {
+     "location": 14,
+     "length": 5,
+     "start": 2.69,
+     "end": 3.322
+    },
+    {
+     "location": 20,
+     "length": 3,
+     "start": 3.322,
+     "end": 3.701
+    },
+    {
+     "location": 24,
+     "length": 6,
+     "start": 3.701,
+     "end": 4.46
+    },
+    {
+     "location": 32,
+     "length": 4,
+     "start": 4.96,
+     "end": 5.485
+    },
+    {
+     "location": 37,
+     "length": 3,
+     "start": 5.485,
+     "end": 5.879
+    },
+    {
+     "location": 41,
+     "length": 2,
+     "start": 5.879,
+     "end": 6.141
+    },
+    {
+     "location": 44,
+     "length": 7,
+     "start": 6.141,
+     "end": 7.06
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d3c59aef49"
+  },
+  "hawaii/hula": {
+   "file": "read-hawaii-hula",
+   "text": "Hula dancers tell stories with their hands.",
+   "duration": 3.36,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.15,
+     "end": 0.473
+    },
+    {
+     "location": 5,
+     "length": 7,
+     "start": 0.473,
+     "end": 1.039
+    },
+    {
+     "location": 13,
+     "length": 4,
+     "start": 1.039,
+     "end": 1.363
+    },
+    {
+     "location": 18,
+     "length": 7,
+     "start": 1.363,
+     "end": 1.928
+    },
+    {
+     "location": 26,
+     "length": 4,
+     "start": 1.928,
+     "end": 2.252
+    },
+    {
+     "location": 31,
+     "length": 5,
+     "start": 2.252,
+     "end": 2.656
+    },
+    {
+     "location": 37,
+     "length": 5,
+     "start": 2.656,
+     "end": 3.06
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d3c59aef49"
+  },
+  "hawaii/lei": {
+   "file": "read-hawaii-lei",
+   "text": "A lei is a necklace made of flowers.",
+   "duration": 3.48,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 1,
+     "start": 0.15,
+     "end": 0.352
+    },
+    {
+     "location": 2,
+     "length": 3,
+     "start": 0.352,
+     "end": 0.655
+    },
+    {
+     "location": 6,
+     "length": 2,
+     "start": 0.655,
+     "end": 0.857
+    },
+    {
+     "location": 9,
+     "length": 1,
+     "start": 0.857,
+     "end": 1.059
+    },
+    {
+     "location": 11,
+     "length": 8,
+     "start": 1.059,
+     "end": 1.867
+    },
+    {
+     "location": 20,
+     "length": 4,
+     "start": 1.867,
+     "end": 2.271
+    },
+    {
+     "location": 25,
+     "length": 2,
+     "start": 2.271,
+     "end": 2.473
+    },
+    {
+     "location": 28,
+     "length": 7,
+     "start": 2.473,
+     "end": 3.18
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d3c59aef49"
+  },
+  "hawaii/nene": {
+   "file": "read-hawaii-nene",
+   "text": "The nēnē (NAY-nay) goose is Hawaii's state bird.",
+   "duration": 5.91,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.15,
+     "end": 0.587
+    },
+    {
+     "location": 4,
+     "length": 4,
+     "start": 0.587,
+     "end": 1.17
+    },
+    {
+     "location": 10,
+     "length": 3,
+     "start": 1.52,
+     "end": 2.035
+    },
+    {
+     "location": 14,
+     "length": 3,
+     "start": 2.035,
+     "end": 2.55
+    },
+    {
+     "location": 19,
+     "length": 5,
+     "start": 2.9,
+     "end": 3.489
+    },
+    {
+     "location": 25,
+     "length": 2,
+     "start": 3.489,
+     "end": 3.725
+    },
+    {
+     "location": 28,
+     "length": 8,
+     "start": 3.725,
+     "end": 4.55
+    },
+    {
+     "location": 37,
+     "length": 5,
+     "start": 4.55,
+     "end": 5.139
+    },
+    {
+     "location": 43,
+     "length": 4,
+     "start": 5.139,
+     "end": 5.61
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d3c59aef49"
+  },
+  "hawaii/shave-ice": {
+   "file": "read-hawaii-shave-ice",
+   "text": "Shave ice is fluffy ice with sweet rainbow syrup.",
+   "duration": 5.66,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 5,
+     "start": 0.15,
+     "end": 0.801
+    },
+    {
+     "location": 6,
+     "length": 3,
+     "start": 0.801,
+     "end": 1.192
+    },
+    {
+     "location": 10,
+     "length": 2,
+     "start": 1.192,
+     "end": 1.452
+    },
+    {
+     "location": 13,
+     "length": 6,
+     "start": 1.452,
+     "end": 2.234
+    },
+    {
+     "location": 20,
+     "length": 3,
+     "start": 2.234,
+     "end": 2.625
+    },
+    {
+     "location": 24,
+     "length": 4,
+     "start": 2.625,
+     "end": 3.146
+    },
+    {
+     "location": 29,
+     "length": 5,
+     "start": 3.146,
+     "end": 3.797
+    },
+    {
+     "location": 35,
+     "length": 7,
+     "start": 3.797,
+     "end": 4.709
+    },
+    {
+     "location": 43,
+     "length": 5,
+     "start": 4.709,
+     "end": 5.36
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d3c59aef49"
+  },
+  "hawaii/surfing": {
+   "file": "read-hawaii-surfing",
+   "text": "Hawaiians were surfing on waves long, long ago.",
+   "duration": 6.09,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 9,
+     "start": 0.15,
+     "end": 1.326
+    },
+    {
+     "location": 10,
+     "length": 4,
+     "start": 1.326,
+     "end": 1.848
+    },
+    {
+     "location": 15,
+     "length": 7,
+     "start": 1.848,
+     "end": 2.763
+    },
+    {
+     "location": 23,
+     "length": 2,
+     "start": 2.763,
+     "end": 3.024
+    },
+    {
+     "location": 26,
+     "length": 5,
+     "start": 3.024,
+     "end": 3.677
+    },
+    {
+     "location": 32,
+     "length": 4,
+     "start": 3.677,
+     "end": 4.2
+    },
+    {
+     "location": 38,
+     "length": 4,
+     "start": 4.55,
+     "end": 5.259
+    },
+    {
+     "location": 43,
+     "length": 3,
+     "start": 5.259,
+     "end": 5.79
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d3c59aef49"
+  },
+  "hawaii/volcano": {
+   "file": "read-hawaii-volcano",
+   "text": "Hot orange lava shoots up from a volcano!",
+   "duration": 4.26,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.15,
+     "end": 0.486
+    },
+    {
+     "location": 4,
+     "length": 6,
+     "start": 0.486,
+     "end": 1.159
+    },
+    {
+     "location": 11,
+     "length": 4,
+     "start": 1.159,
+     "end": 1.607
+    },
+    {
+     "location": 16,
+     "length": 6,
+     "start": 1.607,
+     "end": 2.279
+    },
+    {
+     "location": 23,
+     "length": 2,
+     "start": 2.279,
+     "end": 2.503
+    },
+    {
+     "location": 26,
+     "length": 4,
+     "start": 2.503,
+     "end": 2.951
+    },
+    {
+     "location": 31,
+     "length": 1,
+     "start": 2.951,
+     "end": 3.176
+    },
+    {
+     "location": 33,
+     "length": 7,
+     "start": 3.176,
+     "end": 3.96
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d3c59aef49"
+  },
+  "hawaii/welcome": {
+   "file": "read-hawaii-welcome",
+   "text": "Hawaii is a chain of islands in the big blue ocean.",
+   "duration": 4.73,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 6,
+     "start": 0.15,
+     "end": 0.776
+    },
+    {
+     "location": 7,
+     "length": 2,
+     "start": 0.776,
+     "end": 0.985
+    },
+    {
+     "location": 10,
+     "length": 1,
+     "start": 0.985,
+     "end": 1.194
+    },
+    {
+     "location": 12,
+     "length": 5,
+     "start": 1.194,
+     "end": 1.716
+    },
+    {
+     "location": 18,
+     "length": 2,
+     "start": 1.716,
+     "end": 1.925
+    },
+    {
+     "location": 21,
+     "length": 7,
+     "start": 1.925,
+     "end": 2.655
+    },
+    {
+     "location": 29,
+     "length": 2,
+     "start": 2.655,
+     "end": 2.864
+    },
+    {
+     "location": 32,
+     "length": 3,
+     "start": 2.864,
+     "end": 3.177
+    },
+    {
+     "location": 36,
+     "length": 3,
+     "start": 3.177,
+     "end": 3.49
+    },
+    {
+     "location": 40,
+     "length": 4,
+     "start": 3.49,
+     "end": 3.908
+    },
+    {
+     "location": 45,
+     "length": 5,
+     "start": 3.908,
+     "end": 4.43
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d3c59aef49"
+  },
+  "hawaii/whales": {
+   "file": "read-hawaii-whales",
+   "text": "Big humpback whales swim here in the winter.",
+   "duration": 3.77,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.15,
+     "end": 0.427
+    },
+    {
+     "location": 4,
+     "length": 8,
+     "start": 0.427,
+     "end": 1.164
+    },
+    {
+     "location": 13,
+     "length": 6,
+     "start": 1.164,
+     "end": 1.718
+    },
+    {
+     "location": 20,
+     "length": 4,
+     "start": 1.718,
+     "end": 2.087
+    },
+    {
+     "location": 25,
+     "length": 4,
+     "start": 2.087,
+     "end": 2.456
+    },
+    {
+     "location": 30,
+     "length": 2,
+     "start": 2.456,
+     "end": 2.64
+    },
+    {
+     "location": 33,
+     "length": 3,
+     "start": 2.64,
+     "end": 2.917
+    },
+    {
+     "location": 37,
+     "length": 6,
+     "start": 2.917,
+     "end": 3.47
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d3c59aef49"
+  },
   "london-big-ben/bell": {
    "file": "read-london-big-ben-bell",
    "text": "Big Ben is the name of the giant bell inside.",
@@ -11032,6 +12543,2720 @@
    ],
    "style": "40b5f639d1",
    "lufs": -16.0
+  },
+  "tahoe-heavenly/chairlift": {
+   "file": "read-tahoe-heavenly-chairlift",
+   "text": "Chairlifts swing skiers up to the top of the mountain.",
+   "duration": 4.41,
+   "match": 1.0,
+   "heard": "Chairlifts swing skiers up to the top of the mountain.",
+   "words": [
+    {
+     "location": 0,
+     "length": 10,
+     "start": 0.07,
+     "end": 0.87
+    },
+    {
+     "location": 11,
+     "length": 5,
+     "start": 1.08,
+     "end": 1.72
+    },
+    {
+     "location": 17,
+     "length": 6,
+     "start": 1.72,
+     "end": 2.26
+    },
+    {
+     "location": 24,
+     "length": 2,
+     "start": 2.57,
+     "end": 2.69
+    },
+    {
+     "location": 27,
+     "length": 2,
+     "start": 2.75,
+     "end": 3.05
+    },
+    {
+     "location": 30,
+     "length": 3,
+     "start": 3.11,
+     "end": 3.38
+    },
+    {
+     "location": 34,
+     "length": 3,
+     "start": 3.38,
+     "end": 3.46
+    },
+    {
+     "location": 38,
+     "length": 2,
+     "start": 3.46,
+     "end": 3.58
+    },
+    {
+     "location": 41,
+     "length": 3,
+     "start": 3.58,
+     "end": 3.8
+    },
+    {
+     "location": 45,
+     "length": 8,
+     "start": 3.8,
+     "end": 3.94
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
+  },
+  "tahoe-heavenly/cocoa": {
+   "file": "read-tahoe-heavenly-cocoa",
+   "text": "Time to warm up with a mug of hot cocoa!",
+   "duration": 3.5,
+   "match": 1.0,
+   "heard": "Time to warm up with a mug of hot cocoa!",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.49,
+     "end": 0.86
+    },
+    {
+     "location": 5,
+     "length": 2,
+     "start": 0.86,
+     "end": 1.28
+    },
+    {
+     "location": 8,
+     "length": 4,
+     "start": 1.28,
+     "end": 1.36
+    },
+    {
+     "location": 13,
+     "length": 2,
+     "start": 1.36,
+     "end": 1.48
+    },
+    {
+     "location": 16,
+     "length": 4,
+     "start": 1.57,
+     "end": 1.76
+    },
+    {
+     "location": 21,
+     "length": 1,
+     "start": 1.76,
+     "end": 1.96
+    },
+    {
+     "location": 23,
+     "length": 3,
+     "start": 1.96,
+     "end": 2.27
+    },
+    {
+     "location": 27,
+     "length": 2,
+     "start": 2.33,
+     "end": 2.56
+    },
+    {
+     "location": 30,
+     "length": 3,
+     "start": 2.56,
+     "end": 2.64
+    },
+    {
+     "location": 34,
+     "length": 5,
+     "start": 2.75,
+     "end": 3.04
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
+  },
+  "tahoe-heavenly/deck": {
+   "file": "read-tahoe-heavenly-deck",
+   "text": "Partway up, a deck shows the whole lake below.",
+   "duration": 3.81,
+   "match": 1.0,
+   "heard": "Partway up, a deck shows the whole lake below.",
+   "words": [
+    {
+     "location": 0,
+     "length": 7,
+     "start": 0.0,
+     "end": 0.29
+    },
+    {
+     "location": 8,
+     "length": 2,
+     "start": 0.35,
+     "end": 0.81
+    },
+    {
+     "location": 12,
+     "length": 1,
+     "start": 1.15,
+     "end": 1.31
+    },
+    {
+     "location": 14,
+     "length": 4,
+     "start": 1.38,
+     "end": 1.68
+    },
+    {
+     "location": 19,
+     "length": 5,
+     "start": 1.68,
+     "end": 2.02
+    },
+    {
+     "location": 25,
+     "length": 3,
+     "start": 2.02,
+     "end": 2.3
+    },
+    {
+     "location": 29,
+     "length": 5,
+     "start": 2.3,
+     "end": 2.74
+    },
+    {
+     "location": 35,
+     "length": 4,
+     "start": 2.74,
+     "end": 3.02
+    },
+    {
+     "location": 40,
+     "length": 5,
+     "start": 3.02,
+     "end": 3.42
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
+  },
+  "tahoe-heavenly/gondola": {
+   "file": "read-tahoe-heavenly-gondola",
+   "text": "Little gondola cabins carry you way up the mountain.",
+   "duration": 4.41,
+   "match": 1.0,
+   "heard": "Little gondola cabins carry you way up the mountain.",
+   "words": [
+    {
+     "location": 0,
+     "length": 6,
+     "start": 0.46,
+     "end": 0.9
+    },
+    {
+     "location": 7,
+     "length": 7,
+     "start": 0.9,
+     "end": 1.44
+    },
+    {
+     "location": 15,
+     "length": 6,
+     "start": 1.44,
+     "end": 1.98
+    },
+    {
+     "location": 22,
+     "length": 5,
+     "start": 2.22,
+     "end": 2.54
+    },
+    {
+     "location": 28,
+     "length": 3,
+     "start": 2.54,
+     "end": 2.9
+    },
+    {
+     "location": 32,
+     "length": 3,
+     "start": 2.9,
+     "end": 3.16
+    },
+    {
+     "location": 36,
+     "length": 2,
+     "start": 3.16,
+     "end": 3.3
+    },
+    {
+     "location": 39,
+     "length": 3,
+     "start": 3.3,
+     "end": 3.82
+    },
+    {
+     "location": 43,
+     "length": 8,
+     "start": 3.82,
+     "end": 3.9
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
+  },
+  "tahoe-heavenly/goodbye": {
+   "file": "read-tahoe-heavenly-goodbye",
+   "text": "Goodbye, Heavenly! The snowy mountain glows pink at sunset.",
+   "duration": 7.32,
+   "match": 1.0,
+   "heard": "Goodbye, Heavenly! The snowy mountain glows pink at sunset.",
+   "words": [
+    {
+     "location": 0,
+     "length": 7,
+     "start": 0.69,
+     "end": 1.44
+    },
+    {
+     "location": 9,
+     "length": 8,
+     "start": 1.74,
+     "end": 2.14
+    },
+    {
+     "location": 19,
+     "length": 3,
+     "start": 2.76,
+     "end": 3.08
+    },
+    {
+     "location": 23,
+     "length": 5,
+     "start": 3.08,
+     "end": 3.96
+    },
+    {
+     "location": 29,
+     "length": 8,
+     "start": 3.96,
+     "end": 4.04
+    },
+    {
+     "location": 38,
+     "length": 5,
+     "start": 4.04,
+     "end": 4.38
+    },
+    {
+     "location": 44,
+     "length": 4,
+     "start": 4.53,
+     "end": 4.8
+    },
+    {
+     "location": 49,
+     "length": 2,
+     "start": 5.29,
+     "end": 5.6
+    },
+    {
+     "location": 52,
+     "length": 6,
+     "start": 5.6,
+     "end": 5.96
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
+  },
+  "tahoe-heavenly/magic-carpet": {
+   "file": "read-tahoe-heavenly-magic-carpet",
+   "text": "A magic carpet carries beginners up like a moving sidewalk.",
+   "duration": 4.7,
+   "match": 1.0,
+   "heard": "A magic carpet carries beginners up like a moving sidewalk.",
+   "words": [
+    {
+     "location": 0,
+     "length": 1,
+     "start": 0.0,
+     "end": 0.32
+    },
+    {
+     "location": 2,
+     "length": 5,
+     "start": 0.32,
+     "end": 0.63
+    },
+    {
+     "location": 8,
+     "length": 6,
+     "start": 0.72,
+     "end": 1.11
+    },
+    {
+     "location": 15,
+     "length": 7,
+     "start": 1.25,
+     "end": 1.7
+    },
+    {
+     "location": 23,
+     "length": 9,
+     "start": 1.7,
+     "end": 2.36
+    },
+    {
+     "location": 33,
+     "length": 2,
+     "start": 2.43,
+     "end": 2.51
+    },
+    {
+     "location": 36,
+     "length": 4,
+     "start": 2.75,
+     "end": 2.96
+    },
+    {
+     "location": 41,
+     "length": 1,
+     "start": 2.96,
+     "end": 3.24
+    },
+    {
+     "location": 43,
+     "length": 6,
+     "start": 3.24,
+     "end": 3.58
+    },
+    {
+     "location": 50,
+     "length": 8,
+     "start": 3.58,
+     "end": 4.06
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
+  },
+  "tahoe-heavenly/pizza-fries": {
+   "file": "read-tahoe-heavenly-pizza-fries",
+   "text": "Pizza skis go slow, and french fry skis go fast!",
+   "duration": 6.76,
+   "match": 1.0,
+   "heard": "Pizza skis go slow, and french fry skis go fast!",
+   "words": [
+    {
+     "location": 0,
+     "length": 5,
+     "start": 0.86,
+     "end": 1.34
+    },
+    {
+     "location": 6,
+     "length": 4,
+     "start": 1.34,
+     "end": 1.89
+    },
+    {
+     "location": 11,
+     "length": 2,
+     "start": 2.08,
+     "end": 2.48
+    },
+    {
+     "location": 14,
+     "length": 4,
+     "start": 2.48,
+     "end": 2.93
+    },
+    {
+     "location": 20,
+     "length": 3,
+     "start": 3.66,
+     "end": 4.06
+    },
+    {
+     "location": 24,
+     "length": 6,
+     "start": 4.06,
+     "end": 4.34
+    },
+    {
+     "location": 31,
+     "length": 3,
+     "start": 4.34,
+     "end": 4.66
+    },
+    {
+     "location": 35,
+     "length": 4,
+     "start": 4.66,
+     "end": 5.11
+    },
+    {
+     "location": 40,
+     "length": 2,
+     "start": 5.37,
+     "end": 5.8
+    },
+    {
+     "location": 43,
+     "length": 4,
+     "start": 5.95,
+     "end": 6.42
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
+  },
+  "tahoe-heavenly/ski-school": {
+   "file": "read-tahoe-heavenly-ski-school",
+   "text": "Little skiers learn with a teacher at ski school.",
+   "duration": 4.84,
+   "match": 1.0,
+   "heard": "Little skiers learn with a teacher at ski school.",
+   "words": [
+    {
+     "location": 0,
+     "length": 6,
+     "start": 0.07,
+     "end": 0.54
+    },
+    {
+     "location": 7,
+     "length": 6,
+     "start": 0.54,
+     "end": 1.0
+    },
+    {
+     "location": 14,
+     "length": 5,
+     "start": 1.0,
+     "end": 1.4
+    },
+    {
+     "location": 20,
+     "length": 4,
+     "start": 1.4,
+     "end": 1.69
+    },
+    {
+     "location": 25,
+     "length": 1,
+     "start": 1.77,
+     "end": 2.24
+    },
+    {
+     "location": 27,
+     "length": 7,
+     "start": 2.34,
+     "end": 2.42
+    },
+    {
+     "location": 35,
+     "length": 2,
+     "start": 2.42,
+     "end": 2.7
+    },
+    {
+     "location": 38,
+     "length": 3,
+     "start": 2.7,
+     "end": 2.96
+    },
+    {
+     "location": 42,
+     "length": 6,
+     "start": 2.96,
+     "end": 3.28
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
+  },
+  "tahoe-heavenly/snow-guns": {
+   "file": "read-tahoe-heavenly-snow-guns",
+   "text": "Snow guns blow fresh snow when the sky forgets.",
+   "duration": 4.96,
+   "match": 1.0,
+   "heard": "Snow guns blow fresh snow when the sky forgets.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.0,
+     "end": 0.56
+    },
+    {
+     "location": 5,
+     "length": 4,
+     "start": 0.56,
+     "end": 1.08
+    },
+    {
+     "location": 10,
+     "length": 4,
+     "start": 1.42,
+     "end": 1.8
+    },
+    {
+     "location": 15,
+     "length": 5,
+     "start": 1.8,
+     "end": 2.32
+    },
+    {
+     "location": 21,
+     "length": 4,
+     "start": 2.32,
+     "end": 2.74
+    },
+    {
+     "location": 26,
+     "length": 4,
+     "start": 3.24,
+     "end": 3.42
+    },
+    {
+     "location": 31,
+     "length": 3,
+     "start": 3.42,
+     "end": 3.74
+    },
+    {
+     "location": 35,
+     "length": 3,
+     "start": 3.74,
+     "end": 4.0
+    },
+    {
+     "location": 39,
+     "length": 7,
+     "start": 4.0,
+     "end": 4.66
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
+  },
+  "tahoe-heavenly/tubing": {
+   "file": "read-tahoe-heavenly-tubing",
+   "text": "Whee! Zoom down the snowy hill on a big tube.",
+   "duration": 4.84,
+   "match": 0.9,
+   "heard": "Wee! Zoom down the snowy hill on a big tube.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.06,
+     "end": 1.36
+    },
+    {
+     "location": 6,
+     "length": 4,
+     "start": 1.36,
+     "end": 1.5
+    },
+    {
+     "location": 11,
+     "length": 4,
+     "start": 1.5,
+     "end": 1.96
+    },
+    {
+     "location": 16,
+     "length": 3,
+     "start": 1.96,
+     "end": 2.3
+    },
+    {
+     "location": 20,
+     "length": 5,
+     "start": 2.3,
+     "end": 2.72
+    },
+    {
+     "location": 26,
+     "length": 4,
+     "start": 2.72,
+     "end": 2.88
+    },
+    {
+     "location": 31,
+     "length": 2,
+     "start": 2.88,
+     "end": 3.14
+    },
+    {
+     "location": 34,
+     "length": 1,
+     "start": 3.14,
+     "end": 3.22
+    },
+    {
+     "location": 36,
+     "length": 3,
+     "start": 3.32,
+     "end": 3.59
+    },
+    {
+     "location": 40,
+     "length": 4,
+     "start": 3.67,
+     "end": 4.06
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
+  },
+  "tahoe-heavenly/two-states": {
+   "file": "read-tahoe-heavenly-two-states",
+   "text": "Here you can ski from California into Nevada!",
+   "duration": 4.46,
+   "match": 1.0,
+   "heard": "Here you can ski from California into Nevada!",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.08,
+     "end": 0.56
+    },
+    {
+     "location": 5,
+     "length": 3,
+     "start": 0.7,
+     "end": 1.02
+    },
+    {
+     "location": 9,
+     "length": 3,
+     "start": 1.02,
+     "end": 1.46
+    },
+    {
+     "location": 13,
+     "length": 3,
+     "start": 1.46,
+     "end": 1.8
+    },
+    {
+     "location": 17,
+     "length": 4,
+     "start": 2.16,
+     "end": 2.73
+    },
+    {
+     "location": 22,
+     "length": 10,
+     "start": 2.79,
+     "end": 3.19
+    },
+    {
+     "location": 33,
+     "length": 4,
+     "start": 3.46,
+     "end": 3.8
+    },
+    {
+     "location": 38,
+     "length": 6,
+     "start": 3.8,
+     "end": 4.16
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
+  },
+  "tahoe-heavenly/village": {
+   "file": "read-tahoe-heavenly-village",
+   "text": "The adventure starts down in the busy village.",
+   "duration": 4.56,
+   "match": 1.0,
+   "heard": "The adventure starts down in the busy village.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.17,
+     "end": 0.4
+    },
+    {
+     "location": 4,
+     "length": 9,
+     "start": 0.4,
+     "end": 1.04
+    },
+    {
+     "location": 14,
+     "length": 6,
+     "start": 1.04,
+     "end": 1.64
+    },
+    {
+     "location": 21,
+     "length": 4,
+     "start": 1.64,
+     "end": 2.04
+    },
+    {
+     "location": 26,
+     "length": 2,
+     "start": 2.04,
+     "end": 2.16
+    },
+    {
+     "location": 29,
+     "length": 3,
+     "start": 2.16,
+     "end": 2.25
+    },
+    {
+     "location": 33,
+     "length": 4,
+     "start": 2.32,
+     "end": 2.68
+    },
+    {
+     "location": 38,
+     "length": 7,
+     "start": 2.68,
+     "end": 3.04
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
+  },
+  "tahoe-heavenly/welcome": {
+   "file": "read-tahoe-heavenly-welcome",
+   "text": "Heavenly is a snowy mountain right above Lake Tahoe.",
+   "duration": 4.56,
+   "match": 1.0,
+   "heard": "Heavenly is a snowy mountain right above Lake Tahoe.",
+   "words": [
+    {
+     "location": 0,
+     "length": 8,
+     "start": 0.22,
+     "end": 0.76
+    },
+    {
+     "location": 9,
+     "length": 2,
+     "start": 0.76,
+     "end": 0.94
+    },
+    {
+     "location": 12,
+     "length": 1,
+     "start": 1.03,
+     "end": 1.58
+    },
+    {
+     "location": 14,
+     "length": 5,
+     "start": 1.58,
+     "end": 2.46
+    },
+    {
+     "location": 20,
+     "length": 8,
+     "start": 2.73,
+     "end": 2.81
+    },
+    {
+     "location": 29,
+     "length": 5,
+     "start": 2.81,
+     "end": 3.16
+    },
+    {
+     "location": 35,
+     "length": 5,
+     "start": 3.16,
+     "end": 3.52
+    },
+    {
+     "location": 41,
+     "length": 4,
+     "start": 3.52,
+     "end": 3.88
+    },
+    {
+     "location": 46,
+     "length": 5,
+     "start": 3.88,
+     "end": 4.28
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
+  },
+  "tahoe-northstar/chairlift": {
+   "file": "read-tahoe-northstar-chairlift",
+   "text": "Chairlifts carry skiers up through the snowy trees.",
+   "duration": 4.24,
+   "match": 1.0,
+   "heard": "Chairlifts carry skiers up through the snowy trees.",
+   "words": [
+    {
+     "location": 0,
+     "length": 10,
+     "start": 0.18,
+     "end": 0.98
+    },
+    {
+     "location": 11,
+     "length": 5,
+     "start": 0.98,
+     "end": 1.48
+    },
+    {
+     "location": 17,
+     "length": 6,
+     "start": 1.48,
+     "end": 2.01
+    },
+    {
+     "location": 24,
+     "length": 2,
+     "start": 2.1,
+     "end": 2.22
+    },
+    {
+     "location": 27,
+     "length": 7,
+     "start": 2.4,
+     "end": 2.58
+    },
+    {
+     "location": 35,
+     "length": 3,
+     "start": 2.58,
+     "end": 2.88
+    },
+    {
+     "location": 39,
+     "length": 5,
+     "start": 2.88,
+     "end": 3.34
+    },
+    {
+     "location": 45,
+     "length": 5,
+     "start": 3.34,
+     "end": 3.76
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
+  },
+  "tahoe-northstar/cocoa": {
+   "file": "read-tahoe-northstar-cocoa",
+   "text": "Hot cocoa with tiny marshmallow hearts warms you up!",
+   "duration": 4.15,
+   "match": 1.0,
+   "heard": "Hot cocoa with tiny marshmallow hearts warms you up!",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.09,
+     "end": 0.3
+    },
+    {
+     "location": 4,
+     "length": 5,
+     "start": 0.42,
+     "end": 0.78
+    },
+    {
+     "location": 10,
+     "length": 4,
+     "start": 0.78,
+     "end": 1.0
+    },
+    {
+     "location": 15,
+     "length": 4,
+     "start": 1.11,
+     "end": 1.56
+    },
+    {
+     "location": 20,
+     "length": 11,
+     "start": 1.56,
+     "end": 2.02
+    },
+    {
+     "location": 32,
+     "length": 6,
+     "start": 2.02,
+     "end": 2.48
+    },
+    {
+     "location": 39,
+     "length": 5,
+     "start": 2.82,
+     "end": 3.28
+    },
+    {
+     "location": 45,
+     "length": 3,
+     "start": 3.28,
+     "end": 3.63
+    },
+    {
+     "location": 49,
+     "length": 2,
+     "start": 3.72,
+     "end": 3.8
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
+  },
+  "tahoe-northstar/corduroy": {
+   "file": "read-tahoe-northstar-corduroy",
+   "text": "Smooth stripes on the snow look like corduroy pants!",
+   "duration": 4.84,
+   "match": 1.0,
+   "heard": "Smooth stripes on the snow look like corduroy pants!",
+   "words": [
+    {
+     "location": 0,
+     "length": 6,
+     "start": 0.0,
+     "end": 0.78
+    },
+    {
+     "location": 7,
+     "length": 7,
+     "start": 0.78,
+     "end": 1.28
+    },
+    {
+     "location": 15,
+     "length": 2,
+     "start": 1.28,
+     "end": 1.54
+    },
+    {
+     "location": 18,
+     "length": 3,
+     "start": 1.54,
+     "end": 1.76
+    },
+    {
+     "location": 22,
+     "length": 4,
+     "start": 1.76,
+     "end": 2.09
+    },
+    {
+     "location": 27,
+     "length": 4,
+     "start": 2.49,
+     "end": 2.74
+    },
+    {
+     "location": 32,
+     "length": 4,
+     "start": 2.81,
+     "end": 3.03
+    },
+    {
+     "location": 37,
+     "length": 8,
+     "start": 3.18,
+     "end": 3.88
+    },
+    {
+     "location": 46,
+     "length": 5,
+     "start": 3.98,
+     "end": 4.46
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
+  },
+  "tahoe-northstar/goodbye": {
+   "file": "read-tahoe-northstar-goodbye",
+   "text": "Goodbye, Northstar! See you on the snowy slopes.",
+   "duration": 6.5,
+   "match": 1.0,
+   "heard": "Goodbye, Northstar. See you on the snowy slopes.",
+   "words": [
+    {
+     "location": 0,
+     "length": 7,
+     "start": 0.24,
+     "end": 1.49
+    },
+    {
+     "location": 9,
+     "length": 9,
+     "start": 1.55,
+     "end": 2.09
+    },
+    {
+     "location": 20,
+     "length": 3,
+     "start": 2.74,
+     "end": 3.1
+    },
+    {
+     "location": 24,
+     "length": 3,
+     "start": 3.1,
+     "end": 3.26
+    },
+    {
+     "location": 28,
+     "length": 2,
+     "start": 3.26,
+     "end": 3.42
+    },
+    {
+     "location": 31,
+     "length": 3,
+     "start": 3.42,
+     "end": 3.7
+    },
+    {
+     "location": 35,
+     "length": 5,
+     "start": 3.7,
+     "end": 4.33
+    },
+    {
+     "location": 41,
+     "length": 6,
+     "start": 4.41,
+     "end": 4.49
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
+  },
+  "tahoe-northstar/ice-rink": {
+   "file": "read-tahoe-northstar-ice-rink",
+   "text": "You can ice skate on a rink in the village!",
+   "duration": 4.15,
+   "match": 1.0,
+   "heard": "You can ice skate on a rink in the village!",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.07,
+     "end": 0.34
+    },
+    {
+     "location": 4,
+     "length": 3,
+     "start": 0.34,
+     "end": 0.58
+    },
+    {
+     "location": 8,
+     "length": 3,
+     "start": 0.67,
+     "end": 1.02
+    },
+    {
+     "location": 12,
+     "length": 5,
+     "start": 1.02,
+     "end": 1.28
+    },
+    {
+     "location": 18,
+     "length": 2,
+     "start": 1.35,
+     "end": 1.54
+    },
+    {
+     "location": 21,
+     "length": 1,
+     "start": 1.54,
+     "end": 1.94
+    },
+    {
+     "location": 23,
+     "length": 4,
+     "start": 1.94,
+     "end": 2.02
+    },
+    {
+     "location": 28,
+     "length": 2,
+     "start": 2.28,
+     "end": 2.46
+    },
+    {
+     "location": 31,
+     "length": 3,
+     "start": 2.46,
+     "end": 2.9
+    },
+    {
+     "location": 35,
+     "length": 7,
+     "start": 2.96,
+     "end": 3.04
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
+  },
+  "tahoe-northstar/lake-view": {
+   "file": "read-tahoe-northstar-lake-view",
+   "text": "From up high, you can spot Lake Tahoe far away.",
+   "duration": 4.46,
+   "match": 1.0,
+   "heard": "From up high, you can spot Lake Tahoe far away.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.08,
+     "end": 0.4
+    },
+    {
+     "location": 5,
+     "length": 2,
+     "start": 0.4,
+     "end": 0.66
+    },
+    {
+     "location": 8,
+     "length": 4,
+     "start": 0.66,
+     "end": 0.99
+    },
+    {
+     "location": 14,
+     "length": 3,
+     "start": 1.42,
+     "end": 1.66
+    },
+    {
+     "location": 18,
+     "length": 3,
+     "start": 1.66,
+     "end": 1.98
+    },
+    {
+     "location": 22,
+     "length": 4,
+     "start": 1.98,
+     "end": 2.22
+    },
+    {
+     "location": 27,
+     "length": 4,
+     "start": 2.22,
+     "end": 2.6
+    },
+    {
+     "location": 32,
+     "length": 5,
+     "start": 2.6,
+     "end": 3.08
+    },
+    {
+     "location": 38,
+     "length": 3,
+     "start": 3.38,
+     "end": 3.76
+    },
+    {
+     "location": 42,
+     "length": 4,
+     "start": 3.76,
+     "end": 4.12
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
+  },
+  "tahoe-northstar/pines": {
+   "file": "read-tahoe-northstar-pines",
+   "text": "Snow piles up on the pine trees like frosting.",
+   "duration": 3.64,
+   "match": 1.0,
+   "heard": "Snow piles up on the pine trees like frosting.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.0,
+     "end": 0.54
+    },
+    {
+     "location": 5,
+     "length": 5,
+     "start": 0.54,
+     "end": 0.94
+    },
+    {
+     "location": 11,
+     "length": 2,
+     "start": 0.94,
+     "end": 1.22
+    },
+    {
+     "location": 14,
+     "length": 2,
+     "start": 1.22,
+     "end": 1.34
+    },
+    {
+     "location": 17,
+     "length": 3,
+     "start": 1.34,
+     "end": 1.5
+    },
+    {
+     "location": 21,
+     "length": 4,
+     "start": 1.5,
+     "end": 1.8
+    },
+    {
+     "location": 26,
+     "length": 5,
+     "start": 1.8,
+     "end": 2.19
+    },
+    {
+     "location": 32,
+     "length": 4,
+     "start": 2.3,
+     "end": 2.58
+    },
+    {
+     "location": 37,
+     "length": 8,
+     "start": 2.58,
+     "end": 3.0
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
+  },
+  "tahoe-northstar/ski-school": {
+   "file": "read-tahoe-northstar-ski-school",
+   "text": "At ski school, kids wear helmets and learn together.",
+   "duration": 4.75,
+   "match": 1.0,
+   "heard": "At ski school, kids wear helmets and learn together.",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.35,
+     "end": 0.68
+    },
+    {
+     "location": 3,
+     "length": 3,
+     "start": 0.68,
+     "end": 1.0
+    },
+    {
+     "location": 7,
+     "length": 6,
+     "start": 1.0,
+     "end": 1.35
+    },
+    {
+     "location": 15,
+     "length": 4,
+     "start": 1.73,
+     "end": 2.06
+    },
+    {
+     "location": 20,
+     "length": 4,
+     "start": 2.06,
+     "end": 2.38
+    },
+    {
+     "location": 25,
+     "length": 7,
+     "start": 2.38,
+     "end": 2.95
+    },
+    {
+     "location": 33,
+     "length": 3,
+     "start": 3.24,
+     "end": 3.56
+    },
+    {
+     "location": 37,
+     "length": 5,
+     "start": 3.56,
+     "end": 3.9
+    },
+    {
+     "location": 43,
+     "length": 8,
+     "start": 3.9,
+     "end": 4.28
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
+  },
+  "tahoe-northstar/smores": {
+   "file": "read-tahoe-northstar-smores",
+   "text": "Toast a marshmallow by the fire for a gooey s'more!",
+   "duration": 5.8,
+   "match": 1.0,
+   "heard": "Toast a marshmallow by the fire for a gooey s'more!",
+   "words": [
+    {
+     "location": 0,
+     "length": 5,
+     "start": 0.0,
+     "end": 0.48
+    },
+    {
+     "location": 6,
+     "length": 1,
+     "start": 0.48,
+     "end": 0.82
+    },
+    {
+     "location": 8,
+     "length": 11,
+     "start": 0.82,
+     "end": 1.2
+    },
+    {
+     "location": 20,
+     "length": 2,
+     "start": 1.2,
+     "end": 1.72
+    },
+    {
+     "location": 23,
+     "length": 3,
+     "start": 1.86,
+     "end": 2.06
+    },
+    {
+     "location": 27,
+     "length": 4,
+     "start": 2.06,
+     "end": 2.23
+    },
+    {
+     "location": 32,
+     "length": 3,
+     "start": 2.48,
+     "end": 2.73
+    },
+    {
+     "location": 36,
+     "length": 1,
+     "start": 2.9,
+     "end": 3.0
+    },
+    {
+     "location": 38,
+     "length": 5,
+     "start": 3.0,
+     "end": 3.38
+    },
+    {
+     "location": 44,
+     "length": 6,
+     "start": 3.38,
+     "end": 3.74
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
+  },
+  "tahoe-northstar/snowcat": {
+   "file": "read-tahoe-northstar-snowcat",
+   "text": "At night, big snowcats comb the snow smooth.",
+   "duration": 4.65,
+   "match": 1.0,
+   "heard": "At night, big snowcats comb the snow smooth.",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.11,
+     "end": 0.38
+    },
+    {
+     "location": 3,
+     "length": 5,
+     "start": 0.38,
+     "end": 0.63
+    },
+    {
+     "location": 10,
+     "length": 3,
+     "start": 1.11,
+     "end": 1.7
+    },
+    {
+     "location": 14,
+     "length": 8,
+     "start": 1.7,
+     "end": 2.33
+    },
+    {
+     "location": 23,
+     "length": 4,
+     "start": 2.41,
+     "end": 2.74
+    },
+    {
+     "location": 28,
+     "length": 3,
+     "start": 2.74,
+     "end": 3.14
+    },
+    {
+     "location": 32,
+     "length": 4,
+     "start": 3.14,
+     "end": 3.42
+    },
+    {
+     "location": 37,
+     "length": 6,
+     "start": 3.42,
+     "end": 3.94
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
+  },
+  "tahoe-northstar/tubing": {
+   "file": "read-tahoe-northstar-tubing",
+   "text": "Slide down a snowy lane on a big round tube!",
+   "duration": 6.0,
+   "match": 1.0,
+   "heard": "Slide down a snowy lane on a big round tube!",
+   "words": [
+    {
+     "location": 0,
+     "length": 5,
+     "start": 0.0,
+     "end": 0.93
+    },
+    {
+     "location": 6,
+     "length": 4,
+     "start": 1.03,
+     "end": 1.52
+    },
+    {
+     "location": 11,
+     "length": 1,
+     "start": 1.52,
+     "end": 2.08
+    },
+    {
+     "location": 13,
+     "length": 5,
+     "start": 2.08,
+     "end": 2.92
+    },
+    {
+     "location": 19,
+     "length": 4,
+     "start": 2.92,
+     "end": 3.0
+    },
+    {
+     "location": 24,
+     "length": 2,
+     "start": 3.0,
+     "end": 3.28
+    },
+    {
+     "location": 27,
+     "length": 1,
+     "start": 3.28,
+     "end": 3.37
+    },
+    {
+     "location": 29,
+     "length": 3,
+     "start": 3.66,
+     "end": 4.34
+    },
+    {
+     "location": 33,
+     "length": 5,
+     "start": 4.34,
+     "end": 4.86
+    },
+    {
+     "location": 39,
+     "length": 4,
+     "start": 4.86,
+     "end": 5.36
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
+  },
+  "tahoe-northstar/village": {
+   "file": "read-tahoe-northstar-village",
+   "text": "At the bottom is a cozy village full of shops.",
+   "duration": 4.46,
+   "match": 1.0,
+   "heard": "At the bottom is a cozy village full of shops.",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.0,
+     "end": 0.17
+    },
+    {
+     "location": 3,
+     "length": 3,
+     "start": 0.26,
+     "end": 0.9
+    },
+    {
+     "location": 7,
+     "length": 6,
+     "start": 1.19,
+     "end": 1.27
+    },
+    {
+     "location": 14,
+     "length": 2,
+     "start": 1.27,
+     "end": 1.44
+    },
+    {
+     "location": 17,
+     "length": 1,
+     "start": 1.53,
+     "end": 1.62
+    },
+    {
+     "location": 19,
+     "length": 4,
+     "start": 1.62,
+     "end": 2.04
+    },
+    {
+     "location": 24,
+     "length": 7,
+     "start": 2.04,
+     "end": 2.54
+    },
+    {
+     "location": 32,
+     "length": 4,
+     "start": 2.9,
+     "end": 3.22
+    },
+    {
+     "location": 37,
+     "length": 2,
+     "start": 3.22,
+     "end": 3.61
+    },
+    {
+     "location": 40,
+     "length": 5,
+     "start": 3.73,
+     "end": 3.81
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
+  },
+  "tahoe-northstar/welcome": {
+   "file": "read-tahoe-northstar-welcome",
+   "text": "Northstar is a snowy mountain full of tall pine trees.",
+   "duration": 6.04,
+   "match": 1.0,
+   "heard": "Northstar is a snowy mountain full of tall pine trees.",
+   "words": [
+    {
+     "location": 0,
+     "length": 9,
+     "start": 0.06,
+     "end": 0.89
+    },
+    {
+     "location": 10,
+     "length": 2,
+     "start": 1.23,
+     "end": 1.4
+    },
+    {
+     "location": 13,
+     "length": 1,
+     "start": 1.4,
+     "end": 1.92
+    },
+    {
+     "location": 15,
+     "length": 5,
+     "start": 1.92,
+     "end": 2.55
+    },
+    {
+     "location": 21,
+     "length": 8,
+     "start": 3.0,
+     "end": 3.08
+    },
+    {
+     "location": 30,
+     "length": 4,
+     "start": 3.08,
+     "end": 3.36
+    },
+    {
+     "location": 35,
+     "length": 2,
+     "start": 3.48,
+     "end": 3.76
+    },
+    {
+     "location": 38,
+     "length": 4,
+     "start": 3.76,
+     "end": 3.88
+    },
+    {
+     "location": 43,
+     "length": 4,
+     "start": 3.94,
+     "end": 4.28
+    },
+    {
+     "location": 48,
+     "length": 5,
+     "start": 4.28,
+     "end": 4.56
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
+  },
+  "tahoe/bears": {
+   "file": "read-tahoe-bears",
+   "text": "Black bears live in the forests around the lake.",
+   "duration": 4.05,
+   "match": 1.0,
+   "heard": "Black bears live in the forests around the lake.",
+   "words": [
+    {
+     "location": 0,
+     "length": 5,
+     "start": 0.23,
+     "end": 0.64
+    },
+    {
+     "location": 6,
+     "length": 5,
+     "start": 0.7,
+     "end": 1.18
+    },
+    {
+     "location": 12,
+     "length": 4,
+     "start": 1.39,
+     "end": 1.62
+    },
+    {
+     "location": 17,
+     "length": 2,
+     "start": 1.62,
+     "end": 1.74
+    },
+    {
+     "location": 20,
+     "length": 3,
+     "start": 1.74,
+     "end": 2.51
+    },
+    {
+     "location": 24,
+     "length": 7,
+     "start": 2.6,
+     "end": 2.68
+    },
+    {
+     "location": 32,
+     "length": 6,
+     "start": 2.68,
+     "end": 3.06
+    },
+    {
+     "location": 39,
+     "length": 3,
+     "start": 3.06,
+     "end": 3.46
+    },
+    {
+     "location": 43,
+     "length": 4,
+     "start": 3.46,
+     "end": 3.54
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
+  },
+  "tahoe/clear": {
+   "file": "read-tahoe-clear",
+   "text": "The water is so clear you can see rocks below.",
+   "duration": 4.75,
+   "match": 1.0,
+   "heard": "The water is so clear you can see rocks below.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.06,
+     "end": 0.4
+    },
+    {
+     "location": 4,
+     "length": 5,
+     "start": 0.4,
+     "end": 0.89
+    },
+    {
+     "location": 10,
+     "length": 2,
+     "start": 0.98,
+     "end": 1.22
+    },
+    {
+     "location": 13,
+     "length": 2,
+     "start": 1.22,
+     "end": 1.63
+    },
+    {
+     "location": 16,
+     "length": 5,
+     "start": 1.7,
+     "end": 2.12
+    },
+    {
+     "location": 22,
+     "length": 3,
+     "start": 2.62,
+     "end": 2.84
+    },
+    {
+     "location": 26,
+     "length": 3,
+     "start": 2.84,
+     "end": 3.1
+    },
+    {
+     "location": 30,
+     "length": 3,
+     "start": 3.1,
+     "end": 3.61
+    },
+    {
+     "location": 34,
+     "length": 5,
+     "start": 3.7,
+     "end": 3.85
+    },
+    {
+     "location": 40,
+     "length": 5,
+     "start": 3.94,
+     "end": 4.3
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
+  },
+  "tahoe/deep": {
+   "file": "read-tahoe-deep",
+   "text": "The lake is deeper than the Empire State Building is tall!",
+   "duration": 5.44,
+   "match": 1.0,
+   "heard": "The lake is deeper than the Empire State Building is tall!",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.07,
+     "end": 0.42
+    },
+    {
+     "location": 4,
+     "length": 4,
+     "start": 0.42,
+     "end": 0.63
+    },
+    {
+     "location": 9,
+     "length": 2,
+     "start": 0.84,
+     "end": 1.06
+    },
+    {
+     "location": 12,
+     "length": 6,
+     "start": 1.3,
+     "end": 1.78
+    },
+    {
+     "location": 19,
+     "length": 4,
+     "start": 2.17,
+     "end": 2.42
+    },
+    {
+     "location": 24,
+     "length": 3,
+     "start": 2.54,
+     "end": 2.74
+    },
+    {
+     "location": 28,
+     "length": 6,
+     "start": 2.74,
+     "end": 3.04
+    },
+    {
+     "location": 35,
+     "length": 5,
+     "start": 3.04,
+     "end": 3.4
+    },
+    {
+     "location": 41,
+     "length": 8,
+     "start": 3.49,
+     "end": 3.92
+    },
+    {
+     "location": 50,
+     "length": 2,
+     "start": 4.18,
+     "end": 4.49
+    },
+    {
+     "location": 53,
+     "length": 4,
+     "start": 4.59,
+     "end": 5.02
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
+  },
+  "tahoe/emerald-bay": {
+   "file": "read-tahoe-emerald-bay",
+   "text": "Emerald Bay has one tiny island with a stone teahouse.",
+   "duration": 4.92,
+   "match": 1.0,
+   "heard": "Emerald Bay has one tiny island with a stone teahouse.",
+   "words": [
+    {
+     "location": 0,
+     "length": 7,
+     "start": 0.26,
+     "end": 0.76
+    },
+    {
+     "location": 8,
+     "length": 3,
+     "start": 0.76,
+     "end": 1.07
+    },
+    {
+     "location": 12,
+     "length": 3,
+     "start": 1.47,
+     "end": 1.74
+    },
+    {
+     "location": 16,
+     "length": 3,
+     "start": 1.74,
+     "end": 2.06
+    },
+    {
+     "location": 20,
+     "length": 4,
+     "start": 2.06,
+     "end": 2.5
+    },
+    {
+     "location": 25,
+     "length": 6,
+     "start": 2.5,
+     "end": 2.81
+    },
+    {
+     "location": 32,
+     "length": 4,
+     "start": 3.1,
+     "end": 3.26
+    },
+    {
+     "location": 37,
+     "length": 1,
+     "start": 3.26,
+     "end": 3.72
+    },
+    {
+     "location": 39,
+     "length": 5,
+     "start": 3.72,
+     "end": 3.94
+    },
+    {
+     "location": 45,
+     "length": 8,
+     "start": 3.94,
+     "end": 4.5
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
+  },
+  "tahoe/flag": {
+   "file": "read-tahoe-flag",
+   "text": "Lake Tahoe is in the USA. This is its flag.",
+   "duration": 5.11,
+   "match": 1.0,
+   "heard": "Lake Tahoe is in the USA. This is its flag.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.09,
+     "end": 0.57
+    },
+    {
+     "location": 5,
+     "length": 5,
+     "start": 0.85,
+     "end": 1.44
+    },
+    {
+     "location": 11,
+     "length": 2,
+     "start": 1.78,
+     "end": 1.98
+    },
+    {
+     "location": 14,
+     "length": 2,
+     "start": 1.98,
+     "end": 2.16
+    },
+    {
+     "location": 17,
+     "length": 3,
+     "start": 2.16,
+     "end": 2.38
+    },
+    {
+     "location": 21,
+     "length": 3,
+     "start": 2.38,
+     "end": 3.06
+    },
+    {
+     "location": 26,
+     "length": 4,
+     "start": 3.6,
+     "end": 4.02
+    },
+    {
+     "location": 31,
+     "length": 2,
+     "start": 4.09,
+     "end": 4.28
+    },
+    {
+     "location": 34,
+     "length": 3,
+     "start": 4.28,
+     "end": 4.54
+    },
+    {
+     "location": 38,
+     "length": 4,
+     "start": 4.54,
+     "end": 4.82
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
+  },
+  "tahoe/goodbye": {
+   "file": "read-tahoe-goodbye",
+   "text": "Goodbye, big blue Lake Tahoe, see you again soon!",
+   "duration": 4.6,
+   "match": 1.0,
+   "heard": "Goodbye, big blue Lake Tahoe, see you again soon!",
+   "words": [
+    {
+     "location": 0,
+     "length": 7,
+     "start": 0.18,
+     "end": 0.69
+    },
+    {
+     "location": 9,
+     "length": 3,
+     "start": 1.18,
+     "end": 1.54
+    },
+    {
+     "location": 13,
+     "length": 4,
+     "start": 1.54,
+     "end": 1.9
+    },
+    {
+     "location": 18,
+     "length": 4,
+     "start": 1.9,
+     "end": 2.18
+    },
+    {
+     "location": 23,
+     "length": 5,
+     "start": 2.18,
+     "end": 2.65
+    },
+    {
+     "location": 30,
+     "length": 3,
+     "start": 3.03,
+     "end": 3.36
+    },
+    {
+     "location": 34,
+     "length": 3,
+     "start": 3.36,
+     "end": 3.52
+    },
+    {
+     "location": 38,
+     "length": 5,
+     "start": 3.52,
+     "end": 3.86
+    },
+    {
+     "location": 44,
+     "length": 4,
+     "start": 3.86,
+     "end": 4.2
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
+  },
+  "tahoe/kayak": {
+   "file": "read-tahoe-kayak",
+   "text": "In summer, people paddle kayaks on the bright blue water.",
+   "duration": 4.84,
+   "match": 1.0,
+   "heard": "In summer, people paddle kayaks on the bright blue water.",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.0,
+     "end": 0.74
+    },
+    {
+     "location": 3,
+     "length": 6,
+     "start": 1.18,
+     "end": 1.52
+    },
+    {
+     "location": 11,
+     "length": 6,
+     "start": 1.61,
+     "end": 1.69
+    },
+    {
+     "location": 18,
+     "length": 6,
+     "start": 1.69,
+     "end": 2.04
+    },
+    {
+     "location": 25,
+     "length": 6,
+     "start": 2.04,
+     "end": 2.7
+    },
+    {
+     "location": 32,
+     "length": 2,
+     "start": 2.92,
+     "end": 3.2
+    },
+    {
+     "location": 35,
+     "length": 3,
+     "start": 3.26,
+     "end": 3.56
+    },
+    {
+     "location": 39,
+     "length": 6,
+     "start": 3.67,
+     "end": 3.75
+    },
+    {
+     "location": 46,
+     "length": 4,
+     "start": 3.75,
+     "end": 4.08
+    },
+    {
+     "location": 51,
+     "length": 5,
+     "start": 4.08,
+     "end": 4.44
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
+  },
+  "tahoe/olympics": {
+   "file": "read-tahoe-olympics",
+   "text": "The Winter Olympics happened near the lake in 1960!",
+   "duration": 5.11,
+   "match": 1.0,
+   "heard": "The Winter Olympics happened near the lake in 1960!",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.0,
+     "end": 0.42
+    },
+    {
+     "location": 4,
+     "length": 6,
+     "start": 0.42,
+     "end": 0.95
+    },
+    {
+     "location": 11,
+     "length": 8,
+     "start": 1.01,
+     "end": 1.69
+    },
+    {
+     "location": 20,
+     "length": 8,
+     "start": 1.93,
+     "end": 2.13
+    },
+    {
+     "location": 29,
+     "length": 4,
+     "start": 2.19,
+     "end": 2.68
+    },
+    {
+     "location": 34,
+     "length": 3,
+     "start": 2.68,
+     "end": 3.23
+    },
+    {
+     "location": 38,
+     "length": 4,
+     "start": 3.49,
+     "end": 3.57
+    },
+    {
+     "location": 43,
+     "length": 2,
+     "start": 3.57,
+     "end": 3.78
+    },
+    {
+     "location": 46,
+     "length": 4,
+     "start": 3.78,
+     "end": 4.64
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
+  },
+  "tahoe/sand-harbor": {
+   "file": "read-tahoe-sand-harbor",
+   "text": "Big round boulders sit in the water at Sand Harbor.",
+   "duration": 5.11,
+   "match": 1.0,
+   "heard": "Big round boulders sit in the water at Sand Harbor.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.17,
+     "end": 0.6
+    },
+    {
+     "location": 4,
+     "length": 5,
+     "start": 0.71,
+     "end": 1.3
+    },
+    {
+     "location": 10,
+     "length": 8,
+     "start": 1.38,
+     "end": 1.92
+    },
+    {
+     "location": 19,
+     "length": 3,
+     "start": 1.92,
+     "end": 2.26
+    },
+    {
+     "location": 23,
+     "length": 2,
+     "start": 2.34,
+     "end": 2.52
+    },
+    {
+     "location": 26,
+     "length": 3,
+     "start": 2.52,
+     "end": 2.72
+    },
+    {
+     "location": 30,
+     "length": 5,
+     "start": 2.72,
+     "end": 3.05
+    },
+    {
+     "location": 36,
+     "length": 2,
+     "start": 3.11,
+     "end": 3.52
+    },
+    {
+     "location": 39,
+     "length": 4,
+     "start": 3.52,
+     "end": 3.9
+    },
+    {
+     "location": 44,
+     "length": 6,
+     "start": 3.9,
+     "end": 4.24
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
+  },
+  "tahoe/snow": {
+   "file": "read-tahoe-snow",
+   "text": "Snow covers the mountains, but the big lake never freezes.",
+   "duration": 4.7,
+   "match": 1.0,
+   "heard": "Snow covers the mountains, but the big lake never freezes.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.0,
+     "end": 0.63
+    },
+    {
+     "location": 5,
+     "length": 6,
+     "start": 0.7,
+     "end": 1.08
+    },
+    {
+     "location": 12,
+     "length": 3,
+     "start": 1.08,
+     "end": 1.86
+    },
+    {
+     "location": 16,
+     "length": 9,
+     "start": 2.34,
+     "end": 2.43
+    },
+    {
+     "location": 27,
+     "length": 3,
+     "start": 2.53,
+     "end": 2.61
+    },
+    {
+     "location": 31,
+     "length": 3,
+     "start": 2.61,
+     "end": 2.72
+    },
+    {
+     "location": 35,
+     "length": 3,
+     "start": 2.72,
+     "end": 3.0
+    },
+    {
+     "location": 39,
+     "length": 4,
+     "start": 3.0,
+     "end": 3.28
+    },
+    {
+     "location": 44,
+     "length": 5,
+     "start": 3.5,
+     "end": 3.94
+    },
+    {
+     "location": 50,
+     "length": 7,
+     "start": 3.94,
+     "end": 4.46
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
+  },
+  "tahoe/truckee-river": {
+   "file": "read-tahoe-truckee-river",
+   "text": "Only one river, the Truckee, flows out of the lake.",
+   "duration": 4.65,
+   "match": 1.0,
+   "heard": "Only one river, the Truckee, flows out of the lake.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.0,
+     "end": 0.5
+    },
+    {
+     "location": 5,
+     "length": 3,
+     "start": 0.5,
+     "end": 1.04
+    },
+    {
+     "location": 9,
+     "length": 5,
+     "start": 1.04,
+     "end": 1.33
+    },
+    {
+     "location": 16,
+     "length": 3,
+     "start": 1.86,
+     "end": 2.18
+    },
+    {
+     "location": 20,
+     "length": 7,
+     "start": 2.18,
+     "end": 2.48
+    },
+    {
+     "location": 29,
+     "length": 5,
+     "start": 3.03,
+     "end": 3.42
+    },
+    {
+     "location": 35,
+     "length": 3,
+     "start": 3.42,
+     "end": 3.64
+    },
+    {
+     "location": 39,
+     "length": 2,
+     "start": 3.64,
+     "end": 3.82
+    },
+    {
+     "location": 42,
+     "length": 3,
+     "start": 3.82,
+     "end": 3.92
+    },
+    {
+     "location": 46,
+     "length": 4,
+     "start": 4.0,
+     "end": 4.08
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
+  },
+  "tahoe/two-states": {
+   "file": "read-tahoe-two-states",
+   "text": "Part of the lake is in California, part in Nevada.",
+   "duration": 5.06,
+   "match": 1.0,
+   "heard": "Part of the lake is in California, part in Nevada.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.49,
+     "end": 0.78
+    },
+    {
+     "location": 5,
+     "length": 2,
+     "start": 0.78,
+     "end": 0.88
+    },
+    {
+     "location": 8,
+     "length": 3,
+     "start": 0.88,
+     "end": 1.08
+    },
+    {
+     "location": 12,
+     "length": 4,
+     "start": 1.08,
+     "end": 1.19
+    },
+    {
+     "location": 17,
+     "length": 2,
+     "start": 1.25,
+     "end": 1.33
+    },
+    {
+     "location": 20,
+     "length": 2,
+     "start": 1.53,
+     "end": 1.92
+    },
+    {
+     "location": 23,
+     "length": 10,
+     "start": 1.92,
+     "end": 3.52
+    },
+    {
+     "location": 35,
+     "length": 4,
+     "start": 3.94,
+     "end": 4.02
+    },
+    {
+     "location": 40,
+     "length": 2,
+     "start": 4.02,
+     "end": 4.18
+    },
+    {
+     "location": 43,
+     "length": 6,
+     "start": 4.18,
+     "end": 4.44
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
+  },
+  "tahoe/vikingsholm": {
+   "file": "read-tahoe-vikingsholm",
+   "text": "A castle-like house here has grass growing on its roof!",
+   "duration": 4.56,
+   "match": 1.0,
+   "heard": "A castle-like house here has grass growing on its roof!",
+   "words": [
+    {
+     "location": 0,
+     "length": 1,
+     "start": 0.0,
+     "end": 0.16
+    },
+    {
+     "location": 2,
+     "length": 6,
+     "start": 0.26,
+     "end": 0.76
+    },
+    {
+     "location": 9,
+     "length": 4,
+     "start": 0.76,
+     "end": 1.1
+    },
+    {
+     "location": 14,
+     "length": 5,
+     "start": 1.1,
+     "end": 1.4
+    },
+    {
+     "location": 20,
+     "length": 4,
+     "start": 1.4,
+     "end": 1.71
+    },
+    {
+     "location": 25,
+     "length": 3,
+     "start": 2.05,
+     "end": 2.28
+    },
+    {
+     "location": 29,
+     "length": 5,
+     "start": 2.37,
+     "end": 2.88
+    },
+    {
+     "location": 35,
+     "length": 7,
+     "start": 2.88,
+     "end": 3.28
+    },
+    {
+     "location": 43,
+     "length": 2,
+     "start": 3.28,
+     "end": 3.48
+    },
+    {
+     "location": 46,
+     "length": 3,
+     "start": 3.48,
+     "end": 3.74
+    },
+    {
+     "location": 50,
+     "length": 4,
+     "start": 3.74,
+     "end": 4.02
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
+  },
+  "tahoe/welcome": {
+   "file": "read-tahoe-welcome",
+   "text": "Lake Tahoe is a giant blue lake in the mountains.",
+   "duration": 5.25,
+   "match": 1.0,
+   "heard": "Lake Tahoe is a giant blue lake in the mountains.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.47,
+     "end": 0.92
+    },
+    {
+     "location": 5,
+     "length": 5,
+     "start": 0.92,
+     "end": 1.45
+    },
+    {
+     "location": 11,
+     "length": 2,
+     "start": 1.59,
+     "end": 1.76
+    },
+    {
+     "location": 14,
+     "length": 1,
+     "start": 1.76,
+     "end": 2.26
+    },
+    {
+     "location": 16,
+     "length": 5,
+     "start": 2.26,
+     "end": 2.48
+    },
+    {
+     "location": 22,
+     "length": 4,
+     "start": 2.48,
+     "end": 2.9
+    },
+    {
+     "location": 27,
+     "length": 4,
+     "start": 2.9,
+     "end": 3.1
+    },
+    {
+     "location": 32,
+     "length": 2,
+     "start": 3.18,
+     "end": 3.32
+    },
+    {
+     "location": 35,
+     "length": 3,
+     "start": 3.58,
+     "end": 4.32
+    },
+    {
+     "location": 39,
+     "length": 9,
+     "start": 4.41,
+     "end": 4.49
+    }
+   ],
+   "lufs": -16.0,
+   "style": "83d90b68fa"
   }
  }
 }

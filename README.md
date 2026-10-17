@@ -30,6 +30,11 @@ The first screen is a shelf with every book, grouped by city. Tap a cover to ope
 | London | London (`london`) | The Thames, Big Ben, Tower Bridge, buses, ravens, guards, London Eye, the Tube, the museum whale, fish and chips |
 | London | Big Ben (`london-big-ben`) | Big Ben the bell vs the Elizabeth Tower, who it's named after, the giant clock faces and minute hands, the bongs, the radio chimes, pennies on the pendulum, the Ayrton Light, 334 steps, Westminster Bridge |
 | Barcelona | Barcelona (`barcelona`) | Beach, Sagrada Família, Casa Batlló, Park Güell's dragon, churros, human towers, football, the magic fountain |
+| Lake Tahoe | Lake Tahoe (`tahoe`) | Half California, half Nevada, deeper than the Empire State Building is tall, so clear you see the rocks, Emerald Bay's teahouse island, Vikingsholm's grass roof, Sand Harbor boulders, kayaks, black bears, the Truckee River, a lake that never freezes, the 1960 Olympics |
+| Lake Tahoe | Heavenly (`tahoe-heavenly`) | Winter: the village gondola, the lake-view deck, skiing from California into Nevada, chairlifts, ski school, pizza and french fries, the magic carpet, tubing, snow guns, hot cocoa |
+| Lake Tahoe | Northstar (`tahoe-northstar`) | Winter: the village ice rink, s'mores by the fire, chairlifts through the pines, a far-off lake view, ski school, corduroy snow, night snowcats, tubing, snowy pines, cocoa |
+| Hawaii | Hawaii (`hawaii`) | Volcano islands, the eight-stripe flag, Kīlauea lava, black sand, honu turtles (look, don't touch), leis, hula stories, ancient surfing, humpback whales, shave ice, the humuhumunukunukuāpuaʻa, the nēnē goose, what aloha means |
+| Hawaii | Honolulu (`hawaii-honolulu`) | Waikīkī's gentle surf, Diamond Head crater, ʻIolani Palace, King Kamehameha's long leis, Duke's statue, Hanauma Bay fish, outrigger canoes, Aloha Tower, the aquarium, spam musubi |
 
 Books are JSON files in [`LittleExplorer/Resources/Books`](LittleExplorer/Resources/Books) with 10–14 pages each.
 Every page has a 4–12 word sentence, hidden `about` notes for Milo, and a photo. The shelf order is `BookLibrary.order`.
@@ -55,7 +60,7 @@ Pin a specific file by setting the page's `photo.commonsTitle`.
 
 The speaker button (bottom-right of every page) reads the sentence in a natural voice, the same OpenAI voice as Milo
 (`gpt-4o-mini-tts`, "coral"), styled like a grown-up reading a picture book to a 6-year-old: warm, clear and a little slow.
-The clips are made ahead of time and bundled (about 5 MB of AAC for all 160 pages), so reading aloud works offline
+The clips are made ahead of time and bundled (about 8 MB of AAC for all 225 pages), so reading aloud works offline
 and the app never holds an API key. Each word is highlighted as it's spoken. Tap again to stop. Speech also stops when
 the page turns or the book closes. When voice mode is on, the microphone is muted while the app reads, so Milo doesn't
 mistake the app's voice for the child.
@@ -70,7 +75,9 @@ loudness, the same level as Milo) with peaks kept under -1 dBTP, so the narratio
 A book can add its own reading note. Speak French uses `"narration": {"instructions": "...", "phraseByPhrase": true}`:
 the French is spoken natively (not anglicized), and each phrase, e.g. "Merci", "mair-SEE" and "means thank you.", is
 its own take joined with short pauses. In one take the voice sometimes skipped the sound-it-out hint; phrase by phrase it
-always says both, and the word times come straight from the takes. To run it:
+always says both, and the word times come straight from the takes. The Hawaii books use the same mode so Hawaiian
+words (honu, nēnē, Waikīkī) and their hints are said the island way; the Tahoe books only add a note for local names
+(Nevada as neh-VAD-uh, Truckee). To run it:
 
 ```sh
 python3 scripts/generate_narration.py                  # new or changed pages only

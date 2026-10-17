@@ -77,7 +77,7 @@ final class ContentStoreTests: XCTestCase {
 
     func testStartsWithTheBundledShelfInLibraryOrder() {
         let store = makeStore()
-        XCTAssertEqual(store.books.map(\.id), ["paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "paris-french", "london", "london-big-ben", "barcelona"])
+        XCTAssertEqual(store.books.map(\.id), ["paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "paris-french", "london", "london-big-ben", "barcelona", "tahoe", "tahoe-heavenly", "tahoe-northstar", "hawaii", "hawaii-honolulu"])
         XCTAssertEqual(BookLibrary.order(files: files), BookLibrary.order)
         XCTAssertNil(store.version)
     }

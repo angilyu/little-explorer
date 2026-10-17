@@ -1,0 +1,223 @@
+{
+  "id": "hawaii",
+  "city": "Hawaii",
+  "country": "USA",
+  "flagImage": "hawaii-flag.png",
+  "flag": "🇺🇸",
+  "coverColor": "#E5603B",
+  "tagline": "Volcanoes, turtles and aloha",
+  "narration": {
+    "instructions": "Say every Hawaiian word the way people in Hawaii say it, warmly and naturally, never anglicized: Aloha (ah-LOH-hah), Honu (HO-noo), lei (lay), hula (HOO-lah), nēnē (NAY-nay), Waikīkī (why-kee-KEE), Honolulu (ho-no-LOO-loo), musubi (moo-soo-bee), Kamehameha (kah-may-hah-MAY-hah). A short hint like HO-noo is how to sound out the word: say it slowly and clearly, syllable by syllable.",
+    "phraseByPhrase": true
+  },
+  "pages": [
+    {
+      "id": "welcome",
+      "text": "Hawaii is a chain of islands in the big blue ocean.",
+      "about": "Hawaii is a long chain of islands right in the middle of the Pacific Ocean, the biggest ocean in the world. This photo was taken by astronauts on the International Space Station, looking down at the islands from space. All of the islands were made by volcanoes that pushed hot lava up from the sea floor, a little bit at a time, over a very, very long time. Can you count how many islands you can see?",
+      "emoji": "🏝️",
+      "photo": {
+        "commonsTitle": "File:ISS-38 Hawaiian Island chain.jpg",
+        "query": "Hawaiian island chain from space",
+        "file": "hawaii-welcome.jpg",
+        "author": "NASA",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS-38_Hawaiian_Island_chain.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "flag",
+      "text": "Hawaii's flag has eight stripes for eight big islands.",
+      "about": "The eight stripes of white, red and blue stand for the eight main islands of Hawaii. The small British flag in the corner is there because, long ago, Hawaii's kings were good friends with Britain. Back then Hawaii was its own kingdom with its own kings and queens. In 1959 Hawaii became the 50th state of the United States, the newest one of all. Can you count the eight stripes?",
+      "emoji": "🏳️",
+      "photo": {
+        "commonsTitle": "File:Flag of Hawaii.svg",
+        "query": "flag of Hawaii",
+        "file": "hawaii-flag.png",
+        "author": "Dbenbenn",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Flag_of_Hawaii.svg",
+        "verified": true
+      }
+    },
+    {
+      "id": "volcano",
+      "text": "Hot orange lava shoots up from a volcano!",
+      "about": "This is Kīlauea (kee-lau-AY-ah), on the biggest island, which is also called Hawaiʻi. It is one of the busiest volcanoes in the whole world, and it erupts very often. Melted rock called lava is so hot that it glows bright orange and red, and it can shoot up like a fountain. People watch it only from safe places that park rangers choose, far away from the lava. When the lava cools down, it turns into hard black rock and makes new land.",
+      "emoji": "🌋",
+      "photo": {
+        "commonsTitle": "File:Lava fountain from Kīlauea's ongoing summit eruption (96758).jpg",
+        "query": "Kilauea lava fountain",
+        "file": "hawaii-volcano.jpg",
+        "author": "USGS Hawaiian Volcano Observatory",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Lava_fountain_from_K%C4%ABlauea%27s_ongoing_summit_eruption_(96758).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "black-sand",
+      "text": "Some beaches here have soft black sand!",
+      "about": "This is Punaluʻu (poo-nah-LOO-oo) Beach on the Big Island, and its sand is black! The black sand is made from lava: when hot lava runs into the cold ocean, it cracks into tiny pieces, and the waves grind them into sand. Coconut palm trees grow right next to the beach. On a sunny day black sand can get very warm under your feet, so people wear sandals.",
+      "emoji": "🏖️",
+      "photo": {
+        "commonsTitle": "File:Punaluu Black Sand Beach, Hawaii, USA8.jpg",
+        "query": "Punaluu black sand beach",
+        "file": "hawaii-black-sand.jpg",
+        "author": "Diego Delso",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Punaluu_Black_Sand_Beach,_Hawaii,_USA8.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "honu",
+      "text": "Honu (HO-noo) means sea turtle. They nap on beaches!",
+      "about": "Honu (HO-noo) is the Hawaiian word for the green sea turtle. Honu swim in the ocean eating seaweed, and sometimes they climb onto the beach to rest in the warm sun, just like this one on the black lava rocks and sand at Punaluʻu (poo-nah-LOO-oo). They are protected, so the rule is: look, but never touch or feed them. Visitors stay back about three big steps, at least 3 meters (10 feet), and let the turtle sleep.",
+      "emoji": "🐢",
+      "photo": {
+        "commonsTitle": "File:Green turtle Chelonia mydas is basking on Punaluu Beach Big Island of Hawaii.jpg",
+        "query": "green sea turtle Punaluu beach",
+        "file": "hawaii-honu.jpg",
+        "author": "Brocken Inaglory",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Green_turtle_Chelonia_mydas_is_basking_on_Punaluu_Beach_Big_Island_of_Hawaii.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "lei",
+      "text": "A lei is a necklace made of flowers.",
+      "about": "A lei (lay) is a long necklace usually made of flowers, leaves or shells. In Hawaii people give a lei to say welcome, congratulations, thank you or I love you. This one is made of plumeria flowers, which smell sweet. The flowers are strung one by one on a long thread with a needle. If you got a lei, which flower colors would you pick?",
+      "emoji": "🌺",
+      "photo": {
+        "commonsTitle": "File:Starr 060721-8426 Plumeria rubra.jpg",
+        "query": "plumeria lei Hawaii",
+        "file": "hawaii-lei.jpg",
+        "author": "Forest & Kim Starr",
+        "license": "CC BY 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Starr_060721-8426_Plumeria_rubra.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "hula",
+      "text": "Hula dancers tell stories with their hands.",
+      "about": "Hula (HOO-lah) is a special Hawaiian dance. The dancers' hands and bodies tell a story: hands can show waves, rain, flowers, the wind or a bird flying. They dance to chants or songs, and old stories have been passed down this way for a very long time. These girls are dancing hula together at Kapiʻolani (kah-pee-oh-LAH-nee) Park in Honolulu, in pink flowery skirts and green leaf leis (lays). Can you make ocean waves with your hands?",
+      "emoji": "💃",
+      "photo": {
+        "commonsTitle": "File:Hula-Mädchen.jpg",
+        "query": "hula girls Kapiolani Park",
+        "file": "hawaii-hula.jpg",
+        "author": "Hakilon",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Hula-M%C3%A4dchen.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "surfing",
+      "text": "Hawaiians were surfing on waves long, long ago.",
+      "about": "Hawaiians were surfing on wooden boards hundreds of years ago, and kings and queens surfed too. A Hawaiian swimmer named Duke Kahanamoku (kah-hah-nah-MOH-koo) later showed surfing to people all around the world. This surfer is riding a huge wave at the Banzai Pipeline on the North Shore of the island of Oʻahu (oh-AH-hoo). Waves this big are only for experts; beginners learn on small, gentle waves.",
+      "emoji": "🏄",
+      "photo": {
+        "commonsTitle": "File:Surfer at Banzai Pipeline, North Shore (Oahu).jpg",
+        "query": "surfer Banzai Pipeline Oahu",
+        "file": "hawaii-surfing.jpg",
+        "author": "Mandolin Davis",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Surfer_at_Banzai_Pipeline,_North_Shore_(Oahu).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "whales",
+      "text": "Big humpback whales swim here in the winter.",
+      "about": "Every winter, thousands of humpback whales swim all the way from cold Alaska to the warm water around Hawaii. They come to have their babies, called calves, and most stay from about December to April. Sometimes a humpback jumps out of the water and lands with a giant SPLASH! This is called breaching. A grown-up humpback is about as long as a school bus.",
+      "emoji": "🐋",
+      "photo": {
+        "commonsTitle": "File:HIHWNMS - humpback whale breaching (31458927013).jpg",
+        "query": "humpback whale breaching Hawaii",
+        "file": "hawaii-whales.jpg",
+        "author": "National Marine Sanctuaries",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:HIHWNMS_-_humpback_whale_breaching_(31458927013).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "shave-ice",
+      "text": "Shave ice is fluffy ice with sweet rainbow syrup.",
+      "about": "Shave ice is a favorite cool treat in Hawaii. A machine shaves a big block of ice into fluffy snow, and then sweet syrups are poured on top in bright colors. Flavors include strawberry, pineapple, coconut and mango. The idea came from Japanese families who moved to Hawaii long ago to work on the farms. This shop is in Haleʻiwa (hah-lay-EE-vah) on the island of Oʻahu (oh-AH-hoo).",
+      "emoji": "🍧",
+      "photo": {
+        "commonsTitle": "File:Ore Haleiwa Hawaii Oahu Matsumoto Shave Ice (33673669505).jpg",
+        "query": "Matsumoto shave ice Haleiwa",
+        "file": "hawaii-shave-ice.jpg",
+        "author": "Anthony Quintano",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ore_Haleiwa_Hawaii_Oahu_Matsumoto_Shave_Ice_(33673669505).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "fish",
+      "text": "Hawaii's state fish has a super long name!",
+      "about": "This fish is called the humuhumunukunukuāpuaʻa (hoo-moo-hoo-moo-noo-koo-noo-koo-ah-poo-AH-ah). Most people just call it humuhumu (hoo-moo-hoo-moo) for short! The long name means a triggerfish with a snout like a pig, and it can even make grunting noises. It lives on coral reefs and is Hawaii's state fish. Can you say the whole name without stopping?",
+      "emoji": "🐠",
+      "photo": {
+        "commonsTitle": "File:Wedgetail triggerfish (Rhinecanthus rectangulus) (42586037405).jpg",
+        "query": "humuhumunukunukuapuaa reef triggerfish",
+        "file": "hawaii-fish.jpg",
+        "author": "Rickard Zerpe",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Wedgetail_triggerfish_(Rhinecanthus_rectangulus)_(42586037405).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "nene",
+      "text": "The nēnē (NAY-nay) goose is Hawaii's state bird.",
+      "about": "The nēnē (NAY-nay) is a goose that lives only in Hawaii, and it is Hawaii's state bird. It has a black head and a neck with fuzzy stripes. Nēnē are very rare, and kind people work hard to protect them. Here a grown-up nēnē is walking with its fluffy chick. If you see one near a road, drivers slow down to keep it safe.",
+      "emoji": "🪿",
+      "photo": {
+        "commonsTitle": "File:Nene goose Branta sandvicensis and Chick 3938.jpg",
+        "query": "nene goose chick Hawaii",
+        "file": "hawaii-nene.jpg",
+        "author": "ImagePerson",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Nene_goose_Branta_sandvicensis_and_Chick_3938.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "goodbye",
+      "text": "Aloha, Hawaii! Aloha means hello, goodbye and love.",
+      "about": "Aloha (ah-LOH-hah) is the most famous Hawaiian word. People say it to mean hello and goodbye, and it also means love and kindness. Mahalo (mah-HAH-loh) means thank you. Here the sun is setting behind palm trees at the end of a warm Hawaiian day. Aloha, Hawaii, and mahalo for the visit!",
+      "emoji": "🌅",
+      "photo": {
+        "commonsTitle": "File:Hawaii at Sunset with Palm Trees (5495739231).jpg",
+        "query": "Hawaii sunset palm trees",
+        "file": "hawaii-goodbye.jpg",
+        "author": "Nan Palmero",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Hawaii_at_Sunset_with_Palm_Trees_(5495739231).jpg",
+        "verified": true
+      }
+    }
+  ]
+}
