@@ -52,7 +52,7 @@ Pin a specific file by setting the page's `photo.commonsTitle`.
 
 ## Read aloud
 
-The speaker button (bottom-left of every page) reads the sentence in a natural voice, the same OpenAI voice as Milo
+The speaker button (bottom-right of every page) reads the sentence in a natural voice, the same OpenAI voice as Milo
 (`gpt-4o-mini-tts`, "coral"), styled like a grown-up reading a picture book to a 6-year-old: warm, clear and a little slow.
 The clips are made ahead of time and bundled (about 2 MB of AAC for all 64 pages), so reading aloud works offline
 and the app never holds an API key. Each word is highlighted as it's spoken. Tap again to stop. Speech also stops when
