@@ -244,7 +244,8 @@ changed, runs the server tests, and deploys only the pieces that need it:
 | `server/requirements*` | ✓ | ✓ |
 | iOS app, docs, scripts, tests only | – | – |
 
-- Nothing deploys if the tests fail. One deploy per service runs at a time; a newer push waits for it.
+- Nothing deploys if the tests fail. One deploy per service runs at a time; a newer push waits for it. Pull
+  requests that touch the server or the books run the same tests (`server-tests.yml`, no secrets).
 - The Render job calls the service's deploy hook for that exact commit, then waits until `/healthz` reports the
   commit and `/content/manifest.json` matches the commit's books. The agent job runs `lk agent deploy` and waits
   until LiveKit reports that commit as the live, available version. Either job fails if its deploy doesn't go live.
