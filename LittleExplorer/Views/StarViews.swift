@@ -5,28 +5,23 @@ extension Color {
     static let coinGold = Color(red: 0.93, green: 0.6, blue: 0.05)
 }
 
-/// A gold coin with a star on it: what a grown-up turns his stars into.
+/// A gold dollar coin: what a grown-up turns his stars into. Drawn so it can't be mistaken for a star.
 struct CoinIcon: View {
     var size: CGFloat = 28
 
     var body: some View {
-        ZStack {
-            Circle()
-                .fill(
-                    LinearGradient(colors: [Color.starGold, Color.coinGold], startPoint: .topLeading, endPoint: .bottomTrailing)
-                )
-            Circle()
-                .strokeBorder(Color.coinGold.opacity(0.9), lineWidth: max(size * 0.08, 1.5))
-            Image(systemName: "star.fill")
-                .font(.system(size: size * 0.48, weight: .heavy))
-                .foregroundStyle(.white)
-        }
-        .frame(width: size, height: size)
-        .accessibilityHidden(true)
+        Image(systemName: "dollarsign.circle.fill")
+            .resizable()
+            .scaledToFit()
+            .symbolRenderingMode(.palette)
+            .foregroundStyle(.white, Color.coinGold)
+            .fontWeight(.bold)
+            .frame(width: size, height: size)
+            .accessibilityHidden(true)
     }
 }
 
-/// Library corner badge: the stars he can spend (and his coins, once he has any). Tapping it opens the Passport.
+/// Library corner badge: the stars he can spend and the coins he has. Tapping it opens the Passport.
 struct StarTotalBadge: View {
     let total: Int
     var coins = 0
@@ -41,24 +36,22 @@ struct StarTotalBadge: View {
                 Text("\(total)")
                     .contentTransition(.numericText())
                     .foregroundStyle(Theme.ink)
-                if coins > 0 {
-                    CoinIcon(size: regular ? 28 : 22)
-                        .padding(.leading, regular ? 8 : 2)
-                    Text("\(coins)")
-                        .contentTransition(.numericText())
-                        .foregroundStyle(Theme.ink)
-                }
+                CoinIcon(size: regular ? 30 : 24)
+                    .padding(.leading, regular ? 8 : 4)
+                Text("\(coins)")
+                    .contentTransition(.numericText())
+                    .foregroundStyle(Theme.ink)
             }
             .font(.system(size: regular ? 28 : 22, weight: .heavy, design: .rounded))
             .lineLimit(1)
             .fixedSize()
-            .padding(.horizontal, regular ? 18 : (coins > 0 ? 10 : 14))
+            .padding(.horizontal, regular ? 18 : 12)
             .frame(minHeight: regular ? 56 : 46)
             .background(Capsule().fill(.white))
             .shadow(color: .black.opacity(0.12), radius: 4, x: 0, y: 2)
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(coins > 0 ? "\(total) stars and \(coins) coins. Open my passport" : "\(total) stars. Open my passport")
+        .accessibilityLabel("\(total) stars and \(coins) \(coins == 1 ? "coin" : "coins"). Open my passport")
     }
 }
 

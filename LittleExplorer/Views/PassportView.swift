@@ -56,13 +56,11 @@ struct PassportView: View {
             }
             .foregroundStyle(Theme.ink)
             Spacer(minLength: 0)
-            if coins.coins > 0 {
-                VStack(spacing: 4) {
-                    CoinIcon(size: regular ? 56 : 44)
-                    Text(coins.coins == 1 ? "1 coin" : "\(coins.coins) coins")
-                        .font(.system(size: regular ? 24 : 18, weight: .heavy, design: .rounded))
-                        .foregroundStyle(Theme.ink)
-                }
+            VStack(spacing: 4) {
+                CoinIcon(size: regular ? 56 : 44)
+                Text(coins.coins == 1 ? "1 coin" : "\(coins.coins) coins")
+                    .font(.system(size: regular ? 24 : 18, weight: .heavy, design: .rounded))
+                    .foregroundStyle(Theme.ink)
             }
         }
         .padding(regular ? 24 : 16)

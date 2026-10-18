@@ -7,7 +7,8 @@ import Foundation
 /// `-demoVoice star` turns Milo on and has him give a star for the opening page.
 /// `-demoStars 23` seeds that many saved stars; `-demoPassport` opens the Passport.
 /// `-demoRead` starts reading the opening page aloud, to show the word highlight.
-/// `-demoShelf paris-french` scrolls the shelf to that book's cover (without opening it).
+/// `-demoShelf paris-french` scrolls the shelf to that book's cover (without opening it);
+/// `-demoShelf grown-ups` scrolls to the Grown-ups button at the bottom.
 /// `-demoCoins 2` seeds that many coins (made from 10 stars each, so they come off `-demoStars`).
 /// `-demoGate` opens the grown-ups gate; `-demoParent` opens the grown-ups corner without it.
 struct DemoLaunch: Equatable {

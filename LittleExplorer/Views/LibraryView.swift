@@ -26,6 +26,7 @@ struct LibraryView: View {
                         ForEach(BookLibrary.rows(BookLibrary.shelves(books), columns: columns), id: \.self) { row in
                             shelfRow(row)
                         }
+                        grownUpsButton
                     }
                     .padding(.horizontal, regular ? 40 : 20)
                     .padding(.vertical, regular ? 40 : 8)
@@ -40,12 +41,7 @@ struct LibraryView: View {
                 LinearGradient(colors: [Theme.sky, Theme.paper], startPoint: .top, endPoint: .bottom)
                     .ignoresSafeArea()
             )
-            .toolbar {
-                if regular {
-                    ToolbarItem(placement: .topBarTrailing) { grownUpsButton }
-                }
-            }
-            .toolbar(regular ? .automatic : .hidden, for: .navigationBar)
+            .toolbar(.hidden, for: .navigationBar)
         }
         .fullScreenCover(item: $openBook) { open in
             BookReaderView(book: open.book, startPage: open.startPage)
@@ -112,20 +108,20 @@ struct LibraryView: View {
         .id(book.id)
     }
 
+    /// A small "Grown-ups" button after the last shelf, out of the crowded top bar and away from his covers.
     private var grownUpsButton: some View {
         Button {
             showGate = true
         } label: {
-            if regular {
-                Label("Grown-ups", systemImage: "lock.fill")
-                    .labelStyle(.titleAndIcon)
-                    .font(.footnote.weight(.semibold))
-            } else {
-                Image(systemName: "lock.fill")
-                    .font(.footnote.weight(.semibold))
-                    .accessibilityLabel("Grown-ups")
-            }
+            Label("Grown-ups", systemImage: "lock.fill")
+                .font(.footnote.weight(.semibold))
         }
+        .buttonStyle(.bordered)
+        .tint(Theme.ink)
+        .frame(maxWidth: .infinity)
+        .padding(.top, regular ? 8 : 4)
+        .padding(.bottom, regular ? 0 : 16)
+        .id("grown-ups")
         .accessibilityHint("For parents only")
     }
 
@@ -155,9 +151,6 @@ struct LibraryView: View {
                     .layoutPriority(1)
                 Spacer(minLength: 4)
                 starBadge
-                grownUpsButton
-                    .buttonStyle(.bordered)
-                    .tint(Theme.ink)
             }
         }
     }

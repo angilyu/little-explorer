@@ -51,9 +51,10 @@ badge (`travel-flag.png`), Milo is told they are general travel books rather tha
 don't give a Passport stamp.
 
 Hearts are stored on the device as `<book id>/<page id>`, so each themed book keeps its own hearts.
-Grown-ups can see the loved pages for every book behind the parent gate (lock button). The gate asks a typed
-sum like `24 × 8 + 18` on its own number pad (no multiple choice). Three wrong answers lock it for 30 seconds,
-and each miss shows a new question.
+Grown-ups can see the loved pages for every book behind the parent gate (the "Grown-ups" button after the last
+shelf of the library). The gate writes a random number from 101 to 999 in words, like "three hundred forty-eight", and the
+grown-up types its digits on the gate's number pad (no multiple choice, no digits in the prompt). Round hundreds
+are skipped. Three wrong answers lock it for 30 seconds, and each miss shows a new number.
 
 ### Photos
 
@@ -269,7 +270,9 @@ lists stars per device. Pipeline mode gives stars too, but Milo doesn't announce
 
 A grown-up can turn stars into coins (10 stars = 1 coin by default) in the Grown-ups corner, behind the parent
 gate. It shows the stars he can spend, the coins they make and the stars left over, and asks for confirmation.
-The kid can't convert. Coins show next to the stars on the library badge and in the Passport.
+The grown-up can convert as many coins as the stars cover (stepper, or quick picks like 5 and "All N"), unless
+the server sets a maximum. The kid can't convert. His coins (a gold dollar coin) always show next to the stars
+on the library badge and in the Passport, even at 0.
 
 The token server owns the rules and the balance. It keeps a ledger per device (`coin_conversions`), so coins
 survive a reinstall and an app can't convert more stars than the server has stored. Spending stars lowers the
@@ -381,7 +384,8 @@ scripts/screenshots.sh <iphone-udid> <ipad-udid>   # regenerates docs/screenshot
 
 DEBUG builds accept launch arguments for screenshots: `-demoBook paris-food -demoPage 4 -demoLove`,
 `-demoVoice listening|live|nap|rest|star`, `-demoRead`, `-demoStars 23`, `-demoPassport`, `-demoCoins 2`,
-`-demoGate` (the parent gate) and `-demoParent` (the Grown-ups corner).
+`-demoGate` (the parent gate) and `-demoParent` (the Grown-ups corner). `-demoShelf grown-ups` scrolls to the
+Grown-ups button.
 
 ### Install on an iPhone or iPad (TestFlight)
 

@@ -135,9 +135,15 @@ struct ParentCornerView: View {
                         .foregroundStyle(.secondary)
                 } else {
                     let making = min(max(coinsToMake, state.minCoins), state.canConvert)
+                    LabeledContent("Can make", value: "up to \(state.canConvert) \(state.canConvert == 1 ? "coin" : "coins")")
                     if state.canConvert > state.minCoins {
                         Stepper(value: $coinsToMake, in: state.minCoins...state.canConvert) {
                             Text("Make \(making) \(making == 1 ? "coin" : "coins")")
+                        }
+                        HStack(spacing: 10) {
+                            ForEach(Self.quickChoices(min: state.minCoins, max: state.canConvert), id: \.self) { amount in
+                                quickChoice(amount, all: amount == state.canConvert, selected: amount == making)
+                            }
                         }
                     }
                     LabeledContent("Uses", value: "\(making * state.starsPerCoin) stars")
@@ -184,9 +190,30 @@ struct ParentCornerView: View {
         }
     }
 
+    /// Shortcuts next to the stepper: a few round amounts and "All", only ones his stars cover.
+    static func quickChoices(min: Int, max: Int) -> [Int] {
+        guard max > min else { return [] }
+        let round = [min, 5, 10, 25, 50, 100].filter { $0 >= min && $0 < max }
+        return Array(Set(round)).sorted().prefix(3) + [max]
+    }
+
+    @ViewBuilder
+    private func quickChoice(_ amount: Int, all: Bool, selected: Bool) -> some View {
+        let title = all ? "All \(amount)" : "\(amount)"
+        if selected {
+            Button(title) { coinsToMake = amount }
+                .buttonStyle(.borderedProminent)
+                .accessibilityLabel(all ? "All \(amount) coins, selected" : "\(amount) coins, selected")
+        } else {
+            Button(title) { coinsToMake = amount }
+                .buttonStyle(.bordered)
+                .accessibilityLabel(all ? "All \(amount) coins" : "\(amount) coins")
+        }
+    }
+
     private var coinFooter: String {
         let rate = coins.state?.starsPerCoin ?? 10
-        var text = "Every \(rate) stars he earns can become 1 coin. Only grown-ups can convert them, here."
+        var text = "Every \(rate) stars he earns can become 1 coin. Convert as many as his stars cover, in one go or a few at a time. Only grown-ups can convert them, here."
         if let state = coins.state, state.maxCoins > 0 {
             text += " Up to \(state.maxCoins) \(state.maxCoins == 1 ? "coin" : "coins") at a time."
         }
