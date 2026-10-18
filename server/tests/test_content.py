@@ -3,7 +3,7 @@ from little_explorer_agent.content import load_books, lookup
 
 def test_loads_all_books_from_app_resources():
     books = load_books()
-    assert {"paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "paris-french", "london", "london-big-ben", "barcelona", "tahoe", "tahoe-heavenly", "tahoe-northstar", "hawaii", "hawaii-honolulu", "chengdu", "longyan", "travel-flight", "travel-packing", "travel-passport", "travel-hotel", "travel-jetlag"} <= set(books)
+    assert {"paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "paris-french", "london", "london-big-ben", "barcelona", "barcelona-park-guell", "barcelona-sagrada", "barcelona-casa-batllo", "barcelona-tibidabo", "barcelona-montjuic", "tahoe", "tahoe-heavenly", "tahoe-northstar", "hawaii", "hawaii-honolulu", "chengdu", "longyan", "travel-flight", "travel-packing", "travel-passport", "travel-hotel", "travel-jetlag"} <= set(books)
     for book in books.values():
         assert 10 <= len(book.pages) <= 14
         for page in book.pages:
@@ -47,7 +47,7 @@ async def test_refresh_remote_swaps_in_server_books(monkeypatch):
         assert await content.refresh_remote(base, max_age=0) is False  # same version
         assert await content.refresh_remote(base) is False  # checked moments ago
     books = content.current_books()
-    assert set(books) == {"paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "paris-french", "london", "london-big-ben", "barcelona", "tahoe", "tahoe-heavenly", "tahoe-northstar", "hawaii", "hawaii-honolulu", "chengdu", "longyan", "travel-flight", "travel-packing", "travel-passport", "travel-hotel", "travel-jetlag"}
+    assert set(books) == {"paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "paris-french", "london", "london-big-ben", "barcelona", "barcelona-park-guell", "barcelona-sagrada", "barcelona-casa-batllo", "barcelona-tibidabo", "barcelona-montjuic", "tahoe", "tahoe-heavenly", "tahoe-northstar", "hawaii", "hawaii-honolulu", "chengdu", "longyan", "travel-flight", "travel-packing", "travel-passport", "travel-hotel", "travel-jetlag"}
     book, page = content.lookup({"book": "paris", "page": books["paris"].pages[1].id})
     assert page is books["paris"].pages[1]
 
@@ -103,6 +103,37 @@ def test_new_paris_books_give_milo_context_with_fresh_photos():
     assert "small" in page.text and "Leonardo" in page.about
     book, page = lookup({"book": "paris-seine", "page": "bouquin"})
     assert "green boxes" in page.text.lower() and "bouquinistes" in page.about
+
+
+def test_barcelona_landmark_books_give_milo_context_with_fresh_photos():
+    import json
+
+    from little_explorer_agent.content import content_dir
+
+    books = load_books()
+    new = ("barcelona-park-guell", "barcelona-sagrada", "barcelona-casa-batllo", "barcelona-tibidabo", "barcelona-montjuic")
+    raw = {p.stem: json.loads(p.read_text(encoding="utf-8")) for p in content_dir().glob("*.json")}
+
+    def photos(bid):
+        return {(pg["photo"]["commonsTitle"], pg["photo"]["file"]) for pg in raw[bid]["pages"]}
+
+    old_titles = {t for bid in raw if bid not in new for t, _ in photos(bid)}
+    old_files = {f for bid in raw if bid not in new for _, f in photos(bid)}
+    for bid in new:
+        book = books[bid]
+        assert book.city == "Barcelona" and 12 <= len(book.pages) <= 14
+        assert book.pages[-1].id == "goodbye"
+        assert all("Ask Francis" in pg.about for pg in book.pages), f"{bid} needs a question for Francis on every page"
+        assert not {t for t, _ in photos(bid)} & old_titles, f"{bid} reuses a photo"
+        assert not {f for _, f in photos(bid)} & old_files, f"{bid} overwrites a photo file"
+    book, page = lookup({"book": "barcelona-park-guell", "page": "dragon"})
+    assert "dragon" in page.text and "salamander" in page.about
+    book, page = lookup({"book": "barcelona-sagrada", "page": "turtles"})
+    assert "turtle" in page.text and "tortoise" in page.about
+    book, page = lookup({"book": "barcelona-tibidabo", "page": "plane"})
+    assert "1928" in page.text and "Madrid" in page.about
+    book, page = lookup({"book": "barcelona-montjuic", "page": "fountain"})
+    assert "Magic Fountain" in page.text and "1929" in page.about
 
 
 def test_french_book_teaches_a_phrase_per_page_with_fresh_photos():

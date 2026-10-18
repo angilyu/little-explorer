@@ -1,0 +1,239 @@
+{
+  "id": "barcelona-casa-batllo",
+  "city": "Barcelona",
+  "country": "Spain",
+  "flagImage": "barcelona-flag.png",
+  "flag": "🇪🇸",
+  "theme": "Casa Batlló",
+  "coverColor": "#2E6FA7",
+  "tagline": "A dragon roof and a house of bones",
+  "narration": {
+    "instructions": "This book is about Barcelona in Spain. Say every Catalan name the way people in Barcelona say it, warmly and naturally, as one smooth word, never spelled out or anglicized: Casa Batlló (KAH-sah bah-YO), Gaudí (gow-DEE), Sant Jordi (sahnt ZHOR-dee), Passeig de Gràcia (pah-SECH duh GRAH-see-ah), Adéu (ah-DEH-oo). A short hint like gow-DEE is how to sound out the word."
+  },
+  "pages": [
+    {
+      "id": "welcome",
+      "text": "This is Casa Batlló, a house that looks like a fairy tale.",
+      "about": "Casa Batlló (KAH-sah bah-YO) stands on Passeig de Gràcia, a grand shopping street in Barcelona. Antoni Gaudí redesigned it between 1904 and 1906. It is so special that it is a UNESCO World Heritage site, and you can visit it like a museum. Ask Francis: What does this house remind you of?",
+      "emoji": "🏠",
+      "photo": {
+        "commonsTitle": "File:Casa Batlló facade (49831984313).jpg",
+        "query": "Casa Batlló façade",
+        "file": "barcelona-casa-batllo-welcome.jpg",
+        "author": "Mike McBey",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Casa_Batll%C3%B3_facade_(49831984313).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "neighbors",
+      "text": "Its neighbor has a pointy roof shaped like a set of stairs.",
+      "about": "Next door, on the left, is Casa Amatller. Its roof has steps like a staircase. The Amatller family made chocolate! Several famous architects built fancy houses on this one block, each trying to be the most beautiful, so people call it the Block of Discord, the block where the houses argue. Ask Francis: Which house would you pick to live in?",
+      "emoji": "🍫",
+      "photo": {
+        "commonsTitle": "File:Casa Amatller & Batlló 2955.jpg",
+        "query": "Casa Amatller and Casa Batlló",
+        "file": "barcelona-casa-batllo-neighbors.jpg",
+        "author": "C messier",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Casa_Amatller_%26_Batll%C3%B3_2955.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "bones",
+      "text": "Some people call it the House of Bones.",
+      "about": "The house was first built in 1877 as an ordinary building. Then a rich businessman, Josep Batlló, asked Gaudí to make it amazing. Look at the pillars on the big windows: they look like bones! That is why people in Barcelona call it the House of Bones. Ask Francis: Do these pillars look like bones to you, or like something else?",
+      "emoji": "🦴",
+      "photo": {
+        "commonsTitle": "File:Detail of Casa Battlo, Barcelona (48813374192).jpg",
+        "query": "Casa Batlló bone columns",
+        "file": "barcelona-casa-batllo-bones.jpg",
+        "author": "Mike McBey",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Detail_of_Casa_Battlo,_Barcelona_(48813374192).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "masks",
+      "text": "The little balconies look like carnival masks peeking down.",
+      "about": "The iron balconies are curved like masks with holes for eyes. Some people think they look like masks from a carnival party, and others think they look like skulls. Behind them, the wall sparkles with bits of colored glass and round tiles, like confetti floating on a lake. Ask Francis: Can you make a funny mask face like the balconies?",
+      "emoji": "🎭",
+      "photo": {
+        "commonsTitle": "File:Exterior of Casa Batló - Barcelona 2014.jpg",
+        "query": "Casa Batlló balconies masks",
+        "file": "barcelona-casa-batllo-masks.jpg",
+        "author": "© José Luiz Bernardes Ribeiro",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Exterior_of_Casa_Batl%C3%B3_-_Barcelona_2014.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "window",
+      "text": "Big wavy windows let the family watch the busy street.",
+      "about": "The main floor was the Batlló family's home. Its giant window looks out over Passeig de Gràcia, so they could watch people and carriages go by. The wooden frames curve like waves, and the top has little circles of colored glass. Gaudí did not like straight lines! Ask Francis: What would you like to watch from a window like this?",
+      "emoji": "🪟",
+      "photo": {
+        "commonsTitle": "File:Casa Batlló (51404834953).jpg",
+        "query": "Casa Batlló noble floor window",
+        "file": "barcelona-casa-batllo-window.jpg",
+        "author": "Kent Wang from Barcelona, Spain",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Casa_Batll%C3%B3_(51404834953).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "ceiling",
+      "text": "The ceiling swirls around the lamp like a whirlpool.",
+      "about": "In the main room the ceiling twists in a spiral around the lamp, like water going down a drain, or a snail shell, or a wave in the sea. Gaudí loved the sea, and lots of the house feels like being under the water. Ask Francis: Can you draw a swirl in the air with your finger?",
+      "emoji": "🌀",
+      "photo": {
+        "commonsTitle": "File:Casa batllo ceiling 2.jpg",
+        "query": "Casa Batlló ceiling swirl",
+        "file": "barcelona-casa-batllo-ceiling.jpg",
+        "author": "llamnudds",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Casa_batllo_ceiling_2.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "fireplace",
+      "text": "This cozy fireplace is shaped like a big mushroom.",
+      "about": "In a small room there is a fireplace shaped like a mushroom. It has a little seat built into each side, so two people could sit close to the fire and stay warm on a chilly day. Ask Francis: Would you sit here on a cold day?",
+      "emoji": "🍄",
+      "photo": {
+        "commonsTitle": "File:Fireplace in the fireplace room of Casa Batlló.jpg",
+        "query": "Casa Batlló mushroom fireplace",
+        "file": "barcelona-casa-batllo-fireplace.jpg",
+        "author": "© José Luiz Bernardes Ribeiro",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Fireplace_in_the_fireplace_room_of_Casa_Batll%C3%B3.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "light-well",
+      "text": "The blue tiles get lighter going down, so sunshine reaches every floor.",
+      "about": "In the middle of the house is a tall open space called a light well. Gaudí used dark blue tiles at the top, where there is lots of sun, and paler blue and white tiles lower down, where it is darker. The windows are also bigger near the bottom to catch more light. So every floor gets about the same light! It feels like being underwater. Ask Francis: Does this make you feel like you are swimming in the sea?",
+      "emoji": "💙",
+      "photo": {
+        "commonsTitle": "File:Light well - Casa Batlló - Barcelona 2014.jpg",
+        "query": "Casa Batlló light well",
+        "file": "barcelona-casa-batllo-light-well.jpg",
+        "author": "© José Luiz Bernardes Ribeiro",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Light_well_-_Casa_Batll%C3%B3_-_Barcelona_2014.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "attic",
+      "text": "In the attic, white arches look like the ribs of a whale.",
+      "about": "The attic was once used for washing and storing things. It has about 60 white arches in a row. Walking through it, many people say it feels like being inside the belly of a whale, or inside the ribs of a giant animal. Ask Francis: What animal do you think you are inside?",
+      "emoji": "🐋",
+      "photo": {
+        "commonsTitle": "File:Casa Batlló Parabolic Arches.jpg",
+        "query": "Casa Batlló attic arches",
+        "file": "barcelona-casa-batllo-attic.jpg",
+        "author": "FrancoisLagunas",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Casa_Batll%C3%B3_Parabolic_Arches.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "roof",
+      "text": "The roof looks like the scaly back of a sleepy dragon.",
+      "about": "The roof is covered in shiny tiles that look like dragon scales. They change color, from green to blue to pink and purple, depending on where you stand and how the light hits them. Along the top are big round tiles, like the bumps on a dragon's spine. Ask Francis: What color scales would your dragon have?",
+      "emoji": "🐉",
+      "photo": {
+        "commonsTitle": "File:Casa Batllo roof.JPG",
+        "query": "Casa Batlló roof dragon scales",
+        "file": "barcelona-casa-batllo-roof.jpg",
+        "author": "No machine-readable author provided. Mcginnly assumed (based on copyright claims",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Casa_Batllo_roof.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "tower",
+      "text": "Some say this tower is the lance of brave Sant Jordi.",
+      "about": "Sant Jordi (sahnt ZHOR-dee), or Saint George, is the special saint of Catalonia. In the old story he saves a princess from a dragon, and a red rose grows where the dragon is beaten. Many people think Casa Batlló tells this story: the roof is the dragon, and this little tower with a cross is Sant Jordi's lance. Gaudí never wrote it down, so it is a guess, but a fun one! Ask Francis: How would you make friends with a dragon instead?",
+      "emoji": "⚔️",
+      "photo": {
+        "commonsTitle": "File:Casa Batlló 2948.jpg",
+        "query": "Casa Batlló tower cross Saint George",
+        "file": "barcelona-casa-batllo-tower.jpg",
+        "author": "C messier",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Casa_Batll%C3%B3_2948.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "chimneys",
+      "text": "Colorful chimneys wear tile hats on the windy roof.",
+      "about": "The chimneys stand in little groups, like friends chatting. They are covered in pieces of colored tile and glass and wear round hats on top. Their twisty shape also helps stop the wind from pushing smoke back down into the house. Ask Francis: How many chimneys can you count?",
+      "emoji": "🎩",
+      "photo": {
+        "commonsTitle": "File:CasaBatllo rooftop chimneys dragon.jpg",
+        "query": "Casa Batlló chimneys",
+        "file": "barcelona-casa-batllo-chimneys.jpg",
+        "author": "Sara Terrones",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:CasaBatllo_rooftop_chimneys_dragon.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "roses",
+      "text": "On Sant Jordi day, the balconies are covered in red roses.",
+      "about": "April 23 is Sant Jordi day, a favorite holiday in Catalonia. People give each other a red rose and a book, and the streets are full of flower and book stalls. In recent years Casa Batlló has dressed up its balconies with lots of red roses for the day. Ask Francis: Which book would you give someone on Sant Jordi day?",
+      "emoji": "🌹",
+      "photo": {
+        "commonsTitle": "File:183 Casa Batlló, pg. de Gràcia 43 (Barcelona), guarnida de roses per Sant Jordi, 2025.jpg",
+        "query": "Casa Batlló roses Sant Jordi",
+        "file": "barcelona-casa-batllo-roses.jpg",
+        "author": "Enric",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:183_Casa_Batll%C3%B3,_pg._de_Gr%C3%A0cia_43_(Barcelona),_guarnida_de_roses_per_Sant_Jordi,_2025.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "goodbye",
+      "text": "At night the house sparkles. Adéu, Casa Batlló!",
+      "about": "At night, lights make the colored glass and tiles glitter like a dragon's treasure. Adéu (ah-DEH-oo) means goodbye in Catalan. Ask Francis: Which room would you like to visit first?",
+      "emoji": "👋",
+      "photo": {
+        "commonsTitle": "File:Casa Batlló facade at night.JPG",
+        "query": "Casa Batlló at night",
+        "file": "barcelona-casa-batllo-goodbye.jpg",
+        "author": "Mikenorton",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Casa_Batll%C3%B3_facade_at_night.JPG",
+        "verified": true
+      }
+    }
+  ]
+}

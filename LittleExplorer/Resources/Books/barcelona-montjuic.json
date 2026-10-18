@@ -1,0 +1,223 @@
+{
+  "id": "barcelona-montjuic",
+  "city": "Barcelona",
+  "country": "Spain",
+  "flagImage": "barcelona-flag.png",
+  "flag": "🇪🇸",
+  "theme": "Montjuïc Cable Car",
+  "coverColor": "#6A3FA0",
+  "tagline": "Cable cars, a castle and dancing water",
+  "narration": {
+    "instructions": "This book is about Barcelona in Spain. Say every Catalan name the way people in Barcelona say it, warmly and naturally, as one smooth word, never spelled out or anglicized: Montjuïc (mon-zhoo-EEK), Poble Espanyol (POH-bluh es-pahn-YOL), Adéu (ah-DEH-oo). A short hint like gow-DEE is how to sound out the word."
+  },
+  "pages": [
+    {
+      "id": "welcome",
+      "text": "Montjuïc is a big green hill right next to the sea.",
+      "about": "Montjuïc (mon-zhoo-EEK) is a hill on the edge of Barcelona, by the port. Its name might mean 'mountain of the Jews', because there was an old Jewish cemetery here long ago, though some people think it means 'Jupiter's mountain'. Today it is full of parks, gardens, museums and sports places. Ask Francis: What would you like to do on a big green hill?",
+      "emoji": "⛰️",
+      "photo": {
+        "commonsTitle": "File:Mont Juic Teleferic.jpg",
+        "query": "Montjuïc cable car Barcelona",
+        "file": "barcelona-montjuic-welcome.jpg",
+        "author": "Daniel Kraft",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Mont_Juic_Teleferic.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "cable-car",
+      "text": "Little cable cars glide up the hill to the castle.",
+      "about": "The Montjuïc cable car first opened in 1970 and got new cabins in 2007. Each cabin holds up to 8 people. It floats over the trees from the middle of the hill up to the castle at the top, and you can see the whole city as you go. Ask Francis: Would you rather ride the cable car or walk up?",
+      "emoji": "🚡",
+      "photo": {
+        "commonsTitle": "File:Montjuïc Cable Car BCN 04 2016 7109.jpg",
+        "query": "Montjuïc cable car gondola",
+        "file": "barcelona-montjuic-cable-car.jpg",
+        "author": "Mariordo (Mario Roberto Durán Ortiz)",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Montju%C3%AFc_Cable_Car_BCN_04_2016_7109.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "castle",
+      "text": "On the very top sits an old castle with thick walls.",
+      "about": "Montjuïc Castle was built mostly in the 1700s so soldiers could watch over the city and the port. It has thick walls and a moat, a ditch around it, but this moat never had water in it. Today it is a peaceful place to visit and look at the view. Ask Francis: How would you guard a castle?",
+      "emoji": "🏰",
+      "photo": {
+        "commonsTitle": "File:Barcelona - Montjuïc - Castell de Montjuïc 1799 by Juan Martin Cermeño - Courtyard - View ENE.jpg",
+        "query": "Montjuïc Castle courtyard",
+        "file": "barcelona-montjuic-castle.jpg",
+        "author": "Txllxt TxllxT",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Barcelona_-_Montju%C3%AFc_-_Castell_de_Montju%C3%AFc_1799_by_Juan_Martin_Cerme%C3%B1o_-_Courtyard_-_View_ENE.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "cannon",
+      "text": "A huge old cannon near the castle points out to sea.",
+      "about": "Around the castle you can find old cannons and big guns that once guarded the harbor from ships. This big one points out over the Mediterranean Sea. Don't worry, it does not fire anymore! Ask Francis: What sound do you think a cannon makes?",
+      "emoji": "💥",
+      "photo": {
+        "commonsTitle": "File:Castell Montjuic, Barcelona (P1170651).jpg",
+        "query": "Montjuïc castle cannon",
+        "file": "barcelona-montjuic-cannon.jpg",
+        "author": "Matti Blume",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Castell_Montjuic,_Barcelona_(P1170651).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "port-cable-car",
+      "text": "A red cable car flies high over the boats in the port.",
+      "about": "Another cable car, the Port Cable Car, opened in 1931. Its little red cabins carry people from Montjuïc across the harbor to the beach at Barceloneta. In the middle it passes a tall metal tower, Torre Jaume I, about 107 meters high. Ask Francis: How many boats can you see down below?",
+      "emoji": "🚠",
+      "photo": {
+        "commonsTitle": "File:Teleférico del Puerto Barcelona (ESP).JPG",
+        "query": "Port Cable Car Barcelona",
+        "file": "barcelona-montjuic-port-cable-car.jpg",
+        "author": "HUvB",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Telef%C3%A9rico_del_Puerto_Barcelona_(ESP).JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "fountain",
+      "text": "At night, the Magic Fountain dances to music with colored lights.",
+      "about": "The Magic Fountain was built for a big world fair in 1929 by an engineer named Carles Buïgas. On some evenings it puts on a show: the water jumps high, the lights turn red, pink, blue and gold, and music plays. The water gets used again and again instead of being wasted. Ask Francis: What song would you want the fountain to dance to?",
+      "emoji": "⛲",
+      "photo": {
+        "commonsTitle": "File:Magic Fountain of Montjuïc - night - 0003.JPG",
+        "query": "Magic Fountain Montjuïc night",
+        "file": "barcelona-montjuic-fountain.jpg",
+        "author": "Jordiferrer",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Magic_Fountain_of_Montju%C3%AFc_-_night_-_0003.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "palace",
+      "text": "Above the fountain stands a palace full of old paintings.",
+      "about": "The National Palace was built for the 1929 world fair too. Today it is the National Art Museum of Catalonia. Inside are very old paintings taken carefully off the walls of little mountain churches to keep them safe, and one of the biggest organs in Spain. Ask Francis: If you painted a picture for a museum, what would it be?",
+      "emoji": "🖼️",
+      "photo": {
+        "commonsTitle": "File:(Barcelona) Palau Nacional - National Museum of Art of Catalunya.jpg",
+        "query": "Palau Nacional MNAC",
+        "file": "barcelona-montjuic-palace.jpg",
+        "author": "Didier Descouens",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:(Barcelona)_Palau_Nacional_-_National_Museum_of_Art_of_Catalunya.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "stadium",
+      "text": "Athletes from all over the world raced here in 1992.",
+      "about": "The Olympic Stadium was first built in 1929 and was rebuilt for the 1992 Summer Olympics in Barcelona. The opening party and the running races happened here. For a while, the football team FC Barcelona played here too, while their own stadium was being rebuilt. Ask Francis: What race would you run in the Olympics?",
+      "emoji": "🏟️",
+      "photo": {
+        "commonsTitle": "File:Estadi Olímpic Lluís Companys - Barcelona, Spain - Jan 2007.jpg",
+        "query": "Montjuïc Olympic Stadium",
+        "file": "barcelona-montjuic-stadium.jpg",
+        "author": "Diliff",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Estadi_Ol%C3%ADmpic_Llu%C3%ADs_Companys_-_Barcelona,_Spain_-_Jan_2007.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "arrow",
+      "text": "An archer lit the Olympic flame by shooting a flaming arrow!",
+      "about": "At the 1992 opening ceremony, an archer named Antonio Rebollo shot a burning arrow up toward the big bowl, called a cauldron, on top of the stadium, and the Olympic flame burst into fire. Some people say the arrow really flew just past it, but it was still a magical moment! This photo shows the cauldron on the stadium wall. Ask Francis: Can you pretend to shoot a bow and arrow?",
+      "emoji": "🏹",
+      "photo": {
+        "commonsTitle": "File:Barcelona, Spain - Estadi Olímpic de Montjuïc ( Estadi Olímpic Lluís Companys ) Ank Kumar Infosys Limited 01.jpg",
+        "query": "Olympic cauldron Montjuïc",
+        "file": "barcelona-montjuic-arrow.jpg",
+        "author": "Ank Kumar",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Barcelona,_Spain_-_Estadi_Ol%C3%ADmpic_de_Montju%C3%AFc_(_Estadi_Ol%C3%ADmpic_Llu%C3%ADs_Companys_)_Ank_Kumar_Infosys_Limited_01.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "tower",
+      "text": "This white tower looks like a runner holding up a torch.",
+      "about": "This tower was built for the 1992 Olympics to send TV pictures of the games all over the world. It was designed by the architect Santiago Calatrava and is about 136 meters tall. Many people think it looks like an athlete holding up the Olympic torch. Ask Francis: Can you stand like the tower?",
+      "emoji": "📡",
+      "photo": {
+        "commonsTitle": "File:Torre Calatrava i Palau Sant Jordi.JPG",
+        "query": "Montjuïc Communications Tower Calatrava",
+        "file": "barcelona-montjuic-tower.jpg",
+        "author": "Jordiferrer",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Torre_Calatrava_i_Palau_Sant_Jordi.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "cactus",
+      "text": "A garden full of prickly cactuses looks out over the sea.",
+      "about": "On the sunny side of the hill there is a garden of cactuses and other desert plants from all around the world. It is one of the best cactus gardens in Europe. Some cactuses here grow taller than a grown-up. Look, but don't touch! Ask Francis: How do you think cactuses survive with very little rain?",
+      "emoji": "🌵",
+      "photo": {
+        "commonsTitle": "File:Mossen Costa i Llobera Gardens - December 2024.jpg",
+        "query": "Costa i Llobera cactus garden",
+        "file": "barcelona-montjuic-cactus.jpg",
+        "author": "Pep marfran",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Mossen_Costa_i_Llobera_Gardens_-_December_2024.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "village",
+      "text": "Poble Espanyol is a little village with houses from all over Spain.",
+      "about": "Poble Espanyol (POH-bluh es-pahn-YOL) means Spanish Village. It was built for the 1929 world fair, with copies of houses, streets and squares from many different parts of Spain, all in one place. Today there are shops and workshops where artists make things like glass and pottery. Ask Francis: Which house would you like to live in?",
+      "emoji": "🏘️",
+      "photo": {
+        "commonsTitle": "File:004 Poble Espanyol (Barcelona), plaça Major i glorieta.jpg",
+        "query": "Poble Espanyol Barcelona",
+        "file": "barcelona-montjuic-village.jpg",
+        "author": "Enric",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:004_Poble_Espanyol_(Barcelona),_pla%C3%A7a_Major_i_glorieta.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "goodbye",
+      "text": "Can you see Tibidabo far away? Adéu, Montjuïc!",
+      "about": "From the steps of the National Palace you can look all the way across Barcelona. Below are two tall towers at Plaça d'Espanya, and far away on the other side of the city is Tibidabo mountain. Adéu (ah-DEH-oo) means goodbye in Catalan. Ask Francis: Which place in Barcelona would you visit first?",
+      "emoji": "👋",
+      "photo": {
+        "commonsTitle": "File:Blick vom Palau Nacional Barcelona 2013.jpg",
+        "query": "view from Palau Nacional Barcelona",
+        "file": "barcelona-montjuic-goodbye.jpg",
+        "author": "Felix König",
+        "license": "CC BY 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Blick_vom_Palau_Nacional_Barcelona_2013.jpg",
+        "verified": true
+      }
+    }
+  ]
+}

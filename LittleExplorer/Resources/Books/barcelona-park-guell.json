@@ -1,0 +1,223 @@
+{
+  "id": "barcelona-park-guell",
+  "city": "Barcelona",
+  "country": "Spain",
+  "flagImage": "barcelona-flag.png",
+  "flag": "🇪🇸",
+  "theme": "Park Güell",
+  "coverColor": "#5E9E3E",
+  "tagline": "A mosaic dragon and a wavy bench",
+  "narration": {
+    "instructions": "This book is about Barcelona in Spain. Say every Catalan name the way people in Barcelona say it, warmly and naturally, as one smooth word, never spelled out or anglicized: Park Güell (park GWELL), Gaudí (gow-DEE), trencadís (tren-kah-DEES), Adéu (ah-DEH-oo). A short hint like gow-DEE is how to sound out the word."
+  },
+  "pages": [
+    {
+      "id": "welcome",
+      "text": "This is Park Güell, a magic park on a sunny hill.",
+      "about": "Park Güell (park GWELL) is a big park on a hill in Barcelona. It was designed by the famous architect Antoni Gaudí (gow-DEE) for his friend Eusebi Güell, and most of it was built between 1900 and 1914. Everything is curvy and colorful, with almost no straight lines, because Gaudí liked shapes from nature. Today it is a UNESCO World Heritage site, a place the whole world wants to protect. Ask Francis: What colors can you spot on the wavy wall?",
+      "emoji": "🌳",
+      "photo": {
+        "commonsTitle": "File:Parc Güell Terrace.jpg",
+        "query": "Park Güell terrace Barcelona",
+        "file": "barcelona-park-guell-welcome.jpg",
+        "author": "Daniel Kraft",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Parc_G%C3%BCell_Terrace.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "two-houses",
+      "text": "It was planned as a town, but only two houses were built.",
+      "about": "Mr. Güell dreamed of a garden town on the hill with about 60 fancy houses, a market and lots of paths. But hardly anyone wanted to buy a plot so far from the city back then, so only two houses were ever built. This is one of them, built for a lawyer named Martí Trias. The other became Gaudí's own home. In 1926 the city opened the whole place as a public park for everybody. Ask Francis: If you could build a house in a park, what would it look like?",
+      "emoji": "🏡",
+      "photo": {
+        "commonsTitle": "File:22 Casa Martí Trias i Domènech.jpg",
+        "query": "Casa Trias Park Güell",
+        "file": "barcelona-park-guell-two-houses.jpg",
+        "author": "Enfo",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:22_Casa_Mart%C3%AD_Trias_i_Dom%C3%A8nech.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "gatehouses",
+      "text": "At the gate, two little houses look like gingerbread houses.",
+      "about": "At the main gate there are two small houses with wavy roofs that look like they are covered in icing and candy. One even has a tall tower that looks a bit like a mushroom. Lots of people say they look like the gingerbread house in Hansel and Gretel, and some say that fairy tale inspired Gaudí, but nobody knows for sure. One was a porter's lodge, and today they hold a shop and a little museum. Ask Francis: Which part would you nibble first, the roof or the tower?",
+      "emoji": "🍪",
+      "photo": {
+        "commonsTitle": "File:Park Güell 02.jpg",
+        "query": "Park Güell entrance pavilions",
+        "file": "barcelona-park-guell-gatehouses.jpg",
+        "author": "Bernard Gagnon",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Park_G%C3%BCell_02.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "dragon",
+      "text": "A shiny mosaic dragon guards the stairs. Or is it a lizard?",
+      "about": "On the big entrance stairs sits the park's most famous animal. People in Barcelona call it 'el drac' (el DRAHK), the dragon, but it may really be a salamander, a kind of lizard. Nobody fully agrees! Its mouth is a spout: when the water tank under the park gets too full, extra water can trickle out of the dragon's mouth. It is so loved that it has become a symbol of Barcelona. Ask Francis: Is it a dragon or a lizard? What name would you give it?",
+      "emoji": "🦎",
+      "photo": {
+        "commonsTitle": "File:Drac (Parc Güell).JPG",
+        "query": "Park Güell dragon salamander",
+        "file": "barcelona-park-guell-dragon.jpg",
+        "author": "Canaan",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Drac_(Parc_G%C3%BCell).JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "trencadis",
+      "text": "Workers broke tiles and plates into pieces to make bright mosaics.",
+      "about": "This kind of mosaic is called trencadís (tren-kah-DEES), which means 'broken into pieces' in Catalan. Workers smashed tiles, plates, cups and glass, some of them leftovers from tile factories, and pressed the bits into wet cement. Little broken pieces can bend around curvy shapes much better than big square tiles can. It is like a giant sparkly puzzle. Ask Francis: If you made a mosaic, what picture would you make?",
+      "emoji": "🧩",
+      "photo": {
+        "commonsTitle": "File:Trencadís. Park Güell.jpg",
+        "query": "trencadís mosaic Park Güell",
+        "file": "barcelona-park-guell-trencadis.jpg",
+        "author": "Andrew Moore from Johannesburg, South Africa",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Trencad%C3%ADs._Park_G%C3%BCell.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "columns",
+      "text": "Under the big square is a hall with 86 stone columns.",
+      "about": "This hall is called the Hall of a Hundred Columns, but there are really 86! It was meant to be the covered market for the people living in the garden town. The columns hold up the big square above, like the legs of a table. The ones on the outside lean a little, as if they are pushing hard. Ask Francis: Why do you think people call it a hundred columns when there are only 86?",
+      "emoji": "🏛️",
+      "photo": {
+        "commonsTitle": "File:36 Parc Güell, Sala Hipòstila.jpg",
+        "query": "Park Güell Hypostyle Hall columns",
+        "file": "barcelona-park-guell-columns.jpg",
+        "author": "Enfo",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:36_Parc_G%C3%BCell,_Sala_Hip%C3%B2stila.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "ceiling",
+      "text": "Look up! Mosaic suns and swirls sparkle on the ceiling.",
+      "about": "Between the columns, the ceiling is decorated with round mosaic pictures. They were made by Josep Maria Jujol, an artist who helped Gaudí. The four biggest ones are said to be suns for the four seasons: spring, summer, fall and winter. The smaller ones look like moons, swirls and stars. Ask Francis: Which sun would you choose for your favorite season?",
+      "emoji": "🌞",
+      "photo": {
+        "commonsTitle": "File:Ceiling mosaic, Park Güell, Barcelona.jpg",
+        "query": "Park Güell ceiling mosaic",
+        "file": "barcelona-park-guell-ceiling.jpg",
+        "author": "Delialendeczki",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ceiling_mosaic,_Park_G%C3%BCell,_Barcelona.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "rain",
+      "text": "When it rains, water flows down inside the columns to a tank.",
+      "about": "The big square on top of the hall is made of sand and little stones, so rainwater soaks right through instead of making puddles. It runs into channels hidden inside the columns and down into a huge water tank under the hall. The water was saved for the gardens, and when the tank is full the extra water comes out of the dragon's mouth. This photo was taken in 2018 while the square was being repaired. Ask Francis: Where does the rain go at our house?",
+      "emoji": "🌧️",
+      "photo": {
+        "commonsTitle": "File:Park Güell - Plaza de la Naturaleza (obras en 2018).jpg",
+        "query": "Park Güell Nature Square",
+        "file": "barcelona-park-guell-rain.jpg",
+        "author": "Iván Melenchón Serrano",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Park_G%C3%BCell_-_Plaza_de_la_Naturaleza_(obras_en_2018).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "bench",
+      "text": "A long wavy bench curls around the square like a sea snake.",
+      "about": "The bench wiggles all the way around the big square. It is about 110 meters long, one of the longest benches in the world, and it is covered in colorful trencadís. The curves make cozy little corners, so friends can sit and face each other while they chat. There is a story that a worker sat in wet plaster so the seat would fit a person's back just right. It might be true! Ask Francis: How many friends do you think could sit on it?",
+      "emoji": "🐍",
+      "photo": {
+        "commonsTitle": "File:Barcelona parc Güell la placa benches.jpg",
+        "query": "Park Güell serpentine bench",
+        "file": "barcelona-park-guell-bench.jpg",
+        "author": "Isiwal/Wikimedia Commons/CC-BY-SA-3.0-at",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Barcelona_parc_G%C3%BCell_la_placa_benches.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "laundry",
+      "text": "Find the stone lady carrying a basket of laundry on her head!",
+      "about": "This curvy path is called the Laundry Room Portico. Its slanting stone columns make it feel like walking under a frozen ocean wave. One of the columns is carved like a washerwoman, a lady carrying a big bundle of laundry on her head. Long ago, women carried washing to the river or wash house this way. Ask Francis: Can you balance something on your head like the stone lady?",
+      "emoji": "🧺",
+      "photo": {
+        "commonsTitle": "File:Pórtico de la lavandera 9.JPG",
+        "query": "Park Güell Laundry Portico washerwoman",
+        "file": "barcelona-park-guell-laundry.jpg",
+        "author": "böhringer friedrich",
+        "license": "CC BY-SA 2.5",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:P%C3%B3rtico_de_la_lavandera_9.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "gaudi-house",
+      "text": "Gaudí lived in this pink house with a pointy tower.",
+      "about": "This pink house was built as a show house, to help sell homes in the garden town. It was designed by Gaudí's friend Francesc Berenguer, not by Gaudí himself. Gaudí moved in and lived here from 1906 to 1925 with his father and his niece. Today it is a small museum with furniture that Gaudí designed. Ask Francis: What color would your dream house be?",
+      "emoji": "🏠",
+      "photo": {
+        "commonsTitle": "File:Barcelona - Park Guell - widok na Dom Gaudiego - panoramio.jpg",
+        "query": "Gaudí House Museum Park Güell",
+        "file": "barcelona-park-guell-gaudi-house.jpg",
+        "author": "krysi@",
+        "license": "CC BY 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Barcelona_-_Park_Guell_-_widok_na_Dom_Gaudiego_-_panoramio.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "crosses",
+      "text": "Climb up to the three crosses to see the city and sea.",
+      "about": "The highest spot in the park is a stone hill called the Hill of the Three Crosses. Gaudí once planned a chapel up here. Today people climb the steps to look out over Barcelona. On a clear day you can spot the Sagrada Família, the tall towers by the beach and the blue sea. Ask Francis: What is the first thing you look for from the top of a hill?",
+      "emoji": "✝️",
+      "photo": {
+        "commonsTitle": "File:Calvary (three crosses - El Turó de les Tres Creus), Park Güell, Barcelona.jpg",
+        "query": "Park Güell three crosses viewpoint",
+        "file": "barcelona-park-guell-crosses.jpg",
+        "author": "The ed17",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Calvary_(three_crosses_-_El_Tur%C3%B3_de_les_Tres_Creus),_Park_G%C3%BCell,_Barcelona.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "goodbye",
+      "text": "Adéu, Park Güell! Wave goodbye to the mosaic dragon.",
+      "about": "Adéu (ah-DEH-oo) means goodbye in Catalan. Park Güell is full of surprises: a dragon, a rain-catching hall, a snake bench and a stone washerwoman. Ask Francis: What was your favorite thing in Park Güell?",
+      "emoji": "👋",
+      "photo": {
+        "commonsTitle": "File:Πάρκο Γκιουέλ 2782.jpg",
+        "query": "Park Güell Barcelona",
+        "file": "barcelona-park-guell-goodbye.jpg",
+        "author": "C messier",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:%CE%A0%CE%AC%CF%81%CE%BA%CE%BF_%CE%93%CE%BA%CE%B9%CE%BF%CF%85%CE%AD%CE%BB_2782.jpg",
+        "verified": true
+      }
+    }
+  ]
+}

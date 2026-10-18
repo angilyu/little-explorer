@@ -30,6 +30,11 @@ The first screen is a shelf with every book, grouped by city, with a general Tra
 | London | London (`london`) | The Thames, Big Ben, Tower Bridge, buses, ravens, guards, London Eye, the Tube, the museum whale, fish and chips |
 | London | Big Ben (`london-big-ben`) | Big Ben the bell vs the Elizabeth Tower, who it's named after, the giant clock faces and minute hands, the bongs, the radio chimes, pennies on the pendulum, the Ayrton Light, 334 steps, Westminster Bridge |
 | Barcelona | Barcelona (`barcelona`) | Beach, Sagrada Família, Casa Batlló, Park Güell's dragon, churros, human towers, football, the magic fountain |
+| Barcelona | Park Güell (`barcelona-park-guell`) | A garden town where only two houses were built, gingerbread gatehouses, the mosaic dragon (or salamander) on the stairs, trencadís broken-tile mosaics, the hall of 86 columns and its ceiling suns, rainwater saved under the square, the long wavy bench, the leaning laundry portico, Gaudí's pink house, the hill with three crosses |
+| Barcelona | Sagrada Família (`barcelona-sagrada`) | A church still being built after 140+ years, cranes, Gaudí's 43 years on it, towers like sand castles, fruit on the pinnacles, a turtle and a tortoise holding up columns, a forest of columns with colored light, the magic square that adds up to 33, the wavy-roofed school, the upside-down chain model, Mary's glowing star, the tallest church tower |
+| Barcelona | Casa Batlló (`barcelona-casa-batllo`) | The stepped-roof house next door, bone-like pillars, mask balconies, the big wavy window, a swirly ceiling, the mushroom fireplace, the blue tiled light well, the white arches in the attic, the dragon-scale roof, Sant Jordi's lance, mosaic chimneys, roses for Sant Jordi day |
+| Barcelona | Tibidabo Amusement Park (`barcelona-tibidabo`) | A 1901 fun park on a mountain, a Latin name meaning "I will give you", the Cuca de Llum funicular, the Tramvia Blau, the red airplane flying since 1928, the Ferris wheel, the Talaia, the automaton museum, the temple on top, the view to the sea, wild boars in the forest |
+| Barcelona | Montjuïc Cable Car (`barcelona-montjuic`) | A green hill by the sea, cable cars up to the castle, the castle and its cannon, the old port cable car over the water, the Magic Fountain's music and lights, the big palace museum, the 1992 Olympic stadium, the burning-arrow cauldron, the Calatrava tower, cactus gardens, the Poble Espanyol village |
 | Lake Tahoe | Lake Tahoe (`tahoe`) | Half California, half Nevada, deeper than the Empire State Building is tall, so clear you see the rocks, Emerald Bay's teahouse island, Vikingsholm's grass roof, Sand Harbor boulders, kayaks, black bears, the Truckee River, a lake that never freezes, the 1960 Olympics |
 | Lake Tahoe | Heavenly (`tahoe-heavenly`) | Winter: the village gondola, the lake-view deck, skiing from California into Nevada, chairlifts, ski school, pizza and french fries, the magic carpet, tubing, snow guns, hot cocoa |
 | Lake Tahoe | Northstar (`tahoe-northstar`) | Winter: the village ice rink, s'mores by the fire, chairlifts through the pines, a far-off lake view, ski school, corduroy snow, night snowcats, tubing, snowy pines, cocoa |
@@ -73,7 +78,7 @@ Pin a specific file by setting the page's `photo.commonsTitle`.
 
 The speaker button (bottom-right of every page) reads the sentence in a natural voice, the same OpenAI voice as Milo
 (`gpt-4o-mini-tts`, "coral"), styled like a grown-up reading a picture book to a 6-year-old: warm, clear and a little slow.
-The clips are made ahead of time and bundled (about 11 MB of AAC for all 319 pages), so reading aloud works offline
+The clips are made ahead of time and bundled (about 14 MB of AAC for all 384 pages), so reading aloud works offline
 and the app never holds an API key. Each word is highlighted as it's spoken. Tap again to stop. Speech also stops when
 the page turns or the book closes. When voice mode is on, the microphone is muted while the app reads, so Milo doesn't
 mistake the app's voice for the child.
@@ -92,7 +97,7 @@ don't spell out pronunciations like "Merci (mair-SEE)": the voice says every wor
 narration note and Milo's notes. The Hawaii books use the same mode so Hawaiian words (honu, nēnē, Waikīkī) are said
 the island way; the Tahoe books only add a note for local names
 (Nevada as neh-VAD-uh, Truckee). The Chengdu and Longyan books add a note so Chinese names (Ni hao, Zaijian, Jinli,
-Zhuge Liang, Hakka, tulou, Chengqi Lou) are said in Mandarin; their pages use plain pinyin and no Chinese characters. To run it:
+Zhuge Liang, Hakka, tulou, Chengqi Lou) are said in Mandarin; their pages use plain pinyin and no Chinese characters. The Barcelona landmark books add a note so Catalan names (Güell, Gaudí, Batlló, Sant Jordi, Tibidabo, Montjuïc, Adéu) are said the Barcelona way. To run it:
 
 ```sh
 python3 scripts/generate_narration.py                  # new or changed pages only
