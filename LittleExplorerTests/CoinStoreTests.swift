@@ -215,23 +215,46 @@ final class ParentGateTests: XCTestCase {
         super.tearDown()
     }
 
-    func testQuestionsAreHardForKidsAndTyped() {
+    func testQuestionsAreNumbersInWordsWithNoDigits() {
         var generator = SystemRandomNumberGenerator()
-        for _ in 0..<200 {
+        var seen = Set<Int>()
+        for _ in 0..<500 {
             let q = ParentGateQuestion.random(using: &generator)
-            XCTAssertTrue(ParentGateQuestion.aRange.contains(q.a))
-            XCTAssertTrue(ParentGateQuestion.bRange.contains(q.b))
-            XCTAssertTrue(ParentGateQuestion.cRange.contains(q.c))
-            XCTAssertGreaterThanOrEqual(q.answer, 12 * 3 + 11)
-            XCTAssertLessThanOrEqual(String(q.answer).count, ParentGateQuestion.maxDigits)
+            XCTAssertTrue(ParentGateQuestion.range.contains(q.answer))
+            XCTAssertNotEqual(q.answer % 100, 0, "never a round hundred")
+            XCTAssertEqual(String(q.answer).count, ParentGateQuestion.maxDigits)
+            XCTAssertNil(q.text.rangeOfCharacter(from: .decimalDigits), q.text)
+            XCTAssertNil(q.spoken.rangeOfCharacter(from: .decimalDigits), q.spoken)
+            seen.insert(q.answer)
         }
-        let q = ParentGateQuestion(a: 23, b: 7, c: 38)
-        XCTAssertEqual(q.answer, 199)
-        XCTAssertEqual(q.text, "23 × 7 + 38")
-        XCTAssertTrue(q.isAnswer("199"))
-        XCTAssertTrue(q.isAnswer("0199"))
-        XCTAssertFalse(q.isAnswer("161"))
+        XCTAssertGreaterThan(seen.count, 100, "a new number each time")
+
+        let q = ParentGateQuestion(number: 348)
+        XCTAssertEqual(q.text, "three hundred forty-eight")
+        XCTAssertTrue(q.isAnswer("348"))
+        XCTAssertTrue(q.isAnswer("0348"))
+        XCTAssertFalse(q.isAnswer("384"))
         XCTAssertFalse(q.isAnswer(""))
+    }
+
+    func testQuickChoicesAreBoundOnlyByStars() {
+        XCTAssertEqual(ParentCornerView.quickChoices(min: 1, max: 7), [1, 5, 7])
+        XCTAssertEqual(ParentCornerView.quickChoices(min: 1, max: 2), [1, 2])
+        XCTAssertEqual(ParentCornerView.quickChoices(min: 1, max: 47), [1, 5, 10, 47])
+        XCTAssertEqual(ParentCornerView.quickChoices(min: 3, max: 5), [3, 5])
+        XCTAssertEqual(ParentCornerView.quickChoices(min: 1, max: 1), [])
+    }
+
+    func testNumberWords() {
+        let cases: [Int: String] = [
+            101: "one hundred one", 110: "one hundred ten", 115: "one hundred fifteen",
+            219: "two hundred nineteen", 220: "two hundred twenty", 507: "five hundred seven",
+            640: "six hundred forty", 777: "seven hundred seventy-seven", 999: "nine hundred ninety-nine",
+            12: "twelve", 85: "eighty-five",
+        ]
+        for (number, words) in cases {
+            XCTAssertEqual(ParentGateQuestion.words(number), words)
+        }
     }
 
     func testThreeWrongAnswersRestTheGateAndItRemembers() {
@@ -262,5 +285,10 @@ final class ParentGateTests: XCTestCase {
         XCTAssertEqual(demo?.openGate, true)
         XCTAssertEqual(demo?.openParent, true)
         XCTAssertNil(DemoLaunch.parse(["app"]))
+        let preview = DemoLaunch.parse(["app", "-demoCoinIcon", "stack", "-demoCoinIcons", "-demoLock", "bottom"])
+        XCTAssertEqual(preview?.coinStyle, .stack)
+        XCTAssertEqual(preview?.showCoinIcons, true)
+        XCTAssertEqual(preview?.lockPlace, .bottom)
+        XCTAssertNil(DemoLaunch.parse(["app", "-demoLock", "top"])?.lockPlace)
     }
 }

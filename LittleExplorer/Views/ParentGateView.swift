@@ -1,21 +1,16 @@
 import SwiftUI
 
-/// A sum a grown-up can do in their head in a few seconds but a 6-year-old can't guess:
-/// a two-digit number times a single digit, plus a two-digit number (e.g. 23 × 7 + 38).
-/// The answer is typed, not picked, so there is nothing to guess from.
+/// A three-digit number written out in words ("three hundred forty-eight") that a grown-up types
+/// as digits. Quick for a reader, but a 6-year-old can't read it, and nothing on screen shows the digits.
 struct ParentGateQuestion: Equatable {
-    let a: Int
-    let b: Int
-    let c: Int
+    let number: Int
 
-    var answer: Int { a * b + c }
-    var text: String { "\(a) × \(b) + \(c)" }
-    var spoken: String { "What is \(a) times \(b), plus \(c)?" }
+    var answer: Int { number }
+    var text: String { Self.words(number) }
+    var spoken: String { "Type the number \(text)" }
 
-    static let aRange = 12...29
-    static let bRange = 3...9
-    static let cRange = 11...49
-    static let maxDigits = 4
+    static let range = 101...999
+    static let maxDigits = 3
 
     func isAnswer(_ typed: String) -> Bool { Int(typed) == answer }
 
@@ -24,12 +19,30 @@ struct ParentGateQuestion: Equatable {
         return random(using: &generator)
     }
 
+    /// Never a round hundred, so there is always a tens or ones part to type.
     static func random<G: RandomNumberGenerator>(using generator: inout G) -> ParentGateQuestion {
-        ParentGateQuestion(
-            a: Int.random(in: aRange, using: &generator),
-            b: Int.random(in: bRange, using: &generator),
-            c: Int.random(in: cRange, using: &generator)
-        )
+        var number: Int
+        repeat { number = Int.random(in: range, using: &generator) } while number % 100 == 0
+        return ParentGateQuestion(number: number)
+    }
+
+    private static let ones = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
+                               "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen",
+                               "seventeen", "eighteen", "nineteen"]
+    private static let tens = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"]
+
+    /// 1...999 in American English words: 348 is "three hundred forty-eight", 507 is "five hundred seven".
+    static func words(_ n: Int) -> String {
+        precondition((1...999).contains(n))
+        var parts: [String] = []
+        if n >= 100 { parts.append("\(ones[n / 100]) hundred") }
+        let rest = n % 100
+        if rest >= 20 {
+            parts.append(rest % 10 == 0 ? tens[rest / 10] : "\(tens[rest / 10])-\(ones[rest % 10])")
+        } else if rest > 0 {
+            parts.append(ones[rest])
+        }
+        return parts.joined(separator: " ")
     }
 }
 
@@ -138,10 +151,14 @@ struct ParentGateView: View {
 
     private var puzzle: some View {
         VStack(spacing: 12) {
-            Text("Type the answer to continue.")
+            Text("Type this number to continue.")
                 .foregroundStyle(.secondary)
-            Text("\(question.text) = ?")
-                .font(.system(size: regular ? 38 : 32, weight: .bold, design: .rounded).monospacedDigit())
+            Text(question.text)
+                .font(.system(size: regular ? 34 : 28, weight: .bold, design: .rounded))
+                .multilineTextAlignment(.center)
+                .lineLimit(2)
+                .minimumScaleFactor(0.8)
+                .fixedSize(horizontal: false, vertical: true)
                 .accessibilityLabel(question.spoken)
             Text(typed.isEmpty ? " " : typed)
                 .font(.system(size: regular ? 36 : 32, weight: .semibold, design: .rounded).monospacedDigit())

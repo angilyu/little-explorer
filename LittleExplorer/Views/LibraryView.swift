@@ -14,6 +14,7 @@ struct LibraryView: View {
     @State private var showParentCorner = false
     @State private var showPassport = false
     @State private var didApplyDemo = false
+    @State private var showCoinIcons = false
 
     private var regular: Bool { sizeClass == .regular }
 
@@ -26,6 +27,7 @@ struct LibraryView: View {
                         ForEach(BookLibrary.rows(BookLibrary.shelves(books), columns: columns), id: \.self) { row in
                             shelfRow(row)
                         }
+                        if lockPlace == .bottom { grownUpsFooter }
                     }
                     .padding(.horizontal, regular ? 40 : 20)
                     .padding(.vertical, regular ? 40 : 8)
@@ -40,12 +42,10 @@ struct LibraryView: View {
                 LinearGradient(colors: [Theme.sky, Theme.paper], startPoint: .top, endPoint: .bottom)
                     .ignoresSafeArea()
             )
-            .toolbar {
-                if regular {
-                    ToolbarItem(placement: .topBarTrailing) { grownUpsButton }
-                }
+            .overlay(alignment: .bottomTrailing) {
+                if lockPlace == .corner { grownUpsCorner }
             }
-            .toolbar(regular ? .automatic : .hidden, for: .navigationBar)
+            .toolbar(.hidden, for: .navigationBar)
         }
         .fullScreenCover(item: $openBook) { open in
             BookReaderView(book: open.book, startPage: open.startPage)
@@ -71,6 +71,9 @@ struct LibraryView: View {
                 .environment(hearts)
                 .environment(coins)
         }
+        #if DEBUG
+        .sheet(isPresented: $showCoinIcons) { CoinIconGallery(regular: regular).passportSizing() }
+        #endif
         .onAppear(perform: applyDemoLaunch)
     }
 
@@ -112,20 +115,42 @@ struct LibraryView: View {
         .id(book.id)
     }
 
-    private var grownUpsButton: some View {
+    private var lockPlace: GrownUpsPlace { GrownUpsPlace.current }
+
+    /// Option A: a small lock floating in the bottom corner, away from the covers' titles.
+    private var grownUpsCorner: some View {
         Button {
             showGate = true
         } label: {
-            if regular {
-                Label("Grown-ups", systemImage: "lock.fill")
-                    .labelStyle(.titleAndIcon)
-                    .font(.footnote.weight(.semibold))
-            } else {
-                Image(systemName: "lock.fill")
-                    .font(.footnote.weight(.semibold))
-                    .accessibilityLabel("Grown-ups")
-            }
+            Image(systemName: "lock.fill")
+                .font(.system(size: regular ? 22 : 15, weight: .semibold))
+                .foregroundStyle(Theme.ink.opacity(0.7))
+                .frame(width: regular ? 56 : 40, height: regular ? 56 : 40)
+                .background(Circle().fill(.ultraThinMaterial))
+                .overlay(Circle().strokeBorder(.white.opacity(0.6), lineWidth: 1))
+                .shadow(color: .black.opacity(0.12), radius: 3, x: 0, y: 1)
         }
+        .buttonStyle(.plain)
+        .padding(.trailing, regular ? 28 : 14)
+        .padding(.bottom, regular ? 28 : 4)
+        .accessibilityLabel("Grown-ups")
+        .accessibilityHint("For parents only")
+    }
+
+    /// Option B: a small "Grown-ups" button after the last shelf.
+    private var grownUpsFooter: some View {
+        Button {
+            showGate = true
+        } label: {
+            Label("Grown-ups", systemImage: "lock.fill")
+                .font(.footnote.weight(.semibold))
+        }
+        .buttonStyle(.bordered)
+        .tint(Theme.ink)
+        .frame(maxWidth: .infinity)
+        .padding(.top, regular ? 8 : 4)
+        .padding(.bottom, regular ? 0 : 16)
+        .id("grown-ups")
         .accessibilityHint("For parents only")
     }
 
@@ -155,9 +180,6 @@ struct LibraryView: View {
                     .layoutPriority(1)
                 Spacer(minLength: 4)
                 starBadge
-                grownUpsButton
-                    .buttonStyle(.bordered)
-                    .tint(Theme.ink)
             }
         }
     }
@@ -180,6 +202,9 @@ struct LibraryView: View {
         if demo.openPassport { showPassport = true }
         if demo.openGate { showGate = true }
         if demo.openParent { showParentCorner = true }
+        #if DEBUG
+        if demo.showCoinIcons { showCoinIcons = true }
+        #endif
         guard let id = demo.bookId, let book = books.first(where: { $0.id == id }) else { return }
         let index = min(demo.pageIndex, book.pages.count - 1)
         if demo.lovePage {
@@ -187,6 +212,13 @@ struct LibraryView: View {
         }
         openBook = OpenBook(book: book, startPage: index)
     }
+}
+
+/// Where the grown-ups lock sits (preview: `-demoLock corner|bottom`). Not in the crowded top bar.
+enum GrownUpsPlace: String {
+    case corner, bottom
+
+    static var current: GrownUpsPlace { DemoLaunch.current?.lockPlace ?? .corner }
 }
 
 /// The start page travels with the presented book so the cover never reads a stale value.

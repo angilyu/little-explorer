@@ -5,28 +5,120 @@ extension Color {
     static let coinGold = Color(red: 0.93, green: 0.6, blue: 0.05)
 }
 
-/// A gold coin with a star on it: what a grown-up turns his stars into.
+/// How a coin is drawn. Preview only: three looks to choose from (`-demoCoinIcon crown|dollar|stack`).
+enum CoinStyle: String, CaseIterable, Identifiable {
+    case crown, dollar, stack
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .crown: "A: Gold coin"
+        case .dollar: "B: Dollar coin"
+        case .stack: "C: Coin stack"
+        }
+    }
+
+    static var current: CoinStyle { DemoLaunch.current?.coinStyle ?? .crown }
+}
+
+private struct CoinStyleKey: EnvironmentKey {
+    static var defaultValue: CoinStyle { CoinStyle.current }
+}
+
+extension EnvironmentValues {
+    var coinStyle: CoinStyle {
+        get { self[CoinStyleKey.self] }
+        set { self[CoinStyleKey.self] = newValue }
+    }
+}
+
+/// A gold coin: what a grown-up turns his stars into. Drawn so it can't be mistaken for a star.
 struct CoinIcon: View {
     var size: CGFloat = 28
+    @Environment(\.coinStyle) private var style
 
     var body: some View {
-        ZStack {
-            Circle()
-                .fill(
-                    LinearGradient(colors: [Color.starGold, Color.coinGold], startPoint: .topLeading, endPoint: .bottomTrailing)
-                )
-            Circle()
-                .strokeBorder(Color.coinGold.opacity(0.9), lineWidth: max(size * 0.08, 1.5))
-            Image(systemName: "star.fill")
-                .font(.system(size: size * 0.48, weight: .heavy))
-                .foregroundStyle(.white)
+        Group {
+            switch style {
+            case .crown: GoldCoin(size: size)
+            case .dollar:
+                Image(systemName: "dollarsign.circle.fill")
+                    .resizable()
+                    .scaledToFit()
+                    .symbolRenderingMode(.palette)
+                    .foregroundStyle(.white, Color.coinGold)
+                    .fontWeight(.bold)
+            case .stack: CoinStack(size: size)
+            }
         }
         .frame(width: size, height: size)
         .accessibilityHidden(true)
     }
 }
 
-/// Library corner badge: the stars he can spend (and his coins, once he has any). Tapping it opens the Passport.
+extension Color {
+    static let coinRim = Color(red: 0.78, green: 0.5, blue: 0.05)
+    static let coinLight = Color(red: 1.0, green: 0.86, blue: 0.35)
+}
+
+/// A round gold coin with a raised rim and a crown, like a pirate's gold piece.
+private struct GoldCoin: View {
+    let size: CGFloat
+
+    var body: some View {
+        ZStack {
+            Circle().fill(Color.coinRim)
+            Circle()
+                .fill(RadialGradient(colors: [Color.coinLight, Color.coinGold], center: .init(x: 0.35, y: 0.3),
+                                     startRadius: 0, endRadius: size * 0.55))
+                .padding(size * 0.09)
+            Circle()
+                .strokeBorder(Color.coinRim.opacity(0.55), lineWidth: max(size * 0.035, 0.8))
+                .padding(size * 0.17)
+            Image(systemName: "crown.fill")
+                .font(.system(size: size * 0.36, weight: .black))
+                .foregroundStyle(Color.coinRim)
+                .offset(y: -size * 0.01)
+        }
+    }
+}
+
+/// Three gold coins stacked up, seen from the side.
+private struct CoinStack: View {
+    let size: CGFloat
+
+    var body: some View {
+        let width = size * 0.86
+        let face = size * 0.3
+        let thick = size * 0.13
+        ZStack(alignment: .bottom) {
+            ForEach(0..<3) { i in
+                coin(width: width, face: face, thick: thick)
+                    .offset(x: [0, size * 0.05, -size * 0.03][i], y: -CGFloat(i) * (thick + size * 0.02))
+            }
+        }
+        .frame(width: size, height: size, alignment: .bottom)
+        .padding(.bottom, size * 0.08)
+    }
+
+    private func coin(width: CGFloat, face: CGFloat, thick: CGFloat) -> some View {
+        ZStack(alignment: .top) {
+            Ellipse().fill(Color.coinRim).frame(width: width, height: face).offset(y: thick)
+            Rectangle().fill(Color.coinRim).frame(width: width, height: thick).offset(y: face / 2)
+            Ellipse()
+                .fill(LinearGradient(colors: [Color.coinLight, Color.coinGold], startPoint: .leading, endPoint: .trailing))
+                .frame(width: width, height: face)
+            Ellipse()
+                .strokeBorder(Color.coinRim.opacity(0.6), lineWidth: max(face * 0.08, 0.7))
+                .frame(width: width * 0.66, height: face * 0.58)
+                .offset(y: face * 0.21)
+        }
+        .frame(width: width, height: face + thick, alignment: .top)
+    }
+}
+
+/// Library corner badge: the stars he can spend and the coins he has. Tapping it opens the Passport.
 struct StarTotalBadge: View {
     let total: Int
     var coins = 0
@@ -41,26 +133,68 @@ struct StarTotalBadge: View {
                 Text("\(total)")
                     .contentTransition(.numericText())
                     .foregroundStyle(Theme.ink)
-                if coins > 0 {
-                    CoinIcon(size: regular ? 28 : 22)
-                        .padding(.leading, regular ? 8 : 2)
-                    Text("\(coins)")
-                        .contentTransition(.numericText())
-                        .foregroundStyle(Theme.ink)
-                }
+                CoinIcon(size: regular ? 30 : 24)
+                    .padding(.leading, regular ? 8 : 4)
+                Text("\(coins)")
+                    .contentTransition(.numericText())
+                    .foregroundStyle(Theme.ink)
             }
             .font(.system(size: regular ? 28 : 22, weight: .heavy, design: .rounded))
             .lineLimit(1)
             .fixedSize()
-            .padding(.horizontal, regular ? 18 : (coins > 0 ? 10 : 14))
+            .padding(.horizontal, regular ? 18 : 12)
             .frame(minHeight: regular ? 56 : 46)
             .background(Capsule().fill(.white))
             .shadow(color: .black.opacity(0.12), radius: 4, x: 0, y: 2)
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(coins > 0 ? "\(total) stars and \(coins) coins. Open my passport" : "\(total) stars. Open my passport")
+        .accessibilityLabel("\(total) stars and \(coins) \(coins == 1 ? "coin" : "coins"). Open my passport")
     }
 }
+
+#if DEBUG
+/// Preview only (`-demoCoinIcons`): the coin looks side by side, big and in the library badge.
+struct CoinIconGallery: View {
+    var regular = true
+
+    var body: some View {
+        ScrollView {
+            VStack(spacing: regular ? 28 : 20) {
+                Text("Pick a coin")
+                    .font(.system(size: regular ? 34 : 26, weight: .heavy, design: .rounded))
+                HStack(alignment: .top, spacing: regular ? 40 : 16) {
+                    ForEach(CoinStyle.allCases) { style in
+                        VStack(spacing: 10) {
+                            CoinIcon(size: regular ? 110 : 80)
+                            Text(style.title)
+                                .font(.system(size: regular ? 20 : 15, weight: .bold, design: .rounded))
+                        }
+                        .environment(\.coinStyle, style)
+                    }
+                }
+                ForEach(CoinStyle.allCases) { style in
+                    HStack(spacing: 14) {
+                        Text(String(style.title.prefix(1)))
+                            .font(.system(size: regular ? 24 : 18, weight: .heavy, design: .rounded))
+                            .frame(width: 24)
+                        StarTotalBadge(total: 41, coins: 3, regular: regular) {}
+                        Spacer(minLength: 0)
+                        HStack(spacing: 6) {
+                            CoinIcon(size: 18)
+                            Text("3").font(.body)
+                        }
+                    }
+                    .environment(\.coinStyle, style)
+                    .padding(.horizontal, regular ? 40 : 16)
+                }
+            }
+            .foregroundStyle(Theme.ink)
+            .padding(.vertical, regular ? 40 : 24)
+        }
+        .background(LinearGradient(colors: [Theme.sky, Theme.paper], startPoint: .top, endPoint: .bottom).ignoresSafeArea())
+    }
+}
+#endif
 
 /// Where a flying star lands: the in-book counter's frame in the reader's coordinate space.
 struct StarCounterFrameKey: PreferenceKey {
