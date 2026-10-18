@@ -3,6 +3,4813 @@
  "voice": "coral",
  "instructions": "You are reading a picture book aloud to a 6-year-old. Voice: warm, gentle and friendly, with a little smile. Pace: a little slow and very clear, so a child can follow each word with a finger. Pause briefly at commas and a bit longer between sentences. Read exactly the words given, nothing more. Say French and Spanish names the way locals do.",
  "clips": {
+  "barcelona-casa-batllo/attic": {
+   "file": "read-barcelona-casa-batllo-attic",
+   "text": "In the attic, white arches look like the ribs of a whale.",
+   "duration": 5.01,
+   "match": 1.0,
+   "heard": "In the attic, white arches look like the ribs of a whale.",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.0,
+     "end": 0.28
+    },
+    {
+     "location": 3,
+     "length": 3,
+     "start": 0.28,
+     "end": 0.88
+    },
+    {
+     "location": 7,
+     "length": 5,
+     "start": 0.88,
+     "end": 0.96
+    },
+    {
+     "location": 14,
+     "length": 5,
+     "start": 1.43,
+     "end": 1.85
+    },
+    {
+     "location": 20,
+     "length": 6,
+     "start": 1.96,
+     "end": 2.52
+    },
+    {
+     "location": 27,
+     "length": 4,
+     "start": 2.77,
+     "end": 2.95
+    },
+    {
+     "location": 32,
+     "length": 4,
+     "start": 3.01,
+     "end": 3.16
+    },
+    {
+     "location": 37,
+     "length": 3,
+     "start": 3.25,
+     "end": 3.86
+    },
+    {
+     "location": 41,
+     "length": 4,
+     "start": 3.94,
+     "end": 4.02
+    },
+    {
+     "location": 46,
+     "length": 2,
+     "start": 4.02,
+     "end": 4.14
+    },
+    {
+     "location": 49,
+     "length": 1,
+     "start": 4.14,
+     "end": 4.58
+    },
+    {
+     "location": 51,
+     "length": 5,
+     "start": 4.58,
+     "end": 4.66
+    }
+   ],
+   "lufs": -16.0,
+   "style": "6a0ebb7084"
+  },
+  "barcelona-casa-batllo/bones": {
+   "file": "read-barcelona-casa-batllo-bones",
+   "text": "Some people call it the House of Bones.",
+   "duration": 4.1,
+   "match": 1.0,
+   "heard": "Some people call it the House of Bones.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.0,
+     "end": 0.56
+    },
+    {
+     "location": 5,
+     "length": 6,
+     "start": 0.56,
+     "end": 1.1
+    },
+    {
+     "location": 12,
+     "length": 4,
+     "start": 1.38,
+     "end": 1.74
+    },
+    {
+     "location": 17,
+     "length": 2,
+     "start": 1.74,
+     "end": 1.95
+    },
+    {
+     "location": 20,
+     "length": 3,
+     "start": 2.29,
+     "end": 2.7
+    },
+    {
+     "location": 24,
+     "length": 5,
+     "start": 2.7,
+     "end": 2.9
+    },
+    {
+     "location": 30,
+     "length": 2,
+     "start": 2.9,
+     "end": 3.11
+    },
+    {
+     "location": 33,
+     "length": 5,
+     "start": 3.18,
+     "end": 3.62
+    }
+   ],
+   "lufs": -16.0,
+   "style": "6a0ebb7084"
+  },
+  "barcelona-casa-batllo/ceiling": {
+   "file": "read-barcelona-casa-batllo-ceiling",
+   "text": "The ceiling swirls around the lamp like a whirlpool.",
+   "duration": 4.56,
+   "match": 1.0,
+   "heard": "The ceiling swirls around the lamp like a whirlpool.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.06,
+     "end": 0.34
+    },
+    {
+     "location": 4,
+     "length": 7,
+     "start": 0.34,
+     "end": 0.86
+    },
+    {
+     "location": 12,
+     "length": 6,
+     "start": 0.86,
+     "end": 1.58
+    },
+    {
+     "location": 19,
+     "length": 6,
+     "start": 1.58,
+     "end": 1.86
+    },
+    {
+     "location": 26,
+     "length": 3,
+     "start": 1.86,
+     "end": 2.5
+    },
+    {
+     "location": 30,
+     "length": 4,
+     "start": 2.95,
+     "end": 3.03
+    },
+    {
+     "location": 35,
+     "length": 4,
+     "start": 3.03,
+     "end": 3.16
+    },
+    {
+     "location": 40,
+     "length": 1,
+     "start": 3.16,
+     "end": 3.54
+    },
+    {
+     "location": 42,
+     "length": 9,
+     "start": 3.54,
+     "end": 4.0
+    }
+   ],
+   "lufs": -16.0,
+   "style": "6a0ebb7084"
+  },
+  "barcelona-casa-batllo/chimneys": {
+   "file": "read-barcelona-casa-batllo-chimneys",
+   "text": "Colorful chimneys wear tile hats on the windy roof.",
+   "duration": 4.51,
+   "match": 1.0,
+   "heard": "Colorful chimneys wear tile hats on the windy roof.",
+   "words": [
+    {
+     "location": 0,
+     "length": 8,
+     "start": 0.14,
+     "end": 0.76
+    },
+    {
+     "location": 9,
+     "length": 8,
+     "start": 0.82,
+     "end": 1.42
+    },
+    {
+     "location": 18,
+     "length": 4,
+     "start": 1.42,
+     "end": 1.67
+    },
+    {
+     "location": 23,
+     "length": 4,
+     "start": 1.73,
+     "end": 2.36
+    },
+    {
+     "location": 28,
+     "length": 4,
+     "start": 2.45,
+     "end": 2.62
+    },
+    {
+     "location": 33,
+     "length": 2,
+     "start": 2.86,
+     "end": 3.04
+    },
+    {
+     "location": 36,
+     "length": 3,
+     "start": 3.04,
+     "end": 3.26
+    },
+    {
+     "location": 40,
+     "length": 5,
+     "start": 3.26,
+     "end": 3.56
+    },
+    {
+     "location": 46,
+     "length": 4,
+     "start": 3.56,
+     "end": 3.92
+    }
+   ],
+   "lufs": -16.0,
+   "style": "6a0ebb7084"
+  },
+  "barcelona-casa-batllo/fireplace": {
+   "file": "read-barcelona-casa-batllo-fireplace",
+   "text": "This cozy fireplace is shaped like a big mushroom.",
+   "duration": 3.96,
+   "match": 1.0,
+   "heard": "This cozy fireplace is shaped like a big mushroom.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.08,
+     "end": 0.46
+    },
+    {
+     "location": 5,
+     "length": 4,
+     "start": 0.46,
+     "end": 0.96
+    },
+    {
+     "location": 10,
+     "length": 9,
+     "start": 1.02,
+     "end": 1.6
+    },
+    {
+     "location": 20,
+     "length": 2,
+     "start": 1.6,
+     "end": 2.0
+    },
+    {
+     "location": 23,
+     "length": 6,
+     "start": 2.0,
+     "end": 2.22
+    },
+    {
+     "location": 30,
+     "length": 4,
+     "start": 2.22,
+     "end": 2.54
+    },
+    {
+     "location": 35,
+     "length": 1,
+     "start": 2.54,
+     "end": 2.63
+    },
+    {
+     "location": 37,
+     "length": 3,
+     "start": 2.71,
+     "end": 3.12
+    },
+    {
+     "location": 41,
+     "length": 8,
+     "start": 3.12,
+     "end": 3.54
+    }
+   ],
+   "lufs": -16.0,
+   "style": "6a0ebb7084"
+  },
+  "barcelona-casa-batllo/goodbye": {
+   "file": "read-barcelona-casa-batllo-goodbye",
+   "text": "At night the house sparkles. Adéu, Casa Batlló!",
+   "duration": 5.95,
+   "match": 1.0,
+   "heard": "At night the house sparkles. Adéu, Casa Batlló!",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.61,
+     "end": 0.76
+    },
+    {
+     "location": 3,
+     "length": 5,
+     "start": 0.83,
+     "end": 1.3
+    },
+    {
+     "location": 9,
+     "length": 3,
+     "start": 1.71,
+     "end": 1.94
+    },
+    {
+     "location": 13,
+     "length": 5,
+     "start": 1.94,
+     "end": 2.32
+    },
+    {
+     "location": 19,
+     "length": 8,
+     "start": 2.32,
+     "end": 4.28
+    },
+    {
+     "location": 29,
+     "length": 4,
+     "start": 4.74,
+     "end": 5.26
+    },
+    {
+     "location": 35,
+     "length": 4,
+     "start": 5.32,
+     "end": 5.4
+    },
+    {
+     "location": 40,
+     "length": 6,
+     "start": 5.4,
+     "end": 5.6
+    }
+   ],
+   "lufs": -16.0,
+   "style": "6a0ebb7084"
+  },
+  "barcelona-casa-batllo/light-well": {
+   "file": "read-barcelona-casa-batllo-light-well",
+   "text": "The blue tiles get lighter going down, so sunshine reaches every floor.",
+   "duration": 6.55,
+   "match": 1.0,
+   "heard": "The blue tiles get lighter going down, so sunshine reaches every floor.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.1,
+     "end": 0.29
+    },
+    {
+     "location": 4,
+     "length": 4,
+     "start": 0.36,
+     "end": 0.74
+    },
+    {
+     "location": 9,
+     "length": 5,
+     "start": 0.81,
+     "end": 1.34
+    },
+    {
+     "location": 15,
+     "length": 3,
+     "start": 1.34,
+     "end": 1.76
+    },
+    {
+     "location": 19,
+     "length": 7,
+     "start": 1.76,
+     "end": 2.1
+    },
+    {
+     "location": 27,
+     "length": 5,
+     "start": 2.1,
+     "end": 2.58
+    },
+    {
+     "location": 33,
+     "length": 4,
+     "start": 2.58,
+     "end": 2.99
+    },
+    {
+     "location": 39,
+     "length": 2,
+     "start": 3.5,
+     "end": 3.88
+    },
+    {
+     "location": 42,
+     "length": 8,
+     "start": 3.88,
+     "end": 4.46
+    },
+    {
+     "location": 51,
+     "length": 7,
+     "start": 4.46,
+     "end": 5.09
+    },
+    {
+     "location": 59,
+     "length": 5,
+     "start": 5.15,
+     "end": 5.62
+    },
+    {
+     "location": 65,
+     "length": 5,
+     "start": 5.62,
+     "end": 5.9
+    }
+   ],
+   "lufs": -16.0,
+   "style": "6a0ebb7084"
+  },
+  "barcelona-casa-batllo/masks": {
+   "file": "read-barcelona-casa-batllo-masks",
+   "text": "The little balconies look like carnival masks peeking down.",
+   "duration": 4.6,
+   "match": 1.0,
+   "heard": "The little balconies look like carnival masks peeking down.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.08,
+     "end": 0.4
+    },
+    {
+     "location": 4,
+     "length": 6,
+     "start": 0.4,
+     "end": 0.8
+    },
+    {
+     "location": 11,
+     "length": 9,
+     "start": 0.86,
+     "end": 1.52
+    },
+    {
+     "location": 21,
+     "length": 4,
+     "start": 1.52,
+     "end": 1.82
+    },
+    {
+     "location": 26,
+     "length": 4,
+     "start": 1.82,
+     "end": 1.97
+    },
+    {
+     "location": 31,
+     "length": 8,
+     "start": 2.1,
+     "end": 2.64
+    },
+    {
+     "location": 40,
+     "length": 5,
+     "start": 2.64,
+     "end": 3.16
+    },
+    {
+     "location": 46,
+     "length": 7,
+     "start": 3.49,
+     "end": 4.02
+    },
+    {
+     "location": 54,
+     "length": 4,
+     "start": 4.02,
+     "end": 4.3
+    }
+   ],
+   "lufs": -16.0,
+   "style": "6a0ebb7084"
+  },
+  "barcelona-casa-batllo/neighbors": {
+   "file": "read-barcelona-casa-batllo-neighbors",
+   "text": "Its neighbor has a pointy roof shaped like a set of stairs.",
+   "duration": 4.96,
+   "match": 1.0,
+   "heard": "Its neighbor has a pointy roof shaped like a set of stairs.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.14,
+     "end": 0.46
+    },
+    {
+     "location": 4,
+     "length": 8,
+     "start": 0.46,
+     "end": 1.0
+    },
+    {
+     "location": 13,
+     "length": 3,
+     "start": 1.24,
+     "end": 1.5
+    },
+    {
+     "location": 17,
+     "length": 1,
+     "start": 1.6,
+     "end": 1.68
+    },
+    {
+     "location": 19,
+     "length": 6,
+     "start": 1.68,
+     "end": 2.36
+    },
+    {
+     "location": 26,
+     "length": 4,
+     "start": 2.36,
+     "end": 2.48
+    },
+    {
+     "location": 31,
+     "length": 6,
+     "start": 2.75,
+     "end": 3.14
+    },
+    {
+     "location": 38,
+     "length": 4,
+     "start": 3.14,
+     "end": 3.4
+    },
+    {
+     "location": 43,
+     "length": 1,
+     "start": 3.4,
+     "end": 3.66
+    },
+    {
+     "location": 45,
+     "length": 3,
+     "start": 3.66,
+     "end": 3.74
+    },
+    {
+     "location": 49,
+     "length": 2,
+     "start": 3.74,
+     "end": 4.34
+    },
+    {
+     "location": 52,
+     "length": 6,
+     "start": 4.34,
+     "end": 4.42
+    }
+   ],
+   "lufs": -16.0,
+   "style": "6a0ebb7084"
+  },
+  "barcelona-casa-batllo/roof": {
+   "file": "read-barcelona-casa-batllo-roof",
+   "text": "The roof looks like the scaly back of a sleepy dragon.",
+   "duration": 4.24,
+   "match": 1.0,
+   "heard": "The roof looks like the scaly back of a sleepy dragon.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.06,
+     "end": 0.36
+    },
+    {
+     "location": 4,
+     "length": 4,
+     "start": 0.36,
+     "end": 0.68
+    },
+    {
+     "location": 9,
+     "length": 5,
+     "start": 0.68,
+     "end": 1.02
+    },
+    {
+     "location": 15,
+     "length": 4,
+     "start": 1.02,
+     "end": 1.28
+    },
+    {
+     "location": 20,
+     "length": 3,
+     "start": 1.28,
+     "end": 1.62
+    },
+    {
+     "location": 24,
+     "length": 5,
+     "start": 1.62,
+     "end": 1.88
+    },
+    {
+     "location": 30,
+     "length": 4,
+     "start": 1.88,
+     "end": 2.19
+    },
+    {
+     "location": 35,
+     "length": 2,
+     "start": 2.27,
+     "end": 2.52
+    },
+    {
+     "location": 38,
+     "length": 1,
+     "start": 2.52,
+     "end": 2.82
+    },
+    {
+     "location": 40,
+     "length": 6,
+     "start": 2.82,
+     "end": 3.1
+    },
+    {
+     "location": 47,
+     "length": 6,
+     "start": 3.1,
+     "end": 3.5
+    }
+   ],
+   "lufs": -16.0,
+   "style": "6a0ebb7084"
+  },
+  "barcelona-casa-batllo/roses": {
+   "file": "read-barcelona-casa-batllo-roses",
+   "text": "On Sant Jordi day, the balconies are covered in red roses.",
+   "duration": 5.01,
+   "match": 1.0,
+   "heard": "On Sant Jordi day, the balconies are covered in red roses.",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.0,
+     "end": 0.44
+    },
+    {
+     "location": 3,
+     "length": 4,
+     "start": 0.44,
+     "end": 0.63
+    },
+    {
+     "location": 8,
+     "length": 5,
+     "start": 0.71,
+     "end": 1.44
+    },
+    {
+     "location": 14,
+     "length": 3,
+     "start": 1.83,
+     "end": 1.96
+    },
+    {
+     "location": 19,
+     "length": 3,
+     "start": 2.07,
+     "end": 2.28
+    },
+    {
+     "location": 23,
+     "length": 9,
+     "start": 2.35,
+     "end": 2.68
+    },
+    {
+     "location": 33,
+     "length": 3,
+     "start": 2.68,
+     "end": 2.76
+    },
+    {
+     "location": 37,
+     "length": 7,
+     "start": 2.87,
+     "end": 3.2
+    },
+    {
+     "location": 45,
+     "length": 2,
+     "start": 3.2,
+     "end": 3.64
+    },
+    {
+     "location": 48,
+     "length": 3,
+     "start": 3.64,
+     "end": 3.84
+    },
+    {
+     "location": 52,
+     "length": 5,
+     "start": 3.84,
+     "end": 4.18
+    }
+   ],
+   "lufs": -16.0,
+   "style": "6a0ebb7084"
+  },
+  "barcelona-casa-batllo/tower": {
+   "file": "read-barcelona-casa-batllo-tower",
+   "text": "Some say this tower is the lance of brave Sant Jordi.",
+   "duration": 4.24,
+   "match": 1.0,
+   "heard": "Some say this tower is the lance of brave Sant Jordi.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.0,
+     "end": 0.4
+    },
+    {
+     "location": 5,
+     "length": 3,
+     "start": 0.4,
+     "end": 0.8
+    },
+    {
+     "location": 9,
+     "length": 4,
+     "start": 0.8,
+     "end": 1.12
+    },
+    {
+     "location": 14,
+     "length": 5,
+     "start": 1.12,
+     "end": 1.53
+    },
+    {
+     "location": 20,
+     "length": 2,
+     "start": 1.65,
+     "end": 1.84
+    },
+    {
+     "location": 23,
+     "length": 3,
+     "start": 1.84,
+     "end": 2.04
+    },
+    {
+     "location": 27,
+     "length": 5,
+     "start": 2.04,
+     "end": 2.4
+    },
+    {
+     "location": 33,
+     "length": 2,
+     "start": 2.4,
+     "end": 2.61
+    },
+    {
+     "location": 36,
+     "length": 5,
+     "start": 2.68,
+     "end": 3.14
+    },
+    {
+     "location": 42,
+     "length": 4,
+     "start": 3.14,
+     "end": 3.52
+    },
+    {
+     "location": 47,
+     "length": 5,
+     "start": 3.52,
+     "end": 3.88
+    }
+   ],
+   "lufs": -16.0,
+   "style": "6a0ebb7084"
+  },
+  "barcelona-casa-batllo/welcome": {
+   "file": "read-barcelona-casa-batllo-welcome",
+   "text": "This is Casa Batlló, a house that looks like a fairy tale.",
+   "duration": 5.25,
+   "match": 1.0,
+   "heard": "This is Casa Batlló, a house that looks like a fairy tale.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.06,
+     "end": 0.59
+    },
+    {
+     "location": 5,
+     "length": 2,
+     "start": 0.84,
+     "end": 1.14
+    },
+    {
+     "location": 8,
+     "length": 4,
+     "start": 1.14,
+     "end": 1.65
+    },
+    {
+     "location": 13,
+     "length": 6,
+     "start": 1.71,
+     "end": 2.0
+    },
+    {
+     "location": 21,
+     "length": 1,
+     "start": 2.6,
+     "end": 2.94
+    },
+    {
+     "location": 23,
+     "length": 5,
+     "start": 2.94,
+     "end": 3.12
+    },
+    {
+     "location": 29,
+     "length": 4,
+     "start": 3.12,
+     "end": 3.44
+    },
+    {
+     "location": 34,
+     "length": 5,
+     "start": 3.44,
+     "end": 3.66
+    },
+    {
+     "location": 40,
+     "length": 4,
+     "start": 3.66,
+     "end": 3.93
+    },
+    {
+     "location": 45,
+     "length": 1,
+     "start": 4.11,
+     "end": 4.28
+    },
+    {
+     "location": 47,
+     "length": 5,
+     "start": 4.28,
+     "end": 4.4
+    },
+    {
+     "location": 53,
+     "length": 4,
+     "start": 4.4,
+     "end": 4.66
+    }
+   ],
+   "lufs": -16.0,
+   "style": "6a0ebb7084"
+  },
+  "barcelona-casa-batllo/window": {
+   "file": "read-barcelona-casa-batllo-window",
+   "text": "Big wavy windows let the family watch the busy street.",
+   "duration": 4.56,
+   "match": 1.0,
+   "heard": "Big wavy windows let the family watch the busy street.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.17,
+     "end": 0.54
+    },
+    {
+     "location": 4,
+     "length": 4,
+     "start": 0.54,
+     "end": 1.1
+    },
+    {
+     "location": 9,
+     "length": 7,
+     "start": 1.1,
+     "end": 1.71
+    },
+    {
+     "location": 17,
+     "length": 3,
+     "start": 2.01,
+     "end": 2.22
+    },
+    {
+     "location": 21,
+     "length": 3,
+     "start": 2.33,
+     "end": 2.41
+    },
+    {
+     "location": 25,
+     "length": 6,
+     "start": 2.54,
+     "end": 2.92
+    },
+    {
+     "location": 32,
+     "length": 5,
+     "start": 2.92,
+     "end": 3.36
+    },
+    {
+     "location": 38,
+     "length": 3,
+     "start": 3.36,
+     "end": 3.48
+    },
+    {
+     "location": 42,
+     "length": 4,
+     "start": 3.56,
+     "end": 3.86
+    },
+    {
+     "location": 47,
+     "length": 6,
+     "start": 3.86,
+     "end": 4.21
+    }
+   ],
+   "lufs": -16.0,
+   "style": "6a0ebb7084"
+  },
+  "barcelona-montjuic/arrow": {
+   "file": "read-barcelona-montjuic-arrow",
+   "text": "An archer lit the Olympic flame by shooting a flaming arrow!",
+   "duration": 5.35,
+   "match": 1.0,
+   "heard": "An archer lit the Olympic flame by shooting a flaming arrow!",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.0,
+     "end": 0.29
+    },
+    {
+     "location": 3,
+     "length": 6,
+     "start": 0.46,
+     "end": 1.14
+    },
+    {
+     "location": 10,
+     "length": 3,
+     "start": 1.14,
+     "end": 1.47
+    },
+    {
+     "location": 14,
+     "length": 3,
+     "start": 1.58,
+     "end": 1.94
+    },
+    {
+     "location": 18,
+     "length": 7,
+     "start": 1.94,
+     "end": 2.28
+    },
+    {
+     "location": 26,
+     "length": 5,
+     "start": 2.28,
+     "end": 2.85
+    },
+    {
+     "location": 32,
+     "length": 2,
+     "start": 3.11,
+     "end": 3.52
+    },
+    {
+     "location": 35,
+     "length": 8,
+     "start": 3.52,
+     "end": 3.86
+    },
+    {
+     "location": 44,
+     "length": 1,
+     "start": 3.86,
+     "end": 4.22
+    },
+    {
+     "location": 46,
+     "length": 7,
+     "start": 4.22,
+     "end": 4.54
+    },
+    {
+     "location": 54,
+     "length": 5,
+     "start": 4.61,
+     "end": 4.92
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a64534247b"
+  },
+  "barcelona-montjuic/cable-car": {
+   "file": "read-barcelona-montjuic-cable-car",
+   "text": "Little cable cars glide up the hill to the castle.",
+   "duration": 4.6,
+   "match": 1.0,
+   "heard": "Little cable cars glide up the hill to the castle.",
+   "words": [
+    {
+     "location": 0,
+     "length": 6,
+     "start": 0.06,
+     "end": 0.56
+    },
+    {
+     "location": 7,
+     "length": 5,
+     "start": 0.56,
+     "end": 0.94
+    },
+    {
+     "location": 13,
+     "length": 4,
+     "start": 0.94,
+     "end": 1.38
+    },
+    {
+     "location": 18,
+     "length": 5,
+     "start": 1.62,
+     "end": 2.2
+    },
+    {
+     "location": 24,
+     "length": 2,
+     "start": 2.2,
+     "end": 2.42
+    },
+    {
+     "location": 27,
+     "length": 3,
+     "start": 2.42,
+     "end": 2.78
+    },
+    {
+     "location": 31,
+     "length": 4,
+     "start": 2.78,
+     "end": 2.86
+    },
+    {
+     "location": 36,
+     "length": 2,
+     "start": 2.86,
+     "end": 3.0
+    },
+    {
+     "location": 39,
+     "length": 3,
+     "start": 3.0,
+     "end": 3.52
+    },
+    {
+     "location": 43,
+     "length": 6,
+     "start": 3.52,
+     "end": 3.6
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a64534247b"
+  },
+  "barcelona-montjuic/cactus": {
+   "file": "read-barcelona-montjuic-cactus",
+   "text": "A garden full of prickly cactuses looks out over the sea.",
+   "duration": 5.56,
+   "match": 1.0,
+   "heard": "A garden full of prickly cactuses looks out over the sea.",
+   "words": [
+    {
+     "location": 0,
+     "length": 1,
+     "start": 0.07,
+     "end": 0.21
+    },
+    {
+     "location": 2,
+     "length": 6,
+     "start": 0.32,
+     "end": 0.78
+    },
+    {
+     "location": 9,
+     "length": 4,
+     "start": 0.78,
+     "end": 1.47
+    },
+    {
+     "location": 14,
+     "length": 2,
+     "start": 1.63,
+     "end": 1.9
+    },
+    {
+     "location": 17,
+     "length": 7,
+     "start": 1.96,
+     "end": 2.46
+    },
+    {
+     "location": 25,
+     "length": 8,
+     "start": 2.57,
+     "end": 3.06
+    },
+    {
+     "location": 34,
+     "length": 5,
+     "start": 3.4,
+     "end": 3.72
+    },
+    {
+     "location": 40,
+     "length": 3,
+     "start": 3.72,
+     "end": 3.98
+    },
+    {
+     "location": 44,
+     "length": 4,
+     "start": 4.09,
+     "end": 4.38
+    },
+    {
+     "location": 49,
+     "length": 3,
+     "start": 4.38,
+     "end": 4.66
+    },
+    {
+     "location": 53,
+     "length": 3,
+     "start": 4.66,
+     "end": 4.88
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a64534247b"
+  },
+  "barcelona-montjuic/cannon": {
+   "file": "read-barcelona-montjuic-cannon",
+   "text": "A huge old cannon near the castle points out to sea.",
+   "duration": 4.56,
+   "match": 1.0,
+   "heard": "A huge old cannon near the castle points out to sea.",
+   "words": [
+    {
+     "location": 0,
+     "length": 1,
+     "start": 0.0,
+     "end": 0.32
+    },
+    {
+     "location": 2,
+     "length": 4,
+     "start": 0.32,
+     "end": 0.87
+    },
+    {
+     "location": 7,
+     "length": 3,
+     "start": 0.93,
+     "end": 1.32
+    },
+    {
+     "location": 11,
+     "length": 6,
+     "start": 1.32,
+     "end": 1.66
+    },
+    {
+     "location": 18,
+     "length": 4,
+     "start": 1.66,
+     "end": 1.92
+    },
+    {
+     "location": 23,
+     "length": 3,
+     "start": 1.92,
+     "end": 2.28
+    },
+    {
+     "location": 27,
+     "length": 6,
+     "start": 2.28,
+     "end": 2.55
+    },
+    {
+     "location": 34,
+     "length": 6,
+     "start": 2.92,
+     "end": 3.26
+    },
+    {
+     "location": 41,
+     "length": 3,
+     "start": 3.26,
+     "end": 3.43
+    },
+    {
+     "location": 45,
+     "length": 2,
+     "start": 3.52,
+     "end": 3.74
+    },
+    {
+     "location": 48,
+     "length": 3,
+     "start": 3.74,
+     "end": 3.97
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a64534247b"
+  },
+  "barcelona-montjuic/castle": {
+   "file": "read-barcelona-montjuic-castle",
+   "text": "On the very top sits an old castle with thick walls.",
+   "duration": 5.44,
+   "match": 1.0,
+   "heard": "On the very top sits an old castle with thick walls.",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.31,
+     "end": 0.56
+    },
+    {
+     "location": 3,
+     "length": 3,
+     "start": 0.56,
+     "end": 0.72
+    },
+    {
+     "location": 7,
+     "length": 4,
+     "start": 0.72,
+     "end": 1.5
+    },
+    {
+     "location": 12,
+     "length": 3,
+     "start": 1.6,
+     "end": 1.69
+    },
+    {
+     "location": 16,
+     "length": 4,
+     "start": 1.82,
+     "end": 2.2
+    },
+    {
+     "location": 21,
+     "length": 2,
+     "start": 2.2,
+     "end": 2.32
+    },
+    {
+     "location": 24,
+     "length": 3,
+     "start": 2.46,
+     "end": 2.92
+    },
+    {
+     "location": 28,
+     "length": 6,
+     "start": 2.92,
+     "end": 3.35
+    },
+    {
+     "location": 35,
+     "length": 4,
+     "start": 3.55,
+     "end": 3.83
+    },
+    {
+     "location": 40,
+     "length": 5,
+     "start": 3.94,
+     "end": 4.22
+    },
+    {
+     "location": 46,
+     "length": 5,
+     "start": 4.34,
+     "end": 4.82
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a64534247b"
+  },
+  "barcelona-montjuic/fountain": {
+   "file": "read-barcelona-montjuic-fountain",
+   "text": "At night, the Magic Fountain dances to music with colored lights.",
+   "duration": 6.12,
+   "match": 1.0,
+   "heard": "At night, the Magic Fountain dances to music with colored lights.",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.68,
+     "end": 0.92
+    },
+    {
+     "location": 3,
+     "length": 5,
+     "start": 0.92,
+     "end": 1.26
+    },
+    {
+     "location": 10,
+     "length": 3,
+     "start": 1.67,
+     "end": 1.94
+    },
+    {
+     "location": 14,
+     "length": 5,
+     "start": 1.94,
+     "end": 2.32
+    },
+    {
+     "location": 20,
+     "length": 8,
+     "start": 2.32,
+     "end": 2.83
+    },
+    {
+     "location": 29,
+     "length": 6,
+     "start": 2.89,
+     "end": 3.22
+    },
+    {
+     "location": 36,
+     "length": 2,
+     "start": 3.22,
+     "end": 3.52
+    },
+    {
+     "location": 39,
+     "length": 5,
+     "start": 3.52,
+     "end": 3.92
+    },
+    {
+     "location": 45,
+     "length": 4,
+     "start": 4.13,
+     "end": 4.32
+    },
+    {
+     "location": 50,
+     "length": 7,
+     "start": 4.41,
+     "end": 5.11
+    },
+    {
+     "location": 58,
+     "length": 6,
+     "start": 5.18,
+     "end": 5.26
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a64534247b"
+  },
+  "barcelona-montjuic/goodbye": {
+   "file": "read-barcelona-montjuic-goodbye",
+   "text": "Can you see Tibidabo far away? Adéu, Montjuïc!",
+   "duration": 5.44,
+   "match": 1.0,
+   "heard": "Can you see Tibidabo far away? Adéu, Montjuïc!",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.0,
+     "end": 0.42
+    },
+    {
+     "location": 4,
+     "length": 3,
+     "start": 0.42,
+     "end": 0.82
+    },
+    {
+     "location": 8,
+     "length": 3,
+     "start": 0.82,
+     "end": 0.99
+    },
+    {
+     "location": 12,
+     "length": 8,
+     "start": 1.05,
+     "end": 1.68
+    },
+    {
+     "location": 21,
+     "length": 3,
+     "start": 1.68,
+     "end": 2.45
+    },
+    {
+     "location": 25,
+     "length": 4,
+     "start": 3.24,
+     "end": 3.83
+    },
+    {
+     "location": 31,
+     "length": 4,
+     "start": 4.22,
+     "end": 4.3
+    },
+    {
+     "location": 37,
+     "length": 8,
+     "start": 4.4,
+     "end": 4.8
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a64534247b"
+  },
+  "barcelona-montjuic/palace": {
+   "file": "read-barcelona-montjuic-palace",
+   "text": "Above the fountain stands a palace full of old paintings.",
+   "duration": 5.01,
+   "match": 1.0,
+   "heard": "Above the fountain stands a palace full of old paintings.",
+   "words": [
+    {
+     "location": 0,
+     "length": 5,
+     "start": 0.0,
+     "end": 0.5
+    },
+    {
+     "location": 6,
+     "length": 3,
+     "start": 0.5,
+     "end": 1.2
+    },
+    {
+     "location": 10,
+     "length": 8,
+     "start": 1.36,
+     "end": 1.44
+    },
+    {
+     "location": 19,
+     "length": 6,
+     "start": 1.44,
+     "end": 1.81
+    },
+    {
+     "location": 26,
+     "length": 1,
+     "start": 1.92,
+     "end": 2.18
+    },
+    {
+     "location": 28,
+     "length": 6,
+     "start": 2.18,
+     "end": 2.46
+    },
+    {
+     "location": 35,
+     "length": 4,
+     "start": 2.62,
+     "end": 2.9
+    },
+    {
+     "location": 40,
+     "length": 2,
+     "start": 3.16,
+     "end": 3.31
+    },
+    {
+     "location": 43,
+     "length": 3,
+     "start": 3.38,
+     "end": 3.8
+    },
+    {
+     "location": 47,
+     "length": 9,
+     "start": 3.8,
+     "end": 4.22
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a64534247b"
+  },
+  "barcelona-montjuic/port-cable-car": {
+   "file": "read-barcelona-montjuic-port-cable-car",
+   "text": "A red cable car flies high over the boats in the port.",
+   "duration": 4.65,
+   "match": 1.0,
+   "heard": "A red cable car flies high over the boats in the port.",
+   "words": [
+    {
+     "location": 0,
+     "length": 1,
+     "start": 0.0,
+     "end": 0.32
+    },
+    {
+     "location": 2,
+     "length": 3,
+     "start": 0.32,
+     "end": 0.56
+    },
+    {
+     "location": 6,
+     "length": 5,
+     "start": 0.63,
+     "end": 1.04
+    },
+    {
+     "location": 12,
+     "length": 3,
+     "start": 1.04,
+     "end": 1.38
+    },
+    {
+     "location": 16,
+     "length": 5,
+     "start": 1.82,
+     "end": 2.24
+    },
+    {
+     "location": 22,
+     "length": 4,
+     "start": 2.24,
+     "end": 2.82
+    },
+    {
+     "location": 27,
+     "length": 4,
+     "start": 2.82,
+     "end": 3.08
+    },
+    {
+     "location": 32,
+     "length": 3,
+     "start": 3.08,
+     "end": 3.47
+    },
+    {
+     "location": 36,
+     "length": 5,
+     "start": 3.53,
+     "end": 3.67
+    },
+    {
+     "location": 42,
+     "length": 2,
+     "start": 3.73,
+     "end": 3.94
+    },
+    {
+     "location": 45,
+     "length": 3,
+     "start": 4.0,
+     "end": 4.08
+    },
+    {
+     "location": 49,
+     "length": 4,
+     "start": 4.08,
+     "end": 4.25
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a64534247b"
+  },
+  "barcelona-montjuic/stadium": {
+   "file": "read-barcelona-montjuic-stadium",
+   "text": "Athletes from all over the world raced here in 1992.",
+   "duration": 4.92,
+   "match": 1.0,
+   "heard": "Athletes from all over the world raced here in 1992.",
+   "words": [
+    {
+     "location": 0,
+     "length": 8,
+     "start": 0.0,
+     "end": 0.65
+    },
+    {
+     "location": 9,
+     "length": 4,
+     "start": 0.72,
+     "end": 0.87
+    },
+    {
+     "location": 14,
+     "length": 3,
+     "start": 0.95,
+     "end": 1.28
+    },
+    {
+     "location": 18,
+     "length": 4,
+     "start": 1.28,
+     "end": 1.54
+    },
+    {
+     "location": 23,
+     "length": 3,
+     "start": 1.54,
+     "end": 1.72
+    },
+    {
+     "location": 27,
+     "length": 5,
+     "start": 1.72,
+     "end": 1.99
+    },
+    {
+     "location": 33,
+     "length": 5,
+     "start": 2.33,
+     "end": 2.76
+    },
+    {
+     "location": 39,
+     "length": 4,
+     "start": 2.76,
+     "end": 3.06
+    },
+    {
+     "location": 44,
+     "length": 2,
+     "start": 3.13,
+     "end": 3.46
+    },
+    {
+     "location": 47,
+     "length": 4,
+     "start": 3.46,
+     "end": 4.4
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a64534247b"
+  },
+  "barcelona-montjuic/tower": {
+   "file": "read-barcelona-montjuic-tower",
+   "text": "This white tower looks like a runner holding up a torch.",
+   "duration": 4.6,
+   "match": 1.0,
+   "heard": "This white tower looks like a runner holding up a torch.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.09,
+     "end": 0.52
+    },
+    {
+     "location": 5,
+     "length": 5,
+     "start": 0.52,
+     "end": 0.89
+    },
+    {
+     "location": 11,
+     "length": 5,
+     "start": 1.0,
+     "end": 1.5
+    },
+    {
+     "location": 17,
+     "length": 5,
+     "start": 1.8,
+     "end": 2.08
+    },
+    {
+     "location": 23,
+     "length": 4,
+     "start": 2.08,
+     "end": 2.3
+    },
+    {
+     "location": 28,
+     "length": 1,
+     "start": 2.3,
+     "end": 2.87
+    },
+    {
+     "location": 30,
+     "length": 6,
+     "start": 3.21,
+     "end": 3.29
+    },
+    {
+     "location": 37,
+     "length": 7,
+     "start": 3.29,
+     "end": 3.54
+    },
+    {
+     "location": 45,
+     "length": 2,
+     "start": 3.54,
+     "end": 3.74
+    },
+    {
+     "location": 48,
+     "length": 1,
+     "start": 3.74,
+     "end": 4.06
+    },
+    {
+     "location": 50,
+     "length": 5,
+     "start": 4.15,
+     "end": 4.23
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a64534247b"
+  },
+  "barcelona-montjuic/village": {
+   "file": "read-barcelona-montjuic-village",
+   "text": "Poble Espanyol is a little village with houses from all over Spain.",
+   "duration": 5.06,
+   "match": 1.0,
+   "heard": "Poble Espanyol is a little village with houses from all over Spain.",
+   "words": [
+    {
+     "location": 0,
+     "length": 5,
+     "start": 0.23,
+     "end": 0.68
+    },
+    {
+     "location": 6,
+     "length": 8,
+     "start": 0.68,
+     "end": 1.36
+    },
+    {
+     "location": 15,
+     "length": 2,
+     "start": 1.36,
+     "end": 1.6
+    },
+    {
+     "location": 18,
+     "length": 1,
+     "start": 1.6,
+     "end": 1.78
+    },
+    {
+     "location": 20,
+     "length": 6,
+     "start": 1.78,
+     "end": 2.1
+    },
+    {
+     "location": 27,
+     "length": 7,
+     "start": 2.1,
+     "end": 2.26
+    },
+    {
+     "location": 35,
+     "length": 4,
+     "start": 2.26,
+     "end": 2.64
+    },
+    {
+     "location": 40,
+     "length": 6,
+     "start": 2.64,
+     "end": 2.86
+    },
+    {
+     "location": 47,
+     "length": 4,
+     "start": 2.86,
+     "end": 3.11
+    },
+    {
+     "location": 52,
+     "length": 3,
+     "start": 3.23,
+     "end": 3.52
+    },
+    {
+     "location": 56,
+     "length": 4,
+     "start": 3.52,
+     "end": 3.84
+    },
+    {
+     "location": 61,
+     "length": 5,
+     "start": 3.84,
+     "end": 4.1
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a64534247b"
+  },
+  "barcelona-montjuic/welcome": {
+   "file": "read-barcelona-montjuic-welcome",
+   "text": "Montjuïc is a big green hill right next to the sea.",
+   "duration": 3.72,
+   "match": 1.0,
+   "heard": "Montjuïc is a big green hill right next to the sea.",
+   "words": [
+    {
+     "location": 0,
+     "length": 8,
+     "start": 0.0,
+     "end": 0.72
+    },
+    {
+     "location": 9,
+     "length": 2,
+     "start": 0.72,
+     "end": 0.94
+    },
+    {
+     "location": 12,
+     "length": 1,
+     "start": 0.94,
+     "end": 1.02
+    },
+    {
+     "location": 14,
+     "length": 3,
+     "start": 1.15,
+     "end": 1.52
+    },
+    {
+     "location": 18,
+     "length": 5,
+     "start": 1.52,
+     "end": 1.8
+    },
+    {
+     "location": 24,
+     "length": 4,
+     "start": 1.8,
+     "end": 2.04
+    },
+    {
+     "location": 29,
+     "length": 5,
+     "start": 2.04,
+     "end": 2.38
+    },
+    {
+     "location": 35,
+     "length": 4,
+     "start": 2.38,
+     "end": 2.62
+    },
+    {
+     "location": 40,
+     "length": 2,
+     "start": 2.62,
+     "end": 2.76
+    },
+    {
+     "location": 43,
+     "length": 3,
+     "start": 2.76,
+     "end": 2.9
+    },
+    {
+     "location": 47,
+     "length": 3,
+     "start": 2.9,
+     "end": 3.12
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a64534247b"
+  },
+  "barcelona-park-guell/bench": {
+   "file": "read-barcelona-park-guell-bench",
+   "text": "A long wavy bench curls around the square like a sea snake.",
+   "duration": 5.44,
+   "match": 1.0,
+   "heard": "A long wavy bench curls around the square like a sea snake.",
+   "words": [
+    {
+     "location": 0,
+     "length": 1,
+     "start": 0.0,
+     "end": 0.36
+    },
+    {
+     "location": 2,
+     "length": 4,
+     "start": 0.36,
+     "end": 0.9
+    },
+    {
+     "location": 7,
+     "length": 4,
+     "start": 0.9,
+     "end": 1.28
+    },
+    {
+     "location": 12,
+     "length": 5,
+     "start": 1.28,
+     "end": 1.78
+    },
+    {
+     "location": 18,
+     "length": 5,
+     "start": 2.05,
+     "end": 2.48
+    },
+    {
+     "location": 24,
+     "length": 6,
+     "start": 2.48,
+     "end": 2.84
+    },
+    {
+     "location": 31,
+     "length": 3,
+     "start": 2.84,
+     "end": 3.1
+    },
+    {
+     "location": 35,
+     "length": 6,
+     "start": 3.1,
+     "end": 3.46
+    },
+    {
+     "location": 42,
+     "length": 4,
+     "start": 3.72,
+     "end": 3.92
+    },
+    {
+     "location": 47,
+     "length": 1,
+     "start": 3.92,
+     "end": 4.3
+    },
+    {
+     "location": 49,
+     "length": 3,
+     "start": 4.3,
+     "end": 4.52
+    },
+    {
+     "location": 53,
+     "length": 5,
+     "start": 4.52,
+     "end": 4.7
+    }
+   ],
+   "lufs": -16.0,
+   "style": "b1bc31fb32"
+  },
+  "barcelona-park-guell/ceiling": {
+   "file": "read-barcelona-park-guell-ceiling",
+   "text": "Look up! Mosaic suns and swirls sparkle on the ceiling.",
+   "duration": 5.3,
+   "match": 1.0,
+   "heard": "Look up! Mosaic suns and swirls sparkle on the ceiling.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.06,
+     "end": 0.36
+    },
+    {
+     "location": 5,
+     "length": 2,
+     "start": 0.66,
+     "end": 2.24
+    },
+    {
+     "location": 9,
+     "length": 6,
+     "start": 2.3,
+     "end": 2.38
+    },
+    {
+     "location": 16,
+     "length": 4,
+     "start": 2.38,
+     "end": 2.9
+    },
+    {
+     "location": 21,
+     "length": 3,
+     "start": 2.9,
+     "end": 3.22
+    },
+    {
+     "location": 25,
+     "length": 6,
+     "start": 3.22,
+     "end": 3.96
+    },
+    {
+     "location": 32,
+     "length": 7,
+     "start": 3.96,
+     "end": 4.05
+    },
+    {
+     "location": 40,
+     "length": 2,
+     "start": 4.12,
+     "end": 4.54
+    },
+    {
+     "location": 43,
+     "length": 3,
+     "start": 4.54,
+     "end": 4.72
+    },
+    {
+     "location": 47,
+     "length": 7,
+     "start": 4.72,
+     "end": 4.96
+    }
+   ],
+   "lufs": -16.0,
+   "style": "b1bc31fb32"
+  },
+  "barcelona-park-guell/columns": {
+   "file": "read-barcelona-park-guell-columns",
+   "text": "Under the big square is a hall with 86 stone columns.",
+   "duration": 5.25,
+   "match": 1.0,
+   "heard": "Under the big square is a hall with 86 stone columns.",
+   "words": [
+    {
+     "location": 0,
+     "length": 5,
+     "start": 0.0,
+     "end": 0.46
+    },
+    {
+     "location": 6,
+     "length": 3,
+     "start": 0.46,
+     "end": 0.67
+    },
+    {
+     "location": 10,
+     "length": 3,
+     "start": 0.82,
+     "end": 1.24
+    },
+    {
+     "location": 14,
+     "length": 6,
+     "start": 1.24,
+     "end": 1.65
+    },
+    {
+     "location": 21,
+     "length": 2,
+     "start": 1.84,
+     "end": 2.06
+    },
+    {
+     "location": 24,
+     "length": 1,
+     "start": 2.06,
+     "end": 2.42
+    },
+    {
+     "location": 26,
+     "length": 4,
+     "start": 2.42,
+     "end": 2.5
+    },
+    {
+     "location": 31,
+     "length": 4,
+     "start": 2.5,
+     "end": 2.64
+    },
+    {
+     "location": 36,
+     "length": 2,
+     "start": 2.8,
+     "end": 3.54
+    },
+    {
+     "location": 39,
+     "length": 5,
+     "start": 3.64,
+     "end": 4.2
+    },
+    {
+     "location": 45,
+     "length": 7,
+     "start": 4.2,
+     "end": 4.6
+    }
+   ],
+   "lufs": -16.0,
+   "style": "b1bc31fb32"
+  },
+  "barcelona-park-guell/crosses": {
+   "file": "read-barcelona-park-guell-crosses",
+   "text": "Climb up to the three crosses to see the city and sea.",
+   "duration": 5.61,
+   "match": 1.0,
+   "heard": "Climb up to the three crosses to see the city and sea.",
+   "words": [
+    {
+     "location": 0,
+     "length": 5,
+     "start": 0.0,
+     "end": 0.56
+    },
+    {
+     "location": 6,
+     "length": 2,
+     "start": 0.56,
+     "end": 0.65
+    },
+    {
+     "location": 9,
+     "length": 2,
+     "start": 1.14,
+     "end": 1.32
+    },
+    {
+     "location": 12,
+     "length": 3,
+     "start": 1.32,
+     "end": 1.4
+    },
+    {
+     "location": 16,
+     "length": 5,
+     "start": 1.52,
+     "end": 1.88
+    },
+    {
+     "location": 22,
+     "length": 7,
+     "start": 1.88,
+     "end": 2.2
+    },
+    {
+     "location": 30,
+     "length": 2,
+     "start": 2.2,
+     "end": 2.42
+    },
+    {
+     "location": 33,
+     "length": 3,
+     "start": 2.79,
+     "end": 3.18
+    },
+    {
+     "location": 37,
+     "length": 3,
+     "start": 3.18,
+     "end": 3.44
+    },
+    {
+     "location": 41,
+     "length": 4,
+     "start": 3.44,
+     "end": 3.78
+    },
+    {
+     "location": 46,
+     "length": 3,
+     "start": 4.21,
+     "end": 4.54
+    },
+    {
+     "location": 50,
+     "length": 3,
+     "start": 4.54,
+     "end": 4.8
+    }
+   ],
+   "lufs": -16.0,
+   "style": "b1bc31fb32"
+  },
+  "barcelona-park-guell/dragon": {
+   "file": "read-barcelona-park-guell-dragon",
+   "text": "A shiny mosaic dragon guards the stairs. Or is it a lizard?",
+   "duration": 6.81,
+   "match": 1.0,
+   "heard": "A shiny mosaic dragon guards the stairs. Or is it a lizard?",
+   "words": [
+    {
+     "location": 0,
+     "length": 1,
+     "start": 0.0,
+     "end": 0.52
+    },
+    {
+     "location": 2,
+     "length": 5,
+     "start": 0.52,
+     "end": 1.05
+    },
+    {
+     "location": 8,
+     "length": 6,
+     "start": 1.31,
+     "end": 2.12
+    },
+    {
+     "location": 15,
+     "length": 6,
+     "start": 2.21,
+     "end": 2.75
+    },
+    {
+     "location": 22,
+     "length": 6,
+     "start": 3.13,
+     "end": 3.46
+    },
+    {
+     "location": 29,
+     "length": 3,
+     "start": 3.46,
+     "end": 3.78
+    },
+    {
+     "location": 33,
+     "length": 6,
+     "start": 3.78,
+     "end": 4.21
+    },
+    {
+     "location": 41,
+     "length": 2,
+     "start": 4.91,
+     "end": 5.05
+    },
+    {
+     "location": 44,
+     "length": 2,
+     "start": 5.14,
+     "end": 5.34
+    },
+    {
+     "location": 47,
+     "length": 2,
+     "start": 5.34,
+     "end": 5.42
+    },
+    {
+     "location": 50,
+     "length": 1,
+     "start": 5.98,
+     "end": 6.34
+    },
+    {
+     "location": 52,
+     "length": 6,
+     "start": 6.34,
+     "end": 6.44
+    }
+   ],
+   "lufs": -16.0,
+   "style": "b1bc31fb32"
+  },
+  "barcelona-park-guell/gatehouses": {
+   "file": "read-barcelona-park-guell-gatehouses",
+   "text": "At the gate, two little houses look like gingerbread houses.",
+   "duration": 5.76,
+   "match": 1.0,
+   "heard": "At the gate, two little houses look like gingerbread houses.",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.0,
+     "end": 0.2
+    },
+    {
+     "location": 3,
+     "length": 3,
+     "start": 0.3,
+     "end": 0.62
+    },
+    {
+     "location": 7,
+     "length": 4,
+     "start": 0.62,
+     "end": 0.7
+    },
+    {
+     "location": 13,
+     "length": 3,
+     "start": 1.21,
+     "end": 1.6
+    },
+    {
+     "location": 17,
+     "length": 6,
+     "start": 1.6,
+     "end": 2.0
+    },
+    {
+     "location": 24,
+     "length": 6,
+     "start": 2.0,
+     "end": 2.45
+    },
+    {
+     "location": 31,
+     "length": 4,
+     "start": 2.71,
+     "end": 3.07
+    },
+    {
+     "location": 36,
+     "length": 4,
+     "start": 3.29,
+     "end": 3.88
+    },
+    {
+     "location": 41,
+     "length": 11,
+     "start": 3.88,
+     "end": 4.36
+    },
+    {
+     "location": 53,
+     "length": 6,
+     "start": 4.36,
+     "end": 4.7
+    }
+   ],
+   "lufs": -16.0,
+   "style": "b1bc31fb32"
+  },
+  "barcelona-park-guell/gaudi-house": {
+   "file": "read-barcelona-park-guell-gaudi-house",
+   "text": "Gaudí lived in this pink house with a pointy tower.",
+   "duration": 4.36,
+   "match": 1.0,
+   "heard": "Gaudí lived in this pink house with a pointy tower.",
+   "words": [
+    {
+     "location": 0,
+     "length": 5,
+     "start": 0.0,
+     "end": 0.6
+    },
+    {
+     "location": 6,
+     "length": 5,
+     "start": 0.82,
+     "end": 1.24
+    },
+    {
+     "location": 12,
+     "length": 2,
+     "start": 1.24,
+     "end": 1.46
+    },
+    {
+     "location": 15,
+     "length": 4,
+     "start": 1.46,
+     "end": 1.7
+    },
+    {
+     "location": 20,
+     "length": 4,
+     "start": 1.81,
+     "end": 2.18
+    },
+    {
+     "location": 25,
+     "length": 5,
+     "start": 2.18,
+     "end": 2.62
+    },
+    {
+     "location": 31,
+     "length": 4,
+     "start": 2.92,
+     "end": 3.18
+    },
+    {
+     "location": 36,
+     "length": 1,
+     "start": 3.28,
+     "end": 3.44
+    },
+    {
+     "location": 38,
+     "length": 6,
+     "start": 3.44,
+     "end": 3.88
+    },
+    {
+     "location": 45,
+     "length": 5,
+     "start": 3.88,
+     "end": 4.06
+    }
+   ],
+   "lufs": -16.0,
+   "style": "b1bc31fb32"
+  },
+  "barcelona-park-guell/goodbye": {
+   "file": "read-barcelona-park-guell-goodbye",
+   "text": "Adéu, Park Güell! Wave goodbye to the mosaic dragon.",
+   "duration": 6.12,
+   "match": 1.0,
+   "heard": "Adéu, Park Güell! Wave goodbye to the mosaic dragon.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.51,
+     "end": 1.89
+    },
+    {
+     "location": 6,
+     "length": 4,
+     "start": 1.95,
+     "end": 2.03
+    },
+    {
+     "location": 11,
+     "length": 5,
+     "start": 2.2,
+     "end": 2.75
+    },
+    {
+     "location": 18,
+     "length": 4,
+     "start": 3.47,
+     "end": 3.8
+    },
+    {
+     "location": 23,
+     "length": 7,
+     "start": 3.8,
+     "end": 4.34
+    },
+    {
+     "location": 31,
+     "length": 2,
+     "start": 4.34,
+     "end": 4.62
+    },
+    {
+     "location": 34,
+     "length": 3,
+     "start": 4.62,
+     "end": 4.94
+    },
+    {
+     "location": 38,
+     "length": 6,
+     "start": 4.94,
+     "end": 5.24
+    },
+    {
+     "location": 45,
+     "length": 6,
+     "start": 5.39,
+     "end": 5.76
+    }
+   ],
+   "lufs": -16.0,
+   "style": "b1bc31fb32"
+  },
+  "barcelona-park-guell/laundry": {
+   "file": "read-barcelona-park-guell-laundry",
+   "text": "Find the stone lady carrying a basket of laundry on her head!",
+   "duration": 5.16,
+   "match": 1.0,
+   "heard": "Find the stone lady carrying a basket of laundry on her head!",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.08,
+     "end": 0.58
+    },
+    {
+     "location": 5,
+     "length": 3,
+     "start": 0.58,
+     "end": 0.88
+    },
+    {
+     "location": 9,
+     "length": 5,
+     "start": 0.88,
+     "end": 1.36
+    },
+    {
+     "location": 15,
+     "length": 4,
+     "start": 1.36,
+     "end": 1.74
+    },
+    {
+     "location": 20,
+     "length": 8,
+     "start": 2.07,
+     "end": 2.7
+    },
+    {
+     "location": 29,
+     "length": 1,
+     "start": 2.76,
+     "end": 3.02
+    },
+    {
+     "location": 31,
+     "length": 6,
+     "start": 3.02,
+     "end": 3.1
+    },
+    {
+     "location": 38,
+     "length": 2,
+     "start": 3.1,
+     "end": 3.44
+    },
+    {
+     "location": 41,
+     "length": 7,
+     "start": 3.44,
+     "end": 3.66
+    },
+    {
+     "location": 49,
+     "length": 2,
+     "start": 3.66,
+     "end": 3.94
+    },
+    {
+     "location": 52,
+     "length": 3,
+     "start": 3.94,
+     "end": 4.16
+    },
+    {
+     "location": 56,
+     "length": 4,
+     "start": 4.16,
+     "end": 4.31
+    }
+   ],
+   "lufs": -16.0,
+   "style": "b1bc31fb32"
+  },
+  "barcelona-park-guell/rain": {
+   "file": "read-barcelona-park-guell-rain",
+   "text": "When it rains, water flows down inside the columns to a tank.",
+   "duration": 5.71,
+   "match": 1.0,
+   "heard": "When it rains, water flows down inside the columns to a tank.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.06,
+     "end": 0.36
+    },
+    {
+     "location": 5,
+     "length": 2,
+     "start": 0.36,
+     "end": 1.11
+    },
+    {
+     "location": 8,
+     "length": 5,
+     "start": 1.41,
+     "end": 1.49
+    },
+    {
+     "location": 15,
+     "length": 5,
+     "start": 1.76,
+     "end": 1.9
+    },
+    {
+     "location": 21,
+     "length": 5,
+     "start": 1.9,
+     "end": 2.36
+    },
+    {
+     "location": 27,
+     "length": 4,
+     "start": 2.36,
+     "end": 2.8
+    },
+    {
+     "location": 32,
+     "length": 6,
+     "start": 2.88,
+     "end": 3.36
+    },
+    {
+     "location": 39,
+     "length": 3,
+     "start": 3.36,
+     "end": 4.03
+    },
+    {
+     "location": 43,
+     "length": 7,
+     "start": 4.43,
+     "end": 4.51
+    },
+    {
+     "location": 51,
+     "length": 2,
+     "start": 4.51,
+     "end": 4.59
+    },
+    {
+     "location": 54,
+     "length": 1,
+     "start": 4.59,
+     "end": 5.02
+    },
+    {
+     "location": 56,
+     "length": 4,
+     "start": 5.02,
+     "end": 5.1
+    }
+   ],
+   "lufs": -16.0,
+   "style": "b1bc31fb32"
+  },
+  "barcelona-park-guell/trencadis": {
+   "file": "read-barcelona-park-guell-trencadis",
+   "text": "Workers broke tiles and plates into pieces to make bright mosaics.",
+   "duration": 5.2,
+   "match": 1.0,
+   "heard": "Workers broke tiles and plates into pieces to make bright mosaics.",
+   "words": [
+    {
+     "location": 0,
+     "length": 7,
+     "start": 0.07,
+     "end": 0.64
+    },
+    {
+     "location": 8,
+     "length": 5,
+     "start": 0.64,
+     "end": 1.04
+    },
+    {
+     "location": 14,
+     "length": 5,
+     "start": 1.04,
+     "end": 1.44
+    },
+    {
+     "location": 20,
+     "length": 3,
+     "start": 1.44,
+     "end": 1.74
+    },
+    {
+     "location": 24,
+     "length": 6,
+     "start": 1.74,
+     "end": 2.0
+    },
+    {
+     "location": 31,
+     "length": 4,
+     "start": 2.0,
+     "end": 2.38
+    },
+    {
+     "location": 36,
+     "length": 6,
+     "start": 2.38,
+     "end": 2.86
+    },
+    {
+     "location": 43,
+     "length": 2,
+     "start": 3.33,
+     "end": 3.52
+    },
+    {
+     "location": 46,
+     "length": 4,
+     "start": 3.52,
+     "end": 3.72
+    },
+    {
+     "location": 51,
+     "length": 6,
+     "start": 3.72,
+     "end": 4.06
+    },
+    {
+     "location": 58,
+     "length": 7,
+     "start": 4.06,
+     "end": 4.62
+    }
+   ],
+   "lufs": -16.0,
+   "style": "b1bc31fb32"
+  },
+  "barcelona-park-guell/two-houses": {
+   "file": "read-barcelona-park-guell-two-houses",
+   "text": "It was planned as a town, but only two houses were built.",
+   "duration": 6.04,
+   "match": 1.0,
+   "heard": "It was planned as a town, but only two houses were built.",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.08,
+     "end": 0.19
+    },
+    {
+     "location": 3,
+     "length": 3,
+     "start": 0.25,
+     "end": 0.53
+    },
+    {
+     "location": 7,
+     "length": 7,
+     "start": 0.61,
+     "end": 1.16
+    },
+    {
+     "location": 15,
+     "length": 2,
+     "start": 1.22,
+     "end": 1.44
+    },
+    {
+     "location": 18,
+     "length": 1,
+     "start": 1.44,
+     "end": 1.84
+    },
+    {
+     "location": 20,
+     "length": 4,
+     "start": 1.84,
+     "end": 1.95
+    },
+    {
+     "location": 26,
+     "length": 3,
+     "start": 2.33,
+     "end": 2.45
+    },
+    {
+     "location": 30,
+     "length": 4,
+     "start": 2.54,
+     "end": 2.9
+    },
+    {
+     "location": 35,
+     "length": 3,
+     "start": 2.96,
+     "end": 3.34
+    },
+    {
+     "location": 39,
+     "length": 6,
+     "start": 3.34,
+     "end": 3.68
+    },
+    {
+     "location": 46,
+     "length": 4,
+     "start": 3.68,
+     "end": 4.17
+    },
+    {
+     "location": 51,
+     "length": 5,
+     "start": 4.23,
+     "end": 4.31
+    }
+   ],
+   "lufs": -16.0,
+   "style": "b1bc31fb32"
+  },
+  "barcelona-park-guell/welcome": {
+   "file": "read-barcelona-park-guell-welcome",
+   "text": "This is Park Güell, a magic park on a sunny hill.",
+   "duration": 4.65,
+   "match": 1.0,
+   "heard": "This is Park Güell, a magic park on a sunny hill.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.08,
+     "end": 0.42
+    },
+    {
+     "location": 5,
+     "length": 2,
+     "start": 0.42,
+     "end": 0.67
+    },
+    {
+     "location": 8,
+     "length": 4,
+     "start": 0.87,
+     "end": 1.02
+    },
+    {
+     "location": 13,
+     "length": 5,
+     "start": 1.19,
+     "end": 1.66
+    },
+    {
+     "location": 20,
+     "length": 1,
+     "start": 2.11,
+     "end": 2.54
+    },
+    {
+     "location": 22,
+     "length": 5,
+     "start": 2.54,
+     "end": 2.74
+    },
+    {
+     "location": 28,
+     "length": 4,
+     "start": 2.8,
+     "end": 3.17
+    },
+    {
+     "location": 33,
+     "length": 2,
+     "start": 3.25,
+     "end": 3.44
+    },
+    {
+     "location": 36,
+     "length": 1,
+     "start": 3.44,
+     "end": 3.84
+    },
+    {
+     "location": 38,
+     "length": 5,
+     "start": 3.84,
+     "end": 3.94
+    },
+    {
+     "location": 44,
+     "length": 4,
+     "start": 3.94,
+     "end": 4.22
+    }
+   ],
+   "lufs": -16.0,
+   "style": "b1bc31fb32"
+  },
+  "barcelona-sagrada/chains": {
+   "file": "read-barcelona-sagrada-chains",
+   "text": "Gaudí hung chains and strings upside down to find strong shapes.",
+   "duration": 5.8,
+   "match": 1.0,
+   "heard": "Gaudí hung chains and strings upside down to find strong shapes.",
+   "words": [
+    {
+     "location": 0,
+     "length": 5,
+     "start": 0.14,
+     "end": 0.72
+    },
+    {
+     "location": 6,
+     "length": 4,
+     "start": 0.98,
+     "end": 1.34
+    },
+    {
+     "location": 11,
+     "length": 6,
+     "start": 1.34,
+     "end": 1.86
+    },
+    {
+     "location": 18,
+     "length": 3,
+     "start": 1.86,
+     "end": 2.33
+    },
+    {
+     "location": 22,
+     "length": 7,
+     "start": 2.39,
+     "end": 2.81
+    },
+    {
+     "location": 30,
+     "length": 6,
+     "start": 2.9,
+     "end": 3.34
+    },
+    {
+     "location": 37,
+     "length": 4,
+     "start": 3.34,
+     "end": 3.75
+    },
+    {
+     "location": 42,
+     "length": 2,
+     "start": 4.06,
+     "end": 4.16
+    },
+    {
+     "location": 45,
+     "length": 4,
+     "start": 4.26,
+     "end": 4.54
+    },
+    {
+     "location": 50,
+     "length": 6,
+     "start": 4.54,
+     "end": 5.29
+    },
+    {
+     "location": 57,
+     "length": 6,
+     "start": 5.38,
+     "end": 5.46
+    }
+   ],
+   "lufs": -16.0,
+   "style": "e1ceb660c4"
+  },
+  "barcelona-sagrada/cranes": {
+   "file": "read-barcelona-sagrada-cranes",
+   "text": "Builders have been working on it for more than 140 years!",
+   "duration": 4.92,
+   "match": 1.0,
+   "heard": "Builders have been working on it for more than 140 years!",
+   "words": [
+    {
+     "location": 0,
+     "length": 8,
+     "start": 0.16,
+     "end": 0.68
+    },
+    {
+     "location": 9,
+     "length": 4,
+     "start": 0.68,
+     "end": 0.88
+    },
+    {
+     "location": 14,
+     "length": 4,
+     "start": 0.88,
+     "end": 1.12
+    },
+    {
+     "location": 19,
+     "length": 7,
+     "start": 1.12,
+     "end": 1.4
+    },
+    {
+     "location": 27,
+     "length": 2,
+     "start": 1.4,
+     "end": 1.62
+    },
+    {
+     "location": 30,
+     "length": 2,
+     "start": 1.62,
+     "end": 1.7
+    },
+    {
+     "location": 33,
+     "length": 3,
+     "start": 1.96,
+     "end": 2.24
+    },
+    {
+     "location": 37,
+     "length": 4,
+     "start": 2.24,
+     "end": 2.46
+    },
+    {
+     "location": 42,
+     "length": 4,
+     "start": 2.46,
+     "end": 2.78
+    },
+    {
+     "location": 47,
+     "length": 3,
+     "start": 2.78,
+     "end": 3.62
+    },
+    {
+     "location": 51,
+     "length": 5,
+     "start": 3.62,
+     "end": 4.2
+    }
+   ],
+   "lufs": -16.0,
+   "style": "e1ceb660c4"
+  },
+  "barcelona-sagrada/fruit": {
+   "file": "read-barcelona-sagrada-fruit",
+   "text": "Some little towers wear bowls of colorful fruit on top!",
+   "duration": 5.66,
+   "match": 1.0,
+   "heard": "Some little towers wear bowls of colorful fruit on top!",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.0,
+     "end": 0.56
+    },
+    {
+     "location": 5,
+     "length": 6,
+     "start": 0.56,
+     "end": 0.9
+    },
+    {
+     "location": 12,
+     "length": 6,
+     "start": 0.9,
+     "end": 1.26
+    },
+    {
+     "location": 19,
+     "length": 4,
+     "start": 1.26,
+     "end": 1.58
+    },
+    {
+     "location": 24,
+     "length": 5,
+     "start": 1.65,
+     "end": 2.12
+    },
+    {
+     "location": 30,
+     "length": 2,
+     "start": 2.26,
+     "end": 2.8
+    },
+    {
+     "location": 33,
+     "length": 8,
+     "start": 2.8,
+     "end": 2.88
+    },
+    {
+     "location": 42,
+     "length": 5,
+     "start": 2.88,
+     "end": 3.16
+    },
+    {
+     "location": 48,
+     "length": 2,
+     "start": 3.16,
+     "end": 3.65
+    },
+    {
+     "location": 51,
+     "length": 3,
+     "start": 3.72,
+     "end": 3.8
+    }
+   ],
+   "lufs": -16.0,
+   "style": "e1ceb660c4"
+  },
+  "barcelona-sagrada/gaudi": {
+   "file": "read-barcelona-sagrada-gaudi",
+   "text": "Gaudí worked on this church for 43 years.",
+   "duration": 5.56,
+   "match": 1.0,
+   "heard": "Gaudí worked on this church for 43 years.",
+   "words": [
+    {
+     "location": 0,
+     "length": 5,
+     "start": 0.32,
+     "end": 0.98
+    },
+    {
+     "location": 6,
+     "length": 6,
+     "start": 1.37,
+     "end": 1.68
+    },
+    {
+     "location": 13,
+     "length": 2,
+     "start": 1.68,
+     "end": 1.92
+    },
+    {
+     "location": 16,
+     "length": 4,
+     "start": 1.92,
+     "end": 2.35
+    },
+    {
+     "location": 21,
+     "length": 6,
+     "start": 2.41,
+     "end": 2.51
+    },
+    {
+     "location": 28,
+     "length": 3,
+     "start": 2.91,
+     "end": 3.05
+    },
+    {
+     "location": 32,
+     "length": 2,
+     "start": 3.15,
+     "end": 3.64
+    },
+    {
+     "location": 35,
+     "length": 5,
+     "start": 3.64,
+     "end": 4.1
+    }
+   ],
+   "lufs": -16.0,
+   "style": "e1ceb660c4"
+  },
+  "barcelona-sagrada/goodbye": {
+   "file": "read-barcelona-sagrada-goodbye",
+   "text": "At night the church glows. Adéu, Sagrada Família!",
+   "duration": 5.06,
+   "match": 1.0,
+   "heard": "At night the church glows. Adéu, Sagrada Família!",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.28,
+     "end": 0.52
+    },
+    {
+     "location": 3,
+     "length": 5,
+     "start": 0.52,
+     "end": 0.74
+    },
+    {
+     "location": 9,
+     "length": 3,
+     "start": 1.36,
+     "end": 1.44
+    },
+    {
+     "location": 13,
+     "length": 6,
+     "start": 1.5,
+     "end": 1.88
+    },
+    {
+     "location": 20,
+     "length": 5,
+     "start": 1.88,
+     "end": 3.49
+    },
+    {
+     "location": 27,
+     "length": 4,
+     "start": 3.75,
+     "end": 3.83
+    },
+    {
+     "location": 33,
+     "length": 7,
+     "start": 4.0,
+     "end": 4.26
+    },
+    {
+     "location": 41,
+     "length": 7,
+     "start": 4.26,
+     "end": 4.76
+    }
+   ],
+   "lufs": -16.0,
+   "style": "e1ceb660c4"
+  },
+  "barcelona-sagrada/light": {
+   "file": "read-barcelona-sagrada-light",
+   "text": "Inside, colorful windows paint the walls blue, green, yellow and orange.",
+   "duration": 6.76,
+   "match": 1.0,
+   "heard": "Inside, colorful windows paint the walls blue, green, yellow and orange.",
+   "words": [
+    {
+     "location": 0,
+     "length": 6,
+     "start": 0.0,
+     "end": 0.77
+    },
+    {
+     "location": 8,
+     "length": 8,
+     "start": 1.24,
+     "end": 1.8
+    },
+    {
+     "location": 17,
+     "length": 7,
+     "start": 1.8,
+     "end": 2.37
+    },
+    {
+     "location": 25,
+     "length": 5,
+     "start": 2.43,
+     "end": 2.65
+    },
+    {
+     "location": 31,
+     "length": 3,
+     "start": 2.72,
+     "end": 3.2
+    },
+    {
+     "location": 35,
+     "length": 5,
+     "start": 3.2,
+     "end": 3.28
+    },
+    {
+     "location": 41,
+     "length": 4,
+     "start": 3.28,
+     "end": 4.45
+    },
+    {
+     "location": 47,
+     "length": 5,
+     "start": 4.74,
+     "end": 5.28
+    },
+    {
+     "location": 54,
+     "length": 6,
+     "start": 5.37,
+     "end": 5.45
+    },
+    {
+     "location": 61,
+     "length": 3,
+     "start": 5.45,
+     "end": 5.68
+    },
+    {
+     "location": 65,
+     "length": 6,
+     "start": 5.68,
+     "end": 6.14
+    }
+   ],
+   "lufs": -16.0,
+   "style": "e1ceb660c4"
+  },
+  "barcelona-sagrada/magic-square": {
+   "file": "read-barcelona-sagrada-magic-square",
+   "text": "In this number square, every line adds up to 33.",
+   "duration": 5.2,
+   "match": 1.0,
+   "heard": "In this number square, every line adds up to 33.",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.0,
+     "end": 0.28
+    },
+    {
+     "location": 3,
+     "length": 4,
+     "start": 0.28,
+     "end": 0.84
+    },
+    {
+     "location": 8,
+     "length": 6,
+     "start": 0.84,
+     "end": 1.22
+    },
+    {
+     "location": 15,
+     "length": 6,
+     "start": 1.22,
+     "end": 1.64
+    },
+    {
+     "location": 23,
+     "length": 5,
+     "start": 2.21,
+     "end": 2.68
+    },
+    {
+     "location": 29,
+     "length": 4,
+     "start": 2.68,
+     "end": 2.98
+    },
+    {
+     "location": 34,
+     "length": 4,
+     "start": 2.98,
+     "end": 3.34
+    },
+    {
+     "location": 39,
+     "length": 2,
+     "start": 3.34,
+     "end": 3.47
+    },
+    {
+     "location": 42,
+     "length": 2,
+     "start": 3.59,
+     "end": 4.12
+    },
+    {
+     "location": 45,
+     "length": 2,
+     "start": 4.18,
+     "end": 4.3
+    }
+   ],
+   "lufs": -16.0,
+   "style": "e1ceb660c4"
+  },
+  "barcelona-sagrada/school": {
+   "file": "read-barcelona-sagrada-school",
+   "text": "Gaudí built a little school with a wavy roof.",
+   "duration": 3.72,
+   "match": 1.0,
+   "heard": "Gaudí built a little school with a wavy roof.",
+   "words": [
+    {
+     "location": 0,
+     "length": 5,
+     "start": 0.08,
+     "end": 0.65
+    },
+    {
+     "location": 6,
+     "length": 5,
+     "start": 0.72,
+     "end": 1.0
+    },
+    {
+     "location": 12,
+     "length": 1,
+     "start": 1.09,
+     "end": 1.34
+    },
+    {
+     "location": 14,
+     "length": 6,
+     "start": 1.34,
+     "end": 1.64
+    },
+    {
+     "location": 21,
+     "length": 6,
+     "start": 1.64,
+     "end": 2.02
+    },
+    {
+     "location": 28,
+     "length": 4,
+     "start": 2.21,
+     "end": 2.38
+    },
+    {
+     "location": 33,
+     "length": 1,
+     "start": 2.38,
+     "end": 2.8
+    },
+    {
+     "location": 35,
+     "length": 4,
+     "start": 2.8,
+     "end": 2.9
+    },
+    {
+     "location": 40,
+     "length": 4,
+     "start": 2.9,
+     "end": 3.3
+    }
+   ],
+   "lufs": -16.0,
+   "style": "e1ceb660c4"
+  },
+  "barcelona-sagrada/star": {
+   "file": "read-barcelona-sagrada-star",
+   "text": "A big glowing star shines on top of Mary's tower.",
+   "duration": 4.65,
+   "match": 1.0,
+   "heard": "A big glowing star shines on top of Mary's tower.",
+   "words": [
+    {
+     "location": 0,
+     "length": 1,
+     "start": 0.0,
+     "end": 0.25
+    },
+    {
+     "location": 2,
+     "length": 3,
+     "start": 0.32,
+     "end": 0.7
+    },
+    {
+     "location": 6,
+     "length": 7,
+     "start": 0.7,
+     "end": 1.1
+    },
+    {
+     "location": 14,
+     "length": 4,
+     "start": 1.1,
+     "end": 1.68
+    },
+    {
+     "location": 19,
+     "length": 6,
+     "start": 1.68,
+     "end": 2.28
+    },
+    {
+     "location": 26,
+     "length": 2,
+     "start": 2.28,
+     "end": 2.6
+    },
+    {
+     "location": 29,
+     "length": 3,
+     "start": 2.6,
+     "end": 2.84
+    },
+    {
+     "location": 33,
+     "length": 2,
+     "start": 2.84,
+     "end": 3.14
+    },
+    {
+     "location": 36,
+     "length": 6,
+     "start": 3.14,
+     "end": 3.68
+    },
+    {
+     "location": 43,
+     "length": 5,
+     "start": 3.68,
+     "end": 3.84
+    }
+   ],
+   "lufs": -16.0,
+   "style": "e1ceb660c4"
+  },
+  "barcelona-sagrada/tallest": {
+   "file": "read-barcelona-sagrada-tallest",
+   "text": "Now it is the tallest church in the whole world!",
+   "duration": 4.32,
+   "match": 1.0,
+   "heard": "Now it is the tallest church in the whole world!",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.62,
+     "end": 1.19
+    },
+    {
+     "location": 4,
+     "length": 2,
+     "start": 1.27,
+     "end": 1.4
+    },
+    {
+     "location": 7,
+     "length": 2,
+     "start": 1.4,
+     "end": 1.58
+    },
+    {
+     "location": 10,
+     "length": 3,
+     "start": 1.58,
+     "end": 1.66
+    },
+    {
+     "location": 14,
+     "length": 7,
+     "start": 1.9,
+     "end": 2.24
+    },
+    {
+     "location": 22,
+     "length": 6,
+     "start": 2.24,
+     "end": 2.71
+    },
+    {
+     "location": 29,
+     "length": 2,
+     "start": 2.78,
+     "end": 2.94
+    },
+    {
+     "location": 32,
+     "length": 3,
+     "start": 2.94,
+     "end": 3.16
+    },
+    {
+     "location": 36,
+     "length": 5,
+     "start": 3.16,
+     "end": 3.56
+    },
+    {
+     "location": 42,
+     "length": 5,
+     "start": 3.56,
+     "end": 3.96
+    }
+   ],
+   "lufs": -16.0,
+   "style": "e1ceb660c4"
+  },
+  "barcelona-sagrada/towers": {
+   "file": "read-barcelona-sagrada-towers",
+   "text": "The towers look like drippy sand castles at the beach.",
+   "duration": 4.05,
+   "match": 1.0,
+   "heard": "The towers look like drippy sand castles at the beach.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.06,
+     "end": 0.19
+    },
+    {
+     "location": 4,
+     "length": 6,
+     "start": 0.26,
+     "end": 0.84
+    },
+    {
+     "location": 11,
+     "length": 4,
+     "start": 0.84,
+     "end": 1.13
+    },
+    {
+     "location": 16,
+     "length": 4,
+     "start": 1.19,
+     "end": 1.49
+    },
+    {
+     "location": 21,
+     "length": 6,
+     "start": 1.66,
+     "end": 2.18
+    },
+    {
+     "location": 28,
+     "length": 4,
+     "start": 2.18,
+     "end": 2.56
+    },
+    {
+     "location": 33,
+     "length": 7,
+     "start": 2.56,
+     "end": 3.02
+    },
+    {
+     "location": 41,
+     "length": 2,
+     "start": 3.02,
+     "end": 3.13
+    },
+    {
+     "location": 44,
+     "length": 3,
+     "start": 3.19,
+     "end": 3.47
+    },
+    {
+     "location": 48,
+     "length": 5,
+     "start": 3.54,
+     "end": 3.64
+    }
+   ],
+   "lufs": -16.0,
+   "style": "e1ceb660c4"
+  },
+  "barcelona-sagrada/turtles": {
+   "file": "read-barcelona-sagrada-turtles",
+   "text": "A stone turtle and a tortoise hold up two big columns.",
+   "duration": 5.76,
+   "match": 1.0,
+   "heard": "A stone turtle and a tortoise hold up two big columns.",
+   "words": [
+    {
+     "location": 0,
+     "length": 1,
+     "start": 0.08,
+     "end": 0.47
+    },
+    {
+     "location": 2,
+     "length": 5,
+     "start": 0.53,
+     "end": 0.95
+    },
+    {
+     "location": 8,
+     "length": 6,
+     "start": 1.03,
+     "end": 1.49
+    },
+    {
+     "location": 15,
+     "length": 3,
+     "start": 2.01,
+     "end": 2.24
+    },
+    {
+     "location": 19,
+     "length": 1,
+     "start": 2.34,
+     "end": 2.62
+    },
+    {
+     "location": 21,
+     "length": 8,
+     "start": 2.62,
+     "end": 2.96
+    },
+    {
+     "location": 30,
+     "length": 4,
+     "start": 3.35,
+     "end": 3.66
+    },
+    {
+     "location": 35,
+     "length": 2,
+     "start": 3.66,
+     "end": 3.78
+    },
+    {
+     "location": 38,
+     "length": 3,
+     "start": 4.16,
+     "end": 4.6
+    },
+    {
+     "location": 42,
+     "length": 3,
+     "start": 4.6,
+     "end": 4.85
+    },
+    {
+     "location": 46,
+     "length": 7,
+     "start": 4.91,
+     "end": 5.38
+    }
+   ],
+   "lufs": -16.0,
+   "style": "e1ceb660c4"
+  },
+  "barcelona-sagrada/welcome": {
+   "file": "read-barcelona-sagrada-welcome",
+   "text": "This is the Sagrada Família, a giant church in Barcelona.",
+   "duration": 4.92,
+   "match": 1.0,
+   "heard": "This is the Sagrada Família, a giant church in Barcelona.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.15,
+     "end": 0.47
+    },
+    {
+     "location": 5,
+     "length": 2,
+     "start": 0.53,
+     "end": 0.72
+    },
+    {
+     "location": 8,
+     "length": 3,
+     "start": 0.72,
+     "end": 1.02
+    },
+    {
+     "location": 12,
+     "length": 7,
+     "start": 1.02,
+     "end": 1.4
+    },
+    {
+     "location": 20,
+     "length": 7,
+     "start": 1.4,
+     "end": 2.58
+    },
+    {
+     "location": 29,
+     "length": 1,
+     "start": 2.65,
+     "end": 2.76
+    },
+    {
+     "location": 31,
+     "length": 5,
+     "start": 2.76,
+     "end": 3.05
+    },
+    {
+     "location": 37,
+     "length": 6,
+     "start": 3.13,
+     "end": 3.56
+    },
+    {
+     "location": 44,
+     "length": 2,
+     "start": 3.74,
+     "end": 3.98
+    },
+    {
+     "location": 47,
+     "length": 9,
+     "start": 3.98,
+     "end": 4.5
+    }
+   ],
+   "lufs": -16.0,
+   "style": "e1ceb660c4"
+  },
+  "barcelona-tibidabo/automatons": {
+   "file": "read-barcelona-tibidabo-automatons",
+   "text": "In a museum, old moving dolls dance, play music and wave.",
+   "duration": 6.45,
+   "match": 1.0,
+   "heard": "In a museum, old moving dolls dance, play music and wave.",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.06,
+     "end": 0.22
+    },
+    {
+     "location": 3,
+     "length": 1,
+     "start": 0.22,
+     "end": 0.52
+    },
+    {
+     "location": 5,
+     "length": 6,
+     "start": 0.52,
+     "end": 0.99
+    },
+    {
+     "location": 13,
+     "length": 3,
+     "start": 1.71,
+     "end": 2.13
+    },
+    {
+     "location": 17,
+     "length": 6,
+     "start": 2.42,
+     "end": 2.96
+    },
+    {
+     "location": 24,
+     "length": 5,
+     "start": 2.96,
+     "end": 3.47
+    },
+    {
+     "location": 30,
+     "length": 5,
+     "start": 3.53,
+     "end": 3.98
+    },
+    {
+     "location": 37,
+     "length": 4,
+     "start": 4.32,
+     "end": 4.58
+    },
+    {
+     "location": 42,
+     "length": 5,
+     "start": 4.58,
+     "end": 4.92
+    },
+    {
+     "location": 48,
+     "length": 3,
+     "start": 5.34,
+     "end": 5.58
+    },
+    {
+     "location": 52,
+     "length": 4,
+     "start": 5.58,
+     "end": 5.83
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d9658d1ae8"
+  },
+  "barcelona-tibidabo/boars": {
+   "file": "read-barcelona-tibidabo-boars",
+   "text": "Wild boars live in the forest all around the mountain.",
+   "duration": 4.41,
+   "match": 1.0,
+   "heard": "Wild boars live in the forest all around the mountain.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.08,
+     "end": 0.68
+    },
+    {
+     "location": 5,
+     "length": 5,
+     "start": 0.68,
+     "end": 1.24
+    },
+    {
+     "location": 11,
+     "length": 4,
+     "start": 1.41,
+     "end": 1.64
+    },
+    {
+     "location": 16,
+     "length": 2,
+     "start": 1.64,
+     "end": 1.78
+    },
+    {
+     "location": 19,
+     "length": 3,
+     "start": 1.78,
+     "end": 2.14
+    },
+    {
+     "location": 23,
+     "length": 6,
+     "start": 2.14,
+     "end": 2.42
+    },
+    {
+     "location": 30,
+     "length": 3,
+     "start": 2.72,
+     "end": 3.08
+    },
+    {
+     "location": 34,
+     "length": 6,
+     "start": 3.08,
+     "end": 3.44
+    },
+    {
+     "location": 41,
+     "length": 3,
+     "start": 3.44,
+     "end": 4.0
+    },
+    {
+     "location": 45,
+     "length": 8,
+     "start": 4.0,
+     "end": 4.08
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d9658d1ae8"
+  },
+  "barcelona-tibidabo/funicular": {
+   "file": "read-barcelona-tibidabo-funicular",
+   "text": "A funicular train climbs the steep hill up to the rides.",
+   "duration": 5.11,
+   "match": 1.0,
+   "heard": "A funicular train climbs the steep hill up to the rides.",
+   "words": [
+    {
+     "location": 0,
+     "length": 1,
+     "start": 0.81,
+     "end": 1.02
+    },
+    {
+     "location": 2,
+     "length": 9,
+     "start": 1.02,
+     "end": 1.48
+    },
+    {
+     "location": 12,
+     "length": 5,
+     "start": 1.48,
+     "end": 2.04
+    },
+    {
+     "location": 18,
+     "length": 6,
+     "start": 2.27,
+     "end": 2.7
+    },
+    {
+     "location": 25,
+     "length": 3,
+     "start": 2.7,
+     "end": 3.12
+    },
+    {
+     "location": 29,
+     "length": 5,
+     "start": 3.12,
+     "end": 3.3
+    },
+    {
+     "location": 35,
+     "length": 4,
+     "start": 3.3,
+     "end": 3.57
+    },
+    {
+     "location": 40,
+     "length": 2,
+     "start": 3.77,
+     "end": 3.88
+    },
+    {
+     "location": 43,
+     "length": 2,
+     "start": 3.95,
+     "end": 4.18
+    },
+    {
+     "location": 46,
+     "length": 3,
+     "start": 4.18,
+     "end": 4.36
+    },
+    {
+     "location": 50,
+     "length": 5,
+     "start": 4.36,
+     "end": 4.68
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d9658d1ae8"
+  },
+  "barcelona-tibidabo/goodbye": {
+   "file": "read-barcelona-tibidabo-goodbye",
+   "text": "The sun sets over the rides. Adéu, Tibidabo!",
+   "duration": 4.96,
+   "match": 1.0,
+   "heard": "The sun sets over the rides. Adéu, Tibidabo!",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.12,
+     "end": 0.38
+    },
+    {
+     "location": 4,
+     "length": 3,
+     "start": 0.38,
+     "end": 0.9
+    },
+    {
+     "location": 8,
+     "length": 4,
+     "start": 0.9,
+     "end": 1.15
+    },
+    {
+     "location": 13,
+     "length": 4,
+     "start": 1.22,
+     "end": 1.72
+    },
+    {
+     "location": 18,
+     "length": 3,
+     "start": 1.72,
+     "end": 1.94
+    },
+    {
+     "location": 22,
+     "length": 5,
+     "start": 1.94,
+     "end": 3.55
+    },
+    {
+     "location": 29,
+     "length": 4,
+     "start": 3.98,
+     "end": 4.06
+    },
+    {
+     "location": 35,
+     "length": 8,
+     "start": 4.24,
+     "end": 4.52
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d9658d1ae8"
+  },
+  "barcelona-tibidabo/name": {
+   "file": "read-barcelona-tibidabo-name",
+   "text": "Its name means I will give you in an old language.",
+   "duration": 5.3,
+   "match": 1.0,
+   "heard": "Its name means I will give you in an old language.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.0,
+     "end": 0.4
+    },
+    {
+     "location": 4,
+     "length": 4,
+     "start": 0.4,
+     "end": 0.82
+    },
+    {
+     "location": 9,
+     "length": 5,
+     "start": 0.82,
+     "end": 1.35
+    },
+    {
+     "location": 15,
+     "length": 1,
+     "start": 1.75,
+     "end": 2.12
+    },
+    {
+     "location": 17,
+     "length": 4,
+     "start": 2.12,
+     "end": 2.42
+    },
+    {
+     "location": 22,
+     "length": 4,
+     "start": 2.53,
+     "end": 2.78
+    },
+    {
+     "location": 27,
+     "length": 3,
+     "start": 2.78,
+     "end": 3.02
+    },
+    {
+     "location": 31,
+     "length": 2,
+     "start": 3.42,
+     "end": 3.58
+    },
+    {
+     "location": 34,
+     "length": 2,
+     "start": 3.58,
+     "end": 3.67
+    },
+    {
+     "location": 37,
+     "length": 3,
+     "start": 3.8,
+     "end": 4.22
+    },
+    {
+     "location": 41,
+     "length": 8,
+     "start": 4.22,
+     "end": 4.7
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d9658d1ae8"
+  },
+  "barcelona-tibidabo/plane": {
+   "file": "read-barcelona-tibidabo-plane",
+   "text": "A red airplane has been flying in circles since 1928!",
+   "duration": 5.44,
+   "match": 1.0,
+   "heard": "A red airplane has been flying in circles since 1928!",
+   "words": [
+    {
+     "location": 0,
+     "length": 1,
+     "start": 0.0,
+     "end": 0.38
+    },
+    {
+     "location": 2,
+     "length": 3,
+     "start": 0.38,
+     "end": 0.56
+    },
+    {
+     "location": 6,
+     "length": 8,
+     "start": 0.56,
+     "end": 1.06
+    },
+    {
+     "location": 15,
+     "length": 3,
+     "start": 1.06,
+     "end": 1.38
+    },
+    {
+     "location": 19,
+     "length": 4,
+     "start": 1.38,
+     "end": 1.68
+    },
+    {
+     "location": 24,
+     "length": 6,
+     "start": 1.68,
+     "end": 2.0
+    },
+    {
+     "location": 31,
+     "length": 2,
+     "start": 2.0,
+     "end": 2.74
+    },
+    {
+     "location": 34,
+     "length": 7,
+     "start": 2.96,
+     "end": 3.04
+    },
+    {
+     "location": 42,
+     "length": 5,
+     "start": 3.04,
+     "end": 3.3
+    },
+    {
+     "location": 48,
+     "length": 4,
+     "start": 3.3,
+     "end": 4.35
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d9658d1ae8"
+  },
+  "barcelona-tibidabo/talaia": {
+   "file": "read-barcelona-tibidabo-talaia",
+   "text": "The Talaia lifts you up high like a giant crane arm.",
+   "duration": 5.8,
+   "match": 1.0,
+   "heard": "The Talaia lifts you up high like a giant crane arm.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.06,
+     "end": 0.3
+    },
+    {
+     "location": 4,
+     "length": 6,
+     "start": 0.43,
+     "end": 1.2
+    },
+    {
+     "location": 11,
+     "length": 5,
+     "start": 1.65,
+     "end": 2.06
+    },
+    {
+     "location": 17,
+     "length": 3,
+     "start": 2.06,
+     "end": 2.34
+    },
+    {
+     "location": 21,
+     "length": 2,
+     "start": 2.34,
+     "end": 2.6
+    },
+    {
+     "location": 24,
+     "length": 4,
+     "start": 2.6,
+     "end": 2.96
+    },
+    {
+     "location": 29,
+     "length": 4,
+     "start": 3.27,
+     "end": 3.5
+    },
+    {
+     "location": 34,
+     "length": 1,
+     "start": 3.5,
+     "end": 4.13
+    },
+    {
+     "location": 36,
+     "length": 5,
+     "start": 4.25,
+     "end": 4.33
+    },
+    {
+     "location": 42,
+     "length": 5,
+     "start": 4.33,
+     "end": 4.74
+    },
+    {
+     "location": 48,
+     "length": 3,
+     "start": 4.74,
+     "end": 5.22
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d9658d1ae8"
+  },
+  "barcelona-tibidabo/temple": {
+   "file": "read-barcelona-tibidabo-temple",
+   "text": "A big church on top has a statue with open arms.",
+   "duration": 4.6,
+   "match": 1.0,
+   "heard": "A big church on top has a statue with open arms.",
+   "words": [
+    {
+     "location": 0,
+     "length": 1,
+     "start": 0.11,
+     "end": 0.24
+    },
+    {
+     "location": 2,
+     "length": 3,
+     "start": 0.37,
+     "end": 0.65
+    },
+    {
+     "location": 6,
+     "length": 6,
+     "start": 0.71,
+     "end": 1.14
+    },
+    {
+     "location": 13,
+     "length": 2,
+     "start": 1.14,
+     "end": 1.66
+    },
+    {
+     "location": 16,
+     "length": 3,
+     "start": 1.74,
+     "end": 1.82
+    },
+    {
+     "location": 20,
+     "length": 3,
+     "start": 2.11,
+     "end": 2.28
+    },
+    {
+     "location": 24,
+     "length": 1,
+     "start": 2.28,
+     "end": 2.96
+    },
+    {
+     "location": 26,
+     "length": 6,
+     "start": 2.96,
+     "end": 3.04
+    },
+    {
+     "location": 33,
+     "length": 4,
+     "start": 3.04,
+     "end": 3.24
+    },
+    {
+     "location": 38,
+     "length": 4,
+     "start": 3.32,
+     "end": 3.68
+    },
+    {
+     "location": 43,
+     "length": 4,
+     "start": 3.68,
+     "end": 4.02
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d9658d1ae8"
+  },
+  "barcelona-tibidabo/tram": {
+   "file": "read-barcelona-tibidabo-tram",
+   "text": "The old Blue Tram used to carry people to the funicular.",
+   "duration": 6.21,
+   "match": 1.0,
+   "heard": "The old Blue Tram used to carry people to the funicular.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.06,
+     "end": 0.28
+    },
+    {
+     "location": 4,
+     "length": 3,
+     "start": 0.35,
+     "end": 0.9
+    },
+    {
+     "location": 8,
+     "length": 4,
+     "start": 0.9,
+     "end": 1.38
+    },
+    {
+     "location": 13,
+     "length": 4,
+     "start": 1.38,
+     "end": 1.82
+    },
+    {
+     "location": 18,
+     "length": 4,
+     "start": 2.23,
+     "end": 2.5
+    },
+    {
+     "location": 23,
+     "length": 2,
+     "start": 2.5,
+     "end": 3.02
+    },
+    {
+     "location": 26,
+     "length": 5,
+     "start": 3.02,
+     "end": 3.1
+    },
+    {
+     "location": 32,
+     "length": 6,
+     "start": 3.1,
+     "end": 3.41
+    },
+    {
+     "location": 39,
+     "length": 2,
+     "start": 3.58,
+     "end": 3.72
+    },
+    {
+     "location": 42,
+     "length": 3,
+     "start": 3.72,
+     "end": 4.07
+    },
+    {
+     "location": 46,
+     "length": 9,
+     "start": 4.15,
+     "end": 4.28
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d9658d1ae8"
+  },
+  "barcelona-tibidabo/view": {
+   "file": "read-barcelona-tibidabo-view",
+   "text": "From up here you can see the whole city and the sea.",
+   "duration": 4.6,
+   "match": 1.0,
+   "heard": "From up here you can see the whole city and the sea.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.12,
+     "end": 0.32
+    },
+    {
+     "location": 5,
+     "length": 2,
+     "start": 0.32,
+     "end": 0.56
+    },
+    {
+     "location": 8,
+     "length": 4,
+     "start": 0.56,
+     "end": 0.78
+    },
+    {
+     "location": 13,
+     "length": 3,
+     "start": 1.31,
+     "end": 1.52
+    },
+    {
+     "location": 17,
+     "length": 3,
+     "start": 1.52,
+     "end": 1.8
+    },
+    {
+     "location": 21,
+     "length": 3,
+     "start": 1.8,
+     "end": 1.94
+    },
+    {
+     "location": 25,
+     "length": 3,
+     "start": 1.94,
+     "end": 2.14
+    },
+    {
+     "location": 29,
+     "length": 5,
+     "start": 2.14,
+     "end": 2.52
+    },
+    {
+     "location": 35,
+     "length": 4,
+     "start": 2.52,
+     "end": 2.8
+    },
+    {
+     "location": 40,
+     "length": 3,
+     "start": 3.17,
+     "end": 3.36
+    },
+    {
+     "location": 44,
+     "length": 3,
+     "start": 3.36,
+     "end": 3.62
+    },
+    {
+     "location": 48,
+     "length": 3,
+     "start": 3.62,
+     "end": 3.82
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d9658d1ae8"
+  },
+  "barcelona-tibidabo/welcome": {
+   "file": "read-barcelona-tibidabo-welcome",
+   "text": "Tibidabo is a fun park on top of a mountain!",
+   "duration": 4.41,
+   "match": 1.0,
+   "heard": "Tibidabo is a fun park on top of a mountain!",
+   "words": [
+    {
+     "location": 0,
+     "length": 8,
+     "start": 0.09,
+     "end": 0.94
+    },
+    {
+     "location": 9,
+     "length": 2,
+     "start": 1.33,
+     "end": 1.52
+    },
+    {
+     "location": 12,
+     "length": 1,
+     "start": 1.52,
+     "end": 1.72
+    },
+    {
+     "location": 14,
+     "length": 3,
+     "start": 1.8,
+     "end": 2.1
+    },
+    {
+     "location": 18,
+     "length": 4,
+     "start": 2.1,
+     "end": 2.33
+    },
+    {
+     "location": 23,
+     "length": 2,
+     "start": 2.76,
+     "end": 2.91
+    },
+    {
+     "location": 26,
+     "length": 3,
+     "start": 2.98,
+     "end": 3.28
+    },
+    {
+     "location": 30,
+     "length": 2,
+     "start": 3.28,
+     "end": 3.42
+    },
+    {
+     "location": 33,
+     "length": 1,
+     "start": 3.42,
+     "end": 3.88
+    },
+    {
+     "location": 35,
+     "length": 8,
+     "start": 3.88,
+     "end": 3.96
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d9658d1ae8"
+  },
+  "barcelona-tibidabo/wheel": {
+   "file": "read-barcelona-tibidabo-wheel",
+   "text": "The colorful Ferris wheel spins high above the city and sea.",
+   "duration": 5.85,
+   "match": 1.0,
+   "heard": "The colorful Ferris wheel spins high above the city and sea.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.16,
+     "end": 0.28
+    },
+    {
+     "location": 4,
+     "length": 8,
+     "start": 0.43,
+     "end": 1.24
+    },
+    {
+     "location": 13,
+     "length": 6,
+     "start": 1.3,
+     "end": 1.7
+    },
+    {
+     "location": 20,
+     "length": 5,
+     "start": 1.7,
+     "end": 2.03
+    },
+    {
+     "location": 26,
+     "length": 5,
+     "start": 2.34,
+     "end": 2.53
+    },
+    {
+     "location": 32,
+     "length": 4,
+     "start": 2.6,
+     "end": 3.48
+    },
+    {
+     "location": 37,
+     "length": 5,
+     "start": 3.78,
+     "end": 4.1
+    },
+    {
+     "location": 43,
+     "length": 3,
+     "start": 4.1,
+     "end": 4.48
+    },
+    {
+     "location": 47,
+     "length": 4,
+     "start": 4.48,
+     "end": 4.71
+    },
+    {
+     "location": 52,
+     "length": 3,
+     "start": 4.92,
+     "end": 5.22
+    },
+    {
+     "location": 56,
+     "length": 3,
+     "start": 5.22,
+     "end": 5.48
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d9658d1ae8"
+  },
   "barcelona/beach": {
    "file": "read-barcelona-beach",
    "text": "Barcelona has a beach. You can build sandcastles!",

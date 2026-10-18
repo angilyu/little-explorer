@@ -1,0 +1,223 @@
+{
+  "id": "barcelona-sagrada",
+  "city": "Barcelona",
+  "country": "Spain",
+  "flagImage": "barcelona-flag.png",
+  "flag": "🇪🇸",
+  "theme": "Sagrada Família",
+  "coverColor": "#D9822B",
+  "tagline": "A giant church still growing",
+  "narration": {
+    "instructions": "This book is about Barcelona in Spain. Say every Catalan name the way people in Barcelona say it, warmly and naturally, as one smooth word, never spelled out or anglicized: Sagrada Família (sah-GRAH-dah fah-MEE-lee-ah), Gaudí (gow-DEE), Adéu (ah-DEH-oo). A short hint like gow-DEE is how to sound out the word."
+  },
+  "pages": [
+    {
+      "id": "welcome",
+      "text": "This is the Sagrada Família, a giant church in Barcelona.",
+      "about": "Sagrada Família (sah-GRAH-dah fah-MEE-lee-ah) means Holy Family. It is a huge basilica, a very special church, designed by Antoni Gaudí (gow-DEE). This side is the Nativity façade, about the birth of baby Jesus, and it was the first side to be finished, while Gaudí was still alive. Millions of people visit every year. Ask Francis: How many pointy towers can you count?",
+      "emoji": "⛪",
+      "photo": {
+        "commonsTitle": "File:Sagrada Familia May 2022 04.jpg",
+        "query": "Sagrada Família Nativity façade",
+        "file": "barcelona-sagrada-welcome.jpg",
+        "author": "Wiki leylek",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sagrada_Familia_May_2022_04.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "cranes",
+      "text": "Builders have been working on it for more than 140 years!",
+      "about": "Building started in 1882. Wars, money troubles and its giant size made it very slow, so tall cranes have been part of the view for as long as anyone remembers. It is paid for by visitors' tickets and gifts. Today builders use computers and even 3D printers to make the tricky shapes Gaudí drew. Gaudí liked to joke that his client was not in a hurry. Ask Francis: What is the longest thing you have ever built?",
+      "emoji": "🏗️",
+      "photo": {
+        "commonsTitle": "File:Sagrada Familia in Barcelona, Spain.jpg",
+        "query": "Sagrada Família cranes construction",
+        "file": "barcelona-sagrada-cranes.jpg",
+        "author": "WikiJana1",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sagrada_Familia_in_Barcelona,_Spain.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "gaudi",
+      "text": "Gaudí worked on this church for 43 years.",
+      "about": "Antoni Gaudí took over the church in 1883, when he was 31, and worked on it until he died in 1926. In his last years he worked on almost nothing else. He knew he would not see it finished, so he made models and drawings to help the builders who came after him. He is buried in the crypt, under the church. This photo shows him as a young man in 1878. Ask Francis: What would you like to work on for a really long time?",
+      "emoji": "👨‍🎨",
+      "photo": {
+        "commonsTitle": "File:Antoni Gaudi 1878.jpg",
+        "query": "Antoni Gaudí portrait",
+        "file": "barcelona-sagrada-gaudi.jpg",
+        "author": "Pau Audouard Deglaire",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Antoni_Gaudi_1878.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "towers",
+      "text": "The towers look like drippy sand castles at the beach.",
+      "about": "Look at the bumpy, drippy towers. Many people say they look like sand castles made by dribbling wet sand, the same trick you can do at the beach! Gaudí planned 18 towers: 12 for Jesus's helpers called apostles, 4 for the writers of the gospels, 1 for Mary and the tallest one for Jesus. Ask Francis: Have you ever made a drippy sand castle?",
+      "emoji": "🏰",
+      "photo": {
+        "commonsTitle": "File:Sagrada Familia, Nativity facade (26) (30489118703).jpg",
+        "query": "Sagrada Família towers",
+        "file": "barcelona-sagrada-towers.jpg",
+        "author": "Richard Mortel from Riyadh, Saudi Arabia",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sagrada_Familia,_Nativity_facade_(26)_(30489118703).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "fruit",
+      "text": "Some little towers wear bowls of colorful fruit on top!",
+      "about": "High up on the church, some small towers have bright mosaic fruit on top, like grapes, oranges, cherries and strawberries. They stand for good things growing, like a harvest. It is a fun surprise if you look up! Ask Francis: What fruit would you put on top of a tower?",
+      "emoji": "🍇",
+      "photo": {
+        "commonsTitle": "File:Works in Progress and Fruit Decoration at the Sgrada Familia 2.JPG",
+        "query": "Sagrada Família fruit pinnacles",
+        "file": "barcelona-sagrada-fruit.jpg",
+        "author": "Philip Serracino Inglott",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Works_in_Progress_and_Fruit_Decoration_at_the_Sgrada_Familia_2.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "turtles",
+      "text": "A stone turtle and a tortoise hold up two big columns.",
+      "about": "At the bottom of the Nativity façade, two columns stand on the backs of two stone animals. On the side closer to the sea it is a sea turtle, and on the side closer to the mountains it is a land tortoise. Gaudí carved lots of little animals on this side, like snails, lizards, geese and chickens. This photo shows the land tortoise. Ask Francis: How can you tell a sea turtle from a land tortoise?",
+      "emoji": "🐢",
+      "photo": {
+        "commonsTitle": "File:Sagrada familia fachada tortuga terrestre 00001.jpg",
+        "query": "Sagrada Família tortoise column",
+        "file": "barcelona-sagrada-turtles.jpg",
+        "author": "Poniol60",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sagrada_familia_fachada_tortuga_terrestre_00001.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "light",
+      "text": "Inside, colorful windows paint the walls blue, green, yellow and orange.",
+      "about": "The stained glass windows were made by the artist Joan Vila-Grau. On the east side, where the sun rises, the glass is mostly blue and green, cool like the morning. On the west side, where the sun sets, it is orange and red, warm like the evening. When the sun shines through, the stone inside glows like a rainbow. Ask Francis: What color would you want your bedroom window to be?",
+      "emoji": "🌈",
+      "photo": {
+        "commonsTitle": "File:Sagrada Família. Vitralls.jpg",
+        "query": "Sagrada Família stained glass",
+        "file": "barcelona-sagrada-light.jpg",
+        "author": "Sagrada Família (oficial)",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sagrada_Fam%C3%ADlia._Vitralls.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "magic-square",
+      "text": "In this number square, every line adds up to 33.",
+      "about": "On the Passion façade, the sculptor Josep Maria Subirachs carved a magic square with 16 numbers. Every row, every column and both diagonals add up to 33, the age Jesus is said to have been at the end of his life. There are even more groups of four in it that make 33. Ask Francis: Can we add up one row together?",
+      "emoji": "🔢",
+      "photo": {
+        "commonsTitle": "File:Quadrat màgic.jpg",
+        "query": "Sagrada Família magic square",
+        "file": "barcelona-sagrada-magic-square.jpg",
+        "author": "Canaan",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Quadrat_m%C3%A0gic.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "school",
+      "text": "Gaudí built a little school with a wavy roof.",
+      "about": "In 1909 Gaudí built a small school next to the church for the builders' children and kids from the neighborhood. The walls and roof are made of thin bricks in wavy shapes, which makes them strong but light. Other famous architects came to study it. Today it sits beside the church as a little museum. Ask Francis: Would you like a classroom with a wavy roof?",
+      "emoji": "🏫",
+      "photo": {
+        "commonsTitle": "File:048 Sagrada Família, les Escoles.jpg",
+        "query": "Sagrada Família Schools",
+        "file": "barcelona-sagrada-school.jpg",
+        "author": "Enfo",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:048_Sagrada_Fam%C3%ADlia,_les_Escoles.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "chains",
+      "text": "Gaudí hung chains and strings upside down to find strong shapes.",
+      "about": "To design his arches, Gaudí hung strings and chains from the ceiling with little weights on them. Each string sagged into a curve. When you turn that curve upside down, you get an arch that holds itself up really well. This model is a copy of the one he made for another church, at the Colònia Güell, and it is shown in the Sagrada Família museum. Ask Francis: Let's hang a necklace and look at its shape upside down!",
+      "emoji": "⛓️",
+      "photo": {
+        "commonsTitle": "File:Sagrada Família. Museu (maqueta Colònia Güell).jpg",
+        "query": "Gaudí hanging chain model",
+        "file": "barcelona-sagrada-chains.jpg",
+        "author": "Sagrada Família (oficial)",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sagrada_Fam%C3%ADlia._Museu_(maqueta_Col%C3%B2nia_G%C3%BCell).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "star",
+      "text": "A big glowing star shines on top of Mary's tower.",
+      "about": "The tower of the Virgin Mary was finished in 2021. On top is a huge star made of glass and steel with 12 points. It was lit up for the first time on December 8, 2021, and it glows at night. Ask Francis: Can you count the points on the star?",
+      "emoji": "⭐",
+      "photo": {
+        "commonsTitle": "File:Sagrada Familia 8-12-21 (7).jpg",
+        "query": "Sagrada Família star Mary tower",
+        "file": "barcelona-sagrada-star.jpg",
+        "author": "Canaan",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sagrada_Familia_8-12-21_(7).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "tallest",
+      "text": "Now it is the tallest church in the whole world!",
+      "about": "The tower of Jesus is the tallest of all. Its cross was finished in February 2026, making the tower about 172 meters tall, taller than any other church in the world. Before that, the record belonged to Ulm Minster in Germany. People often say Gaudí wanted it a little lower than Montjuïc hill, because he felt people should not build higher than nature. Inside work and the big Glory façade will still take more years. Ask Francis: What is the tallest building you have ever seen?",
+      "emoji": "📏",
+      "photo": {
+        "commonsTitle": "File:View of Sagrada Familia 2026 corrected.jpg",
+        "query": "Sagrada Família 2026",
+        "file": "barcelona-sagrada-tallest.jpg",
+        "author": "ほっきー",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:View_of_Sagrada_Familia_2026_corrected.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "goodbye",
+      "text": "At night the church glows. Adéu, Sagrada Família!",
+      "about": "At night the façades are lit up with lights. This side is the Passion façade, facing west. It tells the sad part of Jesus's story, so its statues are plain, sharp and bony, very different from the busy, bumpy Nativity side. Adéu (ah-DEH-oo) means goodbye in Catalan. Ask Francis: Which side do you like better, the bumpy one or the sharp one?",
+      "emoji": "👋",
+      "photo": {
+        "commonsTitle": "File:Sagrada Familia at night 01.jpg",
+        "query": "Sagrada Família at night",
+        "file": "barcelona-sagrada-goodbye.jpg",
+        "author": "Maksim Sokolov (maxergon.com)",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sagrada_Familia_at_night_01.jpg",
+        "verified": true
+      }
+    }
+  ]
+}

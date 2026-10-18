@@ -18,7 +18,7 @@ def make_root(tmp_path, order=("paris",), books=("paris",)):
 def test_bundled_content_makes_a_valid_manifest():
     manifest = build_manifest(RESOURCES_DIR)
     files = manifest["files"]
-    assert manifest["order"] == ["paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "paris-french", "london", "london-big-ben", "barcelona", "tahoe", "tahoe-heavenly", "tahoe-northstar", "hawaii", "hawaii-honolulu", "chengdu", "longyan", "travel-flight", "travel-packing", "travel-passport", "travel-hotel", "travel-jetlag"]
+    assert manifest["order"] == ["paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "paris-french", "london", "london-big-ben", "barcelona", "barcelona-park-guell", "barcelona-sagrada", "barcelona-casa-batllo", "barcelona-tibidabo", "barcelona-montjuic", "tahoe", "tahoe-heavenly", "tahoe-northstar", "hawaii", "hawaii-honolulu", "chengdu", "longyan", "travel-flight", "travel-packing", "travel-passport", "travel-hotel", "travel-jetlag"]
     assert "library.json" in files and "Narration/narration.json" in files
     assert any(p.startswith("Photos/") for p in files) and any(p.endswith(".m4a") for p in files)
     assert all(len(e["sha256"]) == 64 and e["size"] > 0 for e in files.values())

@@ -6,7 +6,7 @@ final class ContentTests: XCTestCase {
     private func books() throws -> [Book] { try BookLibrary.loadBundled() }
 
     func testLoadsAllBooksInShelfOrder() throws {
-        XCTAssertEqual(try books().map(\.id), ["paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "paris-french", "london", "london-big-ben", "barcelona", "tahoe", "tahoe-heavenly", "tahoe-northstar", "hawaii", "hawaii-honolulu", "chengdu", "longyan", "travel-flight", "travel-packing", "travel-passport", "travel-hotel", "travel-jetlag"])
+        XCTAssertEqual(try books().map(\.id), ["paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "paris-french", "london", "london-big-ben", "barcelona", "barcelona-park-guell", "barcelona-sagrada", "barcelona-casa-batllo", "barcelona-tibidabo", "barcelona-montjuic", "tahoe", "tahoe-heavenly", "tahoe-northstar", "hawaii", "hawaii-honolulu", "chengdu", "longyan", "travel-flight", "travel-packing", "travel-passport", "travel-hotel", "travel-jetlag"])
     }
 
     func testParisHasNineThemedBooks() throws {
@@ -28,7 +28,8 @@ final class ContentTests: XCTestCase {
         XCTAssertEqual(shelves[0].books.map(\.id), ["paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "paris-french"])
         XCTAssertEqual(shelves[1].books.map(\.id), ["london", "london-big-ben"])
         XCTAssertEqual(shelves[1].books.map(\.coverTitle), ["London", "Big Ben"])
-        XCTAssertEqual(shelves[2].books.map(\.id), ["barcelona"])
+        XCTAssertEqual(shelves[2].books.map(\.id), ["barcelona", "barcelona-park-guell", "barcelona-sagrada", "barcelona-casa-batllo", "barcelona-tibidabo", "barcelona-montjuic"])
+        XCTAssertEqual(shelves[2].books.map(\.coverTitle), ["Barcelona", "Park Güell", "Sagrada Família", "Casa Batlló", "Tibidabo Amusement Park", "Montjuïc Cable Car"])
         XCTAssertEqual(shelves[3].books.map(\.id), ["tahoe", "tahoe-heavenly", "tahoe-northstar"])
         XCTAssertEqual(shelves[3].books.map(\.coverTitle), ["Lake Tahoe", "Heavenly", "Northstar"])
         XCTAssertEqual(shelves[4].books.map(\.id), ["hawaii", "hawaii-honolulu"])
@@ -42,7 +43,7 @@ final class ContentTests: XCTestCase {
     }
 
     func testShelfRowsPackOneBookCitiesSideBySide() throws {
-        let shelves = BookLibrary.shelves(try books().filter { ["Paris", "London", "Barcelona"].contains($0.city) && $0.id != "london-big-ben" })
+        let shelves = BookLibrary.shelves(try books().filter { ["Paris", "London", "Barcelona"].contains($0.city) && $0.id != "london-big-ben" && !$0.id.hasPrefix("barcelona-") })
         let cities = { (rows: [[CityShelf]]) in rows.map { $0.map(\.city) } }
         XCTAssertEqual(cities(BookLibrary.rows(shelves, columns: 3)), [["Paris"], ["London", "Barcelona"]])
         XCTAssertEqual(cities(BookLibrary.rows(shelves, columns: 2)), [["Paris"], ["London", "Barcelona"]])

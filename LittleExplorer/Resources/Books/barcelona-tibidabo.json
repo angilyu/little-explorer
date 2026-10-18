@@ -1,0 +1,207 @@
+{
+  "id": "barcelona-tibidabo",
+  "city": "Barcelona",
+  "country": "Spain",
+  "flagImage": "barcelona-flag.png",
+  "flag": "🇪🇸",
+  "theme": "Tibidabo Amusement Park",
+  "coverColor": "#D23C4B",
+  "tagline": "Rides on top of a mountain",
+  "narration": {
+    "instructions": "This book is about Barcelona in Spain. Say every Catalan name the way people in Barcelona say it, warmly and naturally, as one smooth word, never spelled out or anglicized: Tibidabo (tee-bee-DAH-bo), Talaia (tah-LYE-ah), Adéu (ah-DEH-oo). A short hint like gow-DEE is how to sound out the word."
+  },
+  "pages": [
+    {
+      "id": "welcome",
+      "text": "Tibidabo is a fun park on top of a mountain!",
+      "about": "Tibidabo (tee-bee-DAH-bo) is the tallest mountain in the hills behind Barcelona, about 512 meters high. On top there is an amusement park that opened in 1901, more than 120 years ago. It is the oldest amusement park in Spain and one of the oldest in the world. The rides sit on different levels down the hill. Ask Francis: Which ride do you want to try first?",
+      "emoji": "🎡",
+      "photo": {
+        "commonsTitle": "File:032 Parc d'atraccions Tibidabo (Barcelona), des de la terrassa del Sagrat Cor.jpg",
+        "query": "Tibidabo amusement park",
+        "file": "barcelona-tibidabo-welcome.jpg",
+        "author": "Enric",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:032_Parc_d%27atraccions_Tibidabo_(Barcelona),_des_de_la_terrassa_del_Sagrat_Cor.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "name",
+      "text": "Its name means I will give you in an old language.",
+      "about": "The mountain's name comes from Latin, a very old language: 'tibi dabo' means 'I will give you'. It comes from a Bible story where Jesus is shown all the kingdoms of the world from a high mountain and offered them. You can see the mountain and its church from all over the city, even from far away at Plaça d'Espanya, where this photo was taken. Ask Francis: If you could give someone anything, what would you give?",
+      "emoji": "🎁",
+      "photo": {
+        "commonsTitle": "File:(Barcelona) Torres venecianes - El Tibidabo - Temple Expiatori del Sagrat Cor.jpg",
+        "query": "Tibidabo from Plaça d'Espanya",
+        "file": "barcelona-tibidabo-name.jpg",
+        "author": "Didier Descouens",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:(Barcelona)_Torres_venecianes_-_El_Tibidabo_-_Temple_Expiatori_del_Sagrat_Cor.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "funicular",
+      "text": "A funicular train climbs the steep hill up to the rides.",
+      "about": "A funicular is a train pulled up a steep slope by a strong cable. The Tibidabo funicular first opened in 1901. Since 2021 it has a new train with a glass roof called the Cuca de Llum (KOO-kah duh YOOM), which means glow-worm in Catalan. Ask Francis: Why do you think they called the train a glow-worm?",
+      "emoji": "🚞",
+      "photo": {
+        "commonsTitle": "File:Tibidabo Funicular 2022.jpg",
+        "query": "Tibidabo funicular Cuca de Llum",
+        "file": "barcelona-tibidabo-funicular.jpg",
+        "author": "Bigtime Boy",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Tibidabo_Funicular_2022.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "tram",
+      "text": "The old Blue Tram used to carry people to the funicular.",
+      "about": "The Tramvia Blau, the Blue Tram, started running in 1901 and was one of Barcelona's oldest trams. It rattled up the hill to the funicular station. It has been resting since 2018, while its street and tracks wait to be fixed, and nobody knows yet when it will run again. Ask Francis: What color would your tram be?",
+      "emoji": "🚋",
+      "photo": {
+        "commonsTitle": "File:086 Tramvia Blau, a l'avinguda del Tibidabo (Barcelona).jpg",
+        "query": "Tramvia Blau Barcelona",
+        "file": "barcelona-tibidabo-tram.jpg",
+        "author": "Enric",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:086_Tramvia_Blau,_a_l%27avinguda_del_Tibidabo_(Barcelona).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "plane",
+      "text": "A red airplane has been flying in circles since 1928!",
+      "about": "The red airplane, called the Avió (ah-bee-OH), hangs from a big metal arm. It flies around in a circle and swoops out over the edge of the mountain, so it feels like flying over the city. It is a copy of the first plane that flew from Barcelona to Madrid, and it has been giving rides since 1928. Ask Francis: Where would you fly your airplane?",
+      "emoji": "✈️",
+      "photo": {
+        "commonsTitle": "File:AvioTibidabo.jpg",
+        "query": "Tibidabo red airplane Avió",
+        "file": "barcelona-tibidabo-plane.jpg",
+        "author": "Tibidabo Oficial",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:AvioTibidabo.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "wheel",
+      "text": "The colorful Ferris wheel spins high above the city and sea.",
+      "about": "The Ferris wheel has bright cabins in red, yellow, blue, green and purple. Because it sits on top of a mountain, you are already way up high before it even starts. From the top you can see the city and the Mediterranean Sea. Ask Francis: Which color cabin would you choose?",
+      "emoji": "🎡",
+      "photo": {
+        "commonsTitle": "File:Giradabo (noria).jpg",
+        "query": "Tibidabo Ferris wheel",
+        "file": "barcelona-tibidabo-wheel.jpg",
+        "author": "Parctibidabo",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Giradabo_(noria).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "talaia",
+      "text": "The Talaia lifts you up high like a giant crane arm.",
+      "about": "The Talaia (tah-LYE-ah) means watchtower. It opened in 1921. Riders sit in a little cabin at the end of a long metal arm, and the arm slowly lifts them high above the mountaintop to look out over Barcelona, then swings them around. Ask Francis: Would you be brave enough to ride up there?",
+      "emoji": "🗼",
+      "photo": {
+        "commonsTitle": "File:Talaia del Tibidabo 01.jpg",
+        "query": "Talaia Tibidabo",
+        "file": "barcelona-tibidabo-talaia.jpg",
+        "author": "Joe Mabel",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Talaia_del_Tibidabo_01.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "automatons",
+      "text": "In a museum, old moving dolls dance, play music and wave.",
+      "about": "The park has a museum of automatons, old machines shaped like people and animals that move by themselves. Some are more than 100 years old and used to start when someone dropped in a coin. This one is a clown with little monkeys. Ask Francis: If you built a moving doll, what would it do?",
+      "emoji": "🤡",
+      "photo": {
+        "commonsTitle": "File:El Payaso y los Micos - Museu d'Autòmats del Tibidabo.JPG",
+        "query": "Tibidabo automaton museum",
+        "file": "barcelona-tibidabo-automatons.jpg",
+        "author": "Jordiferrer",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:El_Payaso_y_los_Micos_-_Museu_d%27Aut%C3%B2mats_del_Tibidabo.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "temple",
+      "text": "A big church on top has a statue with open arms.",
+      "about": "Right next to the rides is the Temple of the Sacred Heart. It was started in 1902 and finished in 1961. On the very top stands a big statue of Jesus with his arms open wide, looking over the city. You can go up inside to a high terrace for an even bigger view. Ask Francis: Can you stretch your arms out wide like the statue?",
+      "emoji": "⛪",
+      "photo": {
+        "commonsTitle": "File:Temple Expiatori del Sagrat Cor from atop Talaia del Tibidabo, Barcelona, 2023.jpg",
+        "query": "Sagrat Cor Tibidabo",
+        "file": "barcelona-tibidabo-temple.jpg",
+        "author": "DimiTalen",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Temple_Expiatori_del_Sagrat_Cor_from_atop_Talaia_del_Tibidabo,_Barcelona,_2023.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "view",
+      "text": "From up here you can see the whole city and the sea.",
+      "about": "From Tibidabo you can see all of Barcelona spread out like a map: the straight streets, the port, the beaches and the blue Mediterranean Sea. On a clear day you can find the Sagrada Família and Montjuïc hill too. Ask Francis: Can you find the sea and the ships in the picture?",
+      "emoji": "🌊",
+      "photo": {
+        "commonsTitle": "File:Barcelona - view from Tibidabo toward old harbor.jpg",
+        "query": "view from Tibidabo Barcelona",
+        "file": "barcelona-tibidabo-view.jpg",
+        "author": "Joe Mabel",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Barcelona_-_view_from_Tibidabo_toward_old_harbor.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "boars",
+      "text": "Wild boars live in the forest all around the mountain.",
+      "about": "Tibidabo is part of Collserola, a huge forest park right next to the city. Wild boars, which are like big hairy pigs, live there. Sometimes they trot into nearby neighborhoods looking for food. People must never feed them! This one was photographed near a pond in Collserola. Ask Francis: What sound do you think a wild boar makes?",
+      "emoji": "🐗",
+      "photo": {
+        "commonsTitle": "File:329 Senglar vora el pantà de Vallvidrera (Barcelona).jpg",
+        "query": "wild boar Collserola",
+        "file": "barcelona-tibidabo-boars.jpg",
+        "author": "Enric",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:329_Senglar_vora_el_pant%C3%A0_de_Vallvidrera_(Barcelona).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "goodbye",
+      "text": "The sun sets over the rides. Adéu, Tibidabo!",
+      "about": "When the sun goes down, the lights on the rides twinkle and the city below starts to glow. Adéu (ah-DEH-oo) means goodbye in Catalan. Ask Francis: What was your favorite ride on the mountain?",
+      "emoji": "👋",
+      "photo": {
+        "commonsTitle": "File:Parc d'Atraccions Tibidabo - 49289536031.jpg",
+        "query": "Tibidabo sunset",
+        "file": "barcelona-tibidabo-goodbye.jpg",
+        "author": "Jorge Franganillo",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Parc_d%27Atraccions_Tibidabo_-_49289536031.jpg",
+        "verified": true
+      }
+    }
+  ]
+}
