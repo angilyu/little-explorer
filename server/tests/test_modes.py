@@ -211,11 +211,15 @@ def test_realtime_config_from_env():
             "PIP_REALTIME_STT_MODEL": "none",
             "PIP_REALTIME_MIN_INTERRUPTION_DURATION": "0.8",
             "PIP_REALTIME_MIN_INTERRUPTION_WORDS": "2",
+            "PIP_REALTIME_COMMIT_AFTER": "0",
+            "PIP_REALTIME_READING_COMMIT_AFTER": "6",
         }
     )
     assert (config.model, config.eagerness, config.barge_in, config.turns) == ("gpt-realtime-mini", "low", "model", "client")
     assert (config.end_of_turn, config.stt_model) == ("model", None)
     assert (config.min_interruption_duration, config.min_interruption_words) == (0.8, 2)
+    assert (config.commit_after_s, config.reading_commit_after_s) == (0.0, 6.0)
+    assert (RealtimeConfig().commit_after_s, RealtimeConfig().reading_commit_after_s) == (2.5, 5.0)
     with pytest.raises(ValueError):
         agent_mod.realtime_config({"PIP_REALTIME_TURNS": "both"})
 
