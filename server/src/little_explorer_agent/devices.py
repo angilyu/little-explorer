@@ -16,8 +16,9 @@ Days run midnight to midnight in ``PIP_TIMEZONE`` (America/Los_Angeles).
 Storage is Postgres when ``DATABASE_URL`` is set (the deployed token server uses a free Neon
 database, because Render's free disk is wiped on every deploy and restart), otherwise SQLite at
 ``PIP_DEVICES_DB`` (``~/.config/little-explorer/devices.sqlite3``) for local runs and tests.
-Star awards (see :mod:`.stars`) are kept here too, so a reinstall can restore them.
-Only ids, names, models, timings, book ids, costs and star counts are stored; never transcripts or audio.
+Star awards (see :mod:`.stars`) are kept here too, so a reinstall can restore them, and so are the
+coin ledger and the owner's coin rules (see :mod:`.coins`).
+Only ids, names, models, timings, book ids, costs and star and coin counts are stored; never transcripts or audio.
 """
 
 from __future__ import annotations
@@ -89,6 +90,22 @@ SCHEMA = (
         reason TEXT NOT NULL DEFAULT ''
     )""",
     "CREATE INDEX IF NOT EXISTS stars_device ON stars (device_id)",
+    # Stars a grown-up turned into coins (see coins.py); the id is the app's, so retries are safe.
+    """CREATE TABLE IF NOT EXISTS coin_conversions (
+        id TEXT PRIMARY KEY,
+        device_id TEXT NOT NULL,
+        converted_at TEXT NOT NULL,
+        stars_spent INTEGER NOT NULL,
+        coins INTEGER NOT NULL,
+        stars_per_coin INTEGER NOT NULL
+    )""",
+    "CREATE INDEX IF NOT EXISTS coin_conversions_device ON coin_conversions (device_id)",
+    # Owner overrides, e.g. the coin rules, changed through /admin without a redeploy.
+    """CREATE TABLE IF NOT EXISTS settings (
+        key TEXT PRIMARY KEY,
+        value TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+    )""",
 )
 
 STAR_ID = re.compile(r"^[A-Za-z0-9-]{8,64}$")
@@ -512,7 +529,7 @@ class DeviceStore:
         """One entry per device: status, limit, and minutes and dollars today and in total."""
         day = self.day_of(now)
 
-        def run(cur: Any) -> tuple[list[Device], dict[str, Any], dict[str, Any]]:
+        def run(cur: Any) -> tuple[list[Device], dict[str, Any], dict[str, Any], dict[str, Any]]:
             devices = [Device(*r) for r in self._exec(cur, f"SELECT {_DEVICE_COLUMNS} FROM devices").fetchall()]
             totals = {
                 r[0]: r[1:]
@@ -528,9 +545,15 @@ class DeviceStore:
             stars = dict(
                 self._exec(cur, "SELECT device_id, COALESCE(SUM(stars), 0) FROM stars GROUP BY device_id").fetchall()
             )
-            return devices, totals, stars
+            coins = {
+                r[0]: r[1:]
+                for r in self._exec(
+                    cur, "SELECT device_id, SUM(stars_spent), SUM(coins) FROM coin_conversions GROUP BY device_id"
+                ).fetchall()
+            }
+            return devices, totals, stars, coins
 
-        devices, totals, stars = self._run(run)
+        devices, totals, stars, coins = self._run(run)
         out = []
         for d in devices:
             sessions, total_s, total_usd, today_s, today_usd = totals.get(d.id, (0, 0, 0, 0, 0))
@@ -545,6 +568,8 @@ class DeviceStore:
                     "total_usd": round(float(total_usd), 4),
                     "sessions": int(sessions),
                     "stars": int(stars.get(d.id, 0)),
+                    "stars_spent": int(coins.get(d.id, (0, 0))[0] or 0),
+                    "coins": int(coins.get(d.id, (0, 0))[1] or 0),
                 }
             )
         return sorted(out, key=lambda r: r["last_seen"], reverse=True)

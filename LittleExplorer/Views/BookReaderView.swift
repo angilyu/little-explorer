@@ -10,6 +10,7 @@ struct BookReaderView: View {
     @Environment(VoiceModeController.self) private var voice
     @Environment(ReadAloudController.self) private var readAloud
     @Environment(StarStore.self) private var stars
+    @Environment(CoinStore.self) private var coins
 
     @State private var pageIndex: Int
     @State private var counterFrame: CGRect = .zero
@@ -124,7 +125,7 @@ struct BookReaderView: View {
 
             VoiceStatusView(voice: voice, compact: !regular)
             if voice.isEnabled {
-                StarCounter(total: stars.total, bounce: stars.celebration, compact: !regular)
+                StarCounter(total: coins.spendable(fromEarned: stars.total), bounce: stars.celebration, compact: !regular)
             }
             VoiceToggleButton(voice: voice, compact: !regular)
         }
@@ -154,7 +155,7 @@ struct BookReaderView: View {
             }
             Spacer()
             if pageIndex == book.pages.count - 1 {
-                BookStarSummary(bookStars: stars.stars(inBook: book.id), total: stars.total, regular: regular)
+                BookStarSummary(bookStars: stars.stars(inBook: book.id), total: coins.spendable(fromEarned: stars.total), regular: regular)
             } else {
                 Text("\(pageIndex + 1) / \(book.pages.count)")
                     .font(.system(size: 20, weight: .bold, design: .rounded))

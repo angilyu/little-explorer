@@ -7,6 +7,7 @@ struct LittleExplorerApp: App {
     @State private var readAloud = ReadAloudController()
     @State private var content = ContentStore()
     @State private var stars = StarStore.live()
+    @State private var coins = CoinStore.live()
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some Scene {
@@ -17,6 +18,7 @@ struct LittleExplorerApp: App {
                 .environment(readAloud)
                 .environment(content)
                 .environment(stars)
+                .environment(coins)
                 .task {
                     voice.onStar = { [stars] award in stars.receive(award) }
                     stars.onCelebrate = { StarChime.play() }
@@ -25,10 +27,13 @@ struct LittleExplorerApp: App {
                     async let saved: Void = stars.restore(
                         from: StarBackup(baseURL: VoiceSettings.tokenServerURL(), deviceId: DeviceIdentity.current().id)
                     )
-                    _ = await (books, saved)
+                    async let balance: Bool = coins.refresh(using: CoinStore.service())
+                    _ = await (books, saved, balance)
                 }
                 .onChange(of: scenePhase) { _, phase in
-                    if phase == .active, DemoLaunch.current == nil { Task { await content.refresh() } }
+                    guard phase == .active, DemoLaunch.current == nil else { return }
+                    Task { await content.refresh() }
+                    Task { await coins.refresh(using: CoinStore.service()) }
                 }
         }
     }

@@ -45,6 +45,7 @@ from aiohttp import web
 
 from . import agent_name
 from .catalog import build_manifest, content_files, resources_dir
+from .coins import CoinError, CoinLedger
 from .config import load_env
 from .content import BOOK_KEY, CITY_KEY, PAGE_KEY, PAGE_NUMBER_KEY, PAGE_TEXT_KEY
 from .devices import ANONYMOUS, REST_MESSAGE, STATUSES, Decision, DeviceStore, valid_device_id
@@ -206,6 +207,44 @@ async def handle_stars(request: web.Request) -> web.Response:
     return web.json_response({"stars": stars, "total": sum(s["stars"] for s in stars)})
 
 
+async def handle_coins(request: web.Request) -> web.Response:
+    if not authorized(request, request.app[ACCESS_KEY]):
+        return web.json_response({"error": "unauthorized"}, status=401)
+    device_id = request.query.get("device", "")
+    if not valid_device_id(device_id):
+        return web.json_response({"error": "bad device"}, status=400)
+    balance = await asyncio.to_thread(request.app[COINS].balance, device_id)
+    return web.json_response(balance.as_json())
+
+
+def _whole(value: object) -> int | None:
+    return value if isinstance(value, int) and not isinstance(value, bool) else None
+
+
+async def handle_convert(request: web.Request) -> web.Response:
+    if not authorized(request, request.app[ACCESS_KEY]):
+        return web.json_response({"error": "unauthorized"}, status=401)
+    body = await _json_body(request)
+    if body is None:
+        return web.json_response({"error": "bad body"}, status=400)
+    device_id = body.get("device")
+    if not valid_device_id(device_id) or device_id == ANONYMOUS:
+        return web.json_response({"error": "bad device"}, status=400)
+    coins, rate = body.get("coins"), body.get("stars_per_coin")
+    if (coins is not None and _whole(coins) is None) or (rate is not None and _whole(rate) is None):
+        return web.json_response({"error": "coins and stars_per_coin must be whole numbers"}, status=400)
+    ledger = request.app[COINS]
+    try:
+        conversion, balance, replayed = await asyncio.to_thread(ledger.convert, device_id, body.get("id"), coins, rate)
+    except CoinError as exc:
+        balance = await asyncio.to_thread(ledger.balance, device_id)
+        log.info("coins: device %s refused (%s)", device_id, exc.code)
+        return web.json_response({"error": exc.code, "message": exc.message, **balance.as_json()}, status=exc.status)
+    if not replayed:
+        log.info("coins: device %s turned %d stars into %d coins", device_id, conversion["stars_spent"], conversion["coins"])
+    return web.json_response({**balance.as_json(), "conversion": {**conversion, "replayed": replayed}})
+
+
 def _admin(request: web.Request) -> web.Response | None:
     if not authorized(request, request.app[ADMIN_KEY], required=True):
         return web.json_response({"error": "unauthorized"}, status=401)
@@ -267,6 +306,27 @@ async def handle_admin_update(request: web.Request) -> web.Response:
     return web.json_response({"device": {**device.__dict__, "display_name": device.display_name}})
 
 
+async def handle_admin_coins(request: web.Request) -> web.Response:
+    """``GET``: the coin rules in force, the env defaults and the overrides. ``POST``: change them,
+    e.g. ``{"stars_per_coin": 20}``, ``{"enabled": false}``, ``{"max_coins": null}`` (back to the
+    env default) or ``{"reset": true}`` (every override)."""
+    if denied := _admin(request):
+        return denied
+    ledger = request.app[COINS]
+    if request.method == "GET":
+        return web.json_response(await asyncio.to_thread(ledger.settings))
+    body = await _json_body(request)
+    if body is None:
+        return web.json_response({"error": "bad body"}, status=400)
+    reset = body.pop("reset", False) is True
+    try:
+        settings = await asyncio.to_thread(ledger.update, body, reset=reset)
+    except ValueError as exc:
+        return web.json_response({"error": str(exc)}, status=400)
+    log.info("coin rules now %s", settings["settings"])
+    return web.json_response(settings)
+
+
 async def handle_health(request: web.Request) -> web.Response:
     # The deploy workflow polls this until the new commit and book content are live.
     commit = os.environ.get("RENDER_GIT_COMMIT", "").strip() or None
@@ -314,6 +374,7 @@ ACCESS_KEY = web.AppKey("access_key", str)
 ADMIN_KEY = web.AppKey("admin_key", str)
 REPORT_KEY = web.AppKey("report_key", str)
 STORE = web.AppKey("device_store", DeviceStore)
+COINS = web.AppKey("coin_ledger", CoinLedger)
 MANIFEST = web.AppKey("manifest", dict)
 FILES = web.AppKey("files", dict)
 
@@ -325,12 +386,14 @@ def create_app(
     store: DeviceStore | None = None,
     admin_key: str | None = None,
     report_key: str | None = None,
+    coins: CoinLedger | None = None,
 ) -> web.Application:
     app = web.Application()
     app[ACCESS_KEY] = (os.environ.get("PIP_ACCESS_KEY", "") if access_key is None else access_key).strip()
     app[ADMIN_KEY] = (os.environ.get("PIP_ADMIN_KEY", "") if admin_key is None else admin_key).strip()
     app[REPORT_KEY] = (os.environ.get("PIP_REPORT_KEY", "") if report_key is None else report_key).strip()
     app[STORE] = store or DeviceStore.from_env()
+    app[COINS] = coins or CoinLedger.from_env(app[STORE])
     root = content_root or resources_dir()
     app[MANIFEST] = build_manifest(root)
     app[FILES] = content_files(root)
@@ -341,9 +404,13 @@ def create_app(
     app.router.add_post("/usage", handle_usage)
     app.router.add_post("/stars", handle_star_report)
     app.router.add_get("/stars", handle_stars)
+    app.router.add_get("/coins", handle_coins)
+    app.router.add_post("/coins/convert", handle_convert)
     app.router.add_get("/admin/devices", handle_admin_devices)
     app.router.add_get("/admin/usage", handle_admin_usage)
     app.router.add_post("/admin/devices/{ref}", handle_admin_update)
+    app.router.add_get("/admin/coins", handle_admin_coins)
+    app.router.add_post("/admin/coins", handle_admin_coins)
 
     target = keepalive_target()
     if target:
@@ -368,6 +435,7 @@ def main() -> None:
         log.warning("PIP_ACCESS_KEY is not set: anyone who can reach this server can start Milo sessions")
     log.info("serving content version %s (%d files)", app[MANIFEST]["version"], len(app[FILES]))
     log.info("device limits in %s storage: %s", app[STORE].kind, app[STORE].limits)
+    log.info("coin defaults (env): %s", app[COINS].defaults)
     if not app[ADMIN_KEY] or not app[REPORT_KEY]:
         log.warning("PIP_ADMIN_KEY or PIP_REPORT_KEY is not set: /admin or /usage is turned off")
     web.run_app(app, host=host, port=port)

@@ -8,6 +8,8 @@ import Foundation
 /// `-demoStars 23` seeds that many saved stars; `-demoPassport` opens the Passport.
 /// `-demoRead` starts reading the opening page aloud, to show the word highlight.
 /// `-demoShelf paris-french` scrolls the shelf to that book's cover (without opening it).
+/// `-demoCoins 2` seeds that many coins (made from 10 stars each, so they come off `-demoStars`).
+/// `-demoGate` opens the grown-ups gate; `-demoParent` opens the grown-ups corner without it.
 struct DemoLaunch: Equatable {
     var bookId: String?
     var pageIndex: Int = 0
@@ -20,6 +22,9 @@ struct DemoLaunch: Equatable {
     var seedStars = 0
     var openPassport = false
     var shelfBook: String?
+    var seedCoins = 0
+    var openGate = false
+    var openParent = false
 
     var startsWithVoice: Bool { voiceActivity != nil || liveVoice }
 
@@ -45,6 +50,9 @@ struct DemoLaunch: Equatable {
         if let stars = value(after: "-demoStars").flatMap(Int.init) { demo.seedStars = max(0, stars); found = true }
         if arguments.contains("-demoPassport") { demo.openPassport = true; found = true }
         if let book = value(after: "-demoShelf") { demo.shelfBook = book; found = true }
+        if let coins = value(after: "-demoCoins").flatMap(Int.init) { demo.seedCoins = max(0, coins); found = true }
+        if arguments.contains("-demoGate") { demo.openGate = true; found = true }
+        if arguments.contains("-demoParent") { demo.openParent = true; found = true }
         if let voice = value(after: "-demoVoice") {
             if voice == "star" {
                 demo.voiceActivity = .listening

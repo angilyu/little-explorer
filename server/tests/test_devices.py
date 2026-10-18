@@ -498,6 +498,22 @@ def test_cli_lists_and_approves_directly(monkeypatch, capsys, tmp_path):
     assert store.get("ipad-1").status == "blocked"
     with pytest.raises(SystemExit, match="no device"):
         cli.main(["--direct", "approve", "nobody"])
+    assert "COINS" in (cli.main(["--direct"]), capsys.readouterr().out)[1]
+
+    assert cli.main(["--direct", "coins"]) == 0
+    assert "on: 10 stars make 1 coin" in capsys.readouterr().out
+    assert cli.main(["--direct", "coins", "rate=20", "max=5", "off"]) == 0
+    out = capsys.readouterr().out
+    assert "OFF: 20 stars make 1 coin" in out and "at most 5" in out and "stars_per_coin=20" in out
+    assert cli.main(["--direct", "coins", "max=default", "on"]) == 0
+    assert "on: 20 stars make 1 coin, at least 1 and no limit" in capsys.readouterr().out
+    with pytest.raises(SystemExit, match="max_coins"):
+        cli.main(["--direct", "coins", "min=3", "max=2"])
+    with pytest.raises(SystemExit, match="Not a coin setting"):
+        cli.main(["--direct", "coins", "speed=3"])
+    assert cli.main(["--direct", "coins", "reset"]) == 0
+    assert "none (env defaults)" in capsys.readouterr().out
+
     monkeypatch.delenv("PIP_ADMIN_KEY", raising=False)
     with pytest.raises(SystemExit, match="PIP_ADMIN_KEY"):
         cli.main(["usage"])
