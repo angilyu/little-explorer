@@ -50,7 +50,7 @@ struct PassportView: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text("\(coins.spendable(fromEarned: stars.total)) stars")
                     .font(.system(size: regular ? 40 : 30, weight: .heavy, design: .rounded))
-                Text(coins.starsSpent > 0 ? "You earned \(stars.total) stars in all!" : "Ask Milo questions to earn more!")
+                Text(coins.starsSpent > 0 ? "You earned \(stars.total) stars in all!" : "Answer Milo's questions to earn more!")
                     .font(.system(size: regular ? 20 : 15, weight: .semibold, design: .rounded))
                     .opacity(0.75)
             }
