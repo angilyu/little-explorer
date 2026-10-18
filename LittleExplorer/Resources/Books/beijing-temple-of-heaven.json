@@ -1,0 +1,223 @@
+{
+  "id": "beijing-temple-of-heaven",
+  "city": "Beijing",
+  "country": "China",
+  "flagImage": "chengdu-flag.png",
+  "flag": "🇨🇳",
+  "theme": "Temple of Heaven",
+  "coverColor": "#1E40AF",
+  "tagline": "Blue roofs, echo walls and morning tai chi",
+  "narration": {
+    "instructions": "This book is about the Temple of Heaven in Beijing, China. Say every Chinese name the way a Mandarin speaker says it, warmly and naturally, as one smooth word, never spelled out or anglicized: Ni hao (nee how), Beijing (bay-JING), Tiantan (tyen-TAHN), tai chi (tie CHEE), jianzi (jyen-dzuh), Zaijian (dzai-JYEN). A short hint like bay-JING is how to sound out the word."
+  },
+  "pages": [
+    {
+      "id": "welcome",
+      "text": "Ni hao! Welcome to the Temple of Heaven in Beijing.",
+      "about": "Ni hao (nee how) means hello! The Temple of Heaven, called Tiantan (tyen-TAHN) in Chinese, was built around 1420, at the same time as the Forbidden City. Emperors came here to pray to heaven for good weather and big harvests of rice and grain, so everyone would have enough food. Today it sits inside a huge, leafy park. Ask Francis: What kind of weather helps plants grow?",
+      "emoji": "⛩️",
+      "photo": {
+        "commonsTitle": "File:11 Temple of Heaven.jpg",
+        "query": "Temple of Heaven Beijing",
+        "file": "beijing-temple-of-heaven-welcome.jpg",
+        "author": "Philip Larson",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:11_Temple_of_Heaven.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "round-hall",
+      "text": "This round hall has three blue roofs stacked like a cake.",
+      "about": "This is the Hall of Prayer for Good Harvests, the most famous building here. It is round and has three roofs covered in deep blue tiles, the color of the sky, with a golden ball on top. It sits on three round white marble terraces. Every spring the emperor came here to pray for a good harvest. Ask Francis: Why do you think the roof is blue?",
+      "emoji": "🎂",
+      "photo": {
+        "commonsTitle": "File:2014.09.29.165936 Temple of Heaven Bejing.jpg",
+        "query": "Hall of Prayer for Good Harvests",
+        "file": "beijing-temple-of-heaven-round-hall.jpg",
+        "author": "Hermann Luyken",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:2014.09.29.165936_Temple_of_Heaven_Bejing.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "no-nails",
+      "text": "The builders fit the wooden pieces together without any nails.",
+      "about": "The hall is built mostly of wood, and the wooden beams slot and lock together like a giant puzzle, so it holds together without nails. In 1889 lightning struck it and it burned down, so it was carefully rebuilt the old way. The beams under the roofs are painted with bright patterns in blue, green and gold. Ask Francis: Can you build something with blocks that stays up without glue or tape?",
+      "emoji": "🪵",
+      "photo": {
+        "commonsTitle": "File:2014.09.29.165744 Ornaments Temple of Heaven Bejing.jpg",
+        "query": "Temple of Heaven painted beams",
+        "file": "beijing-temple-of-heaven-no-nails.jpg",
+        "author": "Hermann Luyken",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:2014.09.29.165744_Ornaments_Temple_of_Heaven_Bejing.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "pillars",
+      "text": "Inside, the tall pillars stand for seasons, months and hours.",
+      "about": "Inside the hall, giant wooden pillars hold up the roofs. The 4 tallest ones in the middle stand for the four seasons. The next ring of 12 stands for the twelve months, and the outer ring of 12 stands for the twelve two-hour parts that old China used to divide a day. The ceiling in the middle has a golden dragon and phoenix. Ask Francis: Can you name the four seasons? Which is your favorite?",
+      "emoji": "🕰️",
+      "photo": {
+        "commonsTitle": "File:Hall of Prayer for Good Harvests interior 2014.jpg",
+        "query": "Hall of Prayer for Good Harvests interior",
+        "file": "beijing-temple-of-heaven-pillars.jpg",
+        "author": "Daniel Case",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Hall_of_Prayer_for_Good_Harvests_interior_2014.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "heaven-earth",
+      "text": "Long ago, people imagined heaven was round and the earth was square.",
+      "about": "In old China, people imagined the sky as a round dome and the earth as flat and square. So the buildings for heaven here are round, like this Circular Mound Altar, a big round platform of white stone. The outer wall of the park is square at the south end and rounded at the north end. Ask Francis: Can you find a round shape and a square shape in the room you are in?",
+      "emoji": "⭕",
+      "photo": {
+        "commonsTitle": "File:Earthly Mount north side.JPG",
+        "query": "Circular Mound Altar Temple of Heaven",
+        "file": "beijing-temple-of-heaven-heaven-earth.jpg",
+        "author": "BrokenSphere",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Earthly_Mount_north_side.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "center-stone",
+      "text": "Stand on the middle stone and talk, and your voice sounds louder!",
+      "about": "In the very center of the Circular Mound is a round stone called the Heart of Heaven Stone. If you stand on it and speak, the sound bounces off the stone railings and comes back to you, so your voice sounds bigger. The stones around it are laid in rings of nine, eighteen, twenty-seven and so on, because nine was the emperor's number. Ask Francis: Can you count by nines: nine, eighteen...?",
+      "emoji": "🗣️",
+      "photo": {
+        "commonsTitle": "File:Earthly Mount center.JPG",
+        "query": "Circular Mound center stone",
+        "file": "beijing-temple-of-heaven-center-stone.jpg",
+        "author": "BrokenSphere",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Earthly_Mount_center.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "echo-wall",
+      "text": "Whisper at the Echo Wall, and a friend far away can hear!",
+      "about": "The Echo Wall is a smooth round wall around a small temple. If you whisper close to the wall, the sound can travel along the curved wall all the way to a friend standing on the other side. It works best when it is quiet, which is not often because so many visitors try it! Ask Francis: What secret message would you whisper along the wall?",
+      "emoji": "🤫",
+      "photo": {
+        "commonsTitle": "File:Echo Wall.jpg",
+        "query": "Echo Wall Temple of Heaven",
+        "file": "beijing-temple-of-heaven-echo-wall.jpg",
+        "author": "钉钉",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Echo_Wall.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "walkway",
+      "text": "A long raised stone road connects the round altars.",
+      "about": "The Danbi Bridge is a wide stone walkway, about 360 meters long, that joins the southern altars to the Hall of Prayer in the north. It slowly rises as you walk north, as if you were walking up toward heaven. The middle path was only for heaven, the emperor walked on the side next to it, and officials walked on the outside. Ask Francis: Which path would you want to walk on?",
+      "emoji": "🛤️",
+      "photo": {
+        "commonsTitle": "File:Danbi Bridge.jpg",
+        "query": "Danbi Bridge Temple of Heaven",
+        "file": "beijing-temple-of-heaven-walkway.jpg",
+        "author": "钉钉",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Danbi_Bridge.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "cypress",
+      "text": "Very old cypress trees grow all around the temple park.",
+      "about": "The park has thousands of cypress and other old trees, and some of them are hundreds of years old. Their trunks are twisty and bumpy. One famous tree is called the Nine Dragon Cypress because its trunk looks like dragons twisting up into the sky. The trees make the park shady and cool. Ask Francis: Can you hug a tree? How many people would you need to hug a really big one?",
+      "emoji": "🌲",
+      "photo": {
+        "commonsTitle": "File:Temple of Heaven (9864318223).jpg",
+        "query": "Temple of Heaven cypress trees",
+        "file": "beijing-temple-of-heaven-cypress.jpg",
+        "author": "Gary Todd from Xinzheng, China",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Temple_of_Heaven_(9864318223).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "tai-chi",
+      "text": "In the morning, people do slow and gentle tai chi.",
+      "about": "Early in the morning, the park fills with people, many of them grandmas and grandpas, exercising together. Tai chi (tie CHEE) is a slow, flowing exercise that helps with balance and calm. Others dance in groups to music, sing, play cards, or stretch on the railings. Ask Francis: Can you try a slow tai chi move, like pushing a cloud very gently?",
+      "emoji": "🧘",
+      "photo": {
+        "commonsTitle": "File:Tai Chi Chuan at Temple of Heaven on a Sunday.JPG",
+        "query": "tai chi Temple of Heaven",
+        "file": "beijing-temple-of-heaven-tai-chi.jpg",
+        "author": "BrokenSphere",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Tai_Chi_Chuan_at_Temple_of_Heaven_on_a_Sunday.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "jianzi",
+      "text": "Players kick a feathered jianzi high without using their hands.",
+      "about": "Jianzi (jyen-dzuh) is a shuttlecock made of feathers on a little weighted base. Players kick it with their feet, knees or the side of their shoe to keep it up in the air, passing it in a circle. You often see people playing in Beijing parks, including the Temple of Heaven. This photo was taken in a square near the Beijing Drum Tower. Ask Francis: How many kicks in a row do you think you could do?",
+      "emoji": "🪶",
+      "photo": {
+        "commonsTitle": "File:People playing jianzi.jpg",
+        "query": "people playing jianzi Beijing",
+        "file": "beijing-temple-of-heaven-jianzi.jpg",
+        "author": "Vaido Otsar",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:People_playing_jianzi.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "water-writing",
+      "text": "Some people paint words on the ground with water brushes.",
+      "about": "In Beijing parks you may see people holding a big brush on a long stick, dipped in a bucket of water. They write beautiful Chinese characters on the stone paths. The words shine for a little while and then dry up and disappear, so they can start again! It is a way to practice calligraphy, the art of beautiful writing. Ask Francis: What word would you write with a water brush?",
+      "emoji": "🖌️",
+      "photo": {
+        "commonsTitle": "File:Temple of Heaven 天坛 (5283631934).jpg",
+        "query": "water calligraphy Temple of Heaven",
+        "file": "beijing-temple-of-heaven-water-writing.jpg",
+        "author": "InSapphoWeTrust from Los Angeles, California, USA",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Temple_of_Heaven_%E5%A4%A9%E5%9D%9B_(5283631934).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "goodbye",
+      "text": "Zaijian, Beijing! Wave bye to the round blue temple.",
+      "about": "Zaijian (dzai-JYEN) means goodbye, or see you again! The Temple of Heaven was once only for the emperor, but now it is a park where everyone can exercise, play and enjoy the old buildings. Ask Francis: What would you do first at the Temple of Heaven: whisper at the Echo Wall, kick a jianzi or try tai chi?",
+      "emoji": "👋",
+      "photo": {
+        "commonsTitle": "File:2014.09.29.165350 Temple of Heaven Bejing.jpg",
+        "query": "Temple of Heaven hall",
+        "file": "beijing-temple-of-heaven-goodbye.jpg",
+        "author": "Hermann Luyken",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:2014.09.29.165350_Temple_of_Heaven_Bejing.jpg",
+        "verified": true
+      }
+    }
+  ]
+}

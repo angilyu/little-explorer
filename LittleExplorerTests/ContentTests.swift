@@ -6,7 +6,7 @@ final class ContentTests: XCTestCase {
     private func books() throws -> [Book] { try BookLibrary.loadBundled() }
 
     func testLoadsAllBooksInShelfOrder() throws {
-        XCTAssertEqual(try books().map(\.id), ["paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "paris-french", "london", "london-big-ben", "barcelona", "barcelona-park-guell", "barcelona-sagrada", "barcelona-casa-batllo", "barcelona-tibidabo", "barcelona-montjuic", "tahoe", "tahoe-heavenly", "tahoe-northstar", "hawaii", "hawaii-honolulu", "chengdu", "longyan", "travel-flight", "travel-packing", "travel-passport", "travel-hotel", "travel-jetlag"])
+        XCTAssertEqual(try books().map(\.id), ["paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "paris-french", "london", "london-big-ben", "barcelona", "barcelona-park-guell", "barcelona-sagrada", "barcelona-casa-batllo", "barcelona-tibidabo", "barcelona-montjuic", "tahoe", "tahoe-heavenly", "tahoe-northstar", "hawaii", "hawaii-honolulu", "chengdu", "longyan", "beijing", "beijing-great-wall", "beijing-forbidden-city", "beijing-summer-palace", "beijing-temple-of-heaven", "shanghai", "travel-flight", "travel-packing", "travel-passport", "travel-hotel", "travel-jetlag"])
     }
 
     func testParisHasNineThemedBooks() throws {
@@ -24,7 +24,7 @@ final class ContentTests: XCTestCase {
 
     func testShelvesGroupBooksByCityInOrder() throws {
         let shelves = BookLibrary.shelves(try books())
-        XCTAssertEqual(shelves.map(\.city), ["Paris", "London", "Barcelona", "Lake Tahoe", "Hawaii", "Chengdu", "Longyan", "Travel"])
+        XCTAssertEqual(shelves.map(\.city), ["Paris", "London", "Barcelona", "Lake Tahoe", "Hawaii", "Chengdu", "Longyan", "Beijing", "Shanghai", "Travel"])
         XCTAssertEqual(shelves[0].books.map(\.id), ["paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "paris-french"])
         XCTAssertEqual(shelves[1].books.map(\.id), ["london", "london-big-ben"])
         XCTAssertEqual(shelves[1].books.map(\.coverTitle), ["London", "Big Ben"])
@@ -37,8 +37,12 @@ final class ContentTests: XCTestCase {
         XCTAssertEqual(shelves[5].books.map(\.id), ["chengdu"])
         XCTAssertEqual(shelves[6].books.map(\.id), ["longyan"])
         XCTAssertEqual(shelves[6].books.map(\.coverTitle), ["Longyan"])
-        XCTAssertEqual(shelves[7].books.map(\.coverTitle), ["Take a Flight", "Pack Your Bag", "Passport", "Hotel Stay", "Jet Lag"])
-        XCTAssertTrue(shelves[7].isTravel)
+        XCTAssertEqual(shelves[7].books.map(\.id), ["beijing", "beijing-great-wall", "beijing-forbidden-city", "beijing-summer-palace", "beijing-temple-of-heaven"])
+        XCTAssertEqual(shelves[7].books.map(\.coverTitle), ["Beijing", "Great Wall", "Forbidden City", "Summer Palace", "Temple of Heaven"])
+        XCTAssertEqual(shelves[8].books.map(\.id), ["shanghai"])
+        XCTAssertEqual(shelves[8].books.map(\.coverTitle), ["Shanghai"])
+        XCTAssertEqual(shelves[9].books.map(\.coverTitle), ["Take a Flight", "Pack Your Bag", "Passport", "Hotel Stay", "Jet Lag"])
+        XCTAssertTrue(shelves[9].isTravel)
         XCTAssertEqual(shelves.filter(\.isTravel).map(\.city), ["Travel"])
     }
 
@@ -51,7 +55,7 @@ final class ContentTests: XCTestCase {
         let reordered = [shelves[1], shelves[0], shelves[2]]
         XCTAssertEqual(cities(BookLibrary.rows(reordered, columns: 3)), [["London"], ["Paris"], ["Barcelona"]])
         let all = BookLibrary.shelves(try books())
-        XCTAssertEqual(cities(BookLibrary.rows(all, columns: 3)), [["Paris"], ["London"], ["Barcelona"], ["Lake Tahoe"], ["Hawaii"], ["Chengdu", "Longyan"], ["Travel"]])
+        XCTAssertEqual(cities(BookLibrary.rows(all, columns: 3)), [["Paris"], ["London"], ["Barcelona"], ["Lake Tahoe"], ["Hawaii"], ["Chengdu", "Longyan"], ["Beijing"], ["Shanghai"], ["Travel"]])
     }
 
     func testEachBookHasTenToFourteenUniquePages() throws {

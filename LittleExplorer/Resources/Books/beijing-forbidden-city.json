@@ -1,0 +1,223 @@
+{
+  "id": "beijing-forbidden-city",
+  "city": "Beijing",
+  "country": "China",
+  "flagImage": "chengdu-flag.png",
+  "flag": "🇨🇳",
+  "theme": "Forbidden City",
+  "coverColor": "#B8860B",
+  "tagline": "Golden roofs, roof dragons and palace cats",
+  "narration": {
+    "instructions": "This book is about the Forbidden City in Beijing, China. Say every Chinese name the way a Mandarin speaker says it, warmly and naturally, as one smooth word, never spelled out or anglicized: Ni hao (nee how), Beijing (bay-JING), Zaijian (dzai-JYEN). A short hint like bay-JING is how to sound out the word."
+  },
+  "pages": [
+    {
+      "id": "welcome",
+      "text": "Ni hao! This giant red gate leads into the Forbidden City.",
+      "about": "Ni hao (nee how) means hello! The Forbidden City is the old palace of China's emperors, right in the middle of Beijing (bay-JING). It was built about 600 years ago, between 1406 and 1420, and 24 emperors lived here. This huge gate is the Meridian Gate, the main way in from the south. Today the palace is a museum called the Palace Museum. Ask Francis: What would you do if you were the emperor for a day?",
+      "emoji": "🏯",
+      "photo": {
+        "commonsTitle": "File:Flickr - archer10 (Dennis) - China-6139.jpg",
+        "query": "Meridian Gate Forbidden City",
+        "file": "beijing-forbidden-city-welcome.jpg",
+        "author": "Dennis G. Jarvis",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Flickr_-_archer10_(Dennis)_-_China-6139.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "forbidden",
+      "text": "It was forbidden because ordinary people were not allowed inside.",
+      "about": "Forbidden means not allowed. For about 500 years, only the emperor, his family, his helpers and invited officials could go inside. Everyone else had to stay out! A wide moat full of water and a tall red wall go all the way around. At each corner of the wall stands a fancy corner tower with lots of little roofs. Today anyone can buy a ticket and walk right in. Ask Francis: How many roofs can you count on the corner tower?",
+      "emoji": "🚫",
+      "photo": {
+        "commonsTitle": "File:Forbidden City northwest corner tower and moat.jpg",
+        "query": "Forbidden City corner tower moat",
+        "file": "beijing-forbidden-city-forbidden.jpg",
+        "author": "Daniel Case",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Forbidden_City_northwest_corner_tower_and_moat.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "rooms",
+      "text": "Legend says the palace has nine thousand nine hundred ninety-nine rooms.",
+      "about": "There is a famous story that the palace has 9,999 and a half rooms, because only heaven could have 10,000. When people actually counted, they found about 8,700 rooms. That is still a lot! It would take you more than 20 years to sleep in a different room every night. This view is from Jingshan, a hill just behind the palace. Ask Francis: How many rooms are in your home? How long would it take to visit 8,700 rooms?",
+      "emoji": "🚪",
+      "photo": {
+        "commonsTitle": "File:Forbidden City Panorama 1.jpg",
+        "query": "Forbidden City panorama from Jingshan",
+        "file": "beijing-forbidden-city-rooms.jpg",
+        "author": "Tojan76",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Forbidden_City_Panorama_1.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "yellow-roofs",
+      "text": "The roofs are golden yellow, the emperor's very own color.",
+      "about": "Look at all those shiny yellow roof tiles! Long ago in China, bright yellow was the emperor's special color, and most of the important buildings in the palace have yellow-glazed tiles. The walls and pillars are painted red, a lucky color. The roof edges curve up at the corners. Ask Francis: If you could pick a special color that only you could use, which would it be?",
+      "emoji": "💛",
+      "photo": {
+        "commonsTitle": "File:The Forbidden City - Beijing 14 (4934762203).jpg",
+        "query": "Hall of Supreme Harmony yellow roof",
+        "file": "beijing-forbidden-city-yellow-roofs.jpg",
+        "author": "Ronnie Macdonald from Chelmsford, United Kingdom",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:The_Forbidden_City_-_Beijing_14_(4934762203).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "roof-animals",
+      "text": "Little animals march along the roof corners to guard the hall.",
+      "about": "At the corner of many roofs sits a row of tiny statues. First comes a man riding a bird, and behind him walk magical animals like a dragon, a phoenix, a lion, a sea horse and more. The more animals, the more important the building. The Hall of Supreme Harmony is the only building in China with ten of them! People say they protect the building from fire and bad luck. Ask Francis: Can you count the little animals on this roof?",
+      "emoji": "🐲",
+      "photo": {
+        "commonsTitle": "File:屋顶的角兽.JPG",
+        "query": "Forbidden City roof animals",
+        "file": "beijing-forbidden-city-roof-animals.jpg",
+        "author": "Mummyyx",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:%E5%B1%8B%E9%A1%B6%E7%9A%84%E8%A7%92%E5%85%BD.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "lions",
+      "text": "Bronze lions guard the gates, and this mother lion has a cub.",
+      "about": "Lions guard the doors of many Chinese buildings, and they usually come in pairs. The male lion rests his paw on a ball, which stands for the whole world. The female lion, like this one, rests her paw on a playful baby lion, which stands for family. These lions are made of bronze, a heavy metal. Ask Francis: Can you find the baby lion under the mother's paw?",
+      "emoji": "🦁",
+      "photo": {
+        "commonsTitle": "File:Female lion sculpture, Forbidden City.JPG",
+        "query": "Forbidden City female bronze lion cub",
+        "file": "beijing-forbidden-city-lions.jpg",
+        "author": "BrokenSphere",
+        "license": "CC BY 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Female_lion_sculpture,_Forbidden_City.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "hall",
+      "text": "The Hall of Supreme Harmony is the biggest hall in the palace.",
+      "about": "This is the most important building in the Forbidden City. Emperors held big ceremonies here, like being crowned, getting married and celebrating New Year and birthdays. It sits on top of three white marble terraces, so it looks extra tall and grand. Thousands of officials once lined up in the huge square in front. Ask Francis: What kind of party would you have in a hall this big?",
+      "emoji": "🏛️",
+      "photo": {
+        "commonsTitle": "File:Beijing-forbidden4.jpg",
+        "query": "Hall of Supreme Harmony",
+        "file": "beijing-forbidden-city-hall.jpg",
+        "author": "Saad Akhtar from New Delhi, India",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Beijing-forbidden4.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "throne",
+      "text": "Inside sits the emperor's shiny golden dragon throne.",
+      "about": "The emperor's throne is covered in gold and decorated with dragons, because the dragon was a symbol of the emperor. There are said to be thousands of dragons painted and carved all over this hall. Above the throne, on the ceiling, a big carved dragon holds a shiny ball in its mouth. Ask Francis: How many dragons can you spot in this picture?",
+      "emoji": "👑",
+      "photo": {
+        "commonsTitle": "File:太和殿皇帝寶座.JPG",
+        "query": "Hall of Supreme Harmony throne",
+        "file": "beijing-forbidden-city-throne.jpg",
+        "author": "秋水平湖",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:%E5%A4%AA%E5%92%8C%E6%AE%BF%E7%9A%87%E5%B8%9D%E5%AF%B6%E5%BA%A7.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "nine-dragon",
+      "text": "The Nine Dragon Wall shows dragons playing among waves and clouds.",
+      "about": "This long wall is made of shiny colored tiles and shows nine big dragons twisting through the sea and the clouds, each chasing a pearl. Nine was a lucky number linked to the emperor. A favorite story says one tile was broken by a worker, who secretly made a wooden copy and painted it to hide the mistake! Ask Francis: How many dragons can you count? What colors are they?",
+      "emoji": "🐉",
+      "photo": {
+        "commonsTitle": "File:Neun-Drachen-Mauer.jpg",
+        "query": "Nine Dragon Wall Forbidden City",
+        "file": "beijing-forbidden-city-nine-dragon.jpg",
+        "author": "Seebeer",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Neun-Drachen-Mauer.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "vats",
+      "text": "Big metal pots held water in case of a fire.",
+      "about": "The buildings are made of wood, so fire was a big danger. Hundreds of large metal vats were placed around the palace and kept full of water, ready to put out flames. In winter, workers put covers on the vats and lit little fires underneath so the water would not freeze! Ask Francis: What do we use today to put out fires?",
+      "emoji": "🧯",
+      "photo": {
+        "commonsTitle": "File:Forbidden City, fire cauldron A.JPG",
+        "query": "Forbidden City fire vat cauldron",
+        "file": "beijing-forbidden-city-vats.jpg",
+        "author": "Gaius Cornelius",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Forbidden_City,_fire_cauldron_A.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "cats",
+      "text": "Friendly palace cats live here and help keep away the mice.",
+      "about": "Lots of cats live in the Forbidden City, maybe around 200 of them. Some people say they might be related to the cats kept by palace families long ago, but nobody knows for sure. Today museum staff feed them and care for them, and the cats help keep away mice that could chew on old treasures. Visitors love spotting them napping on walls and steps. Ask Francis: What name would you give a palace cat?",
+      "emoji": "🐈",
+      "photo": {
+        "commonsTitle": "File:Forbidden City - Guardian Cat (26379595035).jpg",
+        "query": "Forbidden City cat",
+        "file": "beijing-forbidden-city-cats.jpg",
+        "author": "Dyroc",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Forbidden_City_-_Guardian_Cat_(26379595035).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "garden",
+      "text": "The Imperial Garden has old trees and rocky hills to climb.",
+      "about": "At the back of the palace is the Imperial Garden, where the emperor's family went to relax. It has twisty old trees, little pavilions and a tall pile of rocks called the Hill of Accumulated Elegance, with a small pavilion on top. On a special autumn festival the emperor climbed it to look out over the city. Ask Francis: What would you build in your own secret garden?",
+      "emoji": "🌳",
+      "photo": {
+        "commonsTitle": "File:China-beijing-forbidden-city-P1000235.jpg",
+        "query": "Imperial Garden rockery Forbidden City",
+        "file": "beijing-forbidden-city-garden.jpg",
+        "author": "Adamantios",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:China-beijing-forbidden-city-P1000235.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "goodbye",
+      "text": "Zaijian, Beijing! Wave bye to the emperor's golden palace.",
+      "about": "Zaijian (dzai-JYEN) means goodbye, or see you again! From Jingshan hill you can see the whole Forbidden City spread out like a sea of golden roofs. It is one of the biggest palaces in the world, and millions of people visit it every year. Ask Francis: What was your favorite part: the roof animals, the lions, the throne or the palace cats?",
+      "emoji": "👋",
+      "photo": {
+        "commonsTitle": "File:20090528 Beijing Forbidden City 8074.jpg",
+        "query": "Forbidden City from Jingshan",
+        "file": "beijing-forbidden-city-goodbye.jpg",
+        "author": "Jakub Hałun",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:20090528_Beijing_Forbidden_City_8074.jpg",
+        "verified": true
+      }
+    }
+  ]
+}

@@ -3,7 +3,7 @@ from little_explorer_agent.content import load_books, lookup
 
 def test_loads_all_books_from_app_resources():
     books = load_books()
-    assert {"paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "paris-french", "london", "london-big-ben", "barcelona", "barcelona-park-guell", "barcelona-sagrada", "barcelona-casa-batllo", "barcelona-tibidabo", "barcelona-montjuic", "tahoe", "tahoe-heavenly", "tahoe-northstar", "hawaii", "hawaii-honolulu", "chengdu", "longyan", "travel-flight", "travel-packing", "travel-passport", "travel-hotel", "travel-jetlag"} <= set(books)
+    assert {"paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "paris-french", "london", "london-big-ben", "barcelona", "barcelona-park-guell", "barcelona-sagrada", "barcelona-casa-batllo", "barcelona-tibidabo", "barcelona-montjuic", "tahoe", "tahoe-heavenly", "tahoe-northstar", "hawaii", "hawaii-honolulu", "chengdu", "longyan", "beijing", "beijing-great-wall", "beijing-forbidden-city", "beijing-summer-palace", "beijing-temple-of-heaven", "shanghai", "travel-flight", "travel-packing", "travel-passport", "travel-hotel", "travel-jetlag"} <= set(books)
     for book in books.values():
         assert 10 <= len(book.pages) <= 14
         for page in book.pages:
@@ -47,7 +47,7 @@ async def test_refresh_remote_swaps_in_server_books(monkeypatch):
         assert await content.refresh_remote(base, max_age=0) is False  # same version
         assert await content.refresh_remote(base) is False  # checked moments ago
     books = content.current_books()
-    assert set(books) == {"paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "paris-french", "london", "london-big-ben", "barcelona", "barcelona-park-guell", "barcelona-sagrada", "barcelona-casa-batllo", "barcelona-tibidabo", "barcelona-montjuic", "tahoe", "tahoe-heavenly", "tahoe-northstar", "hawaii", "hawaii-honolulu", "chengdu", "longyan", "travel-flight", "travel-packing", "travel-passport", "travel-hotel", "travel-jetlag"}
+    assert set(books) == {"paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "paris-french", "london", "london-big-ben", "barcelona", "barcelona-park-guell", "barcelona-sagrada", "barcelona-casa-batllo", "barcelona-tibidabo", "barcelona-montjuic", "tahoe", "tahoe-heavenly", "tahoe-northstar", "hawaii", "hawaii-honolulu", "chengdu", "longyan", "beijing", "beijing-great-wall", "beijing-forbidden-city", "beijing-summer-palace", "beijing-temple-of-heaven", "shanghai", "travel-flight", "travel-packing", "travel-passport", "travel-hotel", "travel-jetlag"}
     book, page = content.lookup({"book": "paris", "page": books["paris"].pages[1].id})
     assert page is books["paris"].pages[1]
 
@@ -239,6 +239,48 @@ def test_chengdu_and_longyan_are_new_china_destinations_with_fresh_photos():
     assert "tingle" in page.text and "not chili peppers" in page.about
     _, page = lookup({"book": "longyan", "page": "chengqi"})
     assert "four rings" in page.text and "1709" in page.about
+
+
+def test_beijing_and_shanghai_shelves_are_new_china_books_with_fresh_photos():
+    import json
+
+    from little_explorer_agent.buddy import page_note
+    from little_explorer_agent.content import content_dir
+
+    books = load_books()
+    new = {
+        "beijing": ("Beijing", ""),
+        "beijing-great-wall": ("Beijing", "Great Wall"),
+        "beijing-forbidden-city": ("Beijing", "Forbidden City"),
+        "beijing-summer-palace": ("Beijing", "Summer Palace"),
+        "beijing-temple-of-heaven": ("Beijing", "Temple of Heaven"),
+        "shanghai": ("Shanghai", ""),
+    }
+    raw = {p.stem: json.loads(p.read_text(encoding="utf-8")) for p in content_dir().glob("*.json")}
+    old_titles = {pg["photo"]["commonsTitle"] for bid, b in raw.items() if bid not in new for pg in b["pages"]}
+    seen: set[str] = set()
+    for bid, (city, theme) in new.items():
+        book = books[bid]
+        assert (book.city, book.country, book.theme) == (city, "China", theme)
+        assert book.pages[0].id == "welcome" and book.pages[-1].id == "goodbye"
+        assert book.pages[0].text.startswith("Ni hao!") and book.pages[-1].text.startswith(f"Zaijian, {city}!")
+        titles = {pg["photo"]["commonsTitle"] for pg in raw[bid]["pages"]}
+        assert not titles & old_titles and not titles & seen, f"{bid} reuses a photo"
+        seen |= titles
+        assert all(pg["photo"]["verified"] for pg in raw[bid]["pages"])
+        assert raw[bid]["flag"] == "🇨🇳" and raw[bid]["flagImage"] == "chengdu-flag.png"
+        assert city in raw[bid]["narration"]["instructions"]
+        for page in book.pages:
+            assert not any("\u4e00" <= ch <= "\u9fff" for ch in page.text), f"{bid}/{page.id} has Chinese characters"
+            assert "Ask Francis" in page.about
+        note = page_note({"book": bid, "page": book.pages[1].id, "city": city})
+        assert f"{city}, China" in note[1]
+    _, page = lookup({"book": "beijing-great-wall", "page": "space"})
+    assert "not with just eyes" in page.text and "Yang Liwei" in page.about
+    _, page = lookup({"book": "beijing-great-wall", "page": "dynasties"})
+    assert "Gansu" in page.about
+    _, page = lookup({"book": "shanghai", "page": "xiaolongbao"})
+    assert "soup" in page.text and "bite a tiny hole" in page.about
 
 
 def test_travel_books_are_a_general_shelf_not_a_city():

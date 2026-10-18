@@ -1,0 +1,239 @@
+{
+  "id": "beijing-great-wall",
+  "city": "Beijing",
+  "country": "China",
+  "flagImage": "chengdu-flag.png",
+  "flag": "🇨🇳",
+  "theme": "Great Wall",
+  "coverColor": "#7A6A53",
+  "tagline": "Watchtowers, smoke signals and a toboggan",
+  "narration": {
+    "instructions": "This book is about the Great Wall near Beijing in China. Say every Chinese name the way a Mandarin speaker says it, warmly and naturally, as one smooth word, never spelled out or anglicized: Ni hao (nee how), Beijing (bay-JING), Mutianyu (moo-tyen-YOO), Jinshanling (jin-shahn-LING), Badaling (bah-dah-LING), Zaijian (dzai-JYEN). A short hint like bay-JING is how to sound out the word."
+  },
+  "pages": [
+    {
+      "id": "welcome",
+      "text": "Ni hao! The Great Wall winds over the mountains near Beijing.",
+      "about": "Ni hao (nee how) means hello! The Great Wall of China is one of the most famous building projects on Earth. Several of the best-known parts are in the mountains a couple of hours' drive from Beijing (bay-JING). This photo is the top of the wall at Mutianyu (moo-tyen-YOO), where a walkway runs along the top so soldiers could march along it. Ask Francis: Why do you think people built a wall on top of mountains?",
+      "emoji": "🧱",
+      "photo": {
+        "commonsTitle": "File:Chemin de ronde muraille long.JPG",
+        "query": "Great Wall Mutianyu walkway",
+        "file": "beijing-great-wall-welcome.jpg",
+        "author": "Fabien Dany - www.fabiendany.com",
+        "license": "CC BY-SA 2.5",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Chemin_de_ronde_muraille_long.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "long",
+      "text": "It is so long that walking it all would take many months.",
+      "about": "The Great Wall is not one single wall, but many walls built in different places and joined over time. A big survey in 2012 measured all the parts together at about 21,000 kilometers. That is about half the way around the whole Earth! Walking all of it would take many months, and nobody can see all of it at once. This part is Jinshanling (jin-shahn-LING), a section near Beijing. Ask Francis: What is the longest walk you have ever done?",
+      "emoji": "📏",
+      "photo": {
+        "commonsTitle": "File:20090529 Great Wall 8159.jpg",
+        "query": "Great Wall Jinshanling long view",
+        "file": "beijing-great-wall-long.jpg",
+        "author": "Jakub Hałun",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:20090529_Great_Wall_8159.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "dynasties",
+      "text": "People built the wall bit by bit for over 2,000 years.",
+      "about": "Many different emperors and families of rulers, called dynasties, built and rebuilt the wall. The earliest walls were made of pressed earth, packed down hard in layers, like this very old Han dynasty wall. This one is not near Beijing: it is far to the west, in the desert near Dunhuang in Gansu province, and it is around 2,000 years old. The stone and brick parts near Beijing were mostly built much later, by the Ming dynasty. Ask Francis: Could you build a wall out of packed dirt?",
+      "emoji": "⏳",
+      "photo": {
+        "commonsTitle": "File:Great Wall of Han Dynasty.jpg",
+        "query": "Han dynasty Great Wall Dunhuang",
+        "file": "beijing-great-wall-dynasties.jpg",
+        "author": "慕尼黑啤酒",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Great_Wall_of_Han_Dynasty.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "battlements",
+      "text": "Soldiers peeked through these gaps to watch for enemies.",
+      "about": "The top edge of the wall has a bumpy pattern, with tall blocks and gaps in between, called battlements. Soldiers could hide behind the tall blocks and look or shoot arrows through the gaps. Some blocks also have small holes for peeking through. This view through a gap is at Badaling (bah-dah-LING), the most visited part of the wall. Ask Francis: Can you find the gap in the photo? What can you see through it?",
+      "emoji": "👀",
+      "photo": {
+        "commonsTitle": "File:Great Wall Badaling embrasure view.jpg",
+        "query": "Great Wall Badaling embrasure",
+        "file": "beijing-great-wall-battlements.jpg",
+        "author": "Dcrjsr",
+        "license": "CC BY 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Great_Wall_Badaling_embrasure_view.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "watchtower",
+      "text": "Watchtowers stand along the wall like guards on every hill.",
+      "about": "Every so often along the wall there is a watchtower, a square tower with windows. Soldiers lived and slept in them, stored food and weapons inside, and kept a lookout from the top. From one tower you can usually see the next one, so soldiers could send messages down the line. These towers are at Jinshanling. Ask Francis: How many watchtowers can you count in the picture?",
+      "emoji": "🗼",
+      "photo": {
+        "commonsTitle": "File:20090529 Great Wall Jinshanling 0839 8207.jpg",
+        "query": "Jinshanling watchtower",
+        "file": "beijing-great-wall-watchtower.jpg",
+        "author": "Jakub Hałun",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:20090529_Great_Wall_Jinshanling_0839_8207.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "beacon",
+      "text": "Guards sent smoke signals by day and fire signals at night.",
+      "about": "Beacon towers were used like an old-time telephone. If guards spotted enemies, they lit a fire on top. In the daytime people could see the smoke, and at night they could see the flames, so the next tower lit its fire too, and the message raced along the wall. Some stories say they burned wolf dung to make the smoke thick, but historians are not sure that is true! This earth beacon tower is far from Beijing, in Ningxia in northwest China. Ask Francis: How would you send a secret message to a friend far away?",
+      "emoji": "🔥",
+      "photo": {
+        "commonsTitle": "File:Great Wall Beacon Tower - panoramio.jpg",
+        "query": "Great Wall beacon tower Ningxia",
+        "file": "beijing-great-wall-beacon.jpg",
+        "author": "danmairen",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Great_Wall_Beacon_Tower_-_panoramio.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "bricks",
+      "text": "Builders stuck some bricks together with mortar made with sticky rice.",
+      "about": "The Ming dynasty walls near Beijing are made of big gray bricks and stone blocks. Scientists have found that some old Chinese builders mixed sticky rice soup into the lime mortar, the glue between the bricks, which helped make it extra strong. Millions of bricks were carried up steep mountains by workers, and sometimes by donkeys and goats. Ask Francis: Have you ever eaten sticky rice? Would you use it as glue?",
+      "emoji": "🍚",
+      "photo": {
+        "commonsTitle": "File:A close-up view of the Great Wall of China.jpg",
+        "query": "Great Wall bricks close up",
+        "file": "beijing-great-wall-bricks.jpg",
+        "author": "Severin.stalder",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:A_close-up_view_of_the_Great_Wall_of_China.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "mutianyu-lift",
+      "text": "At Mutianyu, a cable car carries you up the mountain.",
+      "about": "At Mutianyu you do not have to climb all the way up. You can ride a cable car or a chairlift that swings up the green mountainside to the wall. From the little cabin you can see the wall snaking along the ridge above you. In autumn the trees turn red and gold. Ask Francis: Would you ride the cable car or climb the stairs?",
+      "emoji": "🚡",
+      "photo": {
+        "commonsTitle": "File:Mutianyu Cable Car (20190915122641).jpg",
+        "query": "Mutianyu cable car",
+        "file": "beijing-great-wall-mutianyu-lift.jpg",
+        "author": "N509FZ",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Mutianyu_Cable_Car_(20190915122641).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "toboggan",
+      "text": "Then you can zoom back down on a twisty toboggan slide!",
+      "about": "Mutianyu has a toboggan ride, a long metal track that curves down the mountain. You sit on a little sled with a brake handle: push to go faster, pull back to slow down. There are staff along the way who remind riders not to go too fast. It is one of the most fun ways to leave the Great Wall! Ask Francis: Would you go fast or slow on the toboggan?",
+      "emoji": "🛷",
+      "photo": {
+        "commonsTitle": "File:Toboggan ride at Mutianyu section of Great Wall of China.jpg",
+        "query": "Mutianyu toboggan",
+        "file": "beijing-great-wall-toboggan.jpg",
+        "author": "David Berkowitz",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Toboggan_ride_at_Mutianyu_section_of_Great_Wall_of_China.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "steep",
+      "text": "Some steps are so steep that you climb with your hands too.",
+      "about": "The wall follows the tops of the mountains, so it goes up and down like a roller coaster. Some stairs are very steep, and the steps can be tall, short or uneven, so people hold on to the side and take little breaks. There is a saying in China that you are not a true hero until you have climbed the Great Wall. These steep steps are at Jinshanling. Ask Francis: How many steps do you think you could climb before you need a rest?",
+      "emoji": "🧗",
+      "photo": {
+        "commonsTitle": "File:20090529 Great Wall 8248.jpg",
+        "query": "Great Wall steep steps Jinshanling",
+        "file": "beijing-great-wall-steep.jpg",
+        "author": "Jakub Hałun",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:20090529_Great_Wall_8248.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "space",
+      "text": "Can you see it from space? Astronauts say not with just eyes.",
+      "about": "Many people once said the Great Wall is the only human-made thing you can see from space. It is very long, but it is quite narrow and almost the same color as the land around it. China's first astronaut, Yang Liwei, said he could not see it. Astronaut Alexander Gerst took this photo from the International Space Station in 2018, but he needed a camera with a huge zoom lens. Ask Francis: Why is something long but thin hard to see from far away?",
+      "emoji": "🚀",
+      "photo": {
+        "commonsTitle": "File:Great Wall 1.jpg",
+        "query": "Great Wall from ISS Alexander Gerst",
+        "file": "beijing-great-wall-space.jpg",
+        "author": "Alexander Gerst",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Great_Wall_1.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "snow",
+      "text": "In winter, snow can cover the wall like powdered sugar.",
+      "about": "Winters near Beijing are cold and dry, and sometimes a little snow falls on the wall. The steps get slippery, so visitors walk carefully, but the white snow on the gray stones and brown hills looks magical. This is Badaling on a snowy November day. Ask Francis: Would you rather visit the Great Wall in hot summer or snowy winter?",
+      "emoji": "❄️",
+      "photo": {
+        "commonsTitle": "File:Touring the Badaling section of the Great Wall of China on November 18, 2009.jpg",
+        "query": "Badaling Great Wall snow",
+        "file": "beijing-great-wall-snow.jpg",
+        "author": "Pete Souza",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Touring_the_Badaling_section_of_the_Great_Wall_of_China_on_November_18,_2009.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "dragon-head",
+      "text": "At Old Dragon Head, the wall walks right into the sea!",
+      "about": "In the east, the Great Wall reaches all the way to the sea at a place called Old Dragon Head, near the town of Shanhaiguan, a few hours from Beijing. People said the wall looked like a giant dragon dipping its head into the water to drink. It is one of the few places where you can see the wall and the ocean together. Ask Francis: If the wall is a dragon, where do you think its tail is?",
+      "emoji": "🐉",
+      "photo": {
+        "commonsTitle": "File:ShanhaiguanGreatWall-end.jpg",
+        "query": "Old Dragon Head Shanhaiguan",
+        "file": "beijing-great-wall-dragon-head.jpg",
+        "author": "fuzheado",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:ShanhaiguanGreatWall-end.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "goodbye",
+      "text": "Zaijian, Beijing! Wave bye to the wall and its watchtowers.",
+      "about": "Zaijian (dzai-JYEN) means goodbye, or see you again! The Great Wall was built by many, many people over a very long time, and today millions of visitors from all over the world come to walk on it. Ask Francis: What was your favorite part: the toboggan, the smoke signals, the watchtowers or the dragon in the sea? What would you pack for a day on the Great Wall?",
+      "emoji": "👋",
+      "photo": {
+        "commonsTitle": "File:20090529 Great Wall 8185.jpg",
+        "query": "Great Wall Jinshanling towers",
+        "file": "beijing-great-wall-goodbye.jpg",
+        "author": "Jakub Hałun",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:20090529_Great_Wall_8185.jpg",
+        "verified": true
+      }
+    }
+  ]
+}
