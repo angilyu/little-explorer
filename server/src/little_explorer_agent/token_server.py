@@ -191,7 +191,7 @@ async def handle_star_report(request: web.Request) -> web.Response:
         new = await asyncio.to_thread(request.app[STORE].record_star, body)
     except ValueError as exc:
         return web.json_response({"error": str(exc)}, status=400)
-    log.info("star: device %s, +%s on %s", body.get("device_id"), body.get("stars"), body.get("book"))
+    log.info("star: device %s on %s (%s)", body.get("device_id"), body.get("book"), "new" if new else "not stored")
     return web.json_response({"ok": True, "new": new})
 
 

@@ -93,7 +93,8 @@ SCHEMA = (
 
 STAR_ID = re.compile(r"^[A-Za-z0-9-]{8,64}$")
 STAR_KINDS = ("question", "follow_up")
-MAX_STARS_PER_AWARD = 3
+# One star per page per session (see stars.py); older awards keep what they were given.
+STARS_PER_AWARD = 1
 _STAR_COLUMNS = "id, device_id, awarded_at, book, page, city, kind, long, why_how, followup, stars, words, reason"
 
 REST_MESSAGE = "Milo needs a rest today. Let's talk again tomorrow!"
@@ -380,13 +381,17 @@ class DeviceStore:
     # -- stars -----------------------------------------------------------------------------------
 
     def record_star(self, award: Mapping[str, Any]) -> bool:
-        """Store one star award from the agent; True if it was new (the id makes retries safe)."""
+        """Store one star award from the agent; True if it was new (the id makes retries safe).
+
+        Any award counts as one star, and a page that already has a star in this session (same
+        device, room, book and page) gets no second one, whatever build of the agent sent it."""
         star_id, device_id = award.get("id"), award.get("device_id") or ANONYMOUS
         if not isinstance(star_id, str) or not STAR_ID.match(star_id) or not valid_device_id(device_id):
             raise ValueError("a valid id and device_id are required")
         stars = award.get("stars")
-        if isinstance(stars, bool) or not isinstance(stars, int) or not 1 <= stars <= MAX_STARS_PER_AWARD:
-            raise ValueError("stars must be 1 to 3")
+        if isinstance(stars, bool) or not isinstance(stars, int) or stars < 1:
+            raise ValueError("stars must be a positive whole number")
+        stars = STARS_PER_AWARD
         kind = award.get("kind") if award.get("kind") in STAR_KINDS else "question"
         awarded = str(award.get("awarded_at") or self.now().isoformat(timespec="seconds"))[:40]
         values = (
@@ -407,7 +412,17 @@ class DeviceStore:
             _text(award.get("reason")),
         )
 
+        room, book, page = values[2], values[5], values[6]
+
         def run(cur: Any) -> bool:
+            if book and page:
+                taken = self._exec(
+                    cur,
+                    "SELECT 1 FROM stars WHERE device_id = ? AND room = ? AND book = ? AND page = ? AND id <> ? LIMIT 1",
+                    (device_id, room, book, page, star_id),
+                ).fetchone()
+                if taken:
+                    return False
             self._exec(
                 cur,
                 """INSERT INTO stars (id, device_id, room, awarded_at, day, book, page, city, kind, long, why_how,

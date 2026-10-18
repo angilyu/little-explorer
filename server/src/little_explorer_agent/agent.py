@@ -52,6 +52,7 @@ from .speech import speech_setup  # noqa: E402
 from .stars import STAR_TOPIC, StarAward, StarKeeper, StarRules, report_star, star_payload  # noqa: E402
 from .usage import UsageMeter, report_usage  # noqa: E402
 from .voice import ContextStore, TurnDecision, UserTurn, VoicePreset, preset_from_env  # noqa: E402
+from .voice.turns import is_noise  # noqa: E402
 from .voice.realtime import RealtimeConfig, start_realtime_session  # noqa: E402
 from .voice.session import attach_room_context, start_graph_session  # noqa: E402
 from .voice.timing import TurnTimer  # noqa: E402
@@ -60,6 +61,8 @@ log = logging.getLogger("little_explorer.agent")
 
 ENDED_ATTRIBUTE = "milo.ended"
 DEFAULT_IDLE_TIMEOUT_S = 20.0
+# How long a job waits for the app to join before it gives up (a cold start takes ~5 s).
+PARTICIPANT_WAIT_S = 20.0
 LIMIT_GOODBYE = "I'm getting sleepy, so it's time for me to rest. Let's explore more tomorrow. Bye-bye!"
 
 
@@ -212,7 +215,7 @@ class StarGame:
         """The pipeline answers every turn its gate lets through, so the star is judged at once."""
         self.on_decision(turn, decision)
         if self.enabled and decision is TurnDecision.RESPOND:
-            self._settle(self.keeper.judge(self.keeper.kind_for_next()))
+            self._settle(self.keeper.judge())
 
     def realtime_decision(self, turn: UserTurn, decision: TurnDecision) -> None:
         """The realtime model answers on its own, so wait (off the voice path) until it does."""
@@ -239,7 +242,7 @@ class StarGame:
                 continue
         if self.keeper.latest() is not heard:
             return  # he asked again before Milo answered; the newer turn is the one to judge
-        self._settle(self.keeper.judge(self.keeper.kind_for_next()))
+        self._settle(self.keeper.judge())
 
     def _settle(self, result: StarAward | str) -> None:
         if isinstance(result, StarAward):
@@ -315,8 +318,6 @@ def realtime_config(env: Mapping[str, str] | None = None) -> RealtimeConfig:
 
 
 ANSWER_MAX_WORDS = 12
-
-
 def _milo_just_asked(turn: UserTurn) -> bool:
     last = turn.history[-1] if turn.history else None
     return last is not None and last[0] == "assistant" and last[1].rstrip().endswith("?")
@@ -327,10 +328,13 @@ def make_realtime_guard(tracker: ReadingTracker, topic_gate: TopicGate | None) -
 
     Very short turns ("yes", "the boat!") are left to the model; they are usually answers to Milo.
     So is a short reply right after Milo asked something: the topic check often mistook his answers
-    to Milo's own question for chatter and cut Milo off.
+    to Milo's own question for chatter and cut Milo off. A transcript with no English letters is a
+    noise and is ignored.
     """
 
     async def guard(turn: UserTurn) -> TurnDecision:
+        if is_noise(turn.text):
+            return TurnDecision.IGNORE
         reading = tracker.check(turn)
         if reading is not None:
             return reading
@@ -347,7 +351,7 @@ def make_realtime_guard(tracker: ReadingTracker, topic_gate: TopicGate | None) -
     return guard
 
 
-async def _pipeline(ctx: JobContext, game: StarGame) -> AgentSession:
+async def _pipeline(ctx: JobContext, game: StarGame, timer: TurnTimer) -> AgentSession:
     tracker = ReadingTracker()
     preset, speech = speech_setup(agent_preset())
     return await start_graph_session(
@@ -365,8 +369,11 @@ async def _pipeline(ctx: JobContext, game: StarGame) -> AgentSession:
     )
 
 
-async def _realtime(ctx: JobContext, game: StarGame) -> AgentSession:
+async def _realtime(ctx: JobContext, game: StarGame, timer: TurnTimer) -> AgentSession:
     store = ContextStore()
+    config = realtime_config()
+    if config.turns == "server" and config.barge_in == "vad":
+        timer.lead_s = config.min_interruption_duration
 
     def instructions(context: Mapping[str, Any]) -> str:
         stars = game.keeper.status_line(context) if game.enabled else None
@@ -374,7 +381,7 @@ async def _realtime(ctx: JobContext, game: StarGame) -> AgentSession:
 
     session = await start_realtime_session(
         ctx,
-        config=realtime_config(),
+        config=config,
         preset=agent_preset(),
         instructions=instructions,
         tools=[stay_quiet],
@@ -382,6 +389,7 @@ async def _realtime(ctx: JobContext, game: StarGame) -> AgentSession:
         on_decision=game.realtime_decision,
         greeting=GREETING,
         context_store=store,
+        on_interrupt=timer.note_interrupt,
     )
 
     def refresh() -> None:
@@ -405,6 +413,18 @@ def remaining_seconds(meta: Mapping[str, object]) -> float | None:
     return float(value)
 
 
+async def participant_joined(ctx: Any, timeout: float = PARTICIPANT_WAIT_S) -> bool:
+    """Wait for the child's app to be in the room. A tap that was cancelled while the agent was
+    still starting leaves an empty room; greeting it would only burn the device's minutes."""
+    await ctx.connect()
+    try:
+        await asyncio.wait_for(ctx.wait_for_participant(), timeout)
+    except asyncio.TimeoutError:
+        log.info("nobody joined within %.0fs; ending without a greeting", timeout)
+        return False
+    return True
+
+
 async def entrypoint(ctx: JobContext) -> None:
     mode = resolve_mode(ctx.job.metadata)
     meta = parse_job_metadata(ctx.job.metadata)
@@ -426,10 +446,15 @@ async def entrypoint(ctx: JobContext) -> None:
         enabled=os.environ.get("PIP_STARS", "1").strip() != "0",
     )
     ctx.add_shutdown_callback(game.drain)
-    session = await (_realtime if mode == "realtime" else _pipeline)(ctx, game)
+    if not await participant_joined(ctx):
+        meter.ended_reason = "nobody joined"
+        ctx.shutdown(reason="nobody joined")
+        return
+    timer = TurnTimer()
+    session = await (_realtime if mode == "realtime" else _pipeline)(ctx, game, timer)
     game.watch(session)
     meter.bind(session)
-    timer = TurnTimer().attach(session)
+    timer.attach(session)
     ctx.add_shutdown_callback(timer.log_summary)
 
     def note_reason(reason: str) -> None:

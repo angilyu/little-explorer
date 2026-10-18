@@ -29,11 +29,17 @@ final class VoiceModeController {
     @ObservationIgnored private let makeTransport: @MainActor () -> VoiceTransport
     @ObservationIgnored private var transport: VoiceTransport?
     @ObservationIgnored private var generation = 0
+    @ObservationIgnored private let now: () -> Date
+    @ObservationIgnored private var turnedOnAt: Date?
+    /// A second tap this soon after "Talk to Milo" is a double tap, not "Stop talking". Turning off
+    /// and on again while Milo was still waking up left an empty room for him to talk to.
+    nonisolated static let doubleTapWindow: TimeInterval = 1.0
     /// Called with every star Milo gives (the app saves it in ``StarStore``).
     @ObservationIgnored var onStar: ((StarAward) -> Void)?
 
-    init(makeTransport: @escaping @MainActor () -> VoiceTransport) {
+    init(makeTransport: @escaping @MainActor () -> VoiceTransport, now: @escaping () -> Date = Date.init) {
         self.makeTransport = makeTransport
+        self.now = now
     }
 
     var isEnabled: Bool { state != .off }
@@ -58,7 +64,12 @@ final class VoiceModeController {
     }
 
     func toggle() async {
-        if isEnabled { await turnOff() } else { await turnOn() }
+        guard isEnabled else { return await turnOn() }
+        if state == .connecting || state == .waitingForBuddy, let turnedOnAt,
+           now().timeIntervalSince(turnedOnAt) < Self.doubleTapWindow {
+            return
+        }
+        await turnOff()
     }
 
     func turnOn() async {
@@ -66,6 +77,7 @@ final class VoiceModeController {
         notice = nil
         generation += 1
         let gen = generation
+        turnedOnAt = now()
         state = .connecting
         let transport = makeTransport()
         self.transport = transport

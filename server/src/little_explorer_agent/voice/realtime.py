@@ -19,7 +19,9 @@ Turn-taking (``RealtimeConfig.turns``):
 
 Topic discipline comes from the instructions. An optional ``guard`` (a :data:`TurnGate`) runs on
 each finished transcript *after* the model has started answering; if it says LISTEN or IGNORE the
-reply is cut off. It never delays a reply.
+reply is cut off. It never delays a reply. A final transcript that repeats the last one (the same
+item, or the same words within ``DUPLICATE_WINDOW_S``) is skipped: the transcriber sometimes
+repeats the previous turn for a short noise or Milo's own echo, and that is not a new turn.
 """
 
 from __future__ import annotations
@@ -37,7 +39,7 @@ from livekit.agents import Agent, AgentSession, JobContext
 from .context import ContextStore
 from .preset import VoicePreset
 from .session import DecisionCallback, _room_options, attach_room_context
-from .turns import TurnDecision, TurnGate, UserTurn, decide
+from .turns import TurnDecision, TurnGate, UserTurn, _words, decide, is_noise
 
 log = logging.getLogger("little_explorer.voice.realtime")
 
@@ -51,6 +53,10 @@ InstructionsBuilder = Callable[[Mapping[str, Any]], str]
 # A reply that starts this long after a guarded transcript still belongs to that turn.
 GUARD_WINDOW_S = 4.0
 MAX_GUARD_HISTORY = 8
+# The same words again this soon are a transcription echo, not a new question.
+DUPLICATE_WINDOW_S = 4.0
+# After a barge-in, a short sound this soon is never cut: Milo may finish what he was saying.
+RESUME_WINDOW_S = 6.0
 
 
 @dataclass(frozen=True)
@@ -167,7 +173,8 @@ class ReplyGuard:
     """Cuts off a reply to a turn the ``gate`` rejects. Pure bookkeeping, testable without LiveKit.
 
     ``check`` runs the gate on a final transcript; ``should_cut`` says whether a reply that is
-    speaking (or starts) now belongs to a rejected turn.
+    speaking (or starts) now belongs to a rejected turn. After :meth:`cut_off` (a barge-in), a
+    short IGNORE turn is let through for ``RESUME_WINDOW_S`` so Milo can finish his answer.
     """
 
     def __init__(self, gate: TurnGate, *, window: float = GUARD_WINDOW_S, clock: Callable[[], float] = time.monotonic) -> None:
@@ -176,10 +183,37 @@ class ReplyGuard:
         self.clock = clock
         self.history: list[tuple[str, str]] = []
         self._reject_until = 0.0
+        self._seen_items: list[str] = []
+        self._last_text = ""
+        self._last_at = float("-inf")
+        self._cut_off_at = float("-inf")
+
+    def cut_off(self) -> None:
+        self._cut_off_at = self.clock()
+
+    def is_repeat(self, text: str, item_id: str | None = None) -> bool:
+        """True for a final transcript already seen: the same item, or the same words as the last
+        transcript within ``DUPLICATE_WINDOW_S``. Otherwise remembers it and returns False."""
+        now = self.clock()
+        words = " ".join(_words(text))
+        if (item_id and item_id in self._seen_items) or (
+            words and words == self._last_text and now - self._last_at <= DUPLICATE_WINDOW_S
+        ):
+            return True
+        if item_id:
+            self._seen_items.append(item_id)
+            del self._seen_items[:-MAX_GUARD_HISTORY]
+        self._last_text, self._last_at = words, now
+        return False
 
     async def check(self, text: str, context: Mapping[str, Any]) -> tuple[UserTurn, TurnDecision]:
         turn = UserTurn(text=text, context=dict(context), history=tuple(self.history))
         decision = await decide(self.gate, turn)
+        resuming = (
+            self.clock() - self._cut_off_at <= RESUME_WINDOW_S and len(_words(text)) < 3 and not is_noise(text)
+        )
+        if decision is TurnDecision.IGNORE and resuming:
+            decision = TurnDecision.RESPOND
         if decision is TurnDecision.RESPOND:
             self._reject_until = 0.0
         else:
@@ -211,13 +245,15 @@ async def start_realtime_session(
     on_decision: DecisionCallback | None = None,
     greeting: str | None = None,
     context_store: ContextStore | None = None,
+    on_interrupt: Callable[[str], None] | None = None,
 ) -> AgentSession:
     """Connect, follow the app's page context, and start a realtime ``AgentSession``.
 
     ``instructions(context)`` builds the full instructions for the current page; they are pushed
     to the model again whenever the context changes. ``preset`` only supplies the room's noise
     cancellation; turn-taking follows ``config.turns``. Pass ``context_store`` to share the page
-    context with the caller.
+    context with the caller. ``on_interrupt(cause)`` is told just before Milo is cut off on purpose
+    (``barge_in`` or ``guard``), for the timing log.
     """
     await ctx.connect()
     store = ContextStore() if context_store is None else context_store
@@ -238,26 +274,34 @@ async def start_realtime_session(
 
     store.subscribe(on_context)
 
+    reply_guard = ReplyGuard(guard) if guard is not None else None
+
+    def interrupt(cause: str) -> None:
+        if on_interrupt is not None:
+            on_interrupt(cause)
+        if cause == "barge_in" and reply_guard is not None:
+            reply_guard.cut_off()
+        session.interrupt()
+
     if config.turns == "server" and config.barge_in == "vad":
 
         @session.on("user_state_changed")
         def _on_user_state(ev: Any) -> None:
-            # The local VAD only says "speaking" after min_interruption_duration of speech.
+            # The local VAD only says "speaking" after min_interruption_duration of continuous speech.
             if ev.new_state == "speaking" and session.agent_state == "speaking":
-                log.info("barge-in: he talked over Milo")
+                log.info("barge-in: he talked over Milo (at least %.2fs of speech)", config.min_interruption_duration)
                 try:
-                    session.interrupt()
+                    interrupt("barge_in")
                 except RuntimeError:
                     log.debug("barge-in: reply could not be interrupted")
 
-    if guard is not None:
-        reply_guard = ReplyGuard(guard)
+    if reply_guard is not None:
 
         def cut_if_rejected() -> None:
             if reply_guard.should_cut() and session.agent_state in ("thinking", "speaking"):
                 reply_guard.consume()
                 log.info("guard: cutting off reply to a rejected turn")
-                session.interrupt()
+                interrupt("guard")
 
         async def run_guard(text: str) -> None:
             turn, decision = await reply_guard.check(text, store.snapshot())
@@ -272,8 +316,12 @@ async def start_realtime_session(
 
         @session.on("user_input_transcribed")
         def _on_transcript(ev: Any) -> None:
-            if ev.is_final and ev.transcript.strip():
-                spawn(run_guard(ev.transcript))
+            if not (ev.is_final and ev.transcript.strip()):
+                return
+            if reply_guard.is_repeat(ev.transcript, getattr(ev, "item_id", None)):
+                log.info("guard: skipped a repeated transcript (echo or noise)")
+                return
+            spawn(run_guard(ev.transcript))
 
         @session.on("agent_state_changed")
         def _on_state(ev: Any) -> None:

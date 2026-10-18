@@ -72,13 +72,26 @@ class FakeSession:
 
 
 class FakeCtx:
-    def __init__(self, metadata=""):
+    def __init__(self, metadata="", joined=True):
         self.job = FakeJob(metadata)
         self.room = object()
         self.shutdown_callbacks = []
+        self.joined = joined
+        self.shutdown_reason = None
 
     def add_shutdown_callback(self, callback):
         self.shutdown_callbacks.append(callback)
+
+    async def connect(self):
+        pass
+
+    async def wait_for_participant(self):
+        if not self.joined:
+            await asyncio.sleep(3600)
+        return object()
+
+    def shutdown(self, reason=""):
+        self.shutdown_reason = reason
 
 
 @pytest.mark.parametrize(
@@ -93,11 +106,11 @@ class FakeCtx:
 async def test_entrypoint_runs_the_chosen_engine(monkeypatch, tmp_path, metadata, env, expected):
     ran = []
 
-    async def fake_pipeline(ctx, game):
+    async def fake_pipeline(ctx, game, timer):
         ran.append("pipeline")
         return FakeSession()
 
-    async def fake_realtime(ctx, game):
+    async def fake_realtime(ctx, game, timer):
         ran.append("realtime")
         return FakeSession()
 
@@ -120,6 +133,27 @@ async def test_entrypoint_runs_the_chosen_engine(monkeypatch, tmp_path, metadata
     await ctx.shutdown_callbacks[1]()
     await ctx.shutdown_callbacks[2]()
     assert f",{expected}," in (tmp_path / "usage.csv").read_text()
+
+
+async def test_empty_room_ends_without_a_session(monkeypatch, tmp_path):
+    """A tap cancelled during a cold start leaves a room nobody joins: no greeting, no session."""
+    ran = []
+
+    async def fake_realtime(ctx, game, timer):
+        ran.append("realtime")
+        return FakeSession()
+
+    monkeypatch.setenv("PIP_USAGE_FILE", str(tmp_path / "usage.csv"))
+    monkeypatch.delenv("PIP_CONTENT_URL", raising=False)
+    monkeypatch.setenv("PIP_MODE", "realtime")
+    monkeypatch.setattr(agent_mod, "_realtime", fake_realtime)
+    monkeypatch.setattr(agent_mod.participant_joined, "__defaults__", (0.01,))
+    ctx = FakeCtx(joined=False)
+    await agent_mod.entrypoint(ctx)
+    assert ran == []
+    assert ctx.shutdown_reason == "nobody joined"
+    await ctx.shutdown_callbacks[0]("room disconnected")
+    assert ",realtime," in (tmp_path / "usage.csv").read_text(), "the empty room's usage is still logged"
 
 
 def test_realtime_config_from_env():
@@ -278,6 +312,46 @@ async def test_reply_guard_cuts_once():
     assert guard.should_cut()
     guard.consume()
     assert not guard.should_cut()
+
+
+async def test_reply_guard_skips_repeated_transcripts():
+    """The transcriber sometimes turns noise or Milo's echo into the last thing he said."""
+    clock = Clock()
+    guard = ReplyGuard(lambda t: TurnDecision.RESPOND, clock=clock)
+    assert not guard.is_repeat("Give me some names.", "item-1")
+    assert guard.is_repeat("Give me some names.", "item-1")  # the same item twice
+    clock.now += 1.6
+    assert guard.is_repeat("give me some names", "item-2")  # same words, a new item, moments later
+    clock.now += 10
+    assert not guard.is_repeat("Give me some names.", "item-3")  # asked again much later: real
+    assert not guard.is_repeat("What about the boat?", "item-4")
+
+
+async def test_reply_guard_lets_him_finish_after_a_barge_in():
+    clock = Clock()
+    guard = ReplyGuard(lambda t: TurnDecision.IGNORE, clock=clock)
+    guard.cut_off()
+    clock.now += 2
+    _, decision = await guard.check("OK", CTX)  # "OK, go on" after he talked over Milo
+    assert decision is TurnDecision.RESPOND and not guard.should_cut()
+    _, decision = await guard.check("\u5443\uff0c\u5229\u7528\u3002", CTX)  # a noise is still a noise
+    assert decision is TurnDecision.IGNORE
+    _, decision = await guard.check("so the meeting moved to friday", CTX)  # adult talk too
+    assert decision is TurnDecision.IGNORE
+    clock.now += 10
+    _, decision = await guard.check("OK", CTX)
+    assert decision is TurnDecision.IGNORE
+
+
+async def test_realtime_guard_ignores_noise_in_another_script():
+    async def topic(t):
+        return TurnDecision.RESPOND
+
+    guard = agent_mod.make_realtime_guard(ReadingTracker(), topic)
+    for noise in ("\u5443\uff0c\u5229\u7528\u3002", "...", ""):
+        assert await guard(turn(noise)) is TurnDecision.IGNORE
+    assert await guard(turn("why?")) is TurnDecision.RESPOND
+    assert agent_mod.is_noise("\u5443") and not agent_mod.is_noise("ok")
 
 
 async def test_realtime_guard_listens_to_reading_and_ignores_adults():

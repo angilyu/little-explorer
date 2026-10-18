@@ -65,6 +65,15 @@ def _words(text: str) -> list[str]:
     return [w.lower() for w in _WORD.findall(text or "")]
 
 
+_LATIN = re.compile(r"[A-Za-z]")
+
+
+def is_noise(text: str) -> bool:
+    """No English letters at all: the English transcriber turned a noise into another script
+    (e.g. a cough came out as Chinese characters)."""
+    return not _LATIN.search(text or "")
+
+
 _QUESTION_START = re.compile(
     r"^\s*(?:(?:um+|uh+|hey|so|and|but|ok(?:ay)?|wait)[,\s]+)*"
     r"(?:what|what's|whats|why|how|who|who's|where|where's|when|which|whose|"
