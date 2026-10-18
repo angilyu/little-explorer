@@ -175,8 +175,8 @@ def test_status_line_and_instructions(keeper, clock):
     assert "still has stars" in keeper.status_line(OTHER_PAGE)
     assert "Don't mention stars" in keeper.status_line({})
     text = realtime_instructions(PAGE, stars=keeper.status_line(PAGE))
-    assert STAR_RULES in text and "Great question, that's a star!" in text
-    assert "Great question" not in realtime_instructions(PAGE)
+    assert STAR_RULES in text and "Star question!" in text
+    assert "Star question" not in realtime_instructions(PAGE)
 
 
 def test_payload_has_no_transcript(keeper, clock):

@@ -129,6 +129,19 @@ def test_agent_registers_by_name_without_deprecated_argument(monkeypatch):
     assert (server._agent_name, server._agent_name_source) == (AGENT_NAME, "env")
 
 
+def test_agent_name_override_keeps_test_workers_apart(monkeypatch):
+    from little_explorer_agent import agent_name
+    from little_explorer_agent.agent import create_server, prewarm
+
+    monkeypatch.setenv("LIVEKIT_AGENT_NAME", "little-explorer-dev")
+    assert agent_name() == "little-explorer-dev"
+    server = create_server()
+    assert server._agent_name == "little-explorer-dev"
+    assert server.setup_fnc is prewarm
+    monkeypatch.setenv("LIVEKIT_AGENT_NAME", "  ")
+    assert agent_name() == "little-explorer"
+
+
 def test_openai_speech_streams_pcm_in_longer_chunks(monkeypatch):
     from livekit.agents import tts as agents_tts
 

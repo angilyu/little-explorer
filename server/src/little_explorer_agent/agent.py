@@ -25,11 +25,12 @@ import asyncio  # noqa: E402
 import inspect  # noqa: E402
 import os  # noqa: E402
 from collections.abc import Awaitable, Callable, Mapping  # noqa: E402
+from dataclasses import replace  # noqa: E402
 from typing import Any  # noqa: E402
 
 from livekit.agents import AgentServer, AgentSession, JobContext, cli, function_tool, llm  # noqa: E402
 
-from . import AGENT_NAME  # noqa: E402
+from . import agent_name  # noqa: E402
 from .buddy import (  # noqa: E402
     GREETING,
     PERSONA,
@@ -53,6 +54,7 @@ from .usage import UsageMeter, report_usage  # noqa: E402
 from .voice import ContextStore, TurnDecision, UserTurn, VoicePreset, preset_from_env  # noqa: E402
 from .voice.realtime import RealtimeConfig, start_realtime_session  # noqa: E402
 from .voice.session import attach_room_context, start_graph_session  # noqa: E402
+from .voice.timing import TurnTimer  # noqa: E402
 
 log = logging.getLogger("little_explorer.agent")
 
@@ -277,26 +279,65 @@ class StarGame:
             await asyncio.wait(set(self._tasks), timeout=timeout)
 
 
-def realtime_config(env: dict[str, str] | None = None) -> RealtimeConfig:
-    env = dict(os.environ) if env is None else env
-    return RealtimeConfig(
-        model=env.get("PIP_REALTIME_MODEL", "gpt-realtime"),
-        voice=env.get("PIP_OPENAI_VOICE", "coral"),
-        eagerness=env.get("PIP_REALTIME_EAGERNESS", "low"),  # type: ignore[arg-type]
-    )
+def realtime_config(env: Mapping[str, str] | None = None) -> RealtimeConfig:
+    """Realtime settings, overridable with ``PIP_REALTIME_*`` (see the README)."""
+    env = os.environ if env is None else env
+    base = RealtimeConfig()
+
+    def get(name: str) -> str:
+        return (env.get(name) or "").strip()
+
+    changes: dict[str, Any] = {}
+    for name, field_name in (
+        ("PIP_REALTIME_MODEL", "model"),
+        ("PIP_OPENAI_VOICE", "voice"),
+        ("PIP_REALTIME_TURNS", "turns"),
+        ("PIP_REALTIME_EAGERNESS", "eagerness"),
+        ("PIP_REALTIME_INTERRUPTION_MODE", "interruption_mode"),
+        ("PIP_REALTIME_END_OF_TURN", "end_of_turn"),
+        ("PIP_REALTIME_BARGE_IN", "barge_in"),
+    ):
+        if value := get(name):
+            changes[field_name] = value.lower() if field_name not in ("model", "voice") else value
+    if stt := get("PIP_REALTIME_STT_MODEL"):
+        changes["stt_model"] = None if stt.lower() == "none" else stt
+    for name, field_name, cast in (
+        ("PIP_REALTIME_MIN_ENDPOINTING_DELAY", "min_endpointing_delay", float),
+        ("PIP_REALTIME_MAX_ENDPOINTING_DELAY", "max_endpointing_delay", float),
+        ("PIP_REALTIME_MIN_INTERRUPTION_DURATION", "min_interruption_duration", float),
+        ("PIP_REALTIME_MIN_INTERRUPTION_WORDS", "min_interruption_words", int),
+    ):
+        if value := get(name):
+            changes[field_name] = cast(value)
+    if changes.get("turns", base.turns) not in ("client", "server"):
+        raise ValueError(f"PIP_REALTIME_TURNS must be 'client' or 'server', not {changes['turns']!r}")
+    return replace(base, **changes)
+
+
+ANSWER_MAX_WORDS = 12
+
+
+def _milo_just_asked(turn: UserTurn) -> bool:
+    last = turn.history[-1] if turn.history else None
+    return last is not None and last[0] == "assistant" and last[1].rstrip().endswith("?")
 
 
 def make_realtime_guard(tracker: ReadingTracker, topic_gate: TopicGate | None) -> TopicGate:
     """Post-hoc check of a realtime turn: cut the reply if he was reading or it was not for Milo.
 
     Very short turns ("yes", "the boat!") are left to the model; they are usually answers to Milo.
+    So is a short reply right after Milo asked something: the topic check often mistook his answers
+    to Milo's own question for chatter and cut Milo off.
     """
 
     async def guard(turn: UserTurn) -> TurnDecision:
         reading = tracker.check(turn)
         if reading is not None:
             return reading
-        if len(_words(turn.text)) < 3 or addresses_buddy(turn.text) or topic_gate is None:
+        words = len(_words(turn.text))
+        if words < 3 or addresses_buddy(turn.text) or topic_gate is None:
+            return TurnDecision.RESPOND
+        if words <= ANSWER_MAX_WORDS and _milo_just_asked(turn):
             return TurnDecision.RESPOND
         result = topic_gate(turn)
         if inspect.isawaitable(result):
@@ -388,6 +429,8 @@ async def entrypoint(ctx: JobContext) -> None:
     session = await (_realtime if mode == "realtime" else _pipeline)(ctx, game)
     game.watch(session)
     meter.bind(session)
+    timer = TurnTimer().attach(session)
+    ctx.add_shutdown_callback(timer.log_summary)
 
     def note_reason(reason: str) -> None:
         meter.ended_reason = reason
@@ -404,11 +447,35 @@ async def _cancel(ender: SessionEnder) -> None:
     ender.cancel()
 
 
+# Imported lazily by a session; loading them in the job's event loop stalled audio for ~0.5 s.
+PREWARM_MODULES = (
+    "difflib",
+    "langchain_core.messages",
+    "langchain_core.outputs",
+    "langchain_core.runnables",
+    "langchain_openai",
+    "langsmith.schemas",
+    "openai.types.realtime",
+    "livekit.plugins.openai.realtime",
+)
+
+
+def prewarm(_proc: Any = None) -> None:
+    """Import the heavy, lazily loaded modules while the idle process waits for a job."""
+    import importlib
+
+    for name in PREWARM_MODULES:
+        try:
+            importlib.import_module(name)
+        except Exception:  # an optional extra may be missing; the session imports what it needs
+            log.debug("prewarm: could not import %s", name)
+
+
 def create_server() -> AgentServer:
     # Named agents are only dispatched explicitly (the app's token asks for this one). LiveKit takes
     # the name from LIVEKIT_AGENT_NAME; passing agent_name to rtc_session is deprecated.
-    os.environ.setdefault("LIVEKIT_AGENT_NAME", AGENT_NAME)
-    server = AgentServer()
+    os.environ["LIVEKIT_AGENT_NAME"] = agent_name()
+    server = AgentServer(setup_fnc=prewarm)
     server.rtc_session(entrypoint)
     return server
 

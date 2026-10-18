@@ -42,7 +42,7 @@ from pathlib import Path
 
 from aiohttp import web
 
-from . import AGENT_NAME
+from . import agent_name
 from .catalog import build_manifest, content_files, resources_dir
 from .config import load_env
 from .content import BOOK_KEY, CITY_KEY, PAGE_KEY, PAGE_NUMBER_KEY, PAGE_TEXT_KEY
@@ -85,7 +85,7 @@ def credentials(
         identity=identity,
         name="Little Explorer",
         attributes=context or None,
-        agent_name=AGENT_NAME,
+        agent_name=agent_name(),
         agent_metadata=metadata if metadata is not None else job_metadata(mode),
         ttl=TOKEN_TTL,
     )
