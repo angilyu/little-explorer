@@ -1,0 +1,238 @@
+{
+  "id": "longyan",
+  "city": "Longyan",
+  "country": "Fujian, China",
+  "flagImage": "chengdu-flag.png",
+  "flag": "🇨🇳",
+  "coverColor": "#A0522D",
+  "tagline": "Round earth houses in green hills",
+  "narration": {
+    "instructions": "This book is about Longyan in China. Say every Chinese name the way a Mandarin speaker says it, warmly and naturally, as one smooth word, never spelled out or anglicized: Ni hao (nee how), Longyan (long-YEN), Hakka (HAH-kah), tulou (TOO-low), Chengqi Lou (chung-CHEE low), Zhencheng Lou (jun-CHUNG low), Guanzhai (gwahn-JAI), Meihua (may-HWAH), Ting (ting), Zaijian (dzai-JYEN). A short hint like long-YEN is how to sound out the word."
+  },
+  "pages": [
+    {
+      "id": "welcome",
+      "text": "Ni hao! Welcome to Longyan, a city in green mountains.",
+      "about": "Ni hao (nee how) means hello. Longyan (long-YEN) is a city in the west of Fujian (foo-JYEN) province, in southeast China, surrounded by green mountains, rivers and tea fields. This photo looks down on the city from Lotus Mountain. Many people here are Hakka (HAH-kah), and the hills around Longyan, especially in Yongding (yong-DING), are dotted with amazing round earth houses. Ask Francis: what do you think a house made of earth looks like?",
+      "emoji": "⛰️",
+      "photo": {
+        "commonsTitle": "File:莲花山看龙岩 - Longyan City Viewed from Lotus Mountain - 2016.09 - panoramio.jpg",
+        "query": "Longyan city from Lotus Mountain",
+        "file": "longyan-welcome.jpg",
+        "author": "rheins",
+        "license": "CC BY 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:%E8%8E%B2%E8%8A%B1%E5%B1%B1%E7%9C%8B%E9%BE%99%E5%B2%A9_-_Longyan_City_Viewed_from_Lotus_Mountain_-_2016.09_-_panoramio.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "tulou",
+      "text": "These big round houses are made of earth. They are called tulou!",
+      "about": "Tulou (TOO-low) means earth building. These round and square giants are in Chuxi (choo-shee) village in Yongding, part of Longyan. Some are hundreds of years old. In 2008 the Fujian Tulou became a UNESCO World Heritage Site, a list of the most special places on Earth. From the sky they look like big doughnuts sitting in the green hills, and long ago some people even wondered if they were giant flying saucers! Ask Francis: how many round houses can you count?",
+      "emoji": "🏯",
+      "photo": {
+        "commonsTitle": "File:Yongding Chuxi 2013.10.03 09-12-44.jpg",
+        "query": "Chuxi tulou cluster Yongding",
+        "file": "longyan-tulou.jpg",
+        "author": "Zhangzhugang",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Yongding_Chuxi_2013.10.03_09-12-44.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "family",
+      "text": "A whole Hakka family lives together inside one tulou!",
+      "about": "The Hakka (HAH-kah) are a group of Chinese people whose families moved south a long time ago and settled in these mountains. In a tulou, one big family clan lives together: grandparents, aunts, uncles and lots and lots of cousins, sometimes hundreds of people under one round roof. Everyone shares the open courtyard in the middle, where children play, people chat and festivals happen. This photo shows the inside of Chengqi Lou, with red lanterns hanging along the rooms. Ask Francis: what would it be like to live next door to all your cousins?",
+      "emoji": "👨‍👩‍👧‍👦",
+      "photo": {
+        "commonsTitle": "File:Chengqi Lou DSC5178 (16196369582).jpg",
+        "query": "inside Chengqi Lou lanterns",
+        "file": "longyan-family.jpg",
+        "author": "Motohiro Sunouchi",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Chengqi_Lou_DSC5178_(16196369582).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "walls",
+      "text": "The thick walls are packed earth, with bamboo hidden inside!",
+      "about": "Builders made tulou walls by pounding damp earth, sand and little stones into wooden frames, layer by layer, until it was hard as rock. Strips of bamboo and wood were buried inside to make the walls stronger, and some builders even mixed in sticky rice, brown sugar or egg white like glue. At the bottom the walls can be up to about 2 meters thick, wider than your bed is long, so the rooms stay cool in summer and warm in winter. Ask Francis: can you see the little windows high up in the wall?",
+      "emoji": "🧱",
+      "photo": {
+        "commonsTitle": "File:Chengqi Lou DSC5209 (16011241819).jpg",
+        "query": "Chengqi Lou earthen wall",
+        "file": "longyan-walls.jpg",
+        "author": "Motohiro Sunouchi",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Chengqi_Lou_DSC5209_(16011241819).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "door",
+      "text": "Most tulou have just one big front door.",
+      "about": "This is Chengqi Lou from outside. Most tulou have only one main gate, a thick wooden door that could be closed and locked at night, and the bottom floors have no windows at all, just thick earth walls. That made the whole round house safe like a castle, keeping out robbers and wild animals. Some bigger tulou have two or three gates. Ask Francis: if you lived here, who would you let in through the big door?",
+      "emoji": "🚪",
+      "photo": {
+        "commonsTitle": "File:Chengqi Tulou 20140829.JPG",
+        "query": "Chengqi Lou gate outside",
+        "file": "longyan-door.jpg",
+        "author": "颐园新居",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Chengqi_Tulou_20140829.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "well",
+      "text": "Inside there is a well, so families always have water.",
+      "about": "Inside the courtyard of a tulou there is usually a well, like this one in Yanxiang Lou in Yongding. Families lowered buckets on a rope to pull up cool, fresh water for cooking, drinking and washing, without ever having to go outside the big door. Zhencheng Lou even has two wells in its courtyard. Ask Francis: can you pretend to pull up a heavy bucket of water?",
+      "emoji": "🪣",
+      "photo": {
+        "commonsTitle": "File:Yanxiang Lou - well - DSCF3726.JPG",
+        "query": "tulou well Yanxiang Lou",
+        "file": "longyan-well.jpg",
+        "author": "User:Vmenkov",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Yanxiang_Lou_-_well_-_DSCF3726.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "chengqi",
+      "text": "Chengqi Lou has four rings of rooms, one inside another!",
+      "about": "Chengqi Lou (chung-CHEE low), in Gaobei village, is called the King of Tulou. It was finished in 1709, more than 300 years ago, and it has four rings of buildings, one inside another, like ripples in a pond. Altogether it has about 400 rooms! At its busiest, around 80 families, hundreds of people, lived here together. If you slept in a different room every night, it would take more than a whole year to try them all. Ask Francis: can you count the rings in the photo?",
+      "emoji": "⭕",
+      "photo": {
+        "commonsTitle": "File:Chengqi Lou - inside - DSCF3209.JPG",
+        "query": "Chengqi Lou rings inside",
+        "file": "longyan-chengqi.jpg",
+        "author": "User:Vmenkov",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Chengqi_Lou_-_inside_-_DSCF3209.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "zhencheng",
+      "text": "Zhencheng Lou is split into eight parts, like slices of pizza!",
+      "about": "Zhencheng Lou (jun-CHUNG low), in Hongkeng village, was built in 1912 and is nicknamed the Prince of Tulou. Its big outer ring is divided into eight sections by thick fire walls, like eight slices of a round pizza, so if a fire started in one part it could not spread to the others. This photo was taken from high in the sky, looking straight down. Nearby in the same village is Rusheng Lou, the smallest round tulou of all, with only 16 rooms. Ask Francis: can you find the round inner ring in the middle?",
+      "emoji": "🍕",
+      "photo": {
+        "commonsTitle": "File:China Fujian Yongding Hongkeng Tulou Zhencheng Lou.jpg",
+        "query": "Zhencheng Lou aerial Hongkeng",
+        "file": "longyan-zhencheng.jpg",
+        "author": "Lennartbj",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:China_Fujian_Yongding_Hongkeng_Tulou_Zhencheng_Lou.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "floors",
+      "text": "Kitchens are downstairs, food is stored above, and bedrooms are on top!",
+      "about": "In a big round tulou, each family usually has a slice of rooms going from the bottom to the top. The ground floor is for kitchens and eating, the second floor is for storing rice and grain where it stays dry, and the higher floors are bedrooms. A long wooden balcony runs all the way around each floor, so you can walk in a circle and wave to the neighbors. Ask Francis: which floor would you want to sleep on?",
+      "emoji": "🪜",
+      "photo": {
+        "commonsTitle": "File:Chengqi Lou DSC5189 (16171380216).jpg",
+        "query": "Chengqi Lou wooden balconies",
+        "file": "longyan-floors.jpg",
+        "author": "Motohiro Sunouchi",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Chengqi_Lou_DSC5189_(16171380216).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "food",
+      "text": "Hakka cooks stuff soft tofu with yummy meat. Delicious!",
+      "about": "This is Hakka stuffed tofu, called niang doufu (nyahng doh-foo). Cooks press a little pocket into each piece of tofu, fill it with tasty minced meat, then fry or simmer it until golden. This photo was taken at a Hakka restaurant in China. Other Hakka favorites around Longyan are taro dumplings, made with a soft dough of mashed taro, and salt-baked chicken, cooked in a big pile of hot salt. Ask Francis: what would you stuff inside a piece of tofu?",
+      "emoji": "🥢",
+      "photo": {
+        "commonsTitle": "File:酿豆腐 2.jpg",
+        "query": "Hakka stuffed tofu",
+        "file": "longyan-food.jpg",
+        "author": "Mx. Granger",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:%E9%85%BF%E8%B1%86%E8%85%90_2.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "guanzhai",
+      "text": "Guanzhai Mountain has steep red rock cliffs to climb and explore.",
+      "about": "Guanzhai Mountain (gwahn-JAI) is near Liancheng (lyen-CHUNG), part of Longyan. It is made of reddish sandstone that wind and rain have carved into tall cliffs and bumpy peaks, a kind of landscape called Danxia (dahn-shyah). Its name comes from the top of the mountain, which looks like an old-fashioned official's hat. There are stone steps to climb, a lake to ride boats on, and huge views from the top. Ask Francis: what shapes can you see in the rocks?",
+      "emoji": "🪨",
+      "photo": {
+        "commonsTitle": "File:远望冠豸山 - Guanzhai Mountain - 2010.07 - panoramio.jpg",
+        "query": "Guanzhai Mountain Liancheng",
+        "file": "longyan-guanzhai.jpg",
+        "author": "rheins",
+        "license": "CC BY 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:%E8%BF%9C%E6%9C%9B%E5%86%A0%E8%B1%B8%E5%B1%B1_-_Guanzhai_Mountain_-_2010.07_-_panoramio.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "tiger",
+      "text": "Rare South China tigers are cared for on Meihua Mountain.",
+      "about": "The South China tiger is one of the rarest tigers in the world. There may be none left living in the wild, so the ones alive today live in parks and zoos. On Meihua Mountain (may-HWAH), a big nature reserve in Longyan, there is a special center where dozens of these tigers are cared for, and where scientists hope to help them one day live in the forest again. This South China tiger was photographed at a zoo in Shanghai. Ask Francis: can you roar like a tiger?",
+      "emoji": "🐯",
+      "photo": {
+        "commonsTitle": "File:2012 Suedchinesischer Tiger.JPG",
+        "query": "South China tiger",
+        "file": "longyan-tiger.jpg",
+        "author": "J. Patrick Fischer",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:2012_Suedchinesischer_Tiger.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "river",
+      "text": "The Ting River is called the mother river of the Hakka.",
+      "about": "The Ting River (ting) starts in the mountains of Longyan and flows south all the way into Guangdong (gwahng-DOONG) province. Long ago, Hakka families traveled and traded along it, and the old town of Changting (chahng-TING) grew up on its banks, so people lovingly call it the Hakka mother river. Today there are bridges, riverside parks and fishing boats. Ask Francis: if you had a boat, where would you sail on the river?",
+      "emoji": "🛶",
+      "photo": {
+        "commonsTitle": "File:汀江 - Ting River - 2016.09 - panoramio.jpg",
+        "query": "Ting River Fujian",
+        "file": "longyan-river.jpg",
+        "author": "rheins",
+        "license": "CC BY 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:%E6%B1%80%E6%B1%9F_-_Ting_River_-_2016.09_-_panoramio.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "goodbye",
+      "text": "Zaijian, Longyan! Wave goodbye to the round earth houses and green hills.",
+      "about": "Zaijian (dzai-JYEN) means goodbye, see you again. In the hills around Longyan, Hakka people sing mountain songs, called shan'ge (shahn-guh), calling back and forth across the valleys while they work. The hills are also covered in tea bushes, and nearby Zhangping is famous for a flowery tea pressed into little square cakes. Ask Francis: what was your favorite part, the round houses, the tigers or the tofu?",
+      "emoji": "👋",
+      "photo": {
+        "commonsTitle": "File:Yongding Chuxi 2013.10.03 09-05-10.jpg",
+        "query": "Chuxi tulou Yongding",
+        "file": "longyan-goodbye.jpg",
+        "author": "Zhangzhugang",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Yongding_Chuxi_2013.10.03_09-05-10.jpg",
+        "verified": true
+      }
+    }
+  ]
+}

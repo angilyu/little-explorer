@@ -35,6 +35,8 @@ The first screen is a shelf with every book, grouped by city, with a general Tra
 | Lake Tahoe | Northstar (`tahoe-northstar`) | Winter: the village ice rink, s'mores by the fire, chairlifts through the pines, a far-off lake view, ski school, corduroy snow, night snowcats, tubing, snowy pines, cocoa |
 | Hawaii | Hawaii (`hawaii`) | Volcano islands, the eight-stripe flag, Kīlauea lava, black sand, honu turtles (look, don't touch), leis, hula stories, ancient surfing, humpback whales, shave ice, the humuhumunukunukuāpuaʻa, the nēnē goose, what aloha means |
 | Hawaii | Honolulu (`hawaii-honolulu`) | Waikīkī's gentle surf, Diamond Head crater, ʻIolani Palace, King Kamehameha's long leis, Duke's statue, Hanauma Bay fish, outrigger canoes, Aloha Tower, the aquarium, spam musubi |
+| Chengdu | Chengdu (`chengdu`) | Ni hao, China's five-star flag, giant pandas munching bamboo, tiny pink panda babies, red pandas' stripy tails, hot pot, tingly Sichuan peppercorns, face-changing opera masks, People's Park teahouses (long-spout kettles, ear cleaners, mahjong), Jinli's lanterns and sugar painting, Zhuge Liang's straw-boat arrow legend, the 2,000-year-old Dujiangyan river system, the Leshan Giant Buddha, the Wide and Narrow Alleys |
+| Longyan | Longyan (`longyan`) | A city in green Fujian mountains, round earth tulou houses, Hakka families living together, earth walls with bamboo inside, one big door, a well in the courtyard, Chengqi Lou's four rings and ~400 rooms, Zhencheng Lou's eight pizza slices, kitchens below and beds on top, Hakka stuffed tofu, Guanzhai's red cliffs, South China tigers on Meihua Mountain, the Ting River, Hakka mountain songs |
 | Travel | Take a Flight (`travel-flight`) | Check-in and the moving belt, the scanner that sees inside bags, the boarding pass, watching planes at the gate, the window seat, the seatbelt light, a snack when ears pop, above the clouds, two pilots, the cabin crew, wheels down |
 | Travel | Pack Your Bag (`travel-packing`) | A checklist, rolling clothes, toothbrush, a teddy from home, a backpack with a snack and a book, small bottles in a clear bag, weighing the bag, a name tag, packing for the weather, zipping it shut |
 | Travel | Passport (`travel-passport`) | What a passport is, the calm-face photo, cover colors, pretty pages and secret glowing marks, entry stamps, passport control, e-gates, a grown-up keeps it safe, kids' passports renewing sooner |
@@ -68,7 +70,7 @@ Pin a specific file by setting the page's `photo.commonsTitle`.
 
 The speaker button (bottom-right of every page) reads the sentence in a natural voice, the same OpenAI voice as Milo
 (`gpt-4o-mini-tts`, "coral"), styled like a grown-up reading a picture book to a 6-year-old: warm, clear and a little slow.
-The clips are made ahead of time and bundled (about 10 MB of AAC for all 291 pages), so reading aloud works offline
+The clips are made ahead of time and bundled (about 11 MB of AAC for all 319 pages), so reading aloud works offline
 and the app never holds an API key. Each word is highlighted as it's spoken. Tap again to stop. Speech also stops when
 the page turns or the book closes. When voice mode is on, the microphone is muted while the app reads, so Milo doesn't
 mistake the app's voice for the child.
@@ -86,7 +88,8 @@ the French is spoken natively (not anglicized), and each phrase, e.g. "Ask the b
 don't spell out pronunciations like "Merci (mair-SEE)": the voice says every word, so the hints are only in the
 narration note and Milo's notes. The Hawaii books use the same mode so Hawaiian words (honu, nēnē, Waikīkī) are said
 the island way; the Tahoe books only add a note for local names
-(Nevada as neh-VAD-uh, Truckee). To run it:
+(Nevada as neh-VAD-uh, Truckee). The Chengdu and Longyan books add a note so Chinese names (Ni hao, Zaijian, Jinli,
+Zhuge Liang, Hakka, tulou, Chengqi Lou) are said in Mandarin; their pages use plain pinyin and no Chinese characters. To run it:
 
 ```sh
 python3 scripts/generate_narration.py                  # new or changed pages only
