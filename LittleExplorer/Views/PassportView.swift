@@ -5,6 +5,7 @@ struct PassportView: View {
     let shelves: [CityShelf]
 
     @Environment(StarStore.self) private var stars
+    @Environment(CoinStore.self) private var coins
     @Environment(\.dismiss) private var dismiss
     @Environment(\.horizontalSizeClass) private var sizeClass
 
@@ -47,14 +48,22 @@ struct PassportView: View {
                 .font(.system(size: regular ? 56 : 44, weight: .heavy))
                 .foregroundStyle(Color.starGold)
             VStack(alignment: .leading, spacing: 2) {
-                Text("\(stars.total) stars")
+                Text("\(coins.spendable(fromEarned: stars.total)) stars")
                     .font(.system(size: regular ? 40 : 30, weight: .heavy, design: .rounded))
-                Text("Ask Milo questions to earn more!")
+                Text(coins.starsSpent > 0 ? "You earned \(stars.total) stars in all!" : "Ask Milo questions to earn more!")
                     .font(.system(size: regular ? 20 : 15, weight: .semibold, design: .rounded))
                     .opacity(0.75)
             }
             .foregroundStyle(Theme.ink)
             Spacer(minLength: 0)
+            if coins.coins > 0 {
+                VStack(spacing: 4) {
+                    CoinIcon(size: regular ? 56 : 44)
+                    Text(coins.coins == 1 ? "1 coin" : "\(coins.coins) coins")
+                        .font(.system(size: regular ? 24 : 18, weight: .heavy, design: .rounded))
+                        .foregroundStyle(Theme.ink)
+                }
+            }
         }
         .padding(regular ? 24 : 16)
         .background(RoundedRectangle(cornerRadius: 24, style: .continuous).fill(.white))

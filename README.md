@@ -51,7 +51,9 @@ badge (`travel-flag.png`), Milo is told they are general travel books rather tha
 don't give a Passport stamp.
 
 Hearts are stored on the device as `<book id>/<page id>`, so each themed book keeps its own hearts.
-Grown-ups can see the loved pages for every book behind the parent gate (lock button).
+Grown-ups can see the loved pages for every book behind the parent gate (lock button). The gate asks a typed
+sum like `24 × 8 + 18` on its own number pad (no multiple choice). Three wrong answers lock it for 30 seconds,
+and each miss shows a new question.
 
 ### Photos
 
@@ -263,6 +265,48 @@ about (not the Travel shelf), plus Curious Cat (10 questions), Big Talker (3 lon
 book of a city (e.g. Paris Expert). The last page of each book shows the stars from that book. `tools/devices.py`
 lists stars per device. Pipeline mode gives stars too, but Milo doesn't announce them.
 
+### Coins
+
+A grown-up can turn stars into coins (10 stars = 1 coin by default) in the Grown-ups corner, behind the parent
+gate. It shows the stars he can spend, the coins they make and the stars left over, and asks for confirmation.
+The kid can't convert. Coins show next to the stars on the library badge and in the Passport.
+
+The token server owns the rules and the balance. It keeps a ledger per device (`coin_conversions`), so coins
+survive a reinstall and an app can't convert more stars than the server has stored. Spending stars lowers the
+number on the badge and in the book, but badges and Passport progress keep counting every star he ever earned,
+so converting never takes a badge away. Older app builds ignore coins and keep showing all his stars.
+
+- `GET /coins?device=<id>` (access key) returns the rules (`enabled`, `stars_per_coin`, `min_coins`, `max_coins`)
+  and the balance (`stars_earned`, `stars_spent`, `stars` to spend, `coins`, `can_convert`, `leftover_stars`).
+- `POST /coins/convert` (access key) with `{"device", "id", "coins"?, "stars_per_coin"?}`. `id` is a
+  client-made id; a retry with the same id returns the first result and never converts twice. Leave out
+  `coins` to convert as many as possible. If `stars_per_coin` is sent and the rate changed since the screen
+  loaded, the server refuses with `409 rate_changed`. Other refusals: `403 disabled`, `409 not_enough_stars`,
+  `400 too_few` / `too_many`.
+
+Change the rules without an app release. Admin overrides win over env vars, which win over the defaults:
+
+| Setting | Env var | Admin field | Default |
+| --- | --- | --- | --- |
+| Conversion on or off | `PIP_COINS` (`0` turns it off) | `enabled` | on |
+| Stars per coin | `PIP_STARS_PER_COIN` | `stars_per_coin` | 10 |
+| Fewest coins per conversion | `PIP_COINS_MIN` | `min_coins` | 1 |
+| Most coins per conversion (0 = no limit) | `PIP_COINS_MAX` | `max_coins` | 0 |
+
+```bash
+cd server
+uv run python tools/devices.py coins                   # current rules and overrides (the device list has a COINS column)
+uv run python tools/devices.py coins rate=20 max=5     # 20 stars per coin, at most 5 coins at a time
+uv run python tools/devices.py coins off               # turn conversion off (on turns it back on)
+uv run python tools/devices.py coins rate=default      # back to the env var or default for one setting
+uv run python tools/devices.py coins reset             # clear every override
+curl -H "Authorization: Bearer $PIP_ADMIN_KEY" https://little-explorer-pip.onrender.com/admin/coins
+curl -X POST -H "Authorization: Bearer $PIP_ADMIN_KEY" -H "Content-Type: application/json" \
+  -d '{"stars_per_coin": 20}' https://little-explorer-pip.onrender.com/admin/coins   # null clears a field
+```
+
+The app reads the rules each time the Grown-ups corner opens, so changes apply right away.
+
 ### Deploy
 
 Two free-tier pieces. The app only talks to the first; LiveKit dispatches the second.
@@ -336,7 +380,8 @@ scripts/screenshots.sh <iphone-udid> <ipad-udid>   # regenerates docs/screenshot
 ```
 
 DEBUG builds accept launch arguments for screenshots: `-demoBook paris-food -demoPage 4 -demoLove`,
-`-demoVoice listening|live|nap|rest|star`, `-demoRead`, `-demoStars 23`, `-demoPassport`.
+`-demoVoice listening|live|nap|rest|star`, `-demoRead`, `-demoStars 23`, `-demoPassport`, `-demoCoins 2`,
+`-demoGate` (the parent gate) and `-demoParent` (the Grown-ups corner).
 
 ### Install on an iPhone or iPad (TestFlight)
 

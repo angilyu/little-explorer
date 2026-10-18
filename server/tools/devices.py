@@ -9,6 +9,9 @@ Run from server/ (it reads ``PIP_SERVER_URL`` and ``PIP_ADMIN_KEY`` from the usu
     uv run python tools/devices.py unblock 3F2A...
     uv run python tools/devices.py limit "Leo's iPad" 90   # minutes a day; "default" to reset
     uv run python tools/devices.py rename 3F2A... "Grandma's iPhone"
+    uv run python tools/devices.py coins               # star-to-coin rules in force
+    uv run python tools/devices.py coins rate=20 max=5 # change them; "off"/"on", "<key>=default"
+    uv run python tools/devices.py coins reset         # back to the PIP_COINS* env defaults
 
 ``--direct`` skips the token server and uses ``DATABASE_URL`` (or the local SQLite file) directly.
 The app shows its device id in the Grown-ups corner.
@@ -94,6 +97,21 @@ class Admin:
             return {**device.__dict__, "display_name": device.display_name}
         return self._call("POST", "/admin/devices/" + urllib.parse.quote(ref, safe=""), changes)["device"]
 
+    def coins(self, changes: dict[str, Any] | None = None, reset: bool = False) -> dict[str, Any]:
+        if self.direct:
+            from little_explorer_agent.coins import CoinLedger
+
+            ledger = CoinLedger.from_env(self.store)
+            if changes is None and not reset:
+                return ledger.settings()
+            try:
+                return ledger.update(changes or {}, reset=reset)
+            except ValueError as exc:
+                raise SystemExit(str(exc)) from None
+        if changes is None and not reset:
+            return self._call("GET", "/admin/coins")
+        return self._call("POST", "/admin/coins", {**(changes or {}), **({"reset": True} if reset else {})})
+
 
 def _table(rows: list[list[str]]) -> str:
     widths = [max(len(r[i]) for r in rows) for i in range(len(rows[0]))]
@@ -108,7 +126,7 @@ def show_devices(data: dict[str, Any]) -> str:
     )
     if not data["devices"]:
         return head + "\nNo devices yet."
-    rows = [["DEVICE", "STATUS", "TODAY", "TODAY $", "TOTAL", "TOTAL $", "SESSIONS", "STARS", "LAST SEEN", "ID"]]
+    rows = [["DEVICE", "STATUS", "TODAY", "TODAY $", "TOTAL", "TOTAL $", "SESSIONS", "STARS", "COINS", "LAST SEEN", "ID"]]
     for d in data["devices"]:
         name = d["display_name"] + (f" ({d['model']})" if d.get("model") else "")
         rows.append(
@@ -121,6 +139,7 @@ def show_devices(data: dict[str, Any]) -> str:
                 f"${d['total_usd']:.2f}",
                 str(d["sessions"]),
                 str(d.get("stars", 0)),
+                str(d.get("coins", 0)),
                 (d.get("last_seen") or "")[:16].replace("T", " "),
                 d["id"],
             ]
@@ -134,6 +153,37 @@ def show_usage(days: list[dict[str, Any]]) -> str:
     rows = [["DAY", "DEVICE", "SESSIONS", "MINUTES", "$"]]
     rows += [[d["day"], d["display_name"][:40], str(d["sessions"]), f"{d['minutes']:g}", f"${d['usd']:.2f}"] for d in days]
     return _table(rows)
+
+
+COIN_KEYS = {"enabled": "enabled", "on": "enabled", "rate": "stars_per_coin", "stars_per_coin": "stars_per_coin",
+             "min": "min_coins", "min_coins": "min_coins", "max": "max_coins", "max_coins": "max_coins"}
+
+
+def coin_changes(items: list[str]) -> dict[str, Any]:
+    """``rate=20 max=5 off`` to ``{"stars_per_coin": 20, "max_coins": 5, "enabled": False}``."""
+    changes: dict[str, Any] = {}
+    for item in items:
+        if item in ("on", "off"):
+            changes["enabled"] = item == "on"
+            continue
+        key, sep, value = item.partition("=")
+        if not sep or key not in COIN_KEYS:
+            raise SystemExit(f"Not a coin setting: {item!r}. Use rate=N, min=N, max=N (0 = no limit), on or off.")
+        changes[COIN_KEYS[key]] = None if value == "default" else value
+    return changes
+
+
+def show_coins(data: dict[str, Any]) -> str:
+    s = data["settings"]
+    most = "no limit" if not s["max_coins"] else f"at most {s['max_coins']}"
+    state = "on" if s["enabled"] else "OFF"
+    lines = [
+        f"Converting is {state}: {s['stars_per_coin']} stars make 1 coin, "
+        f"at least {s['min_coins']} and {most} coin(s) at a time."
+    ]
+    overrides = data.get("overrides") or {}
+    lines.append("Overrides: " + (", ".join(f"{k}={v}" for k, v in sorted(overrides.items())) or "none (env defaults)"))
+    return "\n".join(lines)
 
 
 def show_device(d: dict[str, Any]) -> str:
@@ -165,6 +215,8 @@ def main(argv: list[str] | None = None) -> int:
     rename = sub.add_parser("rename", help="the name to show for a device")
     rename.add_argument("device")
     rename.add_argument("label")
+    coins = sub.add_parser("coins", help="star-to-coin rules: show, change (rate=20 max=5 off) or reset")
+    coins.add_argument("changes", nargs="*", help="rate=N, min=N, max=N (0 = no limit), on, off, <key>=default, reset")
     args = parser.parse_args(argv)
 
     load_env()
@@ -181,6 +233,12 @@ def main(argv: list[str] | None = None) -> int:
     if command == "usage":
         days = admin.usage(args.days)
         print(json.dumps(days, indent=2) if args.json else show_usage(days))
+        return 0
+    if command == "coins":
+        reset = "reset" in args.changes
+        items = [c for c in args.changes if c != "reset"]
+        data = admin.coins(coin_changes(items) if items else None, reset=reset)
+        print(json.dumps(data, indent=2) if args.json else show_coins(data))
         return 0
     changes: dict[str, Any]
     if command == "approve":

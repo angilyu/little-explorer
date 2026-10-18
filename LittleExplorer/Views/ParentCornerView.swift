@@ -1,18 +1,28 @@
 import SwiftUI
 
-/// Parent-only screen: what he loved, voice server settings, and photo credits with links.
+/// Parent-only screen: turning his stars into coins, what he loved, voice server settings, and
+/// photo credits with links.
 struct ParentCornerView: View {
     let books: [Book]
 
     @Environment(HeartStore.self) private var hearts
+    @Environment(CoinStore.self) private var coins
     @Environment(\.dismiss) private var dismiss
     @Environment(ContentStore.self) private var content
     @AppStorage(VoiceSettings.tokenServerKey) private var tokenServer = VoiceSettings.defaultTokenServer
     @State private var device: DeviceInfo?
+    @State private var coinsLoading = false
+    @State private var coinsReached = true
+    @State private var coinsToMake = 1
+    @State private var confirmConvert = false
+    @State private var converting = false
+    @State private var coinMessage: String?
 
     var body: some View {
         NavigationStack {
             List {
+                coinSection
+
                 Section("Loved pages") {
                     let total = books.reduce(0) { $0 + hearts.lovedCount(bookId: $1.id) }
                     if total == 0 {
@@ -89,11 +99,126 @@ struct ParentCornerView: View {
                 }
             }
             .navigationTitle("Grown-ups corner")
-            .task { device = DeviceIdentity.current() }
+            .task {
+                device = DeviceIdentity.current()
+                await loadCoins()
+            }
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } }
             }
         }
+    }
+
+    // MARK: - Stars and coins
+
+    @ViewBuilder
+    private var coinSection: some View {
+        Section {
+            if let state = coins.state {
+                LabeledContent("Stars to spend") {
+                    HStack(spacing: 6) {
+                        Image(systemName: "star.fill").foregroundStyle(Color.starGold)
+                        Text("\(state.stars)")
+                    }
+                }
+                LabeledContent("Coins") {
+                    HStack(spacing: 6) {
+                        CoinIcon(size: 18)
+                        Text("\(state.coins)")
+                    }
+                }
+                if !state.enabled {
+                    Text("Converting is turned off on Milo's server right now.")
+                        .foregroundStyle(.secondary)
+                } else if state.canConvert == 0 {
+                    Text(notEnoughText(state))
+                        .foregroundStyle(.secondary)
+                } else {
+                    let making = min(max(coinsToMake, state.minCoins), state.canConvert)
+                    if state.canConvert > state.minCoins {
+                        Stepper(value: $coinsToMake, in: state.minCoins...state.canConvert) {
+                            Text("Make \(making) \(making == 1 ? "coin" : "coins")")
+                        }
+                    }
+                    LabeledContent("Uses", value: "\(making * state.starsPerCoin) stars")
+                    LabeledContent("Stars left after", value: "\(state.stars - making * state.starsPerCoin)")
+                    Button {
+                        confirmConvert = true
+                    } label: {
+                        HStack {
+                            Text("Convert \(making * state.starsPerCoin) stars to \(making) \(making == 1 ? "coin" : "coins")")
+                            Spacer()
+                            if converting { ProgressView() }
+                        }
+                    }
+                    .disabled(converting)
+                    .confirmationDialog(
+                        "Turn \(making * state.starsPerCoin) stars into \(making) \(making == 1 ? "coin" : "coins")?",
+                        isPresented: $confirmConvert, titleVisibility: .visible
+                    ) {
+                        Button("Convert") { Task { await convert(making, rate: state.starsPerCoin) } }
+                        Button("Cancel", role: .cancel) {}
+                    } message: {
+                        Text("He keeps his badges. His star count goes down by \(making * state.starsPerCoin) and he gets \(making) \(making == 1 ? "coin" : "coins").")
+                    }
+                }
+            } else if coinsLoading {
+                HStack {
+                    ProgressView()
+                    Text("Asking Milo's server…").foregroundStyle(.secondary)
+                }
+            } else if !coinsReached {
+                Text("Couldn't reach Milo's server.")
+                    .foregroundStyle(.secondary)
+                Button("Try again") { Task { await loadCoins() } }
+            }
+            if let coinMessage {
+                Text(coinMessage)
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+            }
+        } header: {
+            Text("Stars and coins")
+        } footer: {
+            Text(coinFooter)
+        }
+    }
+
+    private var coinFooter: String {
+        let rate = coins.state?.starsPerCoin ?? 10
+        var text = "Every \(rate) stars he earns can become 1 coin. Only grown-ups can convert them, here."
+        if let state = coins.state, state.maxCoins > 0 {
+            text += " Up to \(state.maxCoins) \(state.maxCoins == 1 ? "coin" : "coins") at a time."
+        }
+        return text + " Milo's server sets the rate and keeps his coins, so they survive a reinstall. Badges keep counting every star he ever earned."
+    }
+
+    private func notEnoughText(_ state: CoinState) -> String {
+        let need = state.minCoins * state.starsPerCoin
+        let what = state.minCoins == 1 ? "1 coin" : "\(state.minCoins) coins"
+        return "\(need) stars make \(what). \(state.starsToGo) more \(state.starsToGo == 1 ? "star" : "stars") to go."
+    }
+
+    private func loadCoins() async {
+        coinsLoading = true
+        coinsReached = await coins.refresh(using: CoinStore.service())
+        coinsLoading = false
+        if let state = coins.state { coinsToMake = state.canConvert }
+    }
+
+    private func convert(_ amount: Int, rate: Int) async {
+        converting = true
+        defer { converting = false }
+        do {
+            let made = try await coins.convert(coins: amount, starsPerCoin: rate, using: CoinStore.service())
+            let count = made?.coins ?? amount
+            coinMessage = "Done! \(count * rate) stars became \(count) \(count == 1 ? "coin" : "coins")."
+        } catch let error as CoinError {
+            coinMessage = error.message
+        } catch {
+            coinMessage = "Couldn't reach Milo's server. Try again; it won't convert twice."
+        }
+        if let state = coins.state { coinsToMake = state.canConvert }
     }
 
     private var statusText: String {

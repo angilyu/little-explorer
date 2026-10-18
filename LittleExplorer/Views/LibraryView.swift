@@ -6,6 +6,7 @@ struct LibraryView: View {
     @Environment(HeartStore.self) private var hearts
     @Environment(VoiceModeController.self) private var voice
     @Environment(StarStore.self) private var stars
+    @Environment(CoinStore.self) private var coins
     @Environment(\.horizontalSizeClass) private var sizeClass
 
     @State private var openBook: OpenBook?
@@ -51,10 +52,12 @@ struct LibraryView: View {
                 .environment(hearts)
                 .environment(voice)
                 .environment(stars)
+                .environment(coins)
         }
         .sheet(isPresented: $showPassport) {
             PassportView(shelves: BookLibrary.shelves(books))
                 .environment(stars)
+                .environment(coins)
                 .passportSizing()
         }
         .sheet(isPresented: $showGate) {
@@ -66,6 +69,7 @@ struct LibraryView: View {
         .sheet(isPresented: $showParentCorner) {
             ParentCornerView(books: books)
                 .environment(hearts)
+                .environment(coins)
         }
         .onAppear(perform: applyDemoLaunch)
     }
@@ -159,8 +163,11 @@ struct LibraryView: View {
     }
 
     private var starBadge: some View {
-        StarTotalBadge(total: stars.total, regular: regular) { showPassport = true }
-            .animation(.spring(duration: 0.4), value: stars.total)
+        StarTotalBadge(total: coins.spendable(fromEarned: stars.total), coins: coins.coins, regular: regular) {
+            showPassport = true
+        }
+        .animation(.spring(duration: 0.4), value: coins.spendable(fromEarned: stars.total))
+        .animation(.spring(duration: 0.4), value: coins.coins)
     }
 
     private func applyDemoLaunch() {
@@ -169,7 +176,10 @@ struct LibraryView: View {
         if demo.seedStars > 0 {
             stars.merge(StarStore.demoAwards(total: demo.seedStars, shelves: BookLibrary.shelves(books)))
         }
+        if demo.seedCoins > 0 { coins.seedDemo(coins: demo.seedCoins) }
         if demo.openPassport { showPassport = true }
+        if demo.openGate { showGate = true }
+        if demo.openParent { showParentCorner = true }
         guard let id = demo.bookId, let book = books.first(where: { $0.id == id }) else { return }
         let index = min(demo.pageIndex, book.pages.count - 1)
         if demo.lovePage {
