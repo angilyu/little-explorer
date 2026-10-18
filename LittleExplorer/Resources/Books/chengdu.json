@@ -1,0 +1,238 @@
+{
+  "id": "chengdu",
+  "city": "Chengdu",
+  "country": "Sichuan, China",
+  "flagImage": "chengdu-flag.png",
+  "flag": "🇨🇳",
+  "coverColor": "#36454F",
+  "tagline": "Pandas, hot pot and magic masks",
+  "narration": {
+    "instructions": "This book is about Chengdu in China. Say every Chinese name the way a Mandarin speaker says it, warmly and naturally, as one smooth word, never spelled out or anglicized: Ni hao (nee how), Chengdu (chung-DOO), Sichuan (suh-CHWAHN), Jinli (jin-LEE), Wuhou (woo-HOH), Zhuge Liang (JOO-guh lyahng), Leshan (luh-SHAHN), Zaijian (dzai-JYEN). A short hint like chung-DOO is how to sound out the word."
+  },
+  "pages": [
+    {
+      "id": "welcome",
+      "text": "Ni hao! Welcome to Chengdu, a big city in China.",
+      "about": "Ni hao (nee how) means hello in Chinese. Chengdu (chung-DOO) is a huge city in Sichuan (suh-CHWAHN) province, in the southwest of China. About 21 million people live in and around it, more than twice as many as in all of New York City. On very clear days you can see snowy mountains behind the tall buildings, just like in this photo. Chengdu is famous for pandas, spicy food and taking life slowly with a cup of tea. Ask Francis: can you say ni hao?",
+      "emoji": "👋",
+      "photo": {
+        "commonsTitle": "File:雪山下的成都市天际线 Chengdu skyline with snow capped mountains.jpg",
+        "query": "Chengdu skyline snow mountains",
+        "file": "chengdu-welcome.jpg",
+        "author": "FISU",
+        "license": "CC BY 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:%E9%9B%AA%E5%B1%B1%E4%B8%8B%E7%9A%84%E6%88%90%E9%83%BD%E5%B8%82%E5%A4%A9%E9%99%85%E7%BA%BF_Chengdu_skyline_with_snow_capped_mountains.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "flag",
+      "text": "China's flag is red with one big star and four small stars.",
+      "about": "This is the flag of China. It is bright red with five yellow stars in the top corner: one big star, and four little stars curving around it. In China, red and gold are happy colors used for celebrations, like the red lanterns at New Year. Can you count all five stars and point to the biggest one?",
+      "emoji": "🇨🇳",
+      "photo": {
+        "commonsTitle": "File:Flag of the People's Republic of China.svg",
+        "query": "flag of China",
+        "file": "chengdu-flag.png",
+        "author": "Zeng Liansong",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Flag_of_the_People%27s_Republic_of_China.svg",
+        "verified": true
+      }
+    },
+    {
+      "id": "panda",
+      "text": "Giant pandas live here. They munch bamboo almost all day!",
+      "about": "These pandas live at the Chengdu Research Base of Giant Panda Breeding, a big leafy park that started in 1987 with just six pandas rescued from the wild. Now it is home to well over a hundred. Pandas spend about 10 to 16 hours a day eating, and a grown-up panda can crunch through 12 to 38 kilograms of bamboo every day, as heavy as a big bag of dog food or more. They sit on their bottoms and hold the bamboo in their paws like a snack. Visitors come early in the morning, when pandas are most awake. Ask Francis: what would you eat all day if you could?",
+      "emoji": "🐼",
+      "photo": {
+        "commonsTitle": "File:Chengdu pandas eating.jpg",
+        "query": "Chengdu pandas eating bamboo",
+        "file": "chengdu-panda.jpg",
+        "author": "Hyjk2000",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Chengdu_pandas_eating.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "panda-baby",
+      "text": "Baby pandas are born pink and tiny, then grow fluffy!",
+      "about": "A newborn panda weighs only about 100 grams, about as much as a stick of butter, and it is pink, almost bald and cannot see yet. Its mom is about 900 times heavier! After a few weeks the baby grows its black and white fur, and by a few months old it is a fluffy, wobbly ball like the cubs in this photo, taken at the Chengdu panda base. Keepers there help look after the babies, and cubs sometimes play together in a pile. Ask Francis: how many cubs can you count?",
+      "emoji": "🍼",
+      "photo": {
+        "commonsTitle": "File:Baby Pandas.JPG",
+        "query": "baby pandas Chengdu",
+        "file": "chengdu-panda-baby.jpg",
+        "author": "Joshua Doubek",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Baby_Pandas.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "red-panda",
+      "text": "Red pandas live here too, with stripy, fluffy tails!",
+      "about": "Red pandas live at the Chengdu panda base too. Even though they share the name, red pandas are not little giant pandas: they belong to their very own animal family. They are about the size of a big house cat, with russet red fur, a white face mask and a long tail with rings around it. They love to climb, nap in trees and wrap their fluffy tails around themselves like a blanket when it is cold. Ask Francis: how many stripes can you count on the tail?",
+      "emoji": "🦊",
+      "photo": {
+        "commonsTitle": "File:Ailurus fulgens Chengdu 20140325 2.jpg",
+        "query": "red panda Chengdu",
+        "file": "chengdu-red-panda.jpg",
+        "author": "sharonang",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ailurus_fulgens_Chengdu_20140325_2.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "hot-pot",
+      "text": "Hot pot bubbles on the table. You cook your own food!",
+      "about": "Hot pot is one of Chengdu's favorite meals. A big pot of broth bubbles in the middle of the table, and everyone drops in their own thin slices of meat, mushrooms, tofu, noodles and vegetables, then fishes them out with chopsticks when they are cooked. The Chengdu broth is red and very spicy, but many pots are split in two, with a spicy side and a mild side for people who like less heat. In 2010 Chengdu became Asia's first UNESCO City of Gastronomy, a special title for a city with amazing food. Ask Francis: what would you cook in the hot pot?",
+      "emoji": "🍲",
+      "photo": {
+        "commonsTitle": "File:Chengdu hot pot.jpg",
+        "query": "Chengdu hot pot",
+        "file": "chengdu-hot-pot.jpg",
+        "author": "유신예",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Chengdu_hot_pot.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "peppers",
+      "text": "Tiny Sichuan peppercorns make your mouth tingle and buzz!",
+      "about": "These little red husks are Sichuan peppercorns, called huajiao (hwah-jyow). They are not chili peppers at all, they come from a kind of prickly ash tree. When you eat one, your lips and tongue tingle and buzz, a bit like when your foot falls asleep, then it goes away. Chengdu cooks call this feeling ma (mah), and when it is mixed with chili heat, called la (lah), you get mala: numbing and spicy together. A grown-up might let you try just one tiny piece!",
+      "emoji": "🌶️",
+      "photo": {
+        "commonsTitle": "File:Sichuan pepper.jpg",
+        "query": "Sichuan pepper",
+        "file": "chengdu-peppers.jpg",
+        "author": "Matt K",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sichuan_pepper.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "face-changing",
+      "text": "Opera actors change their masks in the blink of an eye!",
+      "about": "This is Sichuan opera face-changing, called bian lian (byen lyen). The actor wears a bright painted mask, then with a swish of a fan, a flick of the sleeve or a turn of the head, the face suddenly changes to a new color, again and again, faster than you can blink. The masks are thin layers of silk, and exactly how it is done is a secret passed down from teacher to student. Chengdu theaters and teahouses put on shows with music, puppets and fire-breathing too. Ask Francis: what color face would you change into?",
+      "emoji": "🎭",
+      "photo": {
+        "commonsTitle": "File:Sichuan Opera Face Changer (50427868601).jpg",
+        "query": "Sichuan opera face changing",
+        "file": "chengdu-face-changing.jpg",
+        "author": "RykJ",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sichuan_Opera_Face_Changer_(50427868601).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "teahouse",
+      "text": "In People's Park, people sip tea in bamboo chairs.",
+      "about": "People's Park is a big green park in the middle of Chengdu, and its old teahouse is packed with friends sitting in bamboo chairs, chatting and sipping tea for hours. Some tea masters pour hot water from a kettle with a spout about a meter long, swinging it around like a dancer without spilling a drop. There are even ear cleaners who walk around with tiny tools and a little bell to tidy people's ears. Nearby, people play mahjong, a game with clacking tiles, and dance or sing together. Ask Francis: would you like to try a teapot with a super long spout?",
+      "emoji": "🍵",
+      "photo": {
+        "commonsTitle": "File:Teahouse in Peoples Park - Chengdu, China - DSC05353.jpg",
+        "query": "People's Park teahouse Chengdu",
+        "file": "chengdu-teahouse.jpg",
+        "author": "Daderot",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Teahouse_in_Peoples_Park_-_Chengdu,_China_-_DSC05353.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "jinli",
+      "text": "Red lanterns glow over Jinli Street at night.",
+      "about": "Jinli (jin-LEE) is an old-style street right next to Wuhou Shrine, with wooden buildings, curved roofs and rows of red lanterns that glow at night. It is full of snack stalls and little shops. You might see a sugar painter drizzling hot melted sugar into a dragon or a rabbit on a stick, or try sweet rice balls and skewers of tasty snacks. Street performers play music and show puppets. Ask Francis: what animal would you want as a sugar painting?",
+      "emoji": "🏮",
+      "photo": {
+        "commonsTitle": "File:Chengdu Jinli-Straße bei Nacht 48.jpg",
+        "query": "Jinli Street Chengdu night",
+        "file": "chengdu-jinli.jpg",
+        "author": "Zairon",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Chengdu_Jinli-Stra%C3%9Fe_bei_Nacht_48.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "wuhou",
+      "text": "Wuhou Shrine remembers clever Zhuge Liang, a hero from old stories.",
+      "about": "Wuhou Shrine (woo-HOH) is a peaceful temple with gardens, built to honor Zhuge Liang (JOO-guh lyahng) and the king Liu Bei (lyoh bay), who lived about 1,800 years ago in a time called the Three Kingdoms. Zhuge Liang was famous for being very clever, and in pictures he always carries a feather fan, just like this statue. A famous legend says he once tricked his enemies into giving him 100,000 arrows: he sent boats covered in straw into the fog, and the arrows stuck in the straw! Ask Francis: can you think of a clever trick?",
+      "emoji": "🪶",
+      "photo": {
+        "commonsTitle": "File:Zhuge Liang - Wuhou Shrine - Chengdu, China - DSC05454.jpg",
+        "query": "Zhuge Liang statue Wuhou Shrine",
+        "file": "chengdu-wuhou.jpg",
+        "author": "Daderot",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Zhuge_Liang_-_Wuhou_Shrine_-_Chengdu,_China_-_DSC05454.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "dujiangyan",
+      "text": "This clever river system is over 2,000 years old and still works!",
+      "about": "This is Dujiangyan (doo-jyahng-YEN), near Chengdu. About 2,270 years ago, a governor named Li Bing (lee bing) and his workers built it to tame the wild Min River. The pointy island in the photo is called the Fish Mouth, because it is shaped like a fish's nose. It splits the river in two: one part flows on, and the other part goes into channels that water the farms around Chengdu, and it does it all without a big dam. It is still working today and is a UNESCO World Heritage Site. Ask Francis: how would you split a river in two?",
+      "emoji": "🌊",
+      "photo": {
+        "commonsTitle": "File:The Fish's Mouth.jpg",
+        "query": "Dujiangyan Fish Mouth",
+        "file": "chengdu-dujiangyan.jpg",
+        "author": "Tkotc",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:The_Fish%27s_Mouth.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "leshan",
+      "text": "The Leshan Giant Buddha is taller than a twenty-floor building!",
+      "about": "About 150 kilometers south of Chengdu, at Leshan (luh-SHAHN), a giant Buddha is carved right into a red stone cliff beside three rivers. It is 71 meters tall, and people worked on it for about 90 years, finishing more than 1,200 years ago. Each ear is about 7 meters long, longer than a car, and lots of visitors can stand together on one of his giant feet. Look at the people at the bottom of the photo to see how tiny they are! Ask Francis: how many of you would it take to reach his knee?",
+      "emoji": "🗿",
+      "photo": {
+        "commonsTitle": "File:Leshan Giant Buddha (1).jpg",
+        "query": "Leshan Giant Buddha",
+        "file": "chengdu-leshan.jpg",
+        "author": "xiquinhosilva",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Leshan_Giant_Buddha_(1).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "goodbye",
+      "text": "Zaijian, Chengdu! Wave bye from the Wide and Narrow Alleys.",
+      "about": "Zaijian (dzai-JYEN) means goodbye, see you again. Kuanzhai Xiangzi (kwahn-jai shyahng-dzuh), the Wide and Narrow Alleys, are three old lanes called Wide Alley, Narrow Alley and Well Alley, lined with grey brick courtyard houses, little cafes and teahouses. Not far from Chengdu is Mount Qingcheng (ching-CHUNG), a green mountain full of forest paths and temples. Ask Francis: what was your favorite thing in Chengdu, the pandas, the hot pot or the magic masks?",
+      "emoji": "👋",
+      "photo": {
+        "commonsTitle": "File:Wide Alley - 宽巷子 - January 2019, Chengdu, Sichuan.jpg",
+        "query": "Wide Alley Kuanzhai Xiangzi Chengdu",
+        "file": "chengdu-goodbye.jpg",
+        "author": "Breaknet2025",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Wide_Alley_-_%E5%AE%BD%E5%B7%B7%E5%AD%90_-_January_2019,_Chengdu,_Sichuan.jpg",
+        "verified": true
+      }
+    }
+  ]
+}
