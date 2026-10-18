@@ -78,7 +78,7 @@ final class DemoVoiceTransport: VoiceTransport {
         if givesStar, let page {
             Task { @MainActor [weak self] in
                 try? await Task.sleep(nanoseconds: 1_500_000_000)
-                let award = StarAward(book: page.bookId, page: page.pageId, city: page.city, whyHow: true, stars: 2, words: 9)
+                let award = StarAward(book: page.bookId, page: page.pageId, city: page.city, whyHow: true, stars: 1, words: 9)
                 self?.onEvent?(.star(award))
             }
         }

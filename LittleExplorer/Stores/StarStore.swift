@@ -94,7 +94,8 @@ final class StarStore {
     @ObservationIgnored var onCelebrate: (() -> Void)?
 
     static let curiousCatGoal = 10
-    static let bigTalkerGoal = 5
+    /// Only a page's first question earns a star (and an award), so long ones are rarer than before.
+    static let bigTalkerGoal = 3
 
     init(defaults: UserDefaults = .standard, key: String = "starAwards.v1") {
         self.defaults = defaults
@@ -140,7 +141,7 @@ final class StarStore {
         shelves.filter { !$0.isTravel }.map { PassportStamp(city: $0.city, flagBook: $0.flagBook, stamped: hasAsked(inCity: $0.city)) }
     }
 
-    /// Curious Cat (10 questions), Big Talker (5 long questions), and an Expert badge for each city
+    /// Curious Cat (10 questions), Big Talker (3 long questions), and an Expert badge for each city
     /// with several books (asked in every one of them), e.g. Paris Expert.
     func badges(shelves: [CityShelf]) -> [StarBadge] {
         var badges = [
@@ -191,7 +192,7 @@ extension StarStore {
         var i = 0
         while sum < total {
             let book = books[i % books.count]
-            let stars = min(i % 3 == 0 ? 2 : 1, total - sum)
+            let stars = 1  // one star per page
             let date = Date(timeIntervalSince1970: 1_750_000_000 + Double(i) * 600)
             awards.append(
                 StarAward(

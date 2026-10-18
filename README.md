@@ -126,6 +126,12 @@ Milo's settings start with `PIP_`. Milo has two voice engines. Pick one with `PI
   Tuning knobs (env): `PIP_REALTIME_EAGERNESS` (low|medium|high|auto), `PIP_REALTIME_BARGE_IN` (vad|model),
   `PIP_REALTIME_MIN_INTERRUPTION_DURATION` (seconds), `PIP_REALTIME_TURNS` (server|client, client is experimental).
   Each turn logs its timing (`turn N: wait … answer … total …`, no transcripts) and each session logs a median/p90 summary.
+  An `interrupted by …` line says what stopped a reply (`barge_in`, `guard`, or `programmatic` for the session
+  closing) and how long he had been talking; `he talked over Milo for …` gives the full length once he stops.
+  The transcriber sometimes repeats his last words on a noise or on Milo's echo, or turns a noise into another
+  script (e.g. Chinese characters); the guard skips repeated transcripts and ignores ones with no English letters.
+  If his app never joins the room (a tap cancelled while Milo was waking up), the agent leaves after 20 s without
+  greeting anyone.
 
 The e2e harness can try either engine without restarting the agent: `tools/e2e_smoke.py --mode realtime`.
 It reports the reply latency (median/p90), how fast Milo stops when talked over, and checks slow word-by-word
@@ -210,16 +216,20 @@ device, set its address in the Grown-ups corner (e.g. `http://<your-mac>.local:8
 
 ### Stars and the Passport
 
-He earns stars for curious questions, not for talking a lot. Milo decides what counts as a real question about
-the book: his relevance check (the same one that decides whether he answers at all) lets it through and he
-answers it, starting with "Star question!". The agent (`stars.py`) checks every award before it
-counts, using the input transcription; nothing the model says can hand out a star:
+He earns stars for curious questions, not for talking a lot: one star per page. Milo decides what counts as a
+real question about the book: his relevance check (the same one that decides whether he answers at all) lets it
+through and he answers it. When that page's star is still waiting, his answer starts with "Great question, that's
+a star!" and the answer itself follows right away; once the page has its star he doesn't mention stars there. The
+agent (`stars.py`) checks every award before it counts, using the input transcription; nothing the model says can
+hand out a star:
 
-- 1 star for a question (at least 3 words, not reading the page aloud, not "hi Milo" or other small talk).
-- +1 for a long question (8+ words) or a "why"/"how" question; +1 for a follow-up (the same page as the last
-  star, within 90 seconds).
-- At most 3 stars per page per session (`PIP_STAR_PAGE_CAP`) and 8 seconds between stars (`PIP_STAR_COOLDOWN_S`;
-  `PIP_STAR_LONG_WORDS` sets "long").
+- 1 star for the first real question on a page (at least 3 words, not reading the page aloud, not "hi Milo" or
+  other small talk). Later questions on that page earn nothing; the next page has its own star.
+- Long (8+ words, `PIP_STAR_LONG_WORDS`) and "why"/"how" questions are noted for the badges but earn no extra
+  stars. `PIP_STAR_COOLDOWN_S` can add a pause between stars (off by default).
+- The token server enforces the same rule, so an older agent can't go over it: `POST /stars` stores at most one
+  award per device, session, book and page, and counts each award as 1 star. Stars stored before the rule are
+  kept as they were.
 - There is no model tool, so the game never delays Milo's reply (a tool call made gpt-realtime answer in a
   second response). The star is checked off the voice path once Milo starts answering. `PIP_STARS=0` turns the
   game off on the agent.
@@ -230,7 +240,7 @@ device id. The app saves them locally and, on launch, merges back the server's c
 access key), so stars survive a reinstall. Only counts, kinds, book, page and time are stored, never what he said.
 
 The library's top corner shows his total; tapping it opens the Passport: a stamp for each city he has asked
-about (not the Travel shelf), plus Curious Cat (10 questions), Big Talker (5 long questions) and an Expert badge for asking in every
+about (not the Travel shelf), plus Curious Cat (10 questions), Big Talker (3 long questions) and an Expert badge for asking in every
 book of a city (e.g. Paris Expert). The last page of each book shows the stars from that book. `tools/devices.py`
 lists stars per device. Pipeline mode gives stars too, but Milo doesn't announce them.
 

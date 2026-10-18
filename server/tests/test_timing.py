@@ -72,3 +72,35 @@ def test_turn_timer_counts_interruptions_and_quiet_turns(caplog):
     assert (timer.false_interruptions, timer.resumed, timer.quiet_turns) == (1, 1, 1)
     summary = timer.summary()
     assert "stayed quiet 1" in summary and "audio_activity 1" in summary and "(resumed 1)" in summary
+
+
+def test_barge_in_counts_the_speech_the_vad_needed_first(caplog):
+    """The VAD says "speaking" only after lead_s of speech, and the soft barge-in fires right then."""
+    clock = Clock()
+    timer = TurnTimer(clock=clock, lead_s=0.6)
+    caplog.set_level(logging.INFO, logger="little_explorer.voice.timing")
+    handle = Handle()
+    timer.speech_created(handle)
+    timer.agent_state("speaking")
+    clock.t = 3.0
+    timer.user_state("speaking")
+    timer.note_interrupt("barge_in")
+    handle.finish("programmatic")
+    assert "interrupted by barge_in after 3.00s, user speech 0.60s so far" in caplog.text
+    timer.agent_state("listening")
+    clock.t = 4.5
+    timer.user_state("listening")
+    assert "he talked over Milo for 2.10s" in caplog.text
+    assert timer.interruptions == {"barge_in": 1}
+    assert "talked over Milo median 2.10s" in timer.summary()
+
+
+def test_programmatic_without_a_recent_cause_stays_programmatic():
+    clock = Clock()
+    timer = TurnTimer(clock=clock)
+    timer.note_interrupt("guard")
+    clock.t = 5.0  # long after: e.g. the session closing
+    handle = Handle()
+    timer.speech_created(handle)
+    handle.finish("programmatic")
+    assert timer.interruptions == {"programmatic": 1}

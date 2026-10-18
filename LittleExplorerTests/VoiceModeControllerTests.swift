@@ -36,14 +36,15 @@ final class MockTransport: VoiceTransport {
 @MainActor
 final class VoiceModeControllerTests: XCTestCase {
     private var transports: [MockTransport] = []
+    private var clock = Date(timeIntervalSince1970: 1_000)
 
     private func makeController(configure: ((MockTransport) -> Void)? = nil) -> VoiceModeController {
-        VoiceModeController { [unowned self] in
+        VoiceModeController(makeTransport: { [unowned self] in
             let transport = MockTransport()
             configure?(transport)
             transports.append(transport)
             return transport
-        }
+        }, now: { [unowned self] in clock })
     }
 
     private func page(_ n: Int) -> PageContext {
@@ -92,11 +93,37 @@ final class VoiceModeControllerTests: XCTestCase {
         let voice = makeController()
         await voice.toggle()
         XCTAssertTrue(voice.isEnabled)
+        clock += 2
         await voice.toggle()
         XCTAssertEqual(voice.state, .off)
         XCTAssertEqual(transports[0].disconnectCount, 1)
         await voice.pageDidChange(page(9))
         XCTAssertTrue(transports[0].pages.isEmpty)
+    }
+
+    func testDoubleTapWhileMiloWakesUpDoesNotStartASecondRoom() async {
+        let voice = makeController()
+        await voice.toggle()
+        XCTAssertEqual(voice.state, .waitingForBuddy)
+        clock += 0.3
+        await voice.toggle()  // the second tap of a double tap
+        XCTAssertEqual(voice.state, .waitingForBuddy, "still waking Milo up")
+        XCTAssertEqual(transports.count, 1)
+        XCTAssertEqual(transports[0].disconnectCount, 0)
+
+        clock += 2
+        await voice.toggle()  // a real "Stop talking" a moment later
+        XCTAssertEqual(voice.state, .off)
+        XCTAssertEqual(transports[0].disconnectCount, 1)
+    }
+
+    func testOnceMiloIsHereOneTapTurnsHimOff() async {
+        let voice = makeController()
+        await voice.toggle()
+        transports[0].send(.buddyActivity(.listening))
+        clock += 0.3
+        await voice.toggle()
+        XCTAssertEqual(voice.state, .off)
     }
 
     func testBuddyActivityEventsDriveState() async {

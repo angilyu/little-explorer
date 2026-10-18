@@ -51,65 +51,58 @@ def hear(keeper, text, decision=TurnDecision.RESPOND, context=PAGE, clock=None, 
 
 def test_a_real_question_earns_one_star(keeper, clock):
     hear(keeper, "What is on top of the tower?", clock=clock)
-    award = keeper.judge("question", "what is at the top")
+    award = keeper.judge("what is at the top")
     assert isinstance(award, StarAward)
     assert (award.stars, award.kind, award.book, award.page, award.city) == (1, "question", "paris", "eiffel", "Paris")
     assert (award.long, award.why_how, award.followup, award.words) == (False, False, False, 7)
     assert award.device_id == "ipad-1" and award.reason == "what is at the top"
 
 
-def test_why_and_how_questions_earn_a_bonus(keeper, clock):
-    hear(keeper, "Why is it brown?", clock=clock)
-    assert keeper.judge("question").stars == 2
+@pytest.mark.parametrize(
+    "text",
+    [
+        "Why is it brown?",
+        "What do the people at the very top of the tower see?",
+        "Why do they paint the whole big tower again every seven years?",
+    ],
+)
+def test_long_and_why_questions_are_noted_but_still_one_star(keeper, clock, text):
+    hear(keeper, text, clock=clock)
+    award = keeper.judge()
+    assert award.stars == 1 and (award.long or award.why_how)
 
 
-def test_long_questions_earn_a_bonus(keeper, clock):
-    hear(keeper, "What do the people at the very top of the tower see?", clock=clock)
-    award = keeper.judge("question")
-    assert award.long and not award.why_how and award.stars == 2
-
-
-def test_long_why_question_gets_one_bonus_not_two(keeper, clock):
-    hear(keeper, "Why do they paint the whole big tower again every seven years?", clock=clock)
-    assert keeper.judge("question").stars == 2
-
-
-def test_follow_up_bonus_needs_an_earlier_star_on_the_page(keeper, clock):
-    hear(keeper, "What is at the top?", clock=clock)
-    first = keeper.judge("follow_up")
-    assert first.stars == 1 and not first.followup  # nothing to follow up yet
-    hear(keeper, "Who lives up there?", clock=clock)
-    second = keeper.judge("follow_up")
-    assert second.followup and second.kind == "follow_up" and second.stars == 2
-
-
-def test_at_most_three_stars_per_page(keeper, clock):
+def test_one_star_per_page(keeper, clock):
     hear(keeper, "Why is the tower so tall?", clock=clock)
-    assert keeper.judge("question").stars == 2
+    assert keeper.judge().stars == 1
     hear(keeper, "How do people go up there?", clock=clock)
-    assert keeper.judge("follow_up").stars == 1  # 3 earned, trimmed to the one left
-    hear(keeper, "What is the tower made of?", clock=clock)
-    assert keeper.judge("question") == "this page has all its stars"
-    assert keeper.page_stars("paris", "eiffel") == 3
+    assert keeper.judge() == "this page's star is taken"
+    assert keeper.page_stars("paris", "eiffel") == 1
     hear(keeper, "What is inside the museum?", context=OTHER_PAGE, clock=clock)
-    assert isinstance(keeper.judge("question"), StarAward)  # a new page has new stars
+    assert keeper.judge().stars == 1  # a new page has its own star
+    assert keeper.total() == 2
 
 
-def test_cooldown_between_stars(keeper, clock):
+def test_a_page_turn_star_is_not_refused_as_too_soon(keeper, clock):
     hear(keeper, "What is at the top?", clock=clock)
-    assert isinstance(keeper.judge("question"), StarAward)
-    hear(keeper, "What color is it at night?", clock=clock, gap=2.0)
-    assert keeper.judge("question") == "too soon after the last star"
-    clock.t += 10
-    hear(keeper, "What color is it in the day?", clock=clock)
-    assert isinstance(keeper.judge("question"), StarAward)
+    assert isinstance(keeper.judge(), StarAward)
+    hear(keeper, "What is inside the museum?", context=OTHER_PAGE, clock=clock, gap=2.0)
+    assert isinstance(keeper.judge(), StarAward)
+
+
+def test_cooldown_can_be_turned_on(clock):
+    keeper = StarKeeper(clock=clock, rules=StarRules(cooldown_s=8.0))
+    hear(keeper, "What is at the top?", clock=clock)
+    assert isinstance(keeper.judge(), StarAward)
+    hear(keeper, "What is inside the museum?", context=OTHER_PAGE, clock=clock, gap=2.0)
+    assert keeper.judge() == "too soon after the last star"
 
 
 def test_one_award_per_question(keeper, clock):
     hear(keeper, "What is at the top?", clock=clock)
-    assert isinstance(keeper.judge("question"), StarAward)
+    assert isinstance(keeper.judge(), StarAward)
     clock.t += 30
-    assert keeper.judge("question") == "no new question heard"
+    assert keeper.judge() == "no new question heard"
 
 
 @pytest.mark.parametrize(
@@ -124,28 +117,28 @@ def test_one_award_per_question(keeper, clock):
 )
 def test_reading_noise_greetings_and_statements_earn_nothing(keeper, clock, text, decision, reason):
     hear(keeper, text, decision, clock=clock)
-    assert keeper.judge("question") == reason
+    assert keeper.judge() == reason
     assert keeper.total() == 0
 
 
 def test_no_star_without_a_heard_question(keeper):
-    assert keeper.judge("question") == "no new question heard"
+    assert keeper.judge() == "no new question heard"
 
 
 def test_an_old_question_cannot_earn_a_star(keeper, clock):
     hear(keeper, "What is at the top?", clock=clock)
     clock.t += 25
-    assert keeper.judge("question") == "no new question heard"
+    assert keeper.judge() == "no new question heard"
 
 
 def test_no_star_before_a_book_is_open(keeper, clock):
     hear(keeper, "What is at the top of it?", context={}, clock=clock)
-    assert keeper.judge("question") == "no book open"
+    assert keeper.judge() == "no book open"
 
 
 def test_question_words_without_a_question_mark_count(keeper, clock):
     hear(keeper, "I wonder why it is brown", clock=clock)
-    assert keeper.judge("question").stars == 2
+    assert keeper.judge().stars == 1
 
 
 def test_small_talk():
@@ -156,50 +149,36 @@ def test_small_talk():
 
 def test_reasons_are_short_and_single_line(keeper, clock):
     hear(keeper, "What is at the top?", clock=clock)
-    award = keeper.judge("question", "a\nvery " + "long " * 40)
+    award = keeper.judge("a\nvery " + "long " * 40)
     assert "\n" not in award.reason and len(award.reason) <= 80
 
 
 def test_rules_from_env():
-    rules = StarRules.from_env({"PIP_STAR_PAGE_CAP": "5", "PIP_STAR_COOLDOWN_S": "3", "PIP_STAR_LONG_WORDS": "10"})
-    assert (rules.page_cap, rules.cooldown_s, rules.long_words) == (5, 3.0, 10)
+    rules = StarRules.from_env({"PIP_STAR_COOLDOWN_S": "3", "PIP_STAR_LONG_WORDS": "10"})
+    assert (rules.cooldown_s, rules.long_words) == (3.0, 10)
     assert StarRules.from_env({}) == StarRules()
+    assert StarRules().cooldown_s == 0
 
 
 def test_status_line_and_instructions(keeper, clock):
-    assert "still has stars" in keeper.status_line(PAGE)
-    for text in ("Why is it so tall?", "How do you get up?"):
-        hear(keeper, text, clock=clock)
-        keeper.judge("question")
+    assert "still waiting" in keeper.status_line(PAGE)
+    hear(keeper, "Why is it so tall?", clock=clock)
+    keeper.judge()
     assert "Don't mention stars" in keeper.status_line(PAGE)
-    assert "still has stars" in keeper.status_line(OTHER_PAGE)
+    assert "still waiting" in keeper.status_line(OTHER_PAGE)
     assert "Don't mention stars" in keeper.status_line({})
     text = realtime_instructions(PAGE, stars=keeper.status_line(PAGE))
-    assert STAR_RULES in text and "Star question!" in text
-    assert "Star question" not in realtime_instructions(PAGE)
+    assert STAR_RULES in text and "Great question, that's a star!" in text
+    assert "Star question" not in text
+    assert "that's a star" not in realtime_instructions(PAGE)
 
 
 def test_payload_has_no_transcript(keeper, clock):
     hear(keeper, "Why is the tower brown?", clock=clock)
-    award = keeper.judge("question", "tower color")
+    award = keeper.judge("tower color")
     data = json.loads(star_payload(award, 2))
-    assert data["session_total"] == 2 and data["stars"] == 2 and "room" not in data
+    assert data["session_total"] == 2 and data["stars"] == 1 and "room" not in data
     assert "brown" not in json.dumps(data)
-
-
-# --- follow-ups --------------------------------------------------------------------------------
-
-
-def test_next_question_on_the_starred_page_is_a_follow_up(keeper, clock):
-    hear(keeper, "What is on top of the tower?", clock=clock)
-    assert keeper.kind_for_next() == "question"
-    keeper.judge(keeper.kind_for_next())
-    hear(keeper, "What color is the top part?", clock=clock)
-    assert keeper.kind_for_next() == "follow_up"
-    hear(keeper, "What is in this park?", context=OTHER_PAGE, clock=clock)
-    assert keeper.kind_for_next() == "question"
-    hear(keeper, "What color is the top part?", clock=clock, gap=keeper.rules.followup_s + 1)
-    assert keeper.kind_for_next() == "question"
 
 
 class FakeParticipant:
@@ -225,15 +204,12 @@ async def test_star_game_sends_awards_to_the_app_and_the_server(clock):
     game = agent_mod.StarGame(ctx, StarKeeper(device_id="ipad-1", clock=clock), report=report)
     game.refresh = lambda: refreshed.append(True)
     hear(game.keeper, "Why is it brown?", clock=clock)
-    game.award(game.keeper.judge("question"))
+    game.award(game.keeper.judge())
     await game.drain()
     payload, reliable, topic = ctx.room.local_participant.sent[0]
-    assert topic == "milo.star" and reliable and payload["stars"] == 2 and payload["session_total"] == 2
-    assert reported[0].stars == 2 and refreshed == []
-    hear(game.keeper, "How do you climb it?", clock=clock)
-    game.award(game.keeper.judge("question"))
-    await game.drain()
-    assert refreshed == [True]  # the page is full now, so the model's instructions change
+    assert topic == "milo.star" and reliable and payload["stars"] == 1 and payload["session_total"] == 1
+    assert reported[0].stars == 1
+    assert refreshed == [True]  # the page's one star is taken, so the model's instructions change
 
 
 def new_game(clock, **kw):
@@ -266,8 +242,8 @@ async def test_realtime_star_comes_once_milo_answers(clock):
     clock.t += 0.5
     game.milo_started_speaking()
     await game.drain()
-    assert [a.stars for a in game.keeper.awards] == [2]
-    assert ctx.room.local_participant.sent[0][0]["stars"] == 2
+    assert [a.stars for a in game.keeper.awards] == [1]
+    assert ctx.room.local_participant.sent[0][0]["stars"] == 1
 
 
 async def test_realtime_answer_already_under_way_counts(clock):
@@ -336,7 +312,7 @@ async def test_pipeline_awards_answered_questions_directly(clock):
     game.pipeline_decision(UserTurn(text="Why is it brown?", context=PAGE), TurnDecision.RESPOND)
     game.pipeline_decision(UserTurn(text="The tower is brown.", context=PAGE), TurnDecision.LISTEN)
     await game.drain()
-    assert game.keeper.total() == 2 and len(ctx.room.local_participant.sent) == 1
+    assert game.keeper.total() == 1 and len(ctx.room.local_participant.sent) == 1
 
 
 async def test_watch_tracks_who_is_speaking(clock):
@@ -359,7 +335,7 @@ async def test_report_star_goes_to_the_stars_endpoint(monkeypatch, keeper, clock
     )
     monkeypatch.delenv("PIP_SERVER_URL", raising=False)
     hear(keeper, "Why is it brown?", clock=clock)
-    assert await report_star(keeper.judge("question")) is False  # not set up: skip quietly
+    assert await report_star(keeper.judge()) is False  # not set up: skip quietly
 
 
 # --- storage and endpoints -----------------------------------------------------------------------
@@ -372,7 +348,7 @@ def store(tmp_path):
 
 def award_dict(keeper, clock, text="Why is it brown?", context=PAGE):
     hear(keeper, text, clock=clock, context=context)
-    return keeper.judge("question", "tower color").to_dict()
+    return keeper.judge("tower color").to_dict()
 
 
 def test_store_keeps_awards_once(store, keeper, clock):
@@ -381,14 +357,14 @@ def test_store_keeps_awards_once(store, keeper, clock):
     assert store.record_star(data) is False  # a retried report is not counted twice
     saved = store.stars_for("ipad-1")
     assert len(saved) == 1
-    assert saved[0]["stars"] == 2 and saved[0]["why_how"] is True and saved[0]["book"] == "paris"
+    assert saved[0]["stars"] == 1 and saved[0]["why_how"] is True and saved[0]["book"] == "paris"
     assert "room" not in saved[0]
     assert store.stars_for("someone-else") == []
 
 
 def test_store_rejects_bad_awards(store, keeper, clock):
     data = award_dict(keeper, clock)
-    for bad in ({"id": "x"}, {"stars": 9}, {"stars": True}, {"device_id": "bad id!"}):
+    for bad in ({"id": "x"}, {"stars": 0}, {"stars": True}, {"stars": "2"}, {"device_id": "bad id!"}):
         with pytest.raises(ValueError):
             store.record_star({**data, **bad})
 
@@ -398,7 +374,24 @@ def test_summary_counts_stars(store, keeper, clock):
     store.record_star(award_dict(keeper, clock))
     store.record_star(award_dict(keeper, clock, "What is in it?", OTHER_PAGE))
     (row,) = store.summary()
-    assert row["stars"] == 3
+    assert row["stars"] == 2
+
+
+def test_store_allows_one_star_per_page_per_session(store, keeper, clock):
+    """Whatever build of the agent reports it, a page gets one star per session, and one star."""
+    first = award_dict(keeper, clock)
+    assert store.record_star({**first, "stars": 3}) is True  # an old agent's bonus counts as 1
+    second = {**first, "id": "b" * 32, "stars": 2}
+    assert store.record_star(second) is False  # the page already has its star in this room
+    assert store.record_star({**second, "id": "c" * 32, "room": "room-2"}) is True  # a new session
+    assert [s["stars"] for s in store.stars_for("ipad-1")] == [1, 1]
+
+
+def test_stars_already_stored_are_kept(store):
+    """Awards stored before the 1-per-page rule are restored as they were."""
+    store.record_star({"id": "a" * 32, "device_id": "ipad-1", "room": "r", "book": "paris", "page": "eiffel", "stars": 1})
+    store._run(lambda cur: store._exec(cur, "UPDATE stars SET stars = 3", ()))
+    assert [s["stars"] for s in store.stars_for("ipad-1")] == [3]
 
 
 @pytest.fixture
@@ -425,4 +418,4 @@ async def test_star_endpoints(client, keeper, clock):
     assert (await client.get("/stars?device=bad id", headers=app)).status == 400
     resp = await client.get("/stars?device=ipad-1", headers=app)
     body = await resp.json()
-    assert body["total"] == 2 and body["stars"][0]["id"] == data["id"]
+    assert body["total"] == 1 and body["stars"][0]["id"] == data["id"]

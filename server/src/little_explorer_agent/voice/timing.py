@@ -7,10 +7,13 @@ Only timings, counts and causes are logged, never what anyone said. One ``turn``
 * ``answer``: ``thinking`` -> Milo's first audio.
 * ``total``: the child stopped -> Milo's first audio.
 
-An ``interrupted`` line says what stopped a reply (``audio_activity`` = barge-in, ``user_turn`` =
-a new user turn, ``programmatic`` = the guard or the app) and how long the overlapping speech was.
-A false interruption (Milo paused for a noise) is logged with whether he resumed.
-:meth:`TurnTimer.summary` adds medians and p90s for the session.
+An ``interrupted`` line says what stopped a reply (``barge_in`` = the soft barge-in heard him talk
+over Milo, ``guard`` = the reply guard cut a rejected turn, ``audio_activity`` / ``user_turn`` =
+LiveKit's own barge-in, ``programmatic`` = anything else, e.g. the session closing) and how long
+he had been talking over Milo. The VAD only reports speech once it has heard ``lead_s`` of it, so
+that much is counted from before the "speaking" event; a ``talked over Milo`` line gives the full
+length once he stops. A false interruption (Milo paused for a noise) is logged with whether he
+resumed. :meth:`TurnTimer.summary` adds medians and p90s for the session.
 """
 
 from __future__ import annotations
@@ -25,6 +28,8 @@ from typing import Any
 log = logging.getLogger("little_explorer.voice.timing")
 
 QUIET_TOOL = "stay_quiet"
+# A programmatic interruption this soon after note_interrupt() is the noted cause.
+CAUSE_WINDOW_S = 2.0
 
 
 def p90(values: list[float]) -> float | None:
@@ -43,6 +48,8 @@ def _stats(values: list[float]) -> str:
 @dataclass
 class TurnTimer:
     clock: Callable[[], float] = time.monotonic
+    # Speech the VAD needed before it said "speaking" (its min_speech_duration).
+    lead_s: float = 0.0
     waits: list[float] = field(default_factory=list)
     answers: list[float] = field(default_factory=list)
     totals: list[float] = field(default_factory=list)
@@ -52,12 +59,15 @@ class TurnTimer:
     interruptions: dict[str, int] = field(default_factory=dict)
     false_interruptions: int = 0
     resumed: int = 0
+    overlaps: list[float] = field(default_factory=list)
     _user_started: float | None = None
     _user_stopped: float | None = None
     _thinking: float | None = None
     _agent_speaking: bool = False
     _overlap_started: float | None = None
     _last_overlap: float | None = None
+    _cause: str | None = None
+    _cause_at: float = 0.0
 
     def attach(self, session: Any) -> TurnTimer:
         session.on("user_state_changed", lambda ev: self.user_state(ev.new_state))
@@ -72,13 +82,15 @@ class TurnTimer:
         if state == "speaking":
             self._user_started = now
             if self._agent_speaking:
-                self._overlap_started = now
+                self._overlap_started = now - self.lead_s
         elif state == "listening" and self._user_started is not None:
             self._user_stopped = now
             self.segments += 1
             if self._overlap_started is not None:
                 self._last_overlap = now - self._overlap_started
                 self._overlap_started = None
+                self.overlaps.append(self._last_overlap)
+                log.info("he talked over Milo for %.2fs", self._last_overlap)
 
     def agent_state(self, state: str) -> None:
         now = self.clock()
@@ -108,9 +120,12 @@ class TurnTimer:
         def done(h: Any) -> None:
             if not getattr(h, "interrupted", False):
                 return
-            source = str(getattr(h, "_interrupt_source", None) or "unknown")
-            self.interruptions[source] = self.interruptions.get(source, 0) + 1
             now = self.clock()
+            source = str(getattr(h, "_interrupt_source", None) or "unknown")
+            if source == "programmatic" and self._cause is not None and now - self._cause_at <= CAUSE_WINDOW_S:
+                source = self._cause
+            self._cause = None
+            self.interruptions[source] = self.interruptions.get(source, 0) + 1
             if self._overlap_started is not None:
                 speech = f", user speech {now - self._overlap_started:.2f}s so far"
             elif self._last_overlap is not None:
@@ -121,6 +136,10 @@ class TurnTimer:
             self._last_overlap = None
 
         handle.add_done_callback(done)
+
+    def note_interrupt(self, cause: str) -> None:
+        """Say why the next programmatic interruption happens (``barge_in`` or ``guard``)."""
+        self._cause, self._cause_at = cause, self.clock()
 
     def false_interruption(self, resumed: bool) -> None:
         self.false_interruptions += 1
@@ -137,7 +156,8 @@ class TurnTimer:
         return (
             f"user speech {self.segments}, replies {self.replies}, stayed quiet {self.quiet_turns}; "
             f"wait {_stats(self.waits)}; answer {_stats(self.answers)}; total {_stats(self.totals)}; "
-            f"interrupted: {cut}; false interruptions {self.false_interruptions} (resumed {self.resumed})"
+            f"interrupted: {cut}; talked over Milo {_stats(self.overlaps)}; "
+            f"false interruptions {self.false_interruptions} (resumed {self.resumed})"
         )
 
     async def log_summary(self, *_: Any) -> None:

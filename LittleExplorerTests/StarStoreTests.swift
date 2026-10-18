@@ -106,11 +106,12 @@ final class StarStoreTests: XCTestCase {
 
     func testCuriousCatAndBigTalkerBadges() throws {
         let store = StarStore(defaults: defaults)
-        store.merge((0..<10).map { award("q\($0)", long: $0 < 4) })
+        store.merge((0..<10).map { award("q\($0)", long: $0 < 2) })
         var badges = Dictionary(uniqueKeysWithValues: store.badges(shelves: try shelves()).map { ($0.id, $0) })
         XCTAssertTrue(badges["curious-cat"]!.earned)
         XCTAssertFalse(badges["big-talker"]!.earned)
-        XCTAssertEqual(badges["big-talker"]!.progress, 4)
+        XCTAssertEqual(badges["big-talker"]!.progress, 2)
+        XCTAssertEqual(badges["big-talker"]!.goal, 3)
         store.merge([award("long", long: true)])
         badges = Dictionary(uniqueKeysWithValues: store.badges(shelves: try shelves()).map { ($0.id, $0) })
         XCTAssertTrue(badges["big-talker"]!.earned)
@@ -133,6 +134,7 @@ final class StarStoreTests: XCTestCase {
     func testDemoAwardsAddUpToTheAskedTotal() throws {
         let awards = StarStore.demoAwards(total: 23, shelves: try shelves())
         XCTAssertEqual(awards.reduce(0) { $0 + $1.stars }, 23)
+        XCTAssertTrue(awards.allSatisfy { $0.stars == 1 }, "one star per page")
         XCTAssertEqual(Set(awards.map(\.id)).count, awards.count)
     }
 }

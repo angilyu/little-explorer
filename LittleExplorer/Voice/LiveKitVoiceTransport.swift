@@ -30,9 +30,15 @@ final class LiveKitVoiceTransport: NSObject, VoiceTransport, RoomDelegate, @unch
         guard await AVAudioApplication.requestRecordPermission() else { throw VoiceError.microphoneDenied }
         setLatestPage(page)
         let credentials = try await tokenService.fetchCredentials(context: page)
+        // Turned off while the token was coming: joining now would still create a room and wake Milo.
+        if isDisconnecting || Task.isCancelled { throw CancellationError() }
         let room = Room(delegate: self)
         self.room = room
         try await room.connect(url: credentials.serverUrl, token: credentials.participantToken)
+        if isDisconnecting {
+            await room.disconnect()
+            throw CancellationError()
+        }
         _ = try await room.localParticipant.setMicrophone(enabled: true, captureOptions: Self.captureOptions)
         for participant in room.remoteParticipants.values {
             emitActivity(from: participant.attributes)
