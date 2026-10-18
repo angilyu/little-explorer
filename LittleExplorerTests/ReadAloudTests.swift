@@ -252,7 +252,7 @@ final class NarrationClipTests: XCTestCase {
                 checked += 1
             }
         }
-        XCTAssertEqual(checked, 384)
+        XCTAssertEqual(checked, 464)
     }
 
     func testChangedSentenceDoesNotUseAStaleClip() throws {

@@ -1,0 +1,222 @@
+{
+  "id": "beijing",
+  "city": "Beijing",
+  "country": "China",
+  "flagImage": "chengdu-flag.png",
+  "flag": "🇨🇳",
+  "coverColor": "#C62828",
+  "tagline": "Hutongs, kites and crispy duck",
+  "narration": {
+    "instructions": "This book is about Beijing in China. Say every Chinese name the way a Mandarin speaker says it, warmly and naturally, as one smooth word, never spelled out or anglicized: Ni hao (nee how), Beijing (bay-JING), hutong (HOO-tong), tanghulu (tahng-HOO-loo), Tiananmen (tyen-AHN-mun), Zaijian (dzai-JYEN). A short hint like bay-JING is how to sound out the word."
+  },
+  "pages": [
+    {
+      "id": "welcome",
+      "text": "Ni hao! Welcome to Beijing, the capital city of China.",
+      "about": "Ni hao (nee how) means hello! Beijing (bay-JING) is the capital of China, the city where the country's leaders work. Its name means 'northern capital'. More than 20 million people live here, which is more than the whole of some countries! These tall towers are the business district, but Beijing also has very old palaces and alleys that are hundreds of years old. Ask Francis: What does capital city mean? Can you name the capital of another country?",
+      "emoji": "🏙️",
+      "photo": {
+        "commonsTitle": "File:Skyline of Beijing CBD from the southeast (20210907094201).jpg",
+        "query": "Beijing CBD skyline",
+        "file": "beijing-welcome.jpg",
+        "author": "N509FZ",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Skyline_of_Beijing_CBD_from_the_southeast_(20210907094201).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "flag",
+      "text": "Every sunrise, soldiers raise China's red flag at Tiananmen Square.",
+      "about": "Tiananmen (tyen-AHN-mun) Square is one of the biggest city squares in the world. Every morning, right when the sun comes up, soldiers march out and raise China's flag, and lots of people get up very early to watch. The flag is red with five yellow stars: one big star and four little ones. Ask Francis: Would you wake up before the sun to watch the flag go up? How many stars are on China's flag?",
+      "emoji": "🇨🇳",
+      "photo": {
+        "commonsTitle": "File:升国旗 - panoramio.jpg",
+        "query": "Tiananmen flag raising",
+        "file": "beijing-flag.jpg",
+        "author": "武当山人",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:%E5%8D%87%E5%9B%BD%E6%97%97_-_panoramio.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "hutong",
+      "text": "Hutongs are narrow old alleys where families live close together.",
+      "about": "Hutong (HOO-tong) means a small lane or alley. Beijing has had hutongs for hundreds of years. The houses along them are often built around a courtyard, a little square garden in the middle with rooms on every side, called a siheyuan. Grandparents, parents and kids sometimes all lived around one courtyard! Neighbors chat in the lanes, ride bikes and play chess outside. Ask Francis: Would you like a house with a garden right in the middle?",
+      "emoji": "🏘️",
+      "photo": {
+        "commonsTitle": "File:Hutong, Gasse in Peking, alley in Beijing (44042315480).jpg",
+        "query": "Beijing hutong alley",
+        "file": "beijing-hutong.jpg",
+        "author": "FLASHPACKER TRAVELGUIDE",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Hutong,_Gasse_in_Peking,_alley_in_Beijing_(44042315480).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "rickshaw",
+      "text": "You can ride through the hutongs in a pedal rickshaw.",
+      "about": "A pedal rickshaw is like a bicycle with a little covered seat for passengers behind the rider. Visitors ride them around the lakes and hutongs near Houhai and Qianhai, two old lakes in the middle of Beijing. The rider pedals while you sit back and look at the old gray houses and red doors. Ask Francis: Would you rather pedal the rickshaw or ride in the back?",
+      "emoji": "🚲",
+      "photo": {
+        "commonsTitle": "File:2014.09.04.15544 Rikshas Qianhai Xijie Beijing.jpg",
+        "query": "rickshaw Qianhai Beijing",
+        "file": "beijing-rickshaw.jpg",
+        "author": "Hermann Luyken",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:2014.09.04.15544_Rikshas_Qianhai_Xijie_Beijing.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "duck",
+      "text": "Peking duck has crispy skin and comes with tiny thin pancakes.",
+      "about": "Peking is an old way of writing Beijing in English. Peking duck is roasted until the skin is shiny and crispy. Then the cook slices it, and you wrap the duck in a thin pancake with sweet sauce and little sticks of cucumber and spring onion, like a mini wrap. This duck is from Bianyifang, a restaurant that started roasting ducks about 600 years ago! Ask Francis: What would you put in your pancake wrap?",
+      "emoji": "🦆",
+      "photo": {
+        "commonsTitle": "File:Peking duck 1.jpg",
+        "query": "Peking duck Bianyifang",
+        "file": "beijing-duck.jpg",
+        "author": "Pauloleong2002",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Peking_duck_1.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "tanghulu",
+      "text": "Tanghulu are shiny fruits on a stick coated in hard candy.",
+      "about": "Tanghulu (tahng-HOO-loo) is a favorite Beijing street snack, especially in winter. Little red hawthorn fruits, which taste a bit sour, are put on a stick and dipped in hot melted sugar. When the sugar cools it turns hard and glassy, so it goes crunch! Sweet on the outside, tangy on the inside. Today you can also find tanghulu made with strawberries or grapes. Ask Francis: Which fruit would you like on your tanghulu?",
+      "emoji": "🍡",
+      "photo": {
+        "commonsTitle": "File:Peking-015.JPG",
+        "query": "tanghulu Beijing",
+        "file": "beijing-tanghulu.jpg",
+        "author": "Sigismund von Dobschütz",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Peking-015.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "kites",
+      "text": "Beijing kites can look like dragons, swallows and butterflies.",
+      "about": "People in China have been flying kites for a very long time, maybe more than 2,000 years! Beijing is famous for swallow kites, shaped like the little birds, painted with bright patterns. On windy spring days you can see grandpas and kids flying kites in parks and open squares. Some kites are long dragons made of many small pieces joined together. Ask Francis: If you made a kite, what animal would it be?",
+      "emoji": "🪁",
+      "photo": {
+        "commonsTitle": "File:Beijing Kites by Allan Jay Quesada.jpg",
+        "query": "Beijing kites",
+        "file": "beijing-kites.jpg",
+        "author": "Allan Jay Quesada",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Beijing_Kites_by_Allan_Jay_Quesada.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "panda",
+      "text": "Giant pandas munch bamboo at the Beijing Zoo.",
+      "about": "Beijing Zoo opened in 1906 and is one of the oldest zoos in China. Its panda house is one of the most popular places in the zoo. Giant pandas can spend more than half the day eating bamboo! Wild pandas live in the mountains far away in Sichuan and nearby provinces, where Chengdu is. Ask Francis: Do you remember the pandas from the Chengdu book? How many hours do you think a panda eats each day?",
+      "emoji": "🐼",
+      "photo": {
+        "commonsTitle": "File:Beijingzoopic4.jpg",
+        "query": "panda Beijing Zoo",
+        "file": "beijing-panda.jpg",
+        "author": "Dan Zen",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Beijingzoopic4.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "subway",
+      "text": "Beijing's subway trains zoom under the city to many stations.",
+      "about": "Beijing's subway is one of the longest in the world, with more than 800 kilometers of track and hundreds of stations. Line 1, shown here, is the oldest line and runs right under the middle of the city, past Tiananmen Square. Millions of people ride the subway every day to get to school and work. Ask Francis: Have you ever ridden on a subway? What would you look at while you ride?",
+      "emoji": "🚇",
+      "photo": {
+        "commonsTitle": "File:Type SFM04 Train of Beijing Subway Line 1, Jan 1 2024.jpg",
+        "query": "Beijing Subway Line 1 train",
+        "file": "beijing-subway.jpg",
+        "author": "P. K. Koo",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Type_SFM04_Train_of_Beijing_Subway_Line_1,_Jan_1_2024.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "birds-nest",
+      "text": "This stadium looks like a giant bird's nest made of steel.",
+      "about": "The Beijing National Stadium is nicknamed the Bird's Nest because its steel beams twist and cross like twigs in a nest. It was built for the 2008 Summer Olympics. In 2022 Beijing hosted the Winter Olympics too, so it became the first city ever to host both the Summer and the Winter Olympics! Ask Francis: Which Olympic sport would you like to try, a summer one or a winter one?",
+      "emoji": "🏟️",
+      "photo": {
+        "commonsTitle": "File:Beijing national stadium.jpg",
+        "query": "Beijing National Stadium Bird's Nest",
+        "file": "beijing-birds-nest.jpg",
+        "author": "Peter23",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Beijing_national_stadium.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "opera",
+      "text": "Beijing opera actors wear painted faces and sparkly costumes.",
+      "about": "Beijing opera, also called Peking opera, mixes singing, music, acting, dancing and even acrobatics. Actors paint their faces in bright colors, and the colors give clues about the character: red often means brave and loyal, and white can mean sneaky. The costumes are covered in shiny embroidery, and the music has loud gongs and cymbals. Ask Francis: If you had a painted opera face, what color would you choose?",
+      "emoji": "🎭",
+      "photo": {
+        "commonsTitle": "File:Peach Flower Village Peking Opera 1.jpg",
+        "query": "Peking opera performers",
+        "file": "beijing-opera.jpg",
+        "author": "陈文 https://www.flickr.com/photos/univers-finder/",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Peach_Flower_Village_Peking_Opera_1.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "drum-tower",
+      "text": "Long ago, giant drums in this tower told everyone the time.",
+      "about": "Before clocks and phones, Beijing used the Drum Tower and the Bell Tower to tell the time. Drummers beat big drums to mark the hours, especially at night, and people across the city could hear them. Today you can climb the steep stairs inside the Drum Tower and see the huge drums, and sometimes watch a drumming show. Ask Francis: How do you know what time it is? How could a drum tell the time?",
+      "emoji": "🥁",
+      "photo": {
+        "commonsTitle": "File:Interior of Beijing Drum Tower 5.jpg",
+        "query": "Beijing Drum Tower drums",
+        "file": "beijing-drum-tower.jpg",
+        "author": "EditQ",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Interior_of_Beijing_Drum_Tower_5.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "goodbye",
+      "text": "Zaijian, Beijing! Wave goodbye to the busy capital city.",
+      "about": "Zaijian (dzai-JYEN) means goodbye, or see you again! Beijing has so much more to explore: the Great Wall, the Forbidden City, the Summer Palace and the Temple of Heaven each have their own book on this shelf. Ask Francis: What was your favorite thing in Beijing: the duck, the kites, the pandas or the opera faces? Which Beijing book should we read next?",
+      "emoji": "👋",
+      "photo": {
+        "commonsTitle": "File:Beijing skyline from northeast 4th ring road (cropped).jpg",
+        "query": "Beijing skyline",
+        "file": "beijing-goodbye.jpg",
+        "author": "Picrazy2",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Beijing_skyline_from_northeast_4th_ring_road_(cropped).jpg",
+        "verified": true
+      }
+    }
+  ]
+}

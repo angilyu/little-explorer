@@ -5583,6 +5583,4955 @@
    "style": "40b5f639d1",
    "lufs": -16.0
   },
+  "beijing-forbidden-city/cats": {
+   "file": "read-beijing-forbidden-city-cats",
+   "text": "Friendly palace cats live here and help keep away the mice.",
+   "duration": 5.44,
+   "match": 1.0,
+   "heard": "Friendly palace cats live here and help keep away the mice.",
+   "words": [
+    {
+     "location": 0,
+     "length": 8,
+     "start": 0.09,
+     "end": 0.81
+    },
+    {
+     "location": 9,
+     "length": 6,
+     "start": 0.89,
+     "end": 1.46
+    },
+    {
+     "location": 16,
+     "length": 4,
+     "start": 1.46,
+     "end": 1.78
+    },
+    {
+     "location": 21,
+     "length": 4,
+     "start": 1.78,
+     "end": 2.12
+    },
+    {
+     "location": 26,
+     "length": 4,
+     "start": 2.12,
+     "end": 2.35
+    },
+    {
+     "location": 31,
+     "length": 3,
+     "start": 3.06,
+     "end": 3.28
+    },
+    {
+     "location": 35,
+     "length": 4,
+     "start": 3.28,
+     "end": 3.49
+    },
+    {
+     "location": 40,
+     "length": 4,
+     "start": 3.55,
+     "end": 3.92
+    },
+    {
+     "location": 45,
+     "length": 4,
+     "start": 3.92,
+     "end": 4.22
+    },
+    {
+     "location": 50,
+     "length": 3,
+     "start": 4.22,
+     "end": 4.74
+    },
+    {
+     "location": 54,
+     "length": 4,
+     "start": 4.74,
+     "end": 4.82
+    }
+   ],
+   "lufs": -16.0,
+   "style": "23c7faf035"
+  },
+  "beijing-forbidden-city/forbidden": {
+   "file": "read-beijing-forbidden-city-forbidden",
+   "text": "It was forbidden because ordinary people were not allowed inside.",
+   "duration": 4.84,
+   "match": 1.0,
+   "heard": "It was forbidden because ordinary people were not allowed inside.",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.0,
+     "end": 0.17
+    },
+    {
+     "location": 3,
+     "length": 3,
+     "start": 0.25,
+     "end": 0.7
+    },
+    {
+     "location": 7,
+     "length": 9,
+     "start": 0.76,
+     "end": 1.16
+    },
+    {
+     "location": 17,
+     "length": 7,
+     "start": 1.48,
+     "end": 1.82
+    },
+    {
+     "location": 25,
+     "length": 8,
+     "start": 1.89,
+     "end": 2.36
+    },
+    {
+     "location": 34,
+     "length": 6,
+     "start": 2.36,
+     "end": 2.89
+    },
+    {
+     "location": 41,
+     "length": 4,
+     "start": 3.11,
+     "end": 3.36
+    },
+    {
+     "location": 46,
+     "length": 3,
+     "start": 3.36,
+     "end": 3.72
+    },
+    {
+     "location": 50,
+     "length": 7,
+     "start": 3.72,
+     "end": 4.0
+    },
+    {
+     "location": 58,
+     "length": 6,
+     "start": 4.0,
+     "end": 4.5
+    }
+   ],
+   "lufs": -16.0,
+   "style": "23c7faf035"
+  },
+  "beijing-forbidden-city/garden": {
+   "file": "read-beijing-forbidden-city-garden",
+   "text": "The Imperial Garden has old trees and rocky hills to climb.",
+   "duration": 5.2,
+   "match": 1.0,
+   "heard": "The Imperial Garden has old trees and rocky hills to climb.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.06,
+     "end": 0.4
+    },
+    {
+     "location": 4,
+     "length": 8,
+     "start": 0.46,
+     "end": 0.96
+    },
+    {
+     "location": 13,
+     "length": 6,
+     "start": 0.96,
+     "end": 1.38
+    },
+    {
+     "location": 20,
+     "length": 3,
+     "start": 1.38,
+     "end": 1.68
+    },
+    {
+     "location": 24,
+     "length": 3,
+     "start": 1.79,
+     "end": 2.18
+    },
+    {
+     "location": 28,
+     "length": 5,
+     "start": 2.18,
+     "end": 2.61
+    },
+    {
+     "location": 34,
+     "length": 3,
+     "start": 2.68,
+     "end": 3.02
+    },
+    {
+     "location": 38,
+     "length": 5,
+     "start": 3.02,
+     "end": 3.38
+    },
+    {
+     "location": 44,
+     "length": 5,
+     "start": 3.38,
+     "end": 3.68
+    },
+    {
+     "location": 50,
+     "length": 2,
+     "start": 3.68,
+     "end": 4.1
+    },
+    {
+     "location": 53,
+     "length": 5,
+     "start": 4.1,
+     "end": 4.38
+    }
+   ],
+   "lufs": -16.0,
+   "style": "23c7faf035"
+  },
+  "beijing-forbidden-city/goodbye": {
+   "file": "read-beijing-forbidden-city-goodbye",
+   "text": "Zaijian, Beijing! Wave bye to the emperor's golden palace.",
+   "duration": 5.9,
+   "match": 1.0,
+   "heard": "Zaijian, Beijing! Wave bye to the emperor's golden palace.",
+   "words": [
+    {
+     "location": 0,
+     "length": 7,
+     "start": 0.07,
+     "end": 2.22
+    },
+    {
+     "location": 9,
+     "length": 7,
+     "start": 2.67,
+     "end": 3.08
+    },
+    {
+     "location": 18,
+     "length": 4,
+     "start": 3.19,
+     "end": 3.27
+    },
+    {
+     "location": 23,
+     "length": 3,
+     "start": 3.27,
+     "end": 3.52
+    },
+    {
+     "location": 27,
+     "length": 2,
+     "start": 3.52,
+     "end": 3.82
+    },
+    {
+     "location": 30,
+     "length": 3,
+     "start": 3.91,
+     "end": 4.12
+    },
+    {
+     "location": 34,
+     "length": 9,
+     "start": 4.12,
+     "end": 4.43
+    },
+    {
+     "location": 44,
+     "length": 6,
+     "start": 4.52,
+     "end": 5.0
+    },
+    {
+     "location": 51,
+     "length": 6,
+     "start": 5.0,
+     "end": 5.42
+    }
+   ],
+   "lufs": -16.0,
+   "style": "23c7faf035"
+  },
+  "beijing-forbidden-city/hall": {
+   "file": "read-beijing-forbidden-city-hall",
+   "text": "The Hall of Supreme Harmony is the biggest hall in the palace.",
+   "duration": 5.25,
+   "match": 1.0,
+   "heard": "The Hall of Supreme Harmony is the biggest hall in the palace.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.12,
+     "end": 0.4
+    },
+    {
+     "location": 4,
+     "length": 4,
+     "start": 0.4,
+     "end": 0.74
+    },
+    {
+     "location": 9,
+     "length": 2,
+     "start": 0.74,
+     "end": 1.18
+    },
+    {
+     "location": 12,
+     "length": 7,
+     "start": 1.24,
+     "end": 1.66
+    },
+    {
+     "location": 20,
+     "length": 7,
+     "start": 1.66,
+     "end": 2.2
+    },
+    {
+     "location": 28,
+     "length": 2,
+     "start": 2.57,
+     "end": 2.76
+    },
+    {
+     "location": 31,
+     "length": 3,
+     "start": 2.76,
+     "end": 2.92
+    },
+    {
+     "location": 35,
+     "length": 7,
+     "start": 2.99,
+     "end": 3.36
+    },
+    {
+     "location": 43,
+     "length": 4,
+     "start": 3.36,
+     "end": 3.74
+    },
+    {
+     "location": 48,
+     "length": 2,
+     "start": 3.74,
+     "end": 4.0
+    },
+    {
+     "location": 51,
+     "length": 3,
+     "start": 4.0,
+     "end": 4.24
+    },
+    {
+     "location": 55,
+     "length": 6,
+     "start": 4.24,
+     "end": 4.46
+    }
+   ],
+   "lufs": -16.0,
+   "style": "23c7faf035"
+  },
+  "beijing-forbidden-city/lions": {
+   "file": "read-beijing-forbidden-city-lions",
+   "text": "Bronze lions guard the gates, and this mother lion has a cub.",
+   "duration": 5.06,
+   "match": 1.0,
+   "heard": "Bronze lions guard the gates, and this mother lion has a cub.",
+   "words": [
+    {
+     "location": 0,
+     "length": 6,
+     "start": 0.08,
+     "end": 0.7
+    },
+    {
+     "location": 7,
+     "length": 5,
+     "start": 0.7,
+     "end": 1.31
+    },
+    {
+     "location": 13,
+     "length": 5,
+     "start": 1.37,
+     "end": 1.68
+    },
+    {
+     "location": 19,
+     "length": 3,
+     "start": 1.68,
+     "end": 2.04
+    },
+    {
+     "location": 23,
+     "length": 5,
+     "start": 2.1,
+     "end": 2.26
+    },
+    {
+     "location": 30,
+     "length": 3,
+     "start": 2.69,
+     "end": 2.86
+    },
+    {
+     "location": 34,
+     "length": 4,
+     "start": 2.86,
+     "end": 3.26
+    },
+    {
+     "location": 39,
+     "length": 6,
+     "start": 3.26,
+     "end": 3.56
+    },
+    {
+     "location": 46,
+     "length": 4,
+     "start": 3.56,
+     "end": 3.94
+    },
+    {
+     "location": 51,
+     "length": 3,
+     "start": 4.1,
+     "end": 4.38
+    },
+    {
+     "location": 55,
+     "length": 1,
+     "start": 4.47,
+     "end": 4.78
+    },
+    {
+     "location": 57,
+     "length": 3,
+     "start": 4.78,
+     "end": 4.86
+    }
+   ],
+   "lufs": -16.0,
+   "style": "23c7faf035"
+  },
+  "beijing-forbidden-city/nine-dragon": {
+   "file": "read-beijing-forbidden-city-nine-dragon",
+   "text": "The Nine Dragon Wall shows dragons playing among waves and clouds.",
+   "duration": 6.31,
+   "match": 1.0,
+   "heard": "The Nine Dragon Wall shows dragons playing among waves and clouds.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.1,
+     "end": 0.4
+    },
+    {
+     "location": 4,
+     "length": 4,
+     "start": 0.4,
+     "end": 1.08
+    },
+    {
+     "location": 9,
+     "length": 6,
+     "start": 1.08,
+     "end": 1.46
+    },
+    {
+     "location": 16,
+     "length": 4,
+     "start": 1.46,
+     "end": 2.02
+    },
+    {
+     "location": 21,
+     "length": 5,
+     "start": 2.39,
+     "end": 2.86
+    },
+    {
+     "location": 27,
+     "length": 7,
+     "start": 2.93,
+     "end": 3.61
+    },
+    {
+     "location": 35,
+     "length": 7,
+     "start": 3.68,
+     "end": 4.16
+    },
+    {
+     "location": 43,
+     "length": 5,
+     "start": 4.16,
+     "end": 4.52
+    },
+    {
+     "location": 49,
+     "length": 5,
+     "start": 4.52,
+     "end": 4.92
+    },
+    {
+     "location": 55,
+     "length": 3,
+     "start": 4.92,
+     "end": 5.59
+    },
+    {
+     "location": 59,
+     "length": 6,
+     "start": 5.65,
+     "end": 5.73
+    }
+   ],
+   "lufs": -16.0,
+   "style": "23c7faf035"
+  },
+  "beijing-forbidden-city/roof-animals": {
+   "file": "read-beijing-forbidden-city-roof-animals",
+   "text": "Little animals march along the roof corners to guard the hall.",
+   "duration": 6.04,
+   "match": 1.0,
+   "heard": "Little animals march along the roof corners to guard the hall.",
+   "words": [
+    {
+     "location": 0,
+     "length": 6,
+     "start": 0.0,
+     "end": 0.41
+    },
+    {
+     "location": 7,
+     "length": 7,
+     "start": 0.52,
+     "end": 1.13
+    },
+    {
+     "location": 15,
+     "length": 5,
+     "start": 1.3,
+     "end": 1.76
+    },
+    {
+     "location": 21,
+     "length": 5,
+     "start": 1.76,
+     "end": 2.06
+    },
+    {
+     "location": 27,
+     "length": 3,
+     "start": 2.06,
+     "end": 2.56
+    },
+    {
+     "location": 31,
+     "length": 4,
+     "start": 2.56,
+     "end": 2.64
+    },
+    {
+     "location": 36,
+     "length": 7,
+     "start": 2.64,
+     "end": 3.06
+    },
+    {
+     "location": 44,
+     "length": 2,
+     "start": 3.3,
+     "end": 3.44
+    },
+    {
+     "location": 47,
+     "length": 5,
+     "start": 3.53,
+     "end": 3.84
+    },
+    {
+     "location": 53,
+     "length": 3,
+     "start": 3.84,
+     "end": 4.3
+    },
+    {
+     "location": 57,
+     "length": 4,
+     "start": 4.3,
+     "end": 4.38
+    }
+   ],
+   "lufs": -16.0,
+   "style": "23c7faf035"
+  },
+  "beijing-forbidden-city/rooms": {
+   "file": "read-beijing-forbidden-city-rooms",
+   "text": "Legend says the palace has nine thousand nine hundred ninety-nine rooms.",
+   "duration": 6.31,
+   "match": 0.957,
+   "heard": "says the palace has nine thousand nine hundred ninety-nine rooms.",
+   "words": [
+    {
+     "location": 0,
+     "length": 6,
+     "start": 0.06,
+     "end": 0.14
+    },
+    {
+     "location": 7,
+     "length": 4,
+     "start": 0.14,
+     "end": 0.88
+    },
+    {
+     "location": 12,
+     "length": 3,
+     "start": 0.88,
+     "end": 1.28
+    },
+    {
+     "location": 16,
+     "length": 6,
+     "start": 1.35,
+     "end": 1.8
+    },
+    {
+     "location": 23,
+     "length": 3,
+     "start": 1.8,
+     "end": 2.2
+    },
+    {
+     "location": 27,
+     "length": 4,
+     "start": 2.2,
+     "end": 2.53
+    },
+    {
+     "location": 32,
+     "length": 8,
+     "start": 2.6,
+     "end": 3.11
+    },
+    {
+     "location": 41,
+     "length": 4,
+     "start": 3.41,
+     "end": 3.84
+    },
+    {
+     "location": 46,
+     "length": 7,
+     "start": 3.84,
+     "end": 4.3
+    },
+    {
+     "location": 54,
+     "length": 6,
+     "start": 4.3,
+     "end": 4.7
+    },
+    {
+     "location": 61,
+     "length": 4,
+     "start": 4.7,
+     "end": 5.1
+    },
+    {
+     "location": 66,
+     "length": 5,
+     "start": 5.1,
+     "end": 5.54
+    }
+   ],
+   "lufs": -16.0,
+   "style": "23c7faf035"
+  },
+  "beijing-forbidden-city/throne": {
+   "file": "read-beijing-forbidden-city-throne",
+   "text": "Inside sits the emperor's shiny golden dragon throne.",
+   "duration": 5.44,
+   "match": 1.0,
+   "heard": "Inside sits the emperor's shiny golden dragon throne.",
+   "words": [
+    {
+     "location": 0,
+     "length": 6,
+     "start": 0.08,
+     "end": 0.76
+    },
+    {
+     "location": 7,
+     "length": 4,
+     "start": 1.05,
+     "end": 1.55
+    },
+    {
+     "location": 12,
+     "length": 3,
+     "start": 1.62,
+     "end": 1.78
+    },
+    {
+     "location": 16,
+     "length": 9,
+     "start": 1.78,
+     "end": 2.21
+    },
+    {
+     "location": 26,
+     "length": 5,
+     "start": 2.36,
+     "end": 3.06
+    },
+    {
+     "location": 32,
+     "length": 6,
+     "start": 3.12,
+     "end": 3.62
+    },
+    {
+     "location": 39,
+     "length": 6,
+     "start": 3.62,
+     "end": 4.13
+    },
+    {
+     "location": 46,
+     "length": 6,
+     "start": 4.23,
+     "end": 4.52
+    }
+   ],
+   "lufs": -16.0,
+   "style": "23c7faf035"
+  },
+  "beijing-forbidden-city/vats": {
+   "file": "read-beijing-forbidden-city-vats",
+   "text": "Big metal pots held water in case of a fire.",
+   "duration": 3.76,
+   "match": 1.0,
+   "heard": "Big metal pots held water in case of a fire.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.17,
+     "end": 0.5
+    },
+    {
+     "location": 4,
+     "length": 5,
+     "start": 0.5,
+     "end": 0.84
+    },
+    {
+     "location": 10,
+     "length": 4,
+     "start": 0.84,
+     "end": 1.3
+    },
+    {
+     "location": 15,
+     "length": 4,
+     "start": 1.48,
+     "end": 1.76
+    },
+    {
+     "location": 20,
+     "length": 5,
+     "start": 1.76,
+     "end": 2.14
+    },
+    {
+     "location": 26,
+     "length": 2,
+     "start": 2.3,
+     "end": 2.54
+    },
+    {
+     "location": 29,
+     "length": 4,
+     "start": 2.54,
+     "end": 2.68
+    },
+    {
+     "location": 34,
+     "length": 2,
+     "start": 2.68,
+     "end": 2.86
+    },
+    {
+     "location": 37,
+     "length": 1,
+     "start": 2.86,
+     "end": 3.22
+    },
+    {
+     "location": 39,
+     "length": 4,
+     "start": 3.22,
+     "end": 3.3
+    }
+   ],
+   "lufs": -16.0,
+   "style": "23c7faf035"
+  },
+  "beijing-forbidden-city/welcome": {
+   "file": "read-beijing-forbidden-city-welcome",
+   "text": "Ni hao! This giant red gate leads into the Forbidden City.",
+   "duration": 5.85,
+   "match": 1.0,
+   "heard": "Ni hao! This giant red gate leads into the Forbidden City.",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.0,
+     "end": 0.46
+    },
+    {
+     "location": 3,
+     "length": 3,
+     "start": 0.46,
+     "end": 0.76
+    },
+    {
+     "location": 8,
+     "length": 4,
+     "start": 1.43,
+     "end": 1.8
+    },
+    {
+     "location": 13,
+     "length": 5,
+     "start": 1.8,
+     "end": 2.44
+    },
+    {
+     "location": 19,
+     "length": 3,
+     "start": 2.44,
+     "end": 2.76
+    },
+    {
+     "location": 23,
+     "length": 4,
+     "start": 2.76,
+     "end": 3.12
+    },
+    {
+     "location": 28,
+     "length": 5,
+     "start": 3.39,
+     "end": 3.77
+    },
+    {
+     "location": 34,
+     "length": 4,
+     "start": 3.83,
+     "end": 4.12
+    },
+    {
+     "location": 39,
+     "length": 3,
+     "start": 4.12,
+     "end": 4.42
+    },
+    {
+     "location": 43,
+     "length": 9,
+     "start": 4.42,
+     "end": 4.64
+    },
+    {
+     "location": 53,
+     "length": 4,
+     "start": 4.64,
+     "end": 5.06
+    }
+   ],
+   "lufs": -16.0,
+   "style": "23c7faf035"
+  },
+  "beijing-forbidden-city/yellow-roofs": {
+   "file": "read-beijing-forbidden-city-yellow-roofs",
+   "text": "The roofs are golden yellow, the emperor's very own color.",
+   "duration": 4.65,
+   "match": 1.0,
+   "heard": "The roofs are golden yellow, the emperor's very own color.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.09,
+     "end": 0.36
+    },
+    {
+     "location": 4,
+     "length": 5,
+     "start": 0.36,
+     "end": 0.76
+    },
+    {
+     "location": 10,
+     "length": 3,
+     "start": 0.83,
+     "end": 1.01
+    },
+    {
+     "location": 14,
+     "length": 6,
+     "start": 1.14,
+     "end": 1.62
+    },
+    {
+     "location": 21,
+     "length": 6,
+     "start": 1.62,
+     "end": 2.72
+    },
+    {
+     "location": 29,
+     "length": 3,
+     "start": 2.78,
+     "end": 3.0
+    },
+    {
+     "location": 33,
+     "length": 9,
+     "start": 3.0,
+     "end": 3.5
+    },
+    {
+     "location": 43,
+     "length": 4,
+     "start": 3.5,
+     "end": 3.84
+    },
+    {
+     "location": 48,
+     "length": 3,
+     "start": 3.84,
+     "end": 4.18
+    },
+    {
+     "location": 52,
+     "length": 5,
+     "start": 4.18,
+     "end": 4.46
+    }
+   ],
+   "lufs": -16.0,
+   "style": "23c7faf035"
+  },
+  "beijing-great-wall/battlements": {
+   "file": "read-beijing-great-wall-battlements",
+   "text": "Soldiers peeked through these gaps to watch for enemies.",
+   "duration": 4.41,
+   "match": 1.0,
+   "heard": "Soldiers peeked through these gaps to watch for enemies.",
+   "words": [
+    {
+     "location": 0,
+     "length": 8,
+     "start": 0.0,
+     "end": 0.89
+    },
+    {
+     "location": 9,
+     "length": 6,
+     "start": 1.03,
+     "end": 1.45
+    },
+    {
+     "location": 16,
+     "length": 7,
+     "start": 1.54,
+     "end": 1.7
+    },
+    {
+     "location": 24,
+     "length": 5,
+     "start": 1.7,
+     "end": 2.17
+    },
+    {
+     "location": 30,
+     "length": 4,
+     "start": 2.25,
+     "end": 2.43
+    },
+    {
+     "location": 35,
+     "length": 2,
+     "start": 2.76,
+     "end": 3.0
+    },
+    {
+     "location": 38,
+     "length": 5,
+     "start": 3.0,
+     "end": 3.51
+    },
+    {
+     "location": 44,
+     "length": 3,
+     "start": 3.58,
+     "end": 4.06
+    },
+    {
+     "location": 48,
+     "length": 7,
+     "start": 4.06,
+     "end": 4.14
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a17f64f675"
+  },
+  "beijing-great-wall/beacon": {
+   "file": "read-beijing-great-wall-beacon",
+   "text": "Guards sent smoke signals by day and fire signals at night.",
+   "duration": 5.44,
+   "match": 1.0,
+   "heard": "Guards sent smoke signals by day and fire signals at night.",
+   "words": [
+    {
+     "location": 0,
+     "length": 6,
+     "start": 0.26,
+     "end": 0.89
+    },
+    {
+     "location": 7,
+     "length": 4,
+     "start": 0.98,
+     "end": 1.5
+    },
+    {
+     "location": 12,
+     "length": 5,
+     "start": 1.5,
+     "end": 2.0
+    },
+    {
+     "location": 18,
+     "length": 7,
+     "start": 2.0,
+     "end": 2.34
+    },
+    {
+     "location": 26,
+     "length": 2,
+     "start": 2.34,
+     "end": 2.7
+    },
+    {
+     "location": 29,
+     "length": 3,
+     "start": 2.7,
+     "end": 3.01
+    },
+    {
+     "location": 33,
+     "length": 3,
+     "start": 3.5,
+     "end": 3.85
+    },
+    {
+     "location": 37,
+     "length": 4,
+     "start": 3.91,
+     "end": 4.32
+    },
+    {
+     "location": 42,
+     "length": 7,
+     "start": 4.32,
+     "end": 4.7
+    },
+    {
+     "location": 50,
+     "length": 2,
+     "start": 4.7,
+     "end": 4.98
+    },
+    {
+     "location": 53,
+     "length": 5,
+     "start": 4.98,
+     "end": 5.1
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a17f64f675"
+  },
+  "beijing-great-wall/bricks": {
+   "file": "read-beijing-great-wall-bricks",
+   "text": "Builders stuck some bricks together with mortar made with sticky rice.",
+   "duration": 5.76,
+   "match": 1.0,
+   "heard": "Builders stuck some bricks together with mortar made with sticky rice.",
+   "words": [
+    {
+     "location": 0,
+     "length": 8,
+     "start": 0.16,
+     "end": 0.74
+    },
+    {
+     "location": 9,
+     "length": 5,
+     "start": 0.74,
+     "end": 1.01
+    },
+    {
+     "location": 15,
+     "length": 4,
+     "start": 1.08,
+     "end": 1.67
+    },
+    {
+     "location": 20,
+     "length": 6,
+     "start": 1.73,
+     "end": 1.81
+    },
+    {
+     "location": 27,
+     "length": 8,
+     "start": 1.81,
+     "end": 2.38
+    },
+    {
+     "location": 36,
+     "length": 4,
+     "start": 2.81,
+     "end": 3.12
+    },
+    {
+     "location": 41,
+     "length": 6,
+     "start": 3.12,
+     "end": 3.42
+    },
+    {
+     "location": 48,
+     "length": 4,
+     "start": 3.42,
+     "end": 3.76
+    },
+    {
+     "location": 53,
+     "length": 4,
+     "start": 3.76,
+     "end": 4.18
+    },
+    {
+     "location": 58,
+     "length": 6,
+     "start": 4.18,
+     "end": 4.36
+    },
+    {
+     "location": 65,
+     "length": 4,
+     "start": 4.36,
+     "end": 4.76
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a17f64f675"
+  },
+  "beijing-great-wall/dragon-head": {
+   "file": "read-beijing-great-wall-dragon-head",
+   "text": "At Old Dragon Head, the wall walks right into the sea!",
+   "duration": 4.92,
+   "match": 1.0,
+   "heard": "At Old Dragon Head, the wall walks right into the sea!",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.0,
+     "end": 0.2
+    },
+    {
+     "location": 3,
+     "length": 3,
+     "start": 0.33,
+     "end": 0.8
+    },
+    {
+     "location": 7,
+     "length": 6,
+     "start": 0.8,
+     "end": 1.18
+    },
+    {
+     "location": 14,
+     "length": 4,
+     "start": 1.18,
+     "end": 1.63
+    },
+    {
+     "location": 20,
+     "length": 3,
+     "start": 2.06,
+     "end": 2.28
+    },
+    {
+     "location": 24,
+     "length": 4,
+     "start": 2.28,
+     "end": 2.64
+    },
+    {
+     "location": 29,
+     "length": 5,
+     "start": 2.64,
+     "end": 3.0
+    },
+    {
+     "location": 35,
+     "length": 5,
+     "start": 3.0,
+     "end": 3.39
+    },
+    {
+     "location": 41,
+     "length": 4,
+     "start": 3.54,
+     "end": 3.8
+    },
+    {
+     "location": 46,
+     "length": 3,
+     "start": 3.8,
+     "end": 4.08
+    },
+    {
+     "location": 50,
+     "length": 3,
+     "start": 4.08,
+     "end": 4.31
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a17f64f675"
+  },
+  "beijing-great-wall/dynasties": {
+   "file": "read-beijing-great-wall-dynasties",
+   "text": "People built the wall bit by bit for over 2,000 years.",
+   "duration": 5.2,
+   "match": 1.0,
+   "heard": "People built the wall bit by bit for over 2,000 years.",
+   "words": [
+    {
+     "location": 0,
+     "length": 6,
+     "start": 0.0,
+     "end": 0.59
+    },
+    {
+     "location": 7,
+     "length": 5,
+     "start": 0.72,
+     "end": 0.97
+    },
+    {
+     "location": 13,
+     "length": 3,
+     "start": 1.08,
+     "end": 1.3
+    },
+    {
+     "location": 17,
+     "length": 4,
+     "start": 1.3,
+     "end": 1.64
+    },
+    {
+     "location": 22,
+     "length": 3,
+     "start": 1.88,
+     "end": 2.04
+    },
+    {
+     "location": 26,
+     "length": 2,
+     "start": 2.19,
+     "end": 2.44
+    },
+    {
+     "location": 29,
+     "length": 3,
+     "start": 2.44,
+     "end": 2.59
+    },
+    {
+     "location": 33,
+     "length": 3,
+     "start": 3.0,
+     "end": 3.18
+    },
+    {
+     "location": 37,
+     "length": 4,
+     "start": 3.18,
+     "end": 3.4
+    },
+    {
+     "location": 42,
+     "length": 1,
+     "start": 3.5,
+     "end": 3.8
+    },
+    {
+     "location": 44,
+     "length": 3,
+     "start": 3.9,
+     "end": 4.3
+    },
+    {
+     "location": 48,
+     "length": 5,
+     "start": 4.3,
+     "end": 4.72
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a17f64f675"
+  },
+  "beijing-great-wall/goodbye": {
+   "file": "read-beijing-great-wall-goodbye",
+   "text": "Zaijian, Beijing! Wave bye to the wall and its watchtowers.",
+   "duration": 6.31,
+   "match": 1.0,
+   "heard": "Zaijian, Beijing! Wave bye to the wall and its watchtowers.",
+   "words": [
+    {
+     "location": 0,
+     "length": 7,
+     "start": 0.09,
+     "end": 0.92
+    },
+    {
+     "location": 9,
+     "length": 7,
+     "start": 1.25,
+     "end": 2.0
+    },
+    {
+     "location": 18,
+     "length": 4,
+     "start": 3.32,
+     "end": 3.4
+    },
+    {
+     "location": 23,
+     "length": 3,
+     "start": 3.4,
+     "end": 3.84
+    },
+    {
+     "location": 27,
+     "length": 2,
+     "start": 4.06,
+     "end": 4.2
+    },
+    {
+     "location": 30,
+     "length": 3,
+     "start": 4.2,
+     "end": 4.46
+    },
+    {
+     "location": 34,
+     "length": 4,
+     "start": 4.46,
+     "end": 4.77
+    },
+    {
+     "location": 39,
+     "length": 3,
+     "start": 4.83,
+     "end": 5.0
+    },
+    {
+     "location": 43,
+     "length": 3,
+     "start": 5.0,
+     "end": 5.26
+    },
+    {
+     "location": 47,
+     "length": 11,
+     "start": 5.26,
+     "end": 5.88
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a17f64f675"
+  },
+  "beijing-great-wall/long": {
+   "file": "read-beijing-great-wall-long",
+   "text": "It is so long that walking it all would take many months.",
+   "duration": 5.11,
+   "match": 1.0,
+   "heard": "It is so long that walking it all would take many months.",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.0,
+     "end": 0.24
+    },
+    {
+     "location": 3,
+     "length": 2,
+     "start": 0.24,
+     "end": 0.54
+    },
+    {
+     "location": 6,
+     "length": 2,
+     "start": 0.54,
+     "end": 1.12
+    },
+    {
+     "location": 9,
+     "length": 4,
+     "start": 1.12,
+     "end": 1.54
+    },
+    {
+     "location": 14,
+     "length": 4,
+     "start": 1.87,
+     "end": 2.16
+    },
+    {
+     "location": 19,
+     "length": 7,
+     "start": 2.16,
+     "end": 2.5
+    },
+    {
+     "location": 27,
+     "length": 2,
+     "start": 2.5,
+     "end": 2.82
+    },
+    {
+     "location": 30,
+     "length": 3,
+     "start": 2.82,
+     "end": 2.9
+    },
+    {
+     "location": 34,
+     "length": 5,
+     "start": 2.99,
+     "end": 3.11
+    },
+    {
+     "location": 40,
+     "length": 4,
+     "start": 3.17,
+     "end": 3.46
+    },
+    {
+     "location": 45,
+     "length": 4,
+     "start": 3.46,
+     "end": 3.94
+    },
+    {
+     "location": 50,
+     "length": 6,
+     "start": 3.94,
+     "end": 4.28
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a17f64f675"
+  },
+  "beijing-great-wall/mutianyu-lift": {
+   "file": "read-beijing-great-wall-mutianyu-lift",
+   "text": "At Mutianyu, a cable car carries you up the mountain.",
+   "duration": 4.7,
+   "match": 1.0,
+   "heard": "At Mutianyu, a cable car carries you up the mountain.",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.0,
+     "end": 0.44
+    },
+    {
+     "location": 3,
+     "length": 8,
+     "start": 0.44,
+     "end": 1.61
+    },
+    {
+     "location": 13,
+     "length": 1,
+     "start": 1.72,
+     "end": 1.86
+    },
+    {
+     "location": 15,
+     "length": 5,
+     "start": 1.86,
+     "end": 2.14
+    },
+    {
+     "location": 21,
+     "length": 3,
+     "start": 2.14,
+     "end": 2.51
+    },
+    {
+     "location": 25,
+     "length": 7,
+     "start": 2.81,
+     "end": 3.24
+    },
+    {
+     "location": 33,
+     "length": 3,
+     "start": 3.24,
+     "end": 3.58
+    },
+    {
+     "location": 37,
+     "length": 2,
+     "start": 3.58,
+     "end": 3.66
+    },
+    {
+     "location": 40,
+     "length": 3,
+     "start": 3.73,
+     "end": 4.3
+    },
+    {
+     "location": 44,
+     "length": 8,
+     "start": 4.3,
+     "end": 4.38
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a17f64f675"
+  },
+  "beijing-great-wall/snow": {
+   "file": "read-beijing-great-wall-snow",
+   "text": "In winter, snow can cover the wall like powdered sugar.",
+   "duration": 4.84,
+   "match": 1.0,
+   "heard": "In winter, snow can cover the wall like powdered sugar.",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.0,
+     "end": 0.38
+    },
+    {
+     "location": 3,
+     "length": 6,
+     "start": 0.38,
+     "end": 0.8
+    },
+    {
+     "location": 11,
+     "length": 4,
+     "start": 1.25,
+     "end": 1.76
+    },
+    {
+     "location": 16,
+     "length": 3,
+     "start": 1.76,
+     "end": 2.16
+    },
+    {
+     "location": 20,
+     "length": 5,
+     "start": 2.16,
+     "end": 2.4
+    },
+    {
+     "location": 26,
+     "length": 3,
+     "start": 2.4,
+     "end": 2.64
+    },
+    {
+     "location": 30,
+     "length": 4,
+     "start": 2.64,
+     "end": 2.95
+    },
+    {
+     "location": 35,
+     "length": 4,
+     "start": 3.17,
+     "end": 3.35
+    },
+    {
+     "location": 40,
+     "length": 8,
+     "start": 3.55,
+     "end": 4.08
+    },
+    {
+     "location": 49,
+     "length": 5,
+     "start": 4.08,
+     "end": 4.54
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a17f64f675"
+  },
+  "beijing-great-wall/space": {
+   "file": "read-beijing-great-wall-space",
+   "text": "Can you see it from space? Astronauts say not with just eyes.",
+   "duration": 5.66,
+   "match": 1.0,
+   "heard": "Can you see it from space? Astronauts say not with just eyes.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.0,
+     "end": 0.4
+    },
+    {
+     "location": 4,
+     "length": 3,
+     "start": 0.4,
+     "end": 0.74
+    },
+    {
+     "location": 8,
+     "length": 3,
+     "start": 0.74,
+     "end": 0.98
+    },
+    {
+     "location": 12,
+     "length": 2,
+     "start": 0.98,
+     "end": 1.2
+    },
+    {
+     "location": 15,
+     "length": 4,
+     "start": 1.2,
+     "end": 1.46
+    },
+    {
+     "location": 20,
+     "length": 5,
+     "start": 1.46,
+     "end": 1.92
+    },
+    {
+     "location": 27,
+     "length": 10,
+     "start": 3.12,
+     "end": 3.52
+    },
+    {
+     "location": 38,
+     "length": 3,
+     "start": 3.52,
+     "end": 3.86
+    },
+    {
+     "location": 42,
+     "length": 3,
+     "start": 3.86,
+     "end": 4.14
+    },
+    {
+     "location": 46,
+     "length": 4,
+     "start": 4.14,
+     "end": 4.42
+    },
+    {
+     "location": 51,
+     "length": 4,
+     "start": 4.42,
+     "end": 4.76
+    },
+    {
+     "location": 56,
+     "length": 4,
+     "start": 4.76,
+     "end": 5.26
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a17f64f675"
+  },
+  "beijing-great-wall/steep": {
+   "file": "read-beijing-great-wall-steep",
+   "text": "Some steps are so steep that you climb with your hands too.",
+   "duration": 4.84,
+   "match": 1.0,
+   "heard": "Some steps are so steep that you climb with your hands too.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.0,
+     "end": 0.7
+    },
+    {
+     "location": 5,
+     "length": 5,
+     "start": 0.7,
+     "end": 0.97
+    },
+    {
+     "location": 11,
+     "length": 3,
+     "start": 1.03,
+     "end": 1.38
+    },
+    {
+     "location": 15,
+     "length": 2,
+     "start": 1.38,
+     "end": 1.9
+    },
+    {
+     "location": 18,
+     "length": 5,
+     "start": 1.9,
+     "end": 2.09
+    },
+    {
+     "location": 24,
+     "length": 4,
+     "start": 2.5,
+     "end": 2.68
+    },
+    {
+     "location": 29,
+     "length": 3,
+     "start": 2.68,
+     "end": 2.92
+    },
+    {
+     "location": 33,
+     "length": 5,
+     "start": 2.92,
+     "end": 3.22
+    },
+    {
+     "location": 39,
+     "length": 4,
+     "start": 3.22,
+     "end": 3.44
+    },
+    {
+     "location": 44,
+     "length": 4,
+     "start": 3.44,
+     "end": 3.68
+    },
+    {
+     "location": 49,
+     "length": 5,
+     "start": 3.68,
+     "end": 4.04
+    },
+    {
+     "location": 55,
+     "length": 3,
+     "start": 4.04,
+     "end": 4.43
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a17f64f675"
+  },
+  "beijing-great-wall/toboggan": {
+   "file": "read-beijing-great-wall-toboggan",
+   "text": "Then you can zoom back down on a twisty toboggan slide!",
+   "duration": 4.32,
+   "match": 1.0,
+   "heard": "Then you can zoom back down on a twisty toboggan slide!",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.11,
+     "end": 0.44
+    },
+    {
+     "location": 5,
+     "length": 3,
+     "start": 0.67,
+     "end": 0.78
+    },
+    {
+     "location": 9,
+     "length": 3,
+     "start": 0.78,
+     "end": 1.32
+    },
+    {
+     "location": 13,
+     "length": 4,
+     "start": 1.32,
+     "end": 1.4
+    },
+    {
+     "location": 18,
+     "length": 4,
+     "start": 1.4,
+     "end": 1.64
+    },
+    {
+     "location": 23,
+     "length": 4,
+     "start": 1.72,
+     "end": 2.14
+    },
+    {
+     "location": 28,
+     "length": 2,
+     "start": 2.14,
+     "end": 2.38
+    },
+    {
+     "location": 31,
+     "length": 1,
+     "start": 2.45,
+     "end": 2.58
+    },
+    {
+     "location": 33,
+     "length": 6,
+     "start": 2.58,
+     "end": 3.12
+    },
+    {
+     "location": 40,
+     "length": 8,
+     "start": 3.12,
+     "end": 3.64
+    },
+    {
+     "location": 49,
+     "length": 5,
+     "start": 3.64,
+     "end": 3.97
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a17f64f675"
+  },
+  "beijing-great-wall/watchtower": {
+   "file": "read-beijing-great-wall-watchtower",
+   "text": "Watchtowers stand along the wall like guards on every hill.",
+   "duration": 5.16,
+   "match": 1.0,
+   "heard": "Watchtowers stand along the wall like guards on every hill.",
+   "words": [
+    {
+     "location": 0,
+     "length": 11,
+     "start": 0.08,
+     "end": 0.96
+    },
+    {
+     "location": 12,
+     "length": 5,
+     "start": 0.96,
+     "end": 1.54
+    },
+    {
+     "location": 18,
+     "length": 5,
+     "start": 1.54,
+     "end": 1.82
+    },
+    {
+     "location": 24,
+     "length": 3,
+     "start": 1.82,
+     "end": 2.26
+    },
+    {
+     "location": 28,
+     "length": 4,
+     "start": 2.26,
+     "end": 2.34
+    },
+    {
+     "location": 33,
+     "length": 4,
+     "start": 2.57,
+     "end": 2.73
+    },
+    {
+     "location": 38,
+     "length": 6,
+     "start": 2.89,
+     "end": 3.3
+    },
+    {
+     "location": 45,
+     "length": 2,
+     "start": 3.3,
+     "end": 3.49
+    },
+    {
+     "location": 48,
+     "length": 5,
+     "start": 3.64,
+     "end": 4.08
+    },
+    {
+     "location": 54,
+     "length": 4,
+     "start": 4.08,
+     "end": 4.3
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a17f64f675"
+  },
+  "beijing-great-wall/welcome": {
+   "file": "read-beijing-great-wall-welcome",
+   "text": "Ni hao! The Great Wall winds over the mountains near Beijing.",
+   "duration": 6.4,
+   "match": 1.0,
+   "heard": "Ni hao! The Great Wall winds over the mountains near Beijing.",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.07,
+     "end": 0.68
+    },
+    {
+     "location": 3,
+     "length": 3,
+     "start": 0.68,
+     "end": 1.06
+    },
+    {
+     "location": 8,
+     "length": 3,
+     "start": 1.92,
+     "end": 2.18
+    },
+    {
+     "location": 12,
+     "length": 5,
+     "start": 2.18,
+     "end": 2.64
+    },
+    {
+     "location": 18,
+     "length": 4,
+     "start": 2.64,
+     "end": 3.04
+    },
+    {
+     "location": 23,
+     "length": 5,
+     "start": 3.16,
+     "end": 3.7
+    },
+    {
+     "location": 29,
+     "length": 4,
+     "start": 3.7,
+     "end": 4.1
+    },
+    {
+     "location": 34,
+     "length": 3,
+     "start": 4.1,
+     "end": 4.89
+    },
+    {
+     "location": 38,
+     "length": 9,
+     "start": 5.06,
+     "end": 5.14
+    },
+    {
+     "location": 48,
+     "length": 4,
+     "start": 5.14,
+     "end": 5.45
+    },
+    {
+     "location": 53,
+     "length": 7,
+     "start": 5.52,
+     "end": 5.88
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a17f64f675"
+  },
+  "beijing-summer-palace/bridge": {
+   "file": "read-beijing-summer-palace-bridge",
+   "text": "The Seventeen-Arch Bridge has seventeen arches and hundreds of stone lions.",
+   "duration": 7.6,
+   "match": 1.0,
+   "heard": "The Seventeen-Arch Bridge has seventeen arches and hundreds of stone lions.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.62,
+     "end": 1.0
+    },
+    {
+     "location": 4,
+     "length": 9,
+     "start": 1.0,
+     "end": 1.71
+    },
+    {
+     "location": 14,
+     "length": 4,
+     "start": 1.77,
+     "end": 2.14
+    },
+    {
+     "location": 19,
+     "length": 6,
+     "start": 2.14,
+     "end": 2.52
+    },
+    {
+     "location": 26,
+     "length": 3,
+     "start": 2.76,
+     "end": 3.02
+    },
+    {
+     "location": 30,
+     "length": 9,
+     "start": 3.02,
+     "end": 3.78
+    },
+    {
+     "location": 40,
+     "length": 6,
+     "start": 3.78,
+     "end": 4.31
+    },
+    {
+     "location": 47,
+     "length": 3,
+     "start": 4.61,
+     "end": 4.87
+    },
+    {
+     "location": 51,
+     "length": 8,
+     "start": 4.96,
+     "end": 5.55
+    },
+    {
+     "location": 60,
+     "length": 2,
+     "start": 5.61,
+     "end": 6.14
+    },
+    {
+     "location": 63,
+     "length": 5,
+     "start": 6.14,
+     "end": 6.28
+    },
+    {
+     "location": 69,
+     "length": 5,
+     "start": 6.28,
+     "end": 6.74
+    }
+   ],
+   "lufs": -16.0,
+   "style": "49a4eee67c"
+  },
+  "beijing-summer-palace/corridor": {
+   "file": "read-beijing-summer-palace-corridor",
+   "text": "The Long Corridor is a covered walkway beside the lake.",
+   "duration": 4.7,
+   "match": 1.0,
+   "heard": "The Long Corridor is a covered walkway beside the lake.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.13,
+     "end": 0.38
+    },
+    {
+     "location": 4,
+     "length": 4,
+     "start": 0.38,
+     "end": 0.9
+    },
+    {
+     "location": 9,
+     "length": 8,
+     "start": 0.9,
+     "end": 1.53
+    },
+    {
+     "location": 18,
+     "length": 2,
+     "start": 2.0,
+     "end": 2.22
+    },
+    {
+     "location": 21,
+     "length": 1,
+     "start": 2.31,
+     "end": 2.52
+    },
+    {
+     "location": 23,
+     "length": 7,
+     "start": 2.52,
+     "end": 2.78
+    },
+    {
+     "location": 31,
+     "length": 7,
+     "start": 2.78,
+     "end": 3.34
+    },
+    {
+     "location": 39,
+     "length": 6,
+     "start": 3.54,
+     "end": 4.04
+    },
+    {
+     "location": 46,
+     "length": 3,
+     "start": 4.04,
+     "end": 4.39
+    },
+    {
+     "location": 50,
+     "length": 4,
+     "start": 4.46,
+     "end": 4.54
+    }
+   ],
+   "lufs": -16.0,
+   "style": "49a4eee67c"
+  },
+  "beijing-summer-palace/golden-light": {
+   "file": "read-beijing-summer-palace-golden-light",
+   "text": "In winter, the sunset shines through every arch in gold.",
+   "duration": 4.96,
+   "match": 1.0,
+   "heard": "In winter, the sunset shines through every arch in gold.",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.25,
+     "end": 0.54
+    },
+    {
+     "location": 3,
+     "length": 6,
+     "start": 0.54,
+     "end": 0.9
+    },
+    {
+     "location": 11,
+     "length": 3,
+     "start": 1.41,
+     "end": 1.72
+    },
+    {
+     "location": 15,
+     "length": 6,
+     "start": 1.72,
+     "end": 2.22
+    },
+    {
+     "location": 22,
+     "length": 6,
+     "start": 2.22,
+     "end": 2.66
+    },
+    {
+     "location": 29,
+     "length": 7,
+     "start": 2.66,
+     "end": 3.0
+    },
+    {
+     "location": 37,
+     "length": 5,
+     "start": 3.08,
+     "end": 3.66
+    },
+    {
+     "location": 43,
+     "length": 4,
+     "start": 3.73,
+     "end": 3.88
+    },
+    {
+     "location": 48,
+     "length": 2,
+     "start": 4.18,
+     "end": 4.52
+    },
+    {
+     "location": 51,
+     "length": 4,
+     "start": 4.52,
+     "end": 4.72
+    }
+   ],
+   "lufs": -16.0,
+   "style": "49a4eee67c"
+  },
+  "beijing-summer-palace/goodbye": {
+   "file": "read-beijing-summer-palace-goodbye",
+   "text": "Zaijian, Beijing! Wave bye to the lake and Longevity Hill.",
+   "duration": 5.9,
+   "match": 1.0,
+   "heard": "Zaijian, Beijing! Wave bye to the lake and Longevity Hill.",
+   "words": [
+    {
+     "location": 0,
+     "length": 7,
+     "start": 0.06,
+     "end": 1.96
+    },
+    {
+     "location": 9,
+     "length": 7,
+     "start": 2.62,
+     "end": 2.7
+    },
+    {
+     "location": 18,
+     "length": 4,
+     "start": 3.02,
+     "end": 3.1
+    },
+    {
+     "location": 23,
+     "length": 3,
+     "start": 3.1,
+     "end": 3.38
+    },
+    {
+     "location": 27,
+     "length": 2,
+     "start": 3.38,
+     "end": 3.58
+    },
+    {
+     "location": 30,
+     "length": 3,
+     "start": 3.58,
+     "end": 3.8
+    },
+    {
+     "location": 34,
+     "length": 4,
+     "start": 3.8,
+     "end": 3.94
+    },
+    {
+     "location": 39,
+     "length": 3,
+     "start": 4.41,
+     "end": 4.68
+    },
+    {
+     "location": 43,
+     "length": 9,
+     "start": 4.68,
+     "end": 5.26
+    },
+    {
+     "location": 53,
+     "length": 4,
+     "start": 5.26,
+     "end": 5.56
+    }
+   ],
+   "lufs": -16.0,
+   "style": "49a4eee67c"
+  },
+  "beijing-summer-palace/hill": {
+   "file": "read-beijing-summer-palace-hill",
+   "text": "Workers piled up the dirt from the lake to make a hill.",
+   "duration": 4.05,
+   "match": 1.0,
+   "heard": "Workers piled up the dirt from the lake to make a hill.",
+   "words": [
+    {
+     "location": 0,
+     "length": 7,
+     "start": 0.09,
+     "end": 0.65
+    },
+    {
+     "location": 8,
+     "length": 5,
+     "start": 0.78,
+     "end": 1.24
+    },
+    {
+     "location": 14,
+     "length": 2,
+     "start": 1.24,
+     "end": 1.33
+    },
+    {
+     "location": 17,
+     "length": 3,
+     "start": 1.39,
+     "end": 1.83
+    },
+    {
+     "location": 21,
+     "length": 4,
+     "start": 1.89,
+     "end": 1.97
+    },
+    {
+     "location": 26,
+     "length": 4,
+     "start": 1.97,
+     "end": 2.1
+    },
+    {
+     "location": 31,
+     "length": 3,
+     "start": 2.1,
+     "end": 2.32
+    },
+    {
+     "location": 35,
+     "length": 4,
+     "start": 2.32,
+     "end": 2.4
+    },
+    {
+     "location": 40,
+     "length": 2,
+     "start": 2.82,
+     "end": 3.06
+    },
+    {
+     "location": 43,
+     "length": 4,
+     "start": 3.06,
+     "end": 3.24
+    },
+    {
+     "location": 48,
+     "length": 1,
+     "start": 3.24,
+     "end": 3.6
+    },
+    {
+     "location": 50,
+     "length": 4,
+     "start": 3.6,
+     "end": 3.68
+    }
+   ],
+   "lufs": -16.0,
+   "style": "49a4eee67c"
+  },
+  "beijing-summer-palace/ice": {
+   "file": "read-beijing-summer-palace-ice",
+   "text": "In winter, the frozen lake becomes a giant skating rink!",
+   "duration": 4.56,
+   "match": 1.0,
+   "heard": "In winter, the frozen lake becomes a giant skating rink!",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.14,
+     "end": 0.44
+    },
+    {
+     "location": 3,
+     "length": 6,
+     "start": 0.44,
+     "end": 0.94
+    },
+    {
+     "location": 11,
+     "length": 3,
+     "start": 1.32,
+     "end": 1.55
+    },
+    {
+     "location": 15,
+     "length": 6,
+     "start": 1.63,
+     "end": 2.04
+    },
+    {
+     "location": 22,
+     "length": 4,
+     "start": 2.04,
+     "end": 2.34
+    },
+    {
+     "location": 27,
+     "length": 7,
+     "start": 2.34,
+     "end": 2.78
+    },
+    {
+     "location": 35,
+     "length": 1,
+     "start": 2.78,
+     "end": 3.26
+    },
+    {
+     "location": 37,
+     "length": 5,
+     "start": 3.26,
+     "end": 3.5
+    },
+    {
+     "location": 43,
+     "length": 7,
+     "start": 3.5,
+     "end": 3.88
+    },
+    {
+     "location": 51,
+     "length": 4,
+     "start": 3.88,
+     "end": 4.15
+    }
+   ],
+   "lufs": -16.0,
+   "style": "49a4eee67c"
+  },
+  "beijing-summer-palace/lake": {
+   "file": "read-beijing-summer-palace-lake",
+   "text": "Most of the park is a big lake called Kunming Lake.",
+   "duration": 4.51,
+   "match": 1.0,
+   "heard": "Most of the park is a big lake called Kunming Lake.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.0,
+     "end": 0.54
+    },
+    {
+     "location": 5,
+     "length": 2,
+     "start": 0.54,
+     "end": 0.78
+    },
+    {
+     "location": 8,
+     "length": 3,
+     "start": 0.85,
+     "end": 0.93
+    },
+    {
+     "location": 12,
+     "length": 4,
+     "start": 0.93,
+     "end": 1.13
+    },
+    {
+     "location": 17,
+     "length": 2,
+     "start": 1.57,
+     "end": 1.72
+    },
+    {
+     "location": 20,
+     "length": 1,
+     "start": 1.72,
+     "end": 1.86
+    },
+    {
+     "location": 22,
+     "length": 3,
+     "start": 1.94,
+     "end": 2.34
+    },
+    {
+     "location": 26,
+     "length": 4,
+     "start": 2.34,
+     "end": 2.48
+    },
+    {
+     "location": 31,
+     "length": 6,
+     "start": 2.92,
+     "end": 3.19
+    },
+    {
+     "location": 38,
+     "length": 7,
+     "start": 3.36,
+     "end": 3.94
+    },
+    {
+     "location": 46,
+     "length": 4,
+     "start": 3.94,
+     "end": 4.16
+    }
+   ],
+   "lufs": -16.0,
+   "style": "49a4eee67c"
+  },
+  "beijing-summer-palace/lotus": {
+   "file": "read-beijing-summer-palace-lotus",
+   "text": "In summer, pink lotus flowers bloom on the water.",
+   "duration": 4.0,
+   "match": 1.0,
+   "heard": "In summer, pink lotus flowers bloom on the water.",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.08,
+     "end": 0.42
+    },
+    {
+     "location": 3,
+     "length": 6,
+     "start": 0.42,
+     "end": 0.74
+    },
+    {
+     "location": 11,
+     "length": 4,
+     "start": 1.33,
+     "end": 1.72
+    },
+    {
+     "location": 16,
+     "length": 5,
+     "start": 1.72,
+     "end": 2.04
+    },
+    {
+     "location": 22,
+     "length": 7,
+     "start": 2.04,
+     "end": 2.52
+    },
+    {
+     "location": 30,
+     "length": 5,
+     "start": 2.52,
+     "end": 2.9
+    },
+    {
+     "location": 36,
+     "length": 2,
+     "start": 2.9,
+     "end": 3.12
+    },
+    {
+     "location": 39,
+     "length": 3,
+     "start": 3.12,
+     "end": 3.28
+    },
+    {
+     "location": 43,
+     "length": 5,
+     "start": 3.28,
+     "end": 3.52
+    }
+   ],
+   "lufs": -16.0,
+   "style": "49a4eee67c"
+  },
+  "beijing-summer-palace/marble-boat": {
+   "file": "read-beijing-summer-palace-marble-boat",
+   "text": "This boat is made of stone, so it can never sail away!",
+   "duration": 4.75,
+   "match": 1.0,
+   "heard": "This boat is made of stone, so it can never sail away!",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.15,
+     "end": 0.45
+    },
+    {
+     "location": 5,
+     "length": 4,
+     "start": 0.52,
+     "end": 0.73
+    },
+    {
+     "location": 10,
+     "length": 2,
+     "start": 1.11,
+     "end": 1.32
+    },
+    {
+     "location": 13,
+     "length": 4,
+     "start": 1.32,
+     "end": 1.52
+    },
+    {
+     "location": 18,
+     "length": 2,
+     "start": 1.52,
+     "end": 2.16
+    },
+    {
+     "location": 21,
+     "length": 5,
+     "start": 2.16,
+     "end": 2.24
+    },
+    {
+     "location": 28,
+     "length": 2,
+     "start": 2.7,
+     "end": 2.88
+    },
+    {
+     "location": 31,
+     "length": 2,
+     "start": 2.88,
+     "end": 2.96
+    },
+    {
+     "location": 34,
+     "length": 3,
+     "start": 3.01,
+     "end": 3.38
+    },
+    {
+     "location": 38,
+     "length": 5,
+     "start": 3.38,
+     "end": 3.82
+    },
+    {
+     "location": 44,
+     "length": 4,
+     "start": 3.82,
+     "end": 4.12
+    },
+    {
+     "location": 49,
+     "length": 4,
+     "start": 4.12,
+     "end": 4.48
+    }
+   ],
+   "lufs": -16.0,
+   "style": "49a4eee67c"
+  },
+  "beijing-summer-palace/ox": {
+   "file": "read-beijing-summer-palace-ox",
+   "text": "A bronze ox watches the lake to keep floods away.",
+   "duration": 4.75,
+   "match": 1.0,
+   "heard": "A bronze ox watches the lake to keep floods away.",
+   "words": [
+    {
+     "location": 0,
+     "length": 1,
+     "start": 0.15,
+     "end": 0.5
+    },
+    {
+     "location": 2,
+     "length": 6,
+     "start": 0.5,
+     "end": 1.26
+    },
+    {
+     "location": 9,
+     "length": 2,
+     "start": 1.34,
+     "end": 1.52
+    },
+    {
+     "location": 12,
+     "length": 7,
+     "start": 1.74,
+     "end": 2.2
+    },
+    {
+     "location": 20,
+     "length": 3,
+     "start": 2.2,
+     "end": 2.52
+    },
+    {
+     "location": 24,
+     "length": 4,
+     "start": 2.52,
+     "end": 2.65
+    },
+    {
+     "location": 29,
+     "length": 2,
+     "start": 3.16,
+     "end": 3.36
+    },
+    {
+     "location": 32,
+     "length": 4,
+     "start": 3.36,
+     "end": 3.48
+    },
+    {
+     "location": 37,
+     "length": 6,
+     "start": 3.56,
+     "end": 4.0
+    },
+    {
+     "location": 44,
+     "length": 4,
+     "start": 4.0,
+     "end": 4.41
+    }
+   ],
+   "lufs": -16.0,
+   "style": "49a4eee67c"
+  },
+  "beijing-summer-palace/paintings": {
+   "file": "read-beijing-summer-palace-paintings",
+   "text": "Thousands of little paintings cover its ceilings and beams.",
+   "duration": 5.2,
+   "match": 1.0,
+   "heard": "Thousands of little paintings cover its ceilings and beams.",
+   "words": [
+    {
+     "location": 0,
+     "length": 9,
+     "start": 0.82,
+     "end": 1.2
+    },
+    {
+     "location": 10,
+     "length": 2,
+     "start": 1.2,
+     "end": 1.62
+    },
+    {
+     "location": 13,
+     "length": 6,
+     "start": 1.62,
+     "end": 1.92
+    },
+    {
+     "location": 20,
+     "length": 9,
+     "start": 1.92,
+     "end": 2.49
+    },
+    {
+     "location": 30,
+     "length": 5,
+     "start": 2.81,
+     "end": 3.08
+    },
+    {
+     "location": 36,
+     "length": 3,
+     "start": 3.08,
+     "end": 3.6
+    },
+    {
+     "location": 40,
+     "length": 8,
+     "start": 3.6,
+     "end": 3.78
+    },
+    {
+     "location": 49,
+     "length": 3,
+     "start": 3.78,
+     "end": 4.12
+    },
+    {
+     "location": 53,
+     "length": 5,
+     "start": 4.12,
+     "end": 4.38
+    }
+   ],
+   "lufs": -16.0,
+   "style": "49a4eee67c"
+  },
+  "beijing-summer-palace/suzhou-street": {
+   "file": "read-beijing-summer-palace-suzhou-street",
+   "text": "Suzhou Street was a pretend shopping street beside a little canal.",
+   "duration": 5.16,
+   "match": 1.0,
+   "heard": "Suzhou Street was a pretend shopping street beside a little canal.",
+   "words": [
+    {
+     "location": 0,
+     "length": 6,
+     "start": 0.0,
+     "end": 0.74
+    },
+    {
+     "location": 7,
+     "length": 6,
+     "start": 0.74,
+     "end": 1.1
+    },
+    {
+     "location": 14,
+     "length": 3,
+     "start": 1.46,
+     "end": 1.64
+    },
+    {
+     "location": 18,
+     "length": 1,
+     "start": 1.64,
+     "end": 1.82
+    },
+    {
+     "location": 20,
+     "length": 7,
+     "start": 1.88,
+     "end": 2.22
+    },
+    {
+     "location": 28,
+     "length": 8,
+     "start": 2.22,
+     "end": 2.56
+    },
+    {
+     "location": 37,
+     "length": 6,
+     "start": 2.56,
+     "end": 2.98
+    },
+    {
+     "location": 44,
+     "length": 6,
+     "start": 3.25,
+     "end": 3.66
+    },
+    {
+     "location": 51,
+     "length": 1,
+     "start": 3.66,
+     "end": 4.06
+    },
+    {
+     "location": 53,
+     "length": 6,
+     "start": 4.06,
+     "end": 4.22
+    },
+    {
+     "location": 60,
+     "length": 5,
+     "start": 4.22,
+     "end": 4.54
+    }
+   ],
+   "lufs": -16.0,
+   "style": "49a4eee67c"
+  },
+  "beijing-summer-palace/theater": {
+   "file": "read-beijing-summer-palace-theater",
+   "text": "Cixi watched operas on this tall stage with three floors.",
+   "duration": 5.56,
+   "match": 1.0,
+   "heard": "Cixi watched operas on this tall stage with three floors.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.0,
+     "end": 0.74
+    },
+    {
+     "location": 5,
+     "length": 7,
+     "start": 0.94,
+     "end": 1.39
+    },
+    {
+     "location": 13,
+     "length": 6,
+     "start": 1.45,
+     "end": 1.92
+    },
+    {
+     "location": 20,
+     "length": 2,
+     "start": 1.92,
+     "end": 2.26
+    },
+    {
+     "location": 23,
+     "length": 4,
+     "start": 2.26,
+     "end": 2.45
+    },
+    {
+     "location": 28,
+     "length": 4,
+     "start": 2.51,
+     "end": 2.98
+    },
+    {
+     "location": 33,
+     "length": 5,
+     "start": 2.98,
+     "end": 3.45
+    },
+    {
+     "location": 39,
+     "length": 4,
+     "start": 3.72,
+     "end": 4.04
+    },
+    {
+     "location": 44,
+     "length": 5,
+     "start": 4.04,
+     "end": 4.5
+    },
+    {
+     "location": 50,
+     "length": 6,
+     "start": 4.5,
+     "end": 4.8
+    }
+   ],
+   "lufs": -16.0,
+   "style": "49a4eee67c"
+  },
+  "beijing-summer-palace/welcome": {
+   "file": "read-beijing-summer-palace-welcome",
+   "text": "Ni hao! Welcome to the Summer Palace, a royal park in Beijing.",
+   "duration": 5.3,
+   "match": 0.909,
+   "heard": "Welcome to the Summer Palace, a royal park in Beijing.",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.06,
+     "end": 0.14
+    },
+    {
+     "location": 3,
+     "length": 3,
+     "start": 0.14,
+     "end": 0.22
+    },
+    {
+     "location": 8,
+     "length": 7,
+     "start": 0.22,
+     "end": 0.64
+    },
+    {
+     "location": 16,
+     "length": 2,
+     "start": 1.17,
+     "end": 1.82
+    },
+    {
+     "location": 19,
+     "length": 3,
+     "start": 1.82,
+     "end": 2.08
+    },
+    {
+     "location": 23,
+     "length": 6,
+     "start": 2.08,
+     "end": 2.3
+    },
+    {
+     "location": 30,
+     "length": 6,
+     "start": 2.3,
+     "end": 2.76
+    },
+    {
+     "location": 38,
+     "length": 1,
+     "start": 3.06,
+     "end": 3.64
+    },
+    {
+     "location": 40,
+     "length": 5,
+     "start": 3.64,
+     "end": 3.72
+    },
+    {
+     "location": 46,
+     "length": 4,
+     "start": 3.72,
+     "end": 3.92
+    },
+    {
+     "location": 51,
+     "length": 2,
+     "start": 4.0,
+     "end": 4.64
+    },
+    {
+     "location": 54,
+     "length": 7,
+     "start": 4.64,
+     "end": 4.72
+    }
+   ],
+   "lufs": -16.0,
+   "style": "49a4eee67c"
+  },
+  "beijing-temple-of-heaven/center-stone": {
+   "file": "read-beijing-temple-of-heaven-center-stone",
+   "text": "Stand on the middle stone and talk, and your voice sounds louder!",
+   "duration": 5.52,
+   "match": 1.0,
+   "heard": "Stand on the middle stone and talk, and your voice sounds louder!",
+   "words": [
+    {
+     "location": 0,
+     "length": 5,
+     "start": 0.0,
+     "end": 0.6
+    },
+    {
+     "location": 6,
+     "length": 2,
+     "start": 0.6,
+     "end": 0.86
+    },
+    {
+     "location": 9,
+     "length": 3,
+     "start": 0.86,
+     "end": 1.08
+    },
+    {
+     "location": 13,
+     "length": 6,
+     "start": 1.08,
+     "end": 1.38
+    },
+    {
+     "location": 20,
+     "length": 5,
+     "start": 1.38,
+     "end": 1.81
+    },
+    {
+     "location": 26,
+     "length": 3,
+     "start": 1.99,
+     "end": 2.24
+    },
+    {
+     "location": 30,
+     "length": 4,
+     "start": 2.24,
+     "end": 2.48
+    },
+    {
+     "location": 36,
+     "length": 3,
+     "start": 3.21,
+     "end": 3.4
+    },
+    {
+     "location": 40,
+     "length": 4,
+     "start": 3.4,
+     "end": 3.52
+    },
+    {
+     "location": 45,
+     "length": 5,
+     "start": 3.6,
+     "end": 3.92
+    },
+    {
+     "location": 51,
+     "length": 6,
+     "start": 3.92,
+     "end": 4.34
+    },
+    {
+     "location": 58,
+     "length": 6,
+     "start": 4.34,
+     "end": 4.74
+    }
+   ],
+   "lufs": -16.0,
+   "style": "70129191c1"
+  },
+  "beijing-temple-of-heaven/cypress": {
+   "file": "read-beijing-temple-of-heaven-cypress",
+   "text": "Very old cypress trees grow all around the temple park.",
+   "duration": 5.16,
+   "match": 1.0,
+   "heard": "Very old cypress trees grow all around the temple park.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.2,
+     "end": 0.64
+    },
+    {
+     "location": 5,
+     "length": 3,
+     "start": 0.73,
+     "end": 1.48
+    },
+    {
+     "location": 9,
+     "length": 7,
+     "start": 1.56,
+     "end": 1.84
+    },
+    {
+     "location": 17,
+     "length": 5,
+     "start": 1.84,
+     "end": 2.34
+    },
+    {
+     "location": 23,
+     "length": 4,
+     "start": 2.7,
+     "end": 3.01
+    },
+    {
+     "location": 28,
+     "length": 3,
+     "start": 3.11,
+     "end": 3.48
+    },
+    {
+     "location": 32,
+     "length": 6,
+     "start": 3.48,
+     "end": 3.9
+    },
+    {
+     "location": 39,
+     "length": 3,
+     "start": 4.0,
+     "end": 4.08
+    },
+    {
+     "location": 43,
+     "length": 6,
+     "start": 4.15,
+     "end": 4.51
+    },
+    {
+     "location": 50,
+     "length": 4,
+     "start": 4.57,
+     "end": 4.76
+    }
+   ],
+   "lufs": -16.0,
+   "style": "70129191c1"
+  },
+  "beijing-temple-of-heaven/echo-wall": {
+   "file": "read-beijing-temple-of-heaven-echo-wall",
+   "text": "Whisper at the Echo Wall, and a friend far away can hear!",
+   "duration": 4.75,
+   "match": 1.0,
+   "heard": "Whisper at the Echo Wall, and a friend far away can hear!",
+   "words": [
+    {
+     "location": 0,
+     "length": 7,
+     "start": 0.08,
+     "end": 0.64
+    },
+    {
+     "location": 8,
+     "length": 2,
+     "start": 0.7,
+     "end": 0.78
+    },
+    {
+     "location": 11,
+     "length": 3,
+     "start": 0.85,
+     "end": 0.95
+    },
+    {
+     "location": 15,
+     "length": 4,
+     "start": 1.03,
+     "end": 1.4
+    },
+    {
+     "location": 20,
+     "length": 4,
+     "start": 1.4,
+     "end": 1.71
+    },
+    {
+     "location": 26,
+     "length": 3,
+     "start": 2.08,
+     "end": 2.22
+    },
+    {
+     "location": 30,
+     "length": 1,
+     "start": 2.22,
+     "end": 2.74
+    },
+    {
+     "location": 32,
+     "length": 6,
+     "start": 2.74,
+     "end": 2.82
+    },
+    {
+     "location": 39,
+     "length": 3,
+     "start": 2.82,
+     "end": 3.22
+    },
+    {
+     "location": 43,
+     "length": 4,
+     "start": 3.22,
+     "end": 3.61
+    },
+    {
+     "location": 48,
+     "length": 3,
+     "start": 3.86,
+     "end": 4.12
+    },
+    {
+     "location": 52,
+     "length": 4,
+     "start": 4.12,
+     "end": 4.41
+    }
+   ],
+   "lufs": -16.0,
+   "style": "70129191c1"
+  },
+  "beijing-temple-of-heaven/goodbye": {
+   "file": "read-beijing-temple-of-heaven-goodbye",
+   "text": "Zaijian, Beijing! Wave bye to the round blue temple.",
+   "duration": 5.11,
+   "match": 1.0,
+   "heard": "Zaijian, Beijing! Wave bye to the round blue temple.",
+   "words": [
+    {
+     "location": 0,
+     "length": 7,
+     "start": 0.07,
+     "end": 1.93
+    },
+    {
+     "location": 9,
+     "length": 7,
+     "start": 2.56,
+     "end": 2.64
+    },
+    {
+     "location": 18,
+     "length": 4,
+     "start": 2.96,
+     "end": 3.04
+    },
+    {
+     "location": 23,
+     "length": 3,
+     "start": 3.04,
+     "end": 3.36
+    },
+    {
+     "location": 27,
+     "length": 2,
+     "start": 3.45,
+     "end": 3.58
+    },
+    {
+     "location": 30,
+     "length": 3,
+     "start": 3.58,
+     "end": 3.94
+    },
+    {
+     "location": 34,
+     "length": 5,
+     "start": 3.94,
+     "end": 4.18
+    },
+    {
+     "location": 40,
+     "length": 4,
+     "start": 4.18,
+     "end": 4.58
+    },
+    {
+     "location": 45,
+     "length": 6,
+     "start": 4.58,
+     "end": 4.88
+    }
+   ],
+   "lufs": -16.0,
+   "style": "70129191c1"
+  },
+  "beijing-temple-of-heaven/heaven-earth": {
+   "file": "read-beijing-temple-of-heaven-heaven-earth",
+   "text": "Long ago, people imagined heaven was round and the earth was square.",
+   "duration": 5.25,
+   "match": 1.0,
+   "heard": "Long ago, people imagined heaven was round and the earth was square.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.0,
+     "end": 0.44
+    },
+    {
+     "location": 5,
+     "length": 3,
+     "start": 0.44,
+     "end": 0.9
+    },
+    {
+     "location": 10,
+     "length": 6,
+     "start": 1.37,
+     "end": 1.72
+    },
+    {
+     "location": 17,
+     "length": 8,
+     "start": 1.72,
+     "end": 2.26
+    },
+    {
+     "location": 26,
+     "length": 6,
+     "start": 2.26,
+     "end": 2.6
+    },
+    {
+     "location": 33,
+     "length": 3,
+     "start": 2.6,
+     "end": 3.02
+    },
+    {
+     "location": 37,
+     "length": 5,
+     "start": 3.02,
+     "end": 3.35
+    },
+    {
+     "location": 43,
+     "length": 3,
+     "start": 3.6,
+     "end": 3.82
+    },
+    {
+     "location": 47,
+     "length": 3,
+     "start": 3.93,
+     "end": 4.14
+    },
+    {
+     "location": 51,
+     "length": 5,
+     "start": 4.21,
+     "end": 4.29
+    },
+    {
+     "location": 57,
+     "length": 3,
+     "start": 4.29,
+     "end": 4.66
+    },
+    {
+     "location": 61,
+     "length": 6,
+     "start": 4.66,
+     "end": 4.9
+    }
+   ],
+   "lufs": -16.0,
+   "style": "70129191c1"
+  },
+  "beijing-temple-of-heaven/jianzi": {
+   "file": "read-beijing-temple-of-heaven-jianzi",
+   "text": "Players kick a feathered jianzi high without using their hands.",
+   "duration": 4.96,
+   "match": 1.0,
+   "heard": "Players kick a feathered jianzi high without using their hands.",
+   "words": [
+    {
+     "location": 0,
+     "length": 7,
+     "start": 0.0,
+     "end": 0.62
+    },
+    {
+     "location": 8,
+     "length": 4,
+     "start": 0.68,
+     "end": 0.9
+    },
+    {
+     "location": 13,
+     "length": 1,
+     "start": 1.08,
+     "end": 1.42
+    },
+    {
+     "location": 15,
+     "length": 9,
+     "start": 1.42,
+     "end": 2.12
+    },
+    {
+     "location": 25,
+     "length": 6,
+     "start": 2.12,
+     "end": 2.24
+    },
+    {
+     "location": 32,
+     "length": 4,
+     "start": 2.24,
+     "end": 2.76
+    },
+    {
+     "location": 37,
+     "length": 7,
+     "start": 3.21,
+     "end": 3.58
+    },
+    {
+     "location": 45,
+     "length": 5,
+     "start": 3.58,
+     "end": 3.88
+    },
+    {
+     "location": 51,
+     "length": 5,
+     "start": 3.88,
+     "end": 4.16
+    },
+    {
+     "location": 57,
+     "length": 5,
+     "start": 4.16,
+     "end": 4.56
+    }
+   ],
+   "lufs": -16.0,
+   "style": "70129191c1"
+  },
+  "beijing-temple-of-heaven/no-nails": {
+   "file": "read-beijing-temple-of-heaven-no-nails",
+   "text": "The builders fit the wooden pieces together without any nails.",
+   "duration": 5.8,
+   "match": 1.0,
+   "heard": "The builders fit the wooden pieces together without any nails.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.5,
+     "end": 0.63
+    },
+    {
+     "location": 4,
+     "length": 8,
+     "start": 0.7,
+     "end": 1.36
+    },
+    {
+     "location": 13,
+     "length": 3,
+     "start": 1.46,
+     "end": 1.58
+    },
+    {
+     "location": 17,
+     "length": 3,
+     "start": 1.73,
+     "end": 2.24
+    },
+    {
+     "location": 21,
+     "length": 6,
+     "start": 2.24,
+     "end": 2.32
+    },
+    {
+     "location": 28,
+     "length": 6,
+     "start": 2.32,
+     "end": 2.72
+    },
+    {
+     "location": 35,
+     "length": 8,
+     "start": 2.72,
+     "end": 3.27
+    },
+    {
+     "location": 44,
+     "length": 7,
+     "start": 3.65,
+     "end": 4.06
+    },
+    {
+     "location": 52,
+     "length": 3,
+     "start": 4.24,
+     "end": 5.06
+    },
+    {
+     "location": 56,
+     "length": 5,
+     "start": 5.06,
+     "end": 5.14
+    }
+   ],
+   "lufs": -16.0,
+   "style": "70129191c1"
+  },
+  "beijing-temple-of-heaven/pillars": {
+   "file": "read-beijing-temple-of-heaven-pillars",
+   "text": "Inside, the tall pillars stand for seasons, months and hours.",
+   "duration": 5.52,
+   "match": 1.0,
+   "heard": "Inside, the tall pillars stand for seasons, months and hours.",
+   "words": [
+    {
+     "location": 0,
+     "length": 6,
+     "start": 0.2,
+     "end": 0.92
+    },
+    {
+     "location": 8,
+     "length": 3,
+     "start": 1.25,
+     "end": 1.33
+    },
+    {
+     "location": 12,
+     "length": 4,
+     "start": 1.42,
+     "end": 1.83
+    },
+    {
+     "location": 17,
+     "length": 7,
+     "start": 1.9,
+     "end": 2.28
+    },
+    {
+     "location": 25,
+     "length": 5,
+     "start": 2.28,
+     "end": 2.74
+    },
+    {
+     "location": 31,
+     "length": 3,
+     "start": 2.74,
+     "end": 3.12
+    },
+    {
+     "location": 35,
+     "length": 7,
+     "start": 3.12,
+     "end": 4.25
+    },
+    {
+     "location": 44,
+     "length": 6,
+     "start": 4.33,
+     "end": 4.41
+    },
+    {
+     "location": 51,
+     "length": 3,
+     "start": 4.41,
+     "end": 4.54
+    },
+    {
+     "location": 55,
+     "length": 5,
+     "start": 4.54,
+     "end": 5.0
+    }
+   ],
+   "lufs": -16.0,
+   "style": "70129191c1"
+  },
+  "beijing-temple-of-heaven/round-hall": {
+   "file": "read-beijing-temple-of-heaven-round-hall",
+   "text": "This round hall has three blue roofs stacked like a cake.",
+   "duration": 4.2,
+   "match": 1.0,
+   "heard": "This round hall has three blue roofs stacked like a cake.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.0,
+     "end": 0.46
+    },
+    {
+     "location": 5,
+     "length": 5,
+     "start": 0.46,
+     "end": 0.88
+    },
+    {
+     "location": 11,
+     "length": 4,
+     "start": 0.88,
+     "end": 1.16
+    },
+    {
+     "location": 16,
+     "length": 3,
+     "start": 1.16,
+     "end": 1.47
+    },
+    {
+     "location": 20,
+     "length": 5,
+     "start": 1.53,
+     "end": 1.9
+    },
+    {
+     "location": 26,
+     "length": 4,
+     "start": 1.9,
+     "end": 2.16
+    },
+    {
+     "location": 31,
+     "length": 5,
+     "start": 2.16,
+     "end": 2.44
+    },
+    {
+     "location": 37,
+     "length": 7,
+     "start": 2.44,
+     "end": 2.75
+    },
+    {
+     "location": 45,
+     "length": 4,
+     "start": 2.85,
+     "end": 3.12
+    },
+    {
+     "location": 50,
+     "length": 1,
+     "start": 3.12,
+     "end": 3.46
+    },
+    {
+     "location": 52,
+     "length": 4,
+     "start": 3.46,
+     "end": 3.54
+    }
+   ],
+   "lufs": -16.0,
+   "style": "70129191c1"
+  },
+  "beijing-temple-of-heaven/tai-chi": {
+   "file": "read-beijing-temple-of-heaven-tai-chi",
+   "text": "In the morning, people do slow and gentle tai chi.",
+   "duration": 4.1,
+   "match": 1.0,
+   "heard": "In the morning, people do slow and gentle tai chi.",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.0,
+     "end": 0.26
+    },
+    {
+     "location": 3,
+     "length": 3,
+     "start": 0.26,
+     "end": 0.58
+    },
+    {
+     "location": 7,
+     "length": 7,
+     "start": 0.58,
+     "end": 0.81
+    },
+    {
+     "location": 16,
+     "length": 6,
+     "start": 1.21,
+     "end": 1.6
+    },
+    {
+     "location": 23,
+     "length": 2,
+     "start": 1.6,
+     "end": 1.92
+    },
+    {
+     "location": 26,
+     "length": 4,
+     "start": 1.92,
+     "end": 2.26
+    },
+    {
+     "location": 31,
+     "length": 3,
+     "start": 2.26,
+     "end": 2.98
+    },
+    {
+     "location": 35,
+     "length": 6,
+     "start": 2.98,
+     "end": 3.06
+    },
+    {
+     "location": 42,
+     "length": 3,
+     "start": 3.06,
+     "end": 3.36
+    },
+    {
+     "location": 46,
+     "length": 3,
+     "start": 3.36,
+     "end": 3.54
+    }
+   ],
+   "lufs": -16.0,
+   "style": "70129191c1"
+  },
+  "beijing-temple-of-heaven/walkway": {
+   "file": "read-beijing-temple-of-heaven-walkway",
+   "text": "A long raised stone road connects the round altars.",
+   "duration": 5.11,
+   "match": 1.0,
+   "heard": "A long raised stone road connects the round altars.",
+   "words": [
+    {
+     "location": 0,
+     "length": 1,
+     "start": 0.0,
+     "end": 0.32
+    },
+    {
+     "location": 2,
+     "length": 4,
+     "start": 0.32,
+     "end": 0.74
+    },
+    {
+     "location": 7,
+     "length": 6,
+     "start": 0.74,
+     "end": 1.2
+    },
+    {
+     "location": 14,
+     "length": 5,
+     "start": 1.2,
+     "end": 1.72
+    },
+    {
+     "location": 20,
+     "length": 4,
+     "start": 1.72,
+     "end": 2.1
+    },
+    {
+     "location": 25,
+     "length": 8,
+     "start": 2.39,
+     "end": 2.75
+    },
+    {
+     "location": 34,
+     "length": 3,
+     "start": 2.81,
+     "end": 3.36
+    },
+    {
+     "location": 38,
+     "length": 5,
+     "start": 3.36,
+     "end": 3.74
+    },
+    {
+     "location": 44,
+     "length": 6,
+     "start": 3.74,
+     "end": 4.32
+    }
+   ],
+   "lufs": -16.0,
+   "style": "70129191c1"
+  },
+  "beijing-temple-of-heaven/water-writing": {
+   "file": "read-beijing-temple-of-heaven-water-writing",
+   "text": "Some people paint words on the ground with water brushes.",
+   "duration": 4.7,
+   "match": 1.0,
+   "heard": "Some people paint words on the ground with water brushes.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.0,
+     "end": 0.58
+    },
+    {
+     "location": 5,
+     "length": 6,
+     "start": 0.58,
+     "end": 1.04
+    },
+    {
+     "location": 12,
+     "length": 5,
+     "start": 1.28,
+     "end": 1.55
+    },
+    {
+     "location": 18,
+     "length": 5,
+     "start": 1.61,
+     "end": 2.02
+    },
+    {
+     "location": 24,
+     "length": 2,
+     "start": 2.02,
+     "end": 2.22
+    },
+    {
+     "location": 27,
+     "length": 3,
+     "start": 2.22,
+     "end": 2.36
+    },
+    {
+     "location": 31,
+     "length": 6,
+     "start": 2.36,
+     "end": 2.73
+    },
+    {
+     "location": 38,
+     "length": 4,
+     "start": 3.02,
+     "end": 3.36
+    },
+    {
+     "location": 43,
+     "length": 5,
+     "start": 3.36,
+     "end": 3.68
+    },
+    {
+     "location": 49,
+     "length": 7,
+     "start": 3.68,
+     "end": 4.0
+    }
+   ],
+   "lufs": -16.0,
+   "style": "70129191c1"
+  },
+  "beijing-temple-of-heaven/welcome": {
+   "file": "read-beijing-temple-of-heaven-welcome",
+   "text": "Ni hao! Welcome to the Temple of Heaven in Beijing.",
+   "duration": 4.24,
+   "match": 1.0,
+   "heard": "Ni hao! Welcome to the Temple of Heaven in Beijing.",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.0,
+     "end": 0.42
+    },
+    {
+     "location": 3,
+     "length": 3,
+     "start": 0.42,
+     "end": 0.7
+    },
+    {
+     "location": 8,
+     "length": 7,
+     "start": 1.2,
+     "end": 1.7
+    },
+    {
+     "location": 16,
+     "length": 2,
+     "start": 1.7,
+     "end": 1.99
+    },
+    {
+     "location": 19,
+     "length": 3,
+     "start": 2.06,
+     "end": 2.26
+    },
+    {
+     "location": 23,
+     "length": 6,
+     "start": 2.26,
+     "end": 2.36
+    },
+    {
+     "location": 30,
+     "length": 2,
+     "start": 2.36,
+     "end": 2.7
+    },
+    {
+     "location": 33,
+     "length": 6,
+     "start": 2.7,
+     "end": 3.0
+    },
+    {
+     "location": 40,
+     "length": 2,
+     "start": 3.2,
+     "end": 3.5
+    },
+    {
+     "location": 43,
+     "length": 7,
+     "start": 3.5,
+     "end": 3.9
+    }
+   ],
+   "lufs": -16.0,
+   "style": "70129191c1"
+  },
+  "beijing/birds-nest": {
+   "file": "read-beijing-birds-nest",
+   "text": "This stadium looks like a giant bird's nest made of steel.",
+   "duration": 5.16,
+   "match": 1.0,
+   "heard": "This stadium looks like a giant bird's nest made of steel.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.17,
+     "end": 0.48
+    },
+    {
+     "location": 5,
+     "length": 7,
+     "start": 0.48,
+     "end": 1.08
+    },
+    {
+     "location": 13,
+     "length": 5,
+     "start": 1.47,
+     "end": 1.78
+    },
+    {
+     "location": 19,
+     "length": 4,
+     "start": 1.78,
+     "end": 2.02
+    },
+    {
+     "location": 24,
+     "length": 1,
+     "start": 2.02,
+     "end": 2.36
+    },
+    {
+     "location": 26,
+     "length": 5,
+     "start": 2.36,
+     "end": 2.58
+    },
+    {
+     "location": 32,
+     "length": 6,
+     "start": 2.58,
+     "end": 3.06
+    },
+    {
+     "location": 39,
+     "length": 4,
+     "start": 3.06,
+     "end": 3.34
+    },
+    {
+     "location": 44,
+     "length": 4,
+     "start": 3.59,
+     "end": 3.92
+    },
+    {
+     "location": 49,
+     "length": 2,
+     "start": 3.92,
+     "end": 4.5
+    },
+    {
+     "location": 52,
+     "length": 5,
+     "start": 4.5,
+     "end": 4.58
+    }
+   ],
+   "lufs": -16.0,
+   "style": "2333c5e61b"
+  },
+  "beijing/drum-tower": {
+   "file": "read-beijing-drum-tower",
+   "text": "Long ago, giant drums in this tower told everyone the time.",
+   "duration": 4.96,
+   "match": 1.0,
+   "heard": "Long ago, giant drums in this tower told everyone the time.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.06,
+     "end": 0.48
+    },
+    {
+     "location": 5,
+     "length": 3,
+     "start": 0.48,
+     "end": 0.94
+    },
+    {
+     "location": 10,
+     "length": 5,
+     "start": 1.29,
+     "end": 1.88
+    },
+    {
+     "location": 16,
+     "length": 5,
+     "start": 1.88,
+     "end": 2.2
+    },
+    {
+     "location": 22,
+     "length": 2,
+     "start": 2.2,
+     "end": 2.48
+    },
+    {
+     "location": 25,
+     "length": 4,
+     "start": 2.48,
+     "end": 2.76
+    },
+    {
+     "location": 30,
+     "length": 5,
+     "start": 2.76,
+     "end": 3.06
+    },
+    {
+     "location": 36,
+     "length": 4,
+     "start": 3.13,
+     "end": 3.45
+    },
+    {
+     "location": 41,
+     "length": 8,
+     "start": 3.53,
+     "end": 3.96
+    },
+    {
+     "location": 50,
+     "length": 3,
+     "start": 3.96,
+     "end": 4.28
+    },
+    {
+     "location": 54,
+     "length": 4,
+     "start": 4.28,
+     "end": 4.59
+    }
+   ],
+   "lufs": -16.0,
+   "style": "2333c5e61b"
+  },
+  "beijing/duck": {
+   "file": "read-beijing-duck",
+   "text": "Peking duck has crispy skin and comes with tiny thin pancakes.",
+   "duration": 6.76,
+   "match": 1.0,
+   "heard": "Peking duck has crispy skin and comes with tiny thin pancakes.",
+   "words": [
+    {
+     "location": 0,
+     "length": 6,
+     "start": 0.95,
+     "end": 1.52
+    },
+    {
+     "location": 7,
+     "length": 4,
+     "start": 1.52,
+     "end": 1.75
+    },
+    {
+     "location": 12,
+     "length": 3,
+     "start": 1.83,
+     "end": 2.49
+    },
+    {
+     "location": 16,
+     "length": 6,
+     "start": 2.57,
+     "end": 3.12
+    },
+    {
+     "location": 23,
+     "length": 4,
+     "start": 3.12,
+     "end": 3.62
+    },
+    {
+     "location": 28,
+     "length": 3,
+     "start": 4.06,
+     "end": 4.32
+    },
+    {
+     "location": 32,
+     "length": 5,
+     "start": 4.32,
+     "end": 4.73
+    },
+    {
+     "location": 38,
+     "length": 4,
+     "start": 4.83,
+     "end": 5.1
+    },
+    {
+     "location": 43,
+     "length": 4,
+     "start": 5.1,
+     "end": 5.35
+    },
+    {
+     "location": 48,
+     "length": 4,
+     "start": 5.41,
+     "end": 5.72
+    },
+    {
+     "location": 53,
+     "length": 8,
+     "start": 5.72,
+     "end": 6.28
+    }
+   ],
+   "lufs": -16.0,
+   "style": "2333c5e61b"
+  },
+  "beijing/flag": {
+   "file": "read-beijing-flag",
+   "text": "Every sunrise, soldiers raise China's red flag at Tiananmen Square.",
+   "duration": 6.0,
+   "match": 1.0,
+   "heard": "Every sunrise, soldiers raise China's red flag at Tiananmen Square.",
+   "words": [
+    {
+     "location": 0,
+     "length": 5,
+     "start": 0.0,
+     "end": 0.52
+    },
+    {
+     "location": 6,
+     "length": 7,
+     "start": 0.52,
+     "end": 1.22
+    },
+    {
+     "location": 15,
+     "length": 8,
+     "start": 2.22,
+     "end": 2.3
+    },
+    {
+     "location": 24,
+     "length": 5,
+     "start": 2.3,
+     "end": 2.76
+    },
+    {
+     "location": 30,
+     "length": 7,
+     "start": 2.82,
+     "end": 3.38
+    },
+    {
+     "location": 38,
+     "length": 3,
+     "start": 3.38,
+     "end": 3.78
+    },
+    {
+     "location": 42,
+     "length": 4,
+     "start": 3.78,
+     "end": 4.15
+    },
+    {
+     "location": 47,
+     "length": 2,
+     "start": 4.53,
+     "end": 4.63
+    },
+    {
+     "location": 50,
+     "length": 9,
+     "start": 4.7,
+     "end": 5.32
+    },
+    {
+     "location": 60,
+     "length": 6,
+     "start": 5.32,
+     "end": 5.73
+    }
+   ],
+   "lufs": -16.0,
+   "style": "2333c5e61b"
+  },
+  "beijing/goodbye": {
+   "file": "read-beijing-goodbye",
+   "text": "Zaijian, Beijing! Wave goodbye to the busy capital city.",
+   "duration": 5.3,
+   "match": 1.0,
+   "heard": "Zaijian, Beijing! Wave goodbye to the busy capital city.",
+   "words": [
+    {
+     "location": 0,
+     "length": 7,
+     "start": 0.11,
+     "end": 1.95
+    },
+    {
+     "location": 9,
+     "length": 7,
+     "start": 2.47,
+     "end": 2.55
+    },
+    {
+     "location": 18,
+     "length": 4,
+     "start": 2.82,
+     "end": 2.9
+    },
+    {
+     "location": 23,
+     "length": 7,
+     "start": 2.9,
+     "end": 3.32
+    },
+    {
+     "location": 31,
+     "length": 2,
+     "start": 3.32,
+     "end": 3.54
+    },
+    {
+     "location": 34,
+     "length": 3,
+     "start": 3.54,
+     "end": 3.76
+    },
+    {
+     "location": 38,
+     "length": 4,
+     "start": 3.76,
+     "end": 4.06
+    },
+    {
+     "location": 43,
+     "length": 7,
+     "start": 4.06,
+     "end": 4.44
+    },
+    {
+     "location": 51,
+     "length": 4,
+     "start": 4.44,
+     "end": 4.76
+    }
+   ],
+   "lufs": -16.0,
+   "style": "2333c5e61b"
+  },
+  "beijing/hutong": {
+   "file": "read-beijing-hutong",
+   "text": "Hutongs are narrow old alleys where families live close together.",
+   "duration": 5.8,
+   "match": 0.9,
+   "heard": "Hotongs are narrow old alleys where families live close together.",
+   "words": [
+    {
+     "location": 0,
+     "length": 7,
+     "start": 0.1,
+     "end": 0.91
+    },
+    {
+     "location": 8,
+     "length": 3,
+     "start": 1.24,
+     "end": 1.56
+    },
+    {
+     "location": 12,
+     "length": 6,
+     "start": 1.56,
+     "end": 2.02
+    },
+    {
+     "location": 19,
+     "length": 3,
+     "start": 2.08,
+     "end": 2.46
+    },
+    {
+     "location": 23,
+     "length": 6,
+     "start": 2.46,
+     "end": 2.92
+    },
+    {
+     "location": 30,
+     "length": 5,
+     "start": 3.25,
+     "end": 3.49
+    },
+    {
+     "location": 36,
+     "length": 8,
+     "start": 3.55,
+     "end": 4.0
+    },
+    {
+     "location": 45,
+     "length": 4,
+     "start": 4.0,
+     "end": 4.3
+    },
+    {
+     "location": 50,
+     "length": 5,
+     "start": 4.36,
+     "end": 4.74
+    },
+    {
+     "location": 56,
+     "length": 8,
+     "start": 4.74,
+     "end": 5.06
+    }
+   ],
+   "lufs": -16.0,
+   "style": "2333c5e61b"
+  },
+  "beijing/kites": {
+   "file": "read-beijing-kites",
+   "text": "Beijing kites can look like dragons, swallows and butterflies.",
+   "duration": 6.86,
+   "match": 1.0,
+   "heard": "Beijing kites can look like dragons, swallows and butterflies.",
+   "words": [
+    {
+     "location": 0,
+     "length": 7,
+     "start": 0.06,
+     "end": 0.74
+    },
+    {
+     "location": 8,
+     "length": 5,
+     "start": 0.8,
+     "end": 1.26
+    },
+    {
+     "location": 14,
+     "length": 3,
+     "start": 1.48,
+     "end": 1.96
+    },
+    {
+     "location": 18,
+     "length": 4,
+     "start": 2.08,
+     "end": 2.16
+    },
+    {
+     "location": 23,
+     "length": 4,
+     "start": 2.16,
+     "end": 2.73
+    },
+    {
+     "location": 28,
+     "length": 7,
+     "start": 2.93,
+     "end": 3.65
+    },
+    {
+     "location": 37,
+     "length": 8,
+     "start": 3.75,
+     "end": 3.83
+    },
+    {
+     "location": 46,
+     "length": 3,
+     "start": 3.83,
+     "end": 4.32
+    },
+    {
+     "location": 50,
+     "length": 11,
+     "start": 4.42,
+     "end": 4.54
+    }
+   ],
+   "lufs": -16.0,
+   "style": "2333c5e61b"
+  },
+  "beijing/opera": {
+   "file": "read-beijing-opera",
+   "text": "Beijing opera actors wear painted faces and sparkly costumes.",
+   "duration": 5.95,
+   "match": 1.0,
+   "heard": "Beijing opera actors wear painted faces and sparkly costumes.",
+   "words": [
+    {
+     "location": 0,
+     "length": 7,
+     "start": 0.21,
+     "end": 0.84
+    },
+    {
+     "location": 8,
+     "length": 5,
+     "start": 0.9,
+     "end": 1.41
+    },
+    {
+     "location": 14,
+     "length": 6,
+     "start": 1.47,
+     "end": 1.72
+    },
+    {
+     "location": 21,
+     "length": 4,
+     "start": 1.72,
+     "end": 2.0
+    },
+    {
+     "location": 26,
+     "length": 7,
+     "start": 2.11,
+     "end": 2.56
+    },
+    {
+     "location": 34,
+     "length": 5,
+     "start": 2.56,
+     "end": 3.13
+    },
+    {
+     "location": 40,
+     "length": 3,
+     "start": 3.36,
+     "end": 3.78
+    },
+    {
+     "location": 44,
+     "length": 7,
+     "start": 3.78,
+     "end": 4.24
+    },
+    {
+     "location": 52,
+     "length": 8,
+     "start": 4.24,
+     "end": 4.68
+    }
+   ],
+   "lufs": -16.0,
+   "style": "2333c5e61b"
+  },
+  "beijing/panda": {
+   "file": "read-beijing-panda",
+   "text": "Giant pandas munch bamboo at the Beijing Zoo.",
+   "duration": 4.84,
+   "match": 1.0,
+   "heard": "Giant pandas munch bamboo at the Beijing Zoo.",
+   "words": [
+    {
+     "location": 0,
+     "length": 5,
+     "start": 0.08,
+     "end": 0.58
+    },
+    {
+     "location": 6,
+     "length": 6,
+     "start": 0.71,
+     "end": 1.34
+    },
+    {
+     "location": 13,
+     "length": 5,
+     "start": 1.59,
+     "end": 2.13
+    },
+    {
+     "location": 19,
+     "length": 6,
+     "start": 2.19,
+     "end": 2.77
+    },
+    {
+     "location": 26,
+     "length": 2,
+     "start": 3.18,
+     "end": 3.28
+    },
+    {
+     "location": 29,
+     "length": 3,
+     "start": 3.34,
+     "end": 3.46
+    },
+    {
+     "location": 33,
+     "length": 7,
+     "start": 3.53,
+     "end": 4.06
+    },
+    {
+     "location": 41,
+     "length": 3,
+     "start": 4.06,
+     "end": 4.44
+    }
+   ],
+   "lufs": -16.0,
+   "style": "2333c5e61b"
+  },
+  "beijing/rickshaw": {
+   "file": "read-beijing-rickshaw",
+   "text": "You can ride through the hutongs in a pedal rickshaw.",
+   "duration": 4.56,
+   "match": 1.0,
+   "heard": "You can ride through the hutongs in a pedal rickshaw.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.15,
+     "end": 0.36
+    },
+    {
+     "location": 4,
+     "length": 3,
+     "start": 0.36,
+     "end": 0.72
+    },
+    {
+     "location": 8,
+     "length": 4,
+     "start": 0.72,
+     "end": 1.13
+    },
+    {
+     "location": 13,
+     "length": 7,
+     "start": 1.43,
+     "end": 1.73
+    },
+    {
+     "location": 21,
+     "length": 3,
+     "start": 1.81,
+     "end": 2.0
+    },
+    {
+     "location": 25,
+     "length": 7,
+     "start": 2.0,
+     "end": 2.49
+    },
+    {
+     "location": 33,
+     "length": 2,
+     "start": 2.81,
+     "end": 3.01
+    },
+    {
+     "location": 36,
+     "length": 1,
+     "start": 3.13,
+     "end": 3.21
+    },
+    {
+     "location": 38,
+     "length": 5,
+     "start": 3.21,
+     "end": 3.7
+    },
+    {
+     "location": 44,
+     "length": 8,
+     "start": 3.76,
+     "end": 4.08
+    }
+   ],
+   "lufs": -16.0,
+   "style": "2333c5e61b"
+  },
+  "beijing/subway": {
+   "file": "read-beijing-subway",
+   "text": "Beijing's subway trains zoom under the city to many stations.",
+   "duration": 5.4,
+   "match": 1.0,
+   "heard": "Beijing's subway trains zoom under the city to many stations.",
+   "words": [
+    {
+     "location": 0,
+     "length": 9,
+     "start": 0.16,
+     "end": 1.04
+    },
+    {
+     "location": 10,
+     "length": 6,
+     "start": 1.04,
+     "end": 1.42
+    },
+    {
+     "location": 17,
+     "length": 6,
+     "start": 1.42,
+     "end": 1.88
+    },
+    {
+     "location": 24,
+     "length": 4,
+     "start": 2.07,
+     "end": 2.66
+    },
+    {
+     "location": 29,
+     "length": 5,
+     "start": 2.66,
+     "end": 2.94
+    },
+    {
+     "location": 35,
+     "length": 3,
+     "start": 2.94,
+     "end": 3.2
+    },
+    {
+     "location": 39,
+     "length": 4,
+     "start": 3.2,
+     "end": 3.4
+    },
+    {
+     "location": 44,
+     "length": 2,
+     "start": 3.65,
+     "end": 3.9
+    },
+    {
+     "location": 47,
+     "length": 4,
+     "start": 3.9,
+     "end": 4.28
+    },
+    {
+     "location": 52,
+     "length": 8,
+     "start": 4.28,
+     "end": 4.66
+    }
+   ],
+   "lufs": -16.0,
+   "style": "2333c5e61b"
+  },
+  "beijing/tanghulu": {
+   "file": "read-beijing-tanghulu",
+   "text": "Tanghulu are shiny fruits on a stick coated in hard candy.",
+   "duration": 5.56,
+   "match": 1.0,
+   "heard": "Tanghulu are shiny fruits on a stick coated in hard candy.",
+   "words": [
+    {
+     "location": 0,
+     "length": 8,
+     "start": 0.0,
+     "end": 0.94
+    },
+    {
+     "location": 9,
+     "length": 3,
+     "start": 1.25,
+     "end": 1.56
+    },
+    {
+     "location": 13,
+     "length": 5,
+     "start": 1.56,
+     "end": 2.0
+    },
+    {
+     "location": 19,
+     "length": 6,
+     "start": 2.0,
+     "end": 2.4
+    },
+    {
+     "location": 26,
+     "length": 2,
+     "start": 2.4,
+     "end": 2.6
+    },
+    {
+     "location": 29,
+     "length": 1,
+     "start": 2.6,
+     "end": 2.96
+    },
+    {
+     "location": 31,
+     "length": 5,
+     "start": 3.38,
+     "end": 3.46
+    },
+    {
+     "location": 37,
+     "length": 6,
+     "start": 3.46,
+     "end": 3.68
+    },
+    {
+     "location": 44,
+     "length": 2,
+     "start": 3.68,
+     "end": 4.24
+    },
+    {
+     "location": 47,
+     "length": 4,
+     "start": 4.24,
+     "end": 4.44
+    },
+    {
+     "location": 52,
+     "length": 5,
+     "start": 4.44,
+     "end": 4.78
+    }
+   ],
+   "lufs": -16.0,
+   "style": "2333c5e61b"
+  },
+  "beijing/welcome": {
+   "file": "read-beijing-welcome",
+   "text": "Ni hao! Welcome to Beijing, the capital city of China.",
+   "duration": 4.84,
+   "match": 1.0,
+   "heard": "Ni hao! Welcome to Beijing, the capital city of China.",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.0,
+     "end": 0.44
+    },
+    {
+     "location": 3,
+     "length": 3,
+     "start": 0.44,
+     "end": 0.75
+    },
+    {
+     "location": 8,
+     "length": 7,
+     "start": 1.31,
+     "end": 1.82
+    },
+    {
+     "location": 16,
+     "length": 2,
+     "start": 1.82,
+     "end": 2.14
+    },
+    {
+     "location": 19,
+     "length": 7,
+     "start": 2.14,
+     "end": 2.67
+    },
+    {
+     "location": 28,
+     "length": 3,
+     "start": 2.87,
+     "end": 2.95
+    },
+    {
+     "location": 32,
+     "length": 7,
+     "start": 3.01,
+     "end": 3.44
+    },
+    {
+     "location": 40,
+     "length": 4,
+     "start": 3.44,
+     "end": 3.85
+    },
+    {
+     "location": 45,
+     "length": 2,
+     "start": 3.91,
+     "end": 4.22
+    },
+    {
+     "location": 48,
+     "length": 5,
+     "start": 4.22,
+     "end": 4.3
+    }
+   ],
+   "lufs": -16.0,
+   "style": "2333c5e61b"
+  },
   "chengdu/dujiangyan": {
    "file": "read-chengdu-dujiangyan",
    "text": "Dujiangyan is a clever river system over 2,000 years old!",
@@ -19146,6 +24095,977 @@
    ],
    "style": "40b5f639d1",
    "lufs": -16.0
+  },
+  "shanghai/bund": {
+   "file": "read-shanghai-bund",
+   "text": "The Bund is a long riverside walk lined with old stone buildings.",
+   "duration": 6.96,
+   "match": 1.0,
+   "heard": "The Bund is a long riverside walk lined with old stone buildings.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.06,
+     "end": 0.4
+    },
+    {
+     "location": 4,
+     "length": 4,
+     "start": 0.47,
+     "end": 0.92
+    },
+    {
+     "location": 9,
+     "length": 2,
+     "start": 1.02,
+     "end": 1.22
+    },
+    {
+     "location": 12,
+     "length": 1,
+     "start": 1.22,
+     "end": 1.5
+    },
+    {
+     "location": 14,
+     "length": 4,
+     "start": 1.5,
+     "end": 1.96
+    },
+    {
+     "location": 19,
+     "length": 9,
+     "start": 1.96,
+     "end": 2.62
+    },
+    {
+     "location": 29,
+     "length": 4,
+     "start": 2.62,
+     "end": 2.92
+    },
+    {
+     "location": 34,
+     "length": 5,
+     "start": 3.26,
+     "end": 3.7
+    },
+    {
+     "location": 40,
+     "length": 4,
+     "start": 3.7,
+     "end": 3.98
+    },
+    {
+     "location": 45,
+     "length": 3,
+     "start": 4.07,
+     "end": 4.6
+    },
+    {
+     "location": 49,
+     "length": 5,
+     "start": 4.6,
+     "end": 4.96
+    },
+    {
+     "location": 55,
+     "length": 9,
+     "start": 4.96,
+     "end": 5.42
+    }
+   ],
+   "lufs": -16.0,
+   "style": "8d186351fb"
+  },
+  "shanghai/castle": {
+   "file": "read-shanghai-castle",
+   "text": "Shanghai Disneyland has a giant castle with a magical storybook theme.",
+   "duration": 6.0,
+   "match": 1.0,
+   "heard": "Shanghai Disneyland has a giant castle with a magical storybook theme.",
+   "words": [
+    {
+     "location": 0,
+     "length": 8,
+     "start": 0.5,
+     "end": 1.16
+    },
+    {
+     "location": 9,
+     "length": 10,
+     "start": 1.16,
+     "end": 1.56
+    },
+    {
+     "location": 20,
+     "length": 3,
+     "start": 1.56,
+     "end": 2.13
+    },
+    {
+     "location": 24,
+     "length": 1,
+     "start": 2.25,
+     "end": 2.48
+    },
+    {
+     "location": 26,
+     "length": 5,
+     "start": 2.48,
+     "end": 2.64
+    },
+    {
+     "location": 32,
+     "length": 6,
+     "start": 2.71,
+     "end": 3.2
+    },
+    {
+     "location": 39,
+     "length": 4,
+     "start": 3.51,
+     "end": 3.66
+    },
+    {
+     "location": 44,
+     "length": 1,
+     "start": 3.66,
+     "end": 4.44
+    },
+    {
+     "location": 46,
+     "length": 7,
+     "start": 4.44,
+     "end": 4.52
+    },
+    {
+     "location": 54,
+     "length": 9,
+     "start": 4.52,
+     "end": 5.14
+    },
+    {
+     "location": 64,
+     "length": 5,
+     "start": 5.14,
+     "end": 5.4
+    }
+   ],
+   "lufs": -16.0,
+   "style": "8d186351fb"
+  },
+  "shanghai/goodbye": {
+   "file": "read-shanghai-goodbye",
+   "text": "Zaijian, Shanghai! Wave bye from the ferry on the river.",
+   "duration": 5.56,
+   "match": 1.0,
+   "heard": "Zaijian, Shanghai! Wave bye from the ferry on the river.",
+   "words": [
+    {
+     "location": 0,
+     "length": 7,
+     "start": 0.06,
+     "end": 1.78
+    },
+    {
+     "location": 9,
+     "length": 8,
+     "start": 2.43,
+     "end": 2.51
+    },
+    {
+     "location": 19,
+     "length": 4,
+     "start": 2.82,
+     "end": 2.9
+    },
+    {
+     "location": 24,
+     "length": 3,
+     "start": 2.9,
+     "end": 3.18
+    },
+    {
+     "location": 28,
+     "length": 4,
+     "start": 3.18,
+     "end": 3.47
+    },
+    {
+     "location": 33,
+     "length": 3,
+     "start": 3.62,
+     "end": 3.84
+    },
+    {
+     "location": 37,
+     "length": 5,
+     "start": 3.84,
+     "end": 3.99
+    },
+    {
+     "location": 43,
+     "length": 2,
+     "start": 4.05,
+     "end": 4.28
+    },
+    {
+     "location": 46,
+     "length": 3,
+     "start": 4.28,
+     "end": 4.52
+    },
+    {
+     "location": 50,
+     "length": 5,
+     "start": 4.52,
+     "end": 4.64
+    }
+   ],
+   "lufs": -16.0,
+   "style": "8d186351fb"
+  },
+  "shanghai/maglev": {
+   "file": "read-shanghai-maglev",
+   "text": "The maglev train floats on magnets and zooms super fast.",
+   "duration": 4.96,
+   "match": 1.0,
+   "heard": "The maglev train floats on magnets and zooms super fast.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.08,
+     "end": 0.38
+    },
+    {
+     "location": 4,
+     "length": 6,
+     "start": 0.38,
+     "end": 0.92
+    },
+    {
+     "location": 11,
+     "length": 5,
+     "start": 0.92,
+     "end": 1.32
+    },
+    {
+     "location": 17,
+     "length": 6,
+     "start": 1.32,
+     "end": 1.78
+    },
+    {
+     "location": 24,
+     "length": 2,
+     "start": 1.78,
+     "end": 2.1
+    },
+    {
+     "location": 27,
+     "length": 7,
+     "start": 2.1,
+     "end": 2.54
+    },
+    {
+     "location": 35,
+     "length": 3,
+     "start": 2.61,
+     "end": 2.96
+    },
+    {
+     "location": 39,
+     "length": 5,
+     "start": 2.96,
+     "end": 3.36
+    },
+    {
+     "location": 45,
+     "length": 5,
+     "start": 3.54,
+     "end": 4.1
+    },
+    {
+     "location": 51,
+     "length": 4,
+     "start": 4.1,
+     "end": 4.54
+    }
+   ],
+   "lufs": -16.0,
+   "style": "8d186351fb"
+  },
+  "shanghai/night": {
+   "file": "read-shanghai-night",
+   "text": "At night, the skyscrapers light up in rainbow colors.",
+   "duration": 4.6,
+   "match": 1.0,
+   "heard": "At night, the skyscrapers light up in rainbow colors.",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.0,
+     "end": 0.32
+    },
+    {
+     "location": 3,
+     "length": 5,
+     "start": 0.32,
+     "end": 0.62
+    },
+    {
+     "location": 10,
+     "length": 3,
+     "start": 1.15,
+     "end": 1.52
+    },
+    {
+     "location": 14,
+     "length": 11,
+     "start": 1.52,
+     "end": 2.24
+    },
+    {
+     "location": 26,
+     "length": 5,
+     "start": 2.24,
+     "end": 2.54
+    },
+    {
+     "location": 32,
+     "length": 2,
+     "start": 2.54,
+     "end": 2.66
+    },
+    {
+     "location": 35,
+     "length": 2,
+     "start": 2.98,
+     "end": 3.36
+    },
+    {
+     "location": 38,
+     "length": 7,
+     "start": 3.36,
+     "end": 3.72
+    },
+    {
+     "location": 46,
+     "length": 6,
+     "start": 3.72,
+     "end": 4.26
+    }
+   ],
+   "lufs": -16.0,
+   "style": "8d186351fb"
+  },
+  "shanghai/opener": {
+   "file": "read-shanghai-opener",
+   "text": "People call this skyscraper the bottle opener because of its hole.",
+   "duration": 4.8,
+   "match": 1.0,
+   "heard": "People call this skyscraper the bottle opener because of its hole.",
+   "words": [
+    {
+     "location": 0,
+     "length": 6,
+     "start": 0.58,
+     "end": 0.92
+    },
+    {
+     "location": 7,
+     "length": 4,
+     "start": 0.92,
+     "end": 1.24
+    },
+    {
+     "location": 12,
+     "length": 4,
+     "start": 1.24,
+     "end": 1.5
+    },
+    {
+     "location": 17,
+     "length": 10,
+     "start": 1.5,
+     "end": 2.1
+    },
+    {
+     "location": 28,
+     "length": 3,
+     "start": 2.1,
+     "end": 2.36
+    },
+    {
+     "location": 32,
+     "length": 6,
+     "start": 2.36,
+     "end": 2.64
+    },
+    {
+     "location": 39,
+     "length": 6,
+     "start": 2.64,
+     "end": 3.0
+    },
+    {
+     "location": 46,
+     "length": 7,
+     "start": 3.2,
+     "end": 3.46
+    },
+    {
+     "location": 54,
+     "length": 2,
+     "start": 3.46,
+     "end": 3.62
+    },
+    {
+     "location": 57,
+     "length": 3,
+     "start": 3.62,
+     "end": 3.78
+    },
+    {
+     "location": 61,
+     "length": 4,
+     "start": 3.78,
+     "end": 4.06
+    }
+   ],
+   "lufs": -16.0,
+   "style": "8d186351fb"
+  },
+  "shanghai/pearl": {
+   "file": "read-shanghai-pearl",
+   "text": "The Oriental Pearl Tower has big pink balls like giant pearls.",
+   "duration": 5.85,
+   "match": 1.0,
+   "heard": "The Oriental Pearl Tower has big pink balls like giant pearls.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.07,
+     "end": 0.29
+    },
+    {
+     "location": 4,
+     "length": 8,
+     "start": 0.38,
+     "end": 1.04
+    },
+    {
+     "location": 13,
+     "length": 5,
+     "start": 1.1,
+     "end": 1.44
+    },
+    {
+     "location": 19,
+     "length": 5,
+     "start": 1.44,
+     "end": 1.82
+    },
+    {
+     "location": 25,
+     "length": 3,
+     "start": 2.24,
+     "end": 2.58
+    },
+    {
+     "location": 29,
+     "length": 3,
+     "start": 2.66,
+     "end": 2.93
+    },
+    {
+     "location": 33,
+     "length": 4,
+     "start": 3.01,
+     "end": 3.38
+    },
+    {
+     "location": 38,
+     "length": 5,
+     "start": 3.38,
+     "end": 3.84
+    },
+    {
+     "location": 44,
+     "length": 4,
+     "start": 4.08,
+     "end": 4.31
+    },
+    {
+     "location": 49,
+     "length": 5,
+     "start": 4.42,
+     "end": 4.83
+    },
+    {
+     "location": 55,
+     "length": 6,
+     "start": 4.92,
+     "end": 5.3
+    }
+   ],
+   "lufs": -16.0,
+   "style": "8d186351fb"
+  },
+  "shanghai/river": {
+   "file": "read-shanghai-river",
+   "text": "The Huangpu River flows right through the middle of Shanghai.",
+   "duration": 4.8,
+   "match": 1.0,
+   "heard": "The Huangpu River flows right through the middle of Shanghai.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.1,
+     "end": 0.22
+    },
+    {
+     "location": 4,
+     "length": 7,
+     "start": 0.36,
+     "end": 0.98
+    },
+    {
+     "location": 12,
+     "length": 5,
+     "start": 0.98,
+     "end": 1.4
+    },
+    {
+     "location": 18,
+     "length": 5,
+     "start": 1.62,
+     "end": 2.0
+    },
+    {
+     "location": 24,
+     "length": 5,
+     "start": 2.0,
+     "end": 2.37
+    },
+    {
+     "location": 30,
+     "length": 7,
+     "start": 2.49,
+     "end": 2.72
+    },
+    {
+     "location": 38,
+     "length": 3,
+     "start": 2.72,
+     "end": 3.0
+    },
+    {
+     "location": 42,
+     "length": 6,
+     "start": 3.0,
+     "end": 3.14
+    },
+    {
+     "location": 49,
+     "length": 2,
+     "start": 3.14,
+     "end": 3.78
+    },
+    {
+     "location": 52,
+     "length": 8,
+     "start": 3.78,
+     "end": 3.86
+    }
+   ],
+   "lufs": -16.0,
+   "style": "8d186351fb"
+  },
+  "shanghai/tower": {
+   "file": "read-shanghai-tower",
+   "text": "Shanghai Tower twists as it rises, way up into the clouds.",
+   "duration": 5.35,
+   "match": 1.0,
+   "heard": "Shanghai Tower twists as it rises, way up into the clouds.",
+   "words": [
+    {
+     "location": 0,
+     "length": 8,
+     "start": 0.14,
+     "end": 0.74
+    },
+    {
+     "location": 9,
+     "length": 5,
+     "start": 0.74,
+     "end": 1.23
+    },
+    {
+     "location": 15,
+     "length": 6,
+     "start": 1.43,
+     "end": 1.99
+    },
+    {
+     "location": 22,
+     "length": 2,
+     "start": 2.07,
+     "end": 2.22
+    },
+    {
+     "location": 25,
+     "length": 2,
+     "start": 2.22,
+     "end": 2.9
+    },
+    {
+     "location": 28,
+     "length": 5,
+     "start": 2.9,
+     "end": 2.98
+    },
+    {
+     "location": 35,
+     "length": 3,
+     "start": 3.54,
+     "end": 3.92
+    },
+    {
+     "location": 39,
+     "length": 2,
+     "start": 3.92,
+     "end": 4.14
+    },
+    {
+     "location": 42,
+     "length": 4,
+     "start": 4.14,
+     "end": 4.32
+    },
+    {
+     "location": 47,
+     "length": 3,
+     "start": 4.32,
+     "end": 4.79
+    },
+    {
+     "location": 51,
+     "length": 6,
+     "start": 4.85,
+     "end": 4.93
+    }
+   ],
+   "lufs": -16.0,
+   "style": "8d186351fb"
+  },
+  "shanghai/welcome": {
+   "file": "read-shanghai-welcome",
+   "text": "Ni hao! Welcome to Shanghai, one of the biggest cities in China.",
+   "duration": 5.11,
+   "match": 1.0,
+   "heard": "Ni hao! Welcome to Shanghai, one of the biggest cities in China.",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.06,
+     "end": 0.44
+    },
+    {
+     "location": 3,
+     "length": 3,
+     "start": 0.44,
+     "end": 1.49
+    },
+    {
+     "location": 8,
+     "length": 7,
+     "start": 1.55,
+     "end": 1.68
+    },
+    {
+     "location": 16,
+     "length": 2,
+     "start": 1.68,
+     "end": 2.08
+    },
+    {
+     "location": 19,
+     "length": 8,
+     "start": 2.08,
+     "end": 2.7
+    },
+    {
+     "location": 29,
+     "length": 3,
+     "start": 3.1,
+     "end": 3.3
+    },
+    {
+     "location": 33,
+     "length": 2,
+     "start": 3.3,
+     "end": 3.44
+    },
+    {
+     "location": 36,
+     "length": 3,
+     "start": 3.44,
+     "end": 3.52
+    },
+    {
+     "location": 40,
+     "length": 7,
+     "start": 3.66,
+     "end": 4.02
+    },
+    {
+     "location": 48,
+     "length": 6,
+     "start": 4.02,
+     "end": 4.26
+    },
+    {
+     "location": 55,
+     "length": 2,
+     "start": 4.26,
+     "end": 4.58
+    },
+    {
+     "location": 58,
+     "length": 5,
+     "start": 4.58,
+     "end": 4.8
+    }
+   ],
+   "lufs": -16.0,
+   "style": "8d186351fb"
+  },
+  "shanghai/xiaolongbao": {
+   "file": "read-shanghai-xiaolongbao",
+   "text": "Xiaolongbao are soup dumplings with hot soup hiding inside.",
+   "duration": 5.11,
+   "match": 1.0,
+   "heard": "Xiaolongbao are soup dumplings with hot soup hiding inside.",
+   "words": [
+    {
+     "location": 0,
+     "length": 11,
+     "start": 0.07,
+     "end": 1.29
+    },
+    {
+     "location": 12,
+     "length": 3,
+     "start": 1.38,
+     "end": 1.74
+    },
+    {
+     "location": 16,
+     "length": 4,
+     "start": 1.74,
+     "end": 1.98
+    },
+    {
+     "location": 21,
+     "length": 9,
+     "start": 2.05,
+     "end": 2.4
+    },
+    {
+     "location": 31,
+     "length": 4,
+     "start": 2.4,
+     "end": 2.71
+    },
+    {
+     "location": 36,
+     "length": 3,
+     "start": 2.83,
+     "end": 3.24
+    },
+    {
+     "location": 40,
+     "length": 4,
+     "start": 3.24,
+     "end": 3.5
+    },
+    {
+     "location": 45,
+     "length": 6,
+     "start": 3.76,
+     "end": 4.14
+    },
+    {
+     "location": 52,
+     "length": 6,
+     "start": 4.14,
+     "end": 4.67
+    }
+   ],
+   "lufs": -16.0,
+   "style": "8d186351fb"
+  },
+  "shanghai/yu-garden": {
+   "file": "read-shanghai-yu-garden",
+   "text": "Yu Garden is an old garden with ponds, rocks and dragon walls.",
+   "duration": 6.0,
+   "match": 0.917,
+   "heard": "U Garden is an old garden with ponds, rocks and dragon walls.",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.06,
+     "end": 0.5
+    },
+    {
+     "location": 3,
+     "length": 6,
+     "start": 0.5,
+     "end": 0.9
+    },
+    {
+     "location": 10,
+     "length": 2,
+     "start": 1.17,
+     "end": 1.32
+    },
+    {
+     "location": 13,
+     "length": 2,
+     "start": 1.32,
+     "end": 1.44
+    },
+    {
+     "location": 16,
+     "length": 3,
+     "start": 1.52,
+     "end": 2.04
+    },
+    {
+     "location": 20,
+     "length": 6,
+     "start": 2.04,
+     "end": 2.49
+    },
+    {
+     "location": 27,
+     "length": 4,
+     "start": 2.74,
+     "end": 3.21
+    },
+    {
+     "location": 32,
+     "length": 5,
+     "start": 3.41,
+     "end": 3.97
+    },
+    {
+     "location": 39,
+     "length": 5,
+     "start": 4.19,
+     "end": 4.27
+    },
+    {
+     "location": 45,
+     "length": 3,
+     "start": 4.27,
+     "end": 4.44
+    },
+    {
+     "location": 49,
+     "length": 6,
+     "start": 4.44,
+     "end": 4.82
+    },
+    {
+     "location": 56,
+     "length": 5,
+     "start": 4.82,
+     "end": 5.3
+    }
+   ],
+   "lufs": -16.0,
+   "style": "8d186351fb"
+  },
+  "shanghai/zigzag": {
+   "file": "read-shanghai-zigzag",
+   "text": "This zigzag bridge leads to a teahouse in a pond.",
+   "duration": 5.16,
+   "match": 1.0,
+   "heard": "This zigzag bridge leads to a teahouse in a pond.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.16,
+     "end": 0.55
+    },
+    {
+     "location": 5,
+     "length": 6,
+     "start": 0.86,
+     "end": 1.97
+    },
+    {
+     "location": 12,
+     "length": 6,
+     "start": 2.03,
+     "end": 2.12
+    },
+    {
+     "location": 19,
+     "length": 5,
+     "start": 2.54,
+     "end": 2.88
+    },
+    {
+     "location": 25,
+     "length": 2,
+     "start": 2.88,
+     "end": 3.16
+    },
+    {
+     "location": 28,
+     "length": 1,
+     "start": 3.28,
+     "end": 3.42
+    },
+    {
+     "location": 30,
+     "length": 8,
+     "start": 3.42,
+     "end": 3.84
+    },
+    {
+     "location": 39,
+     "length": 2,
+     "start": 3.84,
+     "end": 4.14
+    },
+    {
+     "location": 42,
+     "length": 1,
+     "start": 4.14,
+     "end": 4.54
+    },
+    {
+     "location": 44,
+     "length": 4,
+     "start": 4.54,
+     "end": 4.62
+    }
+   ],
+   "lufs": -16.0,
+   "style": "8d186351fb"
   },
   "tahoe-heavenly/chairlift": {
    "file": "read-tahoe-heavenly-chairlift",

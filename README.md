@@ -42,6 +42,12 @@ The first screen is a shelf with every book, grouped by city, with a general Tra
 | Hawaii | Honolulu (`hawaii-honolulu`) | Waikīkī's gentle surf, Diamond Head crater, ʻIolani Palace, King Kamehameha's long leis, Duke's statue, Hanauma Bay fish, outrigger canoes, Aloha Tower, the aquarium, spam musubi |
 | Chengdu | Chengdu (`chengdu`) | Ni hao, China's five-star flag, giant pandas munching bamboo, tiny pink panda babies, red pandas' stripy tails, hot pot, tingly Sichuan peppercorns, face-changing opera masks, People's Park teahouses (long-spout kettles, ear cleaners, mahjong), Jinli's lanterns and sugar painting, Zhuge Liang's straw-boat arrow legend, the 2,000-year-old Dujiangyan river system, the Leshan Giant Buddha, the Wide and Narrow Alleys |
 | Longyan | Longyan (`longyan`) | A city in green Fujian mountains, round earth tulou houses, Hakka families living together, earth walls with bamboo inside, one big door, a well in the courtyard, Chengqi Lou's four rings and ~400 rooms, Zhencheng Lou's eight pizza slices, kitchens below and beds on top, Hakka stuffed tofu, Guanzhai's red cliffs, South China tigers on Meihua Mountain, the Ting River, Hakka mountain songs |
+| Beijing | Beijing (`beijing`) | China's capital, the sunrise flag raising at Tiananmen, hutong alleys and courtyard homes, pedal rickshaws, crispy Peking duck in pancakes, tanghulu candied fruit, swallow and dragon kites, pandas at Beijing Zoo, the long subway, the Bird's Nest and both Olympics, painted opera faces, the Drum Tower's time-telling drums |
+| Beijing | Great Wall (`beijing-great-wall`) | Mutianyu's walkway, about 21,000 km of walls, 2,000 years of builders and old rammed-earth walls, battlements, watchtowers, smoke-by-day fire-by-night beacons, sticky-rice mortar, the Mutianyu cable car and toboggan, steep steps, the seen-from-space myth, snow at Badaling, Old Dragon Head at the sea |
+| Beijing | Forbidden City (`beijing-forbidden-city`) | The Meridian Gate, why it was forbidden, the moat and corner towers, the 9,999½ rooms legend, the emperor's yellow roofs, the little roof animals, the lion and cub, the Hall of Supreme Harmony and dragon throne, the Nine Dragon Wall, fire vats kept warm in winter, palace cats, the Imperial Garden |
+| Beijing | Summer Palace (`beijing-summer-palace`) | A royal summer escape, Kunming Lake, Longevity Hill made from the lake's dirt, the Long Corridor and its 14,000 paintings, the stone Marble Boat, the Seventeen-Arch Bridge and its lions, winter-solstice golden arches, the bronze ox, pretend shopping on Suzhou Street, Cixi's three-floor opera stage, lotus, ice skating |
+| Beijing | Temple of Heaven (`beijing-temple-of-heaven`) | Praying for good harvests, the round three-roof blue hall, wood without nails, pillars for seasons, months and hours, round heaven and square earth, the echoing center stone, the whispering Echo Wall, the raised walkway, old cypresses, morning tai chi, jianzi kicking, water calligraphy |
+| Shanghai | Shanghai (`shanghai`) | A huge port city, the Huangpu River, the old Bund, the Oriental Pearl Tower's glass floor, twisty Shanghai Tower, the bottle opener, the floating maglev train, xiaolongbao soup dumplings, Yu Garden, the zigzag bridge, the Disneyland castle, the lights at night, a ferry goodbye |
 | Travel | Take a Flight (`travel-flight`) | Check-in and the moving belt, the scanner that sees inside bags, the boarding pass, watching planes at the gate, the window seat, the seatbelt light, a snack when ears pop, above the clouds, two pilots, the cabin crew, wheels down |
 | Travel | Pack Your Bag (`travel-packing`) | A checklist, rolling clothes, toothbrush, a teddy from home, a backpack with a snack and a book, small bottles in a clear bag, weighing the bag, a name tag, packing for the weather, zipping it shut |
 | Travel | Passport (`travel-passport`) | What a passport is, the calm-face photo, cover colors, pretty pages and secret glowing marks, entry stamps, passport control, e-gates, a grown-up keeps it safe, kids' passports renewing sooner |
@@ -78,7 +84,7 @@ Pin a specific file by setting the page's `photo.commonsTitle`.
 
 The speaker button (bottom-right of every page) reads the sentence in a natural voice, the same OpenAI voice as Milo
 (`gpt-4o-mini-tts`, "coral"), styled like a grown-up reading a picture book to a 6-year-old: warm, clear and a little slow.
-The clips are made ahead of time and bundled (about 14 MB of AAC for all 384 pages), so reading aloud works offline
+The clips are made ahead of time and bundled (about 16 MB of AAC for all 464 pages), so reading aloud works offline
 and the app never holds an API key. Each word is highlighted as it's spoken. Tap again to stop. Speech also stops when
 the page turns or the book closes. When voice mode is on, the microphone is muted while the app reads, so Milo doesn't
 mistake the app's voice for the child.
@@ -96,8 +102,8 @@ the French is spoken natively (not anglicized), and each phrase, e.g. "Ask the b
 don't spell out pronunciations like "Merci (mair-SEE)": the voice says every word, so the hints are only in the
 narration note and Milo's notes. The Hawaii books use the same mode so Hawaiian words (honu, nēnē, Waikīkī) are said
 the island way; the Tahoe books only add a note for local names
-(Nevada as neh-VAD-uh, Truckee). The Chengdu and Longyan books add a note so Chinese names (Ni hao, Zaijian, Jinli,
-Zhuge Liang, Hakka, tulou, Chengqi Lou) are said in Mandarin; their pages use plain pinyin and no Chinese characters. The Barcelona landmark books add a note so Catalan names (Güell, Gaudí, Batlló, Sant Jordi, Tibidabo, Montjuïc, Adéu) are said the Barcelona way. To run it:
+(Nevada as neh-VAD-uh, Truckee). The China books (Chengdu, Longyan, Beijing and Shanghai) add a note so Chinese names (Ni hao, Zaijian, Jinli,
+Zhuge Liang, Hakka, tulou, Chengqi Lou, hutong, Mutianyu, Cixi, jianzi, xiaolongbao) are said in Mandarin; their pages use plain pinyin and no Chinese characters. The Barcelona landmark books add a note so Catalan names (Güell, Gaudí, Batlló, Sant Jordi, Tibidabo, Montjuïc, Adéu) are said the Barcelona way. To run it:
 
 ```sh
 python3 scripts/generate_narration.py                  # new or changed pages only

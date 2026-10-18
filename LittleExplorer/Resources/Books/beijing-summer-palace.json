@@ -1,0 +1,239 @@
+{
+  "id": "beijing-summer-palace",
+  "city": "Beijing",
+  "country": "China",
+  "flagImage": "chengdu-flag.png",
+  "flag": "🇨🇳",
+  "theme": "Summer Palace",
+  "coverColor": "#2A9D8F",
+  "tagline": "A lake, a marble boat and a painted corridor",
+  "narration": {
+    "instructions": "This book is about the Summer Palace in Beijing, China. Say every Chinese name the way a Mandarin speaker says it, warmly and naturally, as one smooth word, never spelled out or anglicized: Ni hao (nee how), Beijing (bay-JING), Yiheyuan (ee-huh-YWEN), Kunming (kwun-MING), Cixi (tsuh-SHEE), Suzhou (soo-JOH), Zaijian (dzai-JYEN). A short hint like bay-JING is how to sound out the word."
+  },
+  "pages": [
+    {
+      "id": "welcome",
+      "text": "Ni hao! Welcome to the Summer Palace, a royal park in Beijing.",
+      "about": "Ni hao (nee how) means hello! The Summer Palace, called Yiheyuan (ee-huh-YWEN) in Chinese, is a huge park with a lake, a hill and lots of fancy buildings. Emperors and empresses came here to escape the hot, dusty city in summer. Empress Dowager Cixi (tsuh-SHEE) loved it and lived here for many months of the year. Ask Francis: Where do you like to go on a hot summer day?",
+      "emoji": "☀️",
+      "photo": {
+        "commonsTitle": "File:Longevity Hill 1.JPG",
+        "query": "Longevity Hill Summer Palace",
+        "file": "beijing-summer-palace-welcome.jpg",
+        "author": "Shizhao",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Longevity_Hill_1.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "lake",
+      "text": "Most of the park is a big lake called Kunming Lake.",
+      "about": "About three quarters of the Summer Palace is water! Kunming (kwun-MING) Lake is big enough for boats, and in summer you can ride a dragon boat across it or rent a little pedal boat. Workers made the lake bigger long ago by digging it out by hand. Ask Francis: What kind of boat would you like to ride on the lake?",
+      "emoji": "🚣",
+      "photo": {
+        "commonsTitle": "File:Kunming Lake (Summer Palace, Beijing) in summer.JPG",
+        "query": "Kunming Lake Summer Palace",
+        "file": "beijing-summer-palace-lake.jpg",
+        "author": "Regina800809",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Kunming_Lake_(Summer_Palace,_Beijing)_in_summer.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "hill",
+      "text": "Workers piled up the dirt from the lake to make a hill.",
+      "about": "When workers dug the lake deeper and wider, they piled the dirt up to make the hill even bigger. It is called Longevity Hill, which means the hill of a long life. On top sits the tall Tower of Buddhist Incense with its stacked roofs. You can climb lots of stairs to reach it and look out over the whole lake. Ask Francis: Have you ever made a sand castle hill when digging at the beach?",
+      "emoji": "⛰️",
+      "photo": {
+        "commonsTitle": "File:Flickr - archer10 (Dennis) - China-6669.jpg",
+        "query": "Tower of Buddhist Incense Summer Palace",
+        "file": "beijing-summer-palace-hill.jpg",
+        "author": "Dennis G. Jarvis",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Flickr_-_archer10_(Dennis)_-_China-6669.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "corridor",
+      "text": "The Long Corridor is a covered walkway beside the lake.",
+      "about": "The Long Corridor is about 728 meters long, which is longer than seven soccer fields in a row! It has a roof so the royal family could walk along the lake without getting wet in the rain or too hot in the sun. Here it is on a snowy day with nobody there. Ask Francis: Can you guess how many steps it would take you to walk the whole corridor?",
+      "emoji": "🚶",
+      "photo": {
+        "commonsTitle": "File:Long Gallery, Summer Palace at Beijing.jpg",
+        "query": "Long Corridor Summer Palace",
+        "file": "beijing-summer-palace-corridor.jpg",
+        "author": "Kallgan",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Long_Gallery,_Summer_Palace_at_Beijing.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "paintings",
+      "text": "Thousands of little paintings cover its ceilings and beams.",
+      "about": "Look up while you walk! The corridor's beams are covered with more than 14,000 paintings of birds, flowers, mountains and stories. This one shows the Cowherd and the Weaver Girl, two sweethearts in a Chinese legend who meet once a year on a bridge made of magpie birds. People celebrate their meeting at the Qixi festival. Ask Francis: If you painted one picture for the corridor, what would it show?",
+      "emoji": "🎨",
+      "photo": {
+        "commonsTitle": "File:Long Corridor-牛朗织女鹊桥会.JPG",
+        "query": "Long Corridor painting Cowherd Weaver Girl",
+        "file": "beijing-summer-palace-paintings.jpg",
+        "author": "Shizhao",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Long_Corridor-%E7%89%9B%E6%9C%97%E7%BB%87%E5%A5%B3%E9%B9%8A%E6%A1%A5%E4%BC%9A.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "marble-boat",
+      "text": "This boat is made of stone, so it can never sail away!",
+      "about": "The Marble Boat looks like a fancy two-story ship, but its bottom is made of big stone blocks, so it just sits in the lake. The top part is made of wood painted to look like marble. It was rebuilt for Empress Dowager Cixi in the 1890s, and people say the royal family sometimes sat on it to drink tea and look at the lake. Ask Francis: Would a stone boat float? Why or why not?",
+      "emoji": "⛵",
+      "photo": {
+        "commonsTitle": "File:Marble Boat 3930.jpg",
+        "query": "Marble Boat Summer Palace",
+        "file": "beijing-summer-palace-marble-boat.jpg",
+        "author": "颐园新居",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Marble_Boat_3930.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "bridge",
+      "text": "The Seventeen-Arch Bridge has seventeen arches and hundreds of stone lions.",
+      "about": "This long white bridge connects the shore to a little island in Kunming Lake. It has 17 arches, and the middle arch is the biggest. Along its railings sit more than 500 little carved stone lions, and no two are exactly the same! Some are playing with cubs or balls. Ask Francis: Can you count the arches in the picture? Which lion would be your favorite?",
+      "emoji": "🌉",
+      "photo": {
+        "commonsTitle": "File:17 arch bridge.jpg",
+        "query": "Seventeen-Arch Bridge Summer Palace",
+        "file": "beijing-summer-palace-bridge.jpg",
+        "author": "Gisling",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:17_arch_bridge.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "golden-light",
+      "text": "In winter, the sunset shines through every arch in gold.",
+      "about": "Around the shortest day of winter, in late December, the setting sun lines up with the bridge. For a few minutes its light shines straight through the arches and makes them glow orange and gold, like a row of lit-up lanterns. Lots of photographers gather by the lake to catch the moment. Ask Francis: What is the most beautiful sunset you have ever seen?",
+      "emoji": "🌅",
+      "photo": {
+        "commonsTitle": "File:Seventeen Arch Bridge at winter solstice sunset (20201222155654).jpg",
+        "query": "Seventeen-Arch Bridge winter solstice sunset",
+        "file": "beijing-summer-palace-golden-light.jpg",
+        "author": "N509FZ",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Seventeen_Arch_Bridge_at_winter_solstice_sunset_(20201222155654).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "ox",
+      "text": "A bronze ox watches the lake to keep floods away.",
+      "about": "Near the bridge lies a bronze ox, a statue of a cow-like animal made of metal. It was put there in 1755. In old Chinese stories, an ox could help control water, so people hoped it would protect the palace from floods. There is even a poem written on its back! Ask Francis: If you could have a statue to guard your house, what animal would it be?",
+      "emoji": "🐂",
+      "photo": {
+        "commonsTitle": "File:北京颐和园 03.jpg",
+        "query": "Bronze Ox Summer Palace",
+        "file": "beijing-summer-palace-ox.jpg",
+        "author": "DragonSamYU",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:%E5%8C%97%E4%BA%AC%E9%A2%90%E5%92%8C%E5%9B%AD_03.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "suzhou-street",
+      "text": "Suzhou Street was a pretend shopping street beside a little canal.",
+      "about": "The emperor wanted to feel like he was visiting Suzhou (soo-JOH), a city of canals in southern China. So he had a little shopping street built along a canal behind Longevity Hill. Palace workers dressed up as shopkeepers and the royal family pretended to shop! Today it has real little shops and boats again. Ask Francis: If you played shop, what would you sell?",
+      "emoji": "🛶",
+      "photo": {
+        "commonsTitle": "File:2014.08.27.123553 Boats canal Suzhou Jie Summer Palace Beijing.jpg",
+        "query": "Suzhou Street Summer Palace",
+        "file": "beijing-summer-palace-suzhou-street.jpg",
+        "author": "Hermann Luyken",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:2014.08.27.123553_Boats_canal_Suzhou_Jie_Summer_Palace_Beijing.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "theater",
+      "text": "Cixi watched operas on this tall stage with three floors.",
+      "about": "Empress Dowager Cixi loved Beijing opera, so she had a giant three-story theater built in the Garden of Virtue and Harmony. It had trapdoors in the floors, so actors playing gods could seem to fly down from the sky, and monsters could pop up from below! She watched from a hall across the courtyard. Ask Francis: Would you rather pop up from a trapdoor or fly down from the ceiling?",
+      "emoji": "🎭",
+      "photo": {
+        "commonsTitle": "File:Peking Opera Stage in Garden of Virtue and Harmony.jpg",
+        "query": "Garden of Virtue and Harmony opera stage",
+        "file": "beijing-summer-palace-theater.jpg",
+        "author": "钉钉",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Peking_Opera_Stage_in_Garden_of_Virtue_and_Harmony.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "lotus",
+      "text": "In summer, pink lotus flowers bloom on the water.",
+      "about": "In July and August, parts of the lake are covered with lotus plants. Their big round leaves float or stand above the water, and their pink and white flowers can be as big as your face. Raindrops roll on the leaves like little silver balls because the leaves are waterproof. Ask Francis: What color flowers do you like best?",
+      "emoji": "🪷",
+      "photo": {
+        "commonsTitle": "File:L1020541.JPG",
+        "query": "lotus Summer Palace",
+        "file": "beijing-summer-palace-lotus.jpg",
+        "author": "Asadal",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:L1020541.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "ice",
+      "text": "In winter, the frozen lake becomes a giant skating rink!",
+      "about": "Beijing winters are cold, and in January the lake can freeze thick. Then part of it opens as a huge ice rink, and people skate, ride ice bikes and push each other on little ice chairs. Staff check the ice so everyone knows where it is safe. Ask Francis: Would you rather go ice skating or ride a sled on ice?",
+      "emoji": "⛸️",
+      "photo": {
+        "commonsTitle": "File:Ice skating summer palace.jpg",
+        "query": "ice skating Summer Palace",
+        "file": "beijing-summer-palace-ice.jpg",
+        "author": "Jacob Ehnmark from Sendai, Japan",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ice_skating_summer_palace.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "goodbye",
+      "text": "Zaijian, Beijing! Wave bye to the lake and Longevity Hill.",
+      "about": "Zaijian (dzai-JYEN) means goodbye, or see you again! The Summer Palace is beautiful in every season: boats and lotus in summer, golden leaves in autumn, golden light and skating in winter, and flowers in spring. Ask Francis: Which season would you choose to visit the Summer Palace, and what would you do first?",
+      "emoji": "👋",
+      "photo": {
+        "commonsTitle": "File:Gfp-beijing-summer-garden-palace-overview-of-the-lake.jpg",
+        "query": "Summer Palace lake overview",
+        "file": "beijing-summer-palace-goodbye.jpg",
+        "author": "Yinan Chen",
+        "license": "Public domain",
+        "licenseUrl": "https://web.archive.org/web/20230926203737/https://creativecommons.org/licenses/publicdomain/",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Gfp-beijing-summer-garden-palace-overview-of-the-lake.jpg",
+        "verified": true
+      }
+    }
+  ]
+}

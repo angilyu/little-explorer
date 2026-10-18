@@ -1,0 +1,222 @@
+{
+  "id": "shanghai",
+  "city": "Shanghai",
+  "country": "China",
+  "flagImage": "chengdu-flag.png",
+  "flag": "🇨🇳",
+  "coverColor": "#AD1457",
+  "tagline": "Skyscrapers, soup dumplings and a super fast train",
+  "narration": {
+    "instructions": "This book is about Shanghai in China. Say every Chinese name the way a Mandarin speaker says it, warmly and naturally, as one smooth word, never spelled out or anglicized: Ni hao (nee how), Shanghai (shahng-HIGH), Huangpu (hwahng-POO), Pudong (poo-DONG), xiaolongbao (shyow-long-BOW), Yuyuan (yoo-YWEN), Zaijian (dzai-JYEN). A short hint like shahng-HIGH is how to sound out the word."
+  },
+  "pages": [
+    {
+      "id": "welcome",
+      "text": "Ni hao! Welcome to Shanghai, one of the biggest cities in China.",
+      "about": "Ni hao (nee how) means hello! Shanghai (shahng-HIGH) is one of the biggest cities in the whole world, with about 25 million people. Its name means 'upon the sea', because it sits near where the long Yangtze River meets the ocean. It has a busy port where giant ships come and go. Ask Francis: How many people do you think live in our city?",
+      "emoji": "🏙️",
+      "photo": {
+        "commonsTitle": "File:2012 Pudong (2).jpg",
+        "query": "Pudong skyline Shanghai",
+        "file": "shanghai-welcome.jpg",
+        "author": "J. Patrick Fischer",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:2012_Pudong_(2).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "river",
+      "text": "The Huangpu River flows right through the middle of Shanghai.",
+      "about": "The Huangpu (hwahng-POO) River splits Shanghai into two parts. On the west side is the older city with the Bund, and on the east side is Pudong (poo-DONG), full of shiny new skyscrapers. Ferries, tunnels and bridges carry people back and forth, and big boats chug up and down all day. Ask Francis: How would you like to cross the river: by boat, by tunnel or by bridge?",
+      "emoji": "🌊",
+      "photo": {
+        "commonsTitle": "File:2008 Shanghai Huangpu River 02.jpg",
+        "query": "Huangpu River Shanghai",
+        "file": "shanghai-river.jpg",
+        "author": "Nicholas Hartmann",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:2008_Shanghai_Huangpu_River_02.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "bund",
+      "text": "The Bund is a long riverside walk lined with old stone buildings.",
+      "about": "The Bund is a famous riverside promenade, a wide path for walking along the water. On one side are grand old buildings about 100 years old, with domes, columns and a clock tower, built when many banks and trading companies came to Shanghai. On the other side, across the river, you see the modern skyscrapers. Ask Francis: Which do you like better, the old buildings or the new towers?",
+      "emoji": "🏛️",
+      "photo": {
+        "commonsTitle": "File:The Bund 20150914-10.jpg",
+        "query": "The Bund Shanghai buildings",
+        "file": "shanghai-bund.jpg",
+        "author": "そらみみ (Soramimi)",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:The_Bund_20150914-10.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "pearl",
+      "text": "The Oriental Pearl Tower has big pink balls like giant pearls.",
+      "about": "The Oriental Pearl Tower is a TV tower about 468 meters tall. It has big round balls stacked up its legs that look a bit like pearls, and they glow pink and purple at night. Inside one of the balls there is a glass floor where you can stand and look straight down at the city far below! Ask Francis: Would you be brave enough to stand on a glass floor up high?",
+      "emoji": "🔮",
+      "photo": {
+        "commonsTitle": "File:20090427 5361 Shanghai Oriental Pearl Tower.jpg",
+        "query": "Oriental Pearl Tower Shanghai",
+        "file": "shanghai-pearl.jpg",
+        "author": "Jakub Hałun",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:20090427_5361_Shanghai_Oriental_Pearl_Tower.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "tower",
+      "text": "Shanghai Tower twists as it rises, way up into the clouds.",
+      "about": "Shanghai Tower is about 632 meters tall, the tallest building in China and one of the tallest in the world. It twists a little as it goes up, which helps it stand up to strong winds. Its elevators are among the fastest in the world, zooming up to the top in about a minute! Sometimes the top disappears into the clouds. Ask Francis: How many floors does the tallest building you have been in have?",
+      "emoji": "🌀",
+      "photo": {
+        "commonsTitle": "File:Shanghai Shanghai Tower 5166304.jpg",
+        "query": "Shanghai Tower",
+        "file": "shanghai-tower.jpg",
+        "author": "Ermell",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Shanghai_Shanghai_Tower_5166304.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "opener",
+      "text": "People call this skyscraper the bottle opener because of its hole.",
+      "about": "This skyscraper is the Shanghai World Financial Center. Near the top it has a big gap shaped like a trapezoid, which helps the wind blow through instead of pushing on the building. Because of that shape, people nicknamed it the bottle opener! You can walk on a glass-floor skywalk high up at the top of the hole. Ask Francis: What does this building remind you of?",
+      "emoji": "🍾",
+      "photo": {
+        "commonsTitle": "File:Shanghai World Financial Center (Top).jpg",
+        "query": "Shanghai World Financial Center top",
+        "file": "shanghai-opener.jpg",
+        "author": "Gerbil",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Shanghai_World_Financial_Center_(Top).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "maglev",
+      "text": "The maglev train floats on magnets and zooms super fast.",
+      "about": "Maglev is short for magnetic levitation. Instead of wheels, the train floats just above its track using powerful magnets, so it glides smoothly. The Shanghai maglev runs between the airport and the city, about 30 kilometers, in roughly 8 minutes. It has gone over 400 kilometers per hour, one of the fastest train rides anywhere. Ask Francis: Can you make one magnet push another magnet away?",
+      "emoji": "🚄",
+      "photo": {
+        "commonsTitle": "File:A maglev train coming out, Pudong International Airport, Shanghai.jpg",
+        "query": "Shanghai maglev train",
+        "file": "shanghai-maglev.jpg",
+        "author": "User Alex Needham (own photography) on en.wikipedia",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:A_maglev_train_coming_out,_Pudong_International_Airport,_Shanghai.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "xiaolongbao",
+      "text": "Xiaolongbao are soup dumplings with hot soup hiding inside.",
+      "about": "Xiaolongbao (shyow-long-BOW) are little steamed dumplings that come in bamboo baskets. Inside is meat and a hot, tasty soup! To eat one, put it on a spoon, bite a tiny hole, let it cool and sip the soup carefully, then eat the rest. These are from Nanxiang, a famous dumpling shop near Yu Garden. Ask Francis: How would you eat a dumpling with soup inside without spilling?",
+      "emoji": "🥟",
+      "photo": {
+        "commonsTitle": "File:Xiao Long Bao at Nanxiang Mantou Dian 1.jpg",
+        "query": "xiaolongbao Nanxiang",
+        "file": "shanghai-xiaolongbao.jpg",
+        "author": "Eason Lai from 上海",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Xiao_Long_Bao_at_Nanxiang_Mantou_Dian_1.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "yu-garden",
+      "text": "Yu Garden is an old garden with ponds, rocks and dragon walls.",
+      "about": "Yu Garden, called Yuyuan (yoo-YWEN) in Chinese, was built more than 400 years ago by a family official who made it for his parents. It is full of little ponds with orange fish, twisty rock piles, round moon gates and walls with long dragons curving along the top. Ask Francis: What would you look for first in the garden: fish, dragons or moon gates?",
+      "emoji": "🏮",
+      "photo": {
+        "commonsTitle": "File:20090510 Shanghai Yuyan 6689.jpg",
+        "query": "Yu Garden Shanghai",
+        "file": "shanghai-yu-garden.jpg",
+        "author": "Jakub Hałun",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:20090510_Shanghai_Yuyan_6689.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "zigzag",
+      "text": "This zigzag bridge leads to a teahouse in a pond.",
+      "about": "The Nine-Turn Bridge zigzags across a pond to an old teahouse with curly roofs. There is a fun old belief that bad spirits can only move in straight lines, so they cannot follow you around the corners! The zigzags also make you slow down and look at the fish and the water. Ask Francis: Can you walk in a zigzag line across the room?",
+      "emoji": "〰️",
+      "photo": {
+        "commonsTitle": "File:2014.11.16.121201 Jiuqu Bridge Yuyuan Park Shanghai.jpg",
+        "query": "zigzag bridge Yu Garden teahouse",
+        "file": "shanghai-zigzag.jpg",
+        "author": "Hermann Luyken",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:2014.11.16.121201_Jiuqu_Bridge_Yuyuan_Park_Shanghai.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "castle",
+      "text": "Shanghai Disneyland has a giant castle with a magical storybook theme.",
+      "about": "Shanghai Disneyland opened in 2016. Its Enchanted Storybook Castle is one of the tallest castles at any Disney park, and it has blue roofs and golden tops. Inside you can ride a boat through the castle, and at night there are fireworks above it. Ask Francis: Which story would you want your castle to be about?",
+      "emoji": "🏰",
+      "photo": {
+        "commonsTitle": "File:上海迪士尼乐园奇幻童话城堡正面.jpg",
+        "query": "Shanghai Disneyland castle",
+        "file": "shanghai-castle.jpg",
+        "author": "MasaneMiyaPA",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:%E4%B8%8A%E6%B5%B7%E8%BF%AA%E5%A3%AB%E5%B0%BC%E4%B9%90%E5%9B%AD%E5%A5%87%E5%B9%BB%E7%AB%A5%E8%AF%9D%E5%9F%8E%E5%A0%A1%E6%AD%A3%E9%9D%A2.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "night",
+      "text": "At night, the skyscrapers light up in rainbow colors.",
+      "about": "When it gets dark, Shanghai's towers light up with colorful lights, and some buildings even show moving pictures on their sides. People walk along the Bund to look across the river at the glowing Pudong skyline, and boats with lights cruise up and down the river. Ask Francis: If you could light up a building, what colors would you pick?",
+      "emoji": "🌃",
+      "photo": {
+        "commonsTitle": "File:2012 New Year Night Pudong.jpg",
+        "query": "Pudong at night",
+        "file": "shanghai-night.jpg",
+        "author": "J. Patrick Fischer",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:2012_New_Year_Night_Pudong.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "goodbye",
+      "text": "Zaijian, Shanghai! Wave bye from the ferry on the river.",
+      "about": "Zaijian (dzai-JYEN) means goodbye, or see you again! Ferries like this one carry people across the Huangpu River every day, and the ride only takes a few minutes. Ask Francis: What was your favorite part of Shanghai: the pearl tower, the maglev, the soup dumplings or the zigzag bridge? Do you remember another Chinese city we visited?",
+      "emoji": "👋",
+      "photo": {
+        "commonsTitle": "File:沪航客79.JPG",
+        "query": "Huangpu River ferry",
+        "file": "shanghai-goodbye.jpg",
+        "author": "S37",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:%E6%B2%AA%E8%88%AA%E5%AE%A279.JPG",
+        "verified": true
+      }
+    }
+  ]
+}
