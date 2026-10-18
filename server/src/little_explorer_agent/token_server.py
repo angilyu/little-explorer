@@ -4,7 +4,8 @@
 ``{"serverUrl", "participantToken", "roomName"}``. The token dispatches the ``little-explorer``
 agent into a fresh room and carries the opening page as participant attributes, so Milo knows the
 page from the first word. An optional ``"pip_mode": "pipeline" | "realtime"`` picks Milo's voice
-engine for that room (otherwise the agent's ``PIP_MODE`` applies). Later page turns arrive as JSON
+engine for that room (otherwise the agent's ``PIP_MODE`` applies), and ``"intro": "app"`` says the
+app already played Milo's recorded intro, so the agent skips its greeting. Later page turns arrive as JSON
 on the ``context`` data topic. When ``PIP_ACCESS_KEY`` is set, ``/token`` needs
 ``Authorization: Bearer <key>``, so a public deployment can't be used to run up the OpenAI bill.
 
@@ -47,7 +48,7 @@ from .catalog import build_manifest, content_files, resources_dir
 from .config import load_env
 from .content import BOOK_KEY, CITY_KEY, PAGE_KEY, PAGE_NUMBER_KEY, PAGE_TEXT_KEY
 from .devices import ANONYMOUS, REST_MESSAGE, STATUSES, Decision, DeviceStore, valid_device_id
-from .modes import PipMode, job_metadata, parse_mode
+from .modes import PipMode, job_metadata, parse_intro, parse_mode
 
 log = logging.getLogger("little_explorer.tokens")
 
@@ -131,7 +132,7 @@ async def handle_token(request: web.Request) -> web.Response:
         payload = credentials(
             identity,
             clean_context(body.get("context")),
-            metadata=job_metadata(mode, device_id, decision.remaining_s),
+            metadata=job_metadata(mode, device_id, decision.remaining_s, parse_intro(body.get("intro"))),
         )
     except RuntimeError as exc:
         log.error("%s", exc)

@@ -27,6 +27,8 @@ enum VoiceSettings {
 struct TokenRequest: Encodable {
     let context: [String: String]?
     var device: DeviceInfo? = nil
+    /// "app" when the app plays Milo's recorded hello itself, so the agent doesn't greet again.
+    var intro: String? = nil
 }
 
 struct VoiceCredentials: Decodable, Equatable {
@@ -44,14 +46,17 @@ struct TokenService {
     var device: DeviceInfo?
 
     /// `context` is the page open when voice mode starts; the server puts it in the token so the
-    /// agent knows the page from its first word.
-    func fetchCredentials(context: PageContext?) async throws -> VoiceCredentials {
+    /// agent knows the page from its first word. `appPlaysIntro` tells the agent to skip its spoken
+    /// greeting because the app already played the recorded one (older builds leave it out).
+    func fetchCredentials(context: PageContext?, appPlaysIntro: Bool = false) async throws -> VoiceCredentials {
         var request = URLRequest(url: baseURL.appendingPathComponent("token"))
         request.httpMethod = "POST"
         request.timeoutInterval = 30
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         if let accessKey { request.setValue("Bearer \(accessKey)", forHTTPHeaderField: "Authorization") }
-        request.httpBody = try JSONEncoder().encode(TokenRequest(context: context?.attributes, device: device))
+        request.httpBody = try JSONEncoder().encode(TokenRequest(
+            context: context?.attributes, device: device, intro: appPlaysIntro ? "app" : nil
+        ))
         let (data, response) = try await session.data(for: request)
         let status = (response as? HTTPURLResponse)?.statusCode ?? 0
         // 403 = blocked device, 429 = used up today's minutes.
