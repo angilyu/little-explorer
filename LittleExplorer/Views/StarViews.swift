@@ -152,7 +152,7 @@ struct BookStarSummary: View {
 
     private var headline: String {
         switch bookStars {
-        case 0: "Ask Milo a question to earn a star!"
+        case 0: "Answer Milo's question to earn a star!"
         case 1: "You got 1 star in this book!"
         default: "You got \(bookStars) stars in this book!"
         }

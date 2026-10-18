@@ -1,7 +1,7 @@
 import Foundation
 import Observation
 
-/// One star award from Milo for a curious question (see server/src/little_explorer_agent/stars.py).
+/// One star award from Milo for answering his question (see server/src/little_explorer_agent/stars.py).
 /// Counts and labels only; never what he said.
 struct StarAward: Codable, Equatable, Identifiable, Sendable {
     let id: String
@@ -94,7 +94,7 @@ final class StarStore {
     @ObservationIgnored var onCelebrate: (() -> Void)?
 
     static let curiousCatGoal = 10
-    /// Only a page's first question earns a star (and an award), so long ones are rarer than before.
+    /// Only a page's first answer earns a star (and an award), so long ones are rarer than before.
     static let bigTalkerGoal = 3
 
     init(defaults: UserDefaults = .standard, key: String = "starAwards.v1") {
@@ -141,16 +141,16 @@ final class StarStore {
         shelves.filter { !$0.isTravel }.map { PassportStamp(city: $0.city, flagBook: $0.flagBook, stamped: hasAsked(inCity: $0.city)) }
     }
 
-    /// Curious Cat (10 questions), Big Talker (3 long questions), and an Expert badge for each city
-    /// with several books (asked in every one of them), e.g. Paris Expert.
+    /// Curious Cat (10 stars), Big Talker (3 long answers), and an Expert badge for each city
+    /// with several books (a star in every one of them), e.g. Paris Expert.
     func badges(shelves: [CityShelf]) -> [StarBadge] {
         var badges = [
             StarBadge(
-                id: "curious-cat", title: "Curious Cat", detail: "Ask \(Self.curiousCatGoal) questions",
+                id: "curious-cat", title: "Curious Cat", detail: "Earn \(Self.curiousCatGoal) stars",
                 systemImage: "cat.fill", progress: min(questionCount, Self.curiousCatGoal), goal: Self.curiousCatGoal
             ),
             StarBadge(
-                id: "big-talker", title: "Big Talker", detail: "Ask \(Self.bigTalkerGoal) long questions",
+                id: "big-talker", title: "Big Talker", detail: "Give \(Self.bigTalkerGoal) long answers",
                 systemImage: "bubble.left.and.bubble.right.fill",
                 progress: min(longQuestionCount, Self.bigTalkerGoal), goal: Self.bigTalkerGoal
             ),
@@ -160,7 +160,7 @@ final class StarStore {
             badges.append(
                 StarBadge(
                     id: "expert-\(shelf.city)", title: "\(shelf.city) Expert",
-                    detail: "Ask in every \(shelf.city) book", systemImage: "medal.fill",
+                    detail: "Earn a star in every \(shelf.city) book", systemImage: "medal.fill",
                     progress: asked, goal: shelf.books.count
                 )
             )

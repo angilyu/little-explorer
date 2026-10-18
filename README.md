@@ -249,22 +249,24 @@ device, set its address in the Grown-ups corner (e.g. `http://<your-mac>.local:8
 
 ### Stars and the Passport
 
-He earns stars for curious questions, not for talking a lot: one star per page. Milo decides what counts as a
-real question about the book: his relevance check (the same one that decides whether he answers at all) lets it
-through and he answers it. When that page's star is still waiting, his answer starts with "Great question, that's
-a star!" and the answer itself follows right away; once the page has its star he doesn't mention stars there. The
-agent (`stars.py`) checks every award before it counts, using the input transcription; nothing the model says can
-hand out a star:
+He earns stars for answering Milo, not for talking a lot: one star per page. Milo ends his replies with one
+easy, open question, and he earns the page's star by answering it in a whole sentence of his own. Asking
+Milo a question doesn't earn a star (Milo still answers it). When that page's star is still waiting and he
+answers Milo's question that way, Milo's reply starts with "Great answer, that's a star!" and the rest follows
+right away; once the page has its star he doesn't mention stars there. The agent (`stars.py`) checks every award
+before it counts, using the input transcription and what Milo said last; nothing the model says can hand out a
+star:
 
-- 1 star for the first real question on a page (at least 3 words, not reading the page aloud, not "hi Milo" or
-  other small talk). Later questions on that page earn nothing; the next page has its own star.
-- Long (8+ words, `PIP_STAR_LONG_WORDS`) and "why"/"how" questions are noted for the badges but earn no extra
-  stars. `PIP_STAR_COOLDOWN_S` can add a pause between stars (off by default).
+- 1 star for the first real answer on a page: Milo's last reply asked a question, and the answer has at least
+  6 words (`PIP_STAR_MIN_WORDS`). Reading the page aloud, a question of his own, "hi Milo" or other small talk,
+  grown-ups or noise earn nothing. Later answers on that page earn nothing; the next page has its own star.
+- Long (8+ words, `PIP_STAR_LONG_WORDS`) answers and ones that explain with "because" are noted for the badges
+  but earn no extra stars. `PIP_STAR_COOLDOWN_S` can add a pause between stars (off by default).
 - The token server enforces the same rule, so an older agent can't go over it: `POST /stars` stores at most one
   award per device, session, book and page, and counts each award as 1 star. Stars stored before the rule are
   kept as they were.
 - There is no model tool, so the game never delays Milo's reply (a tool call made gpt-realtime answer in a
-  second response). The star is checked off the voice path once Milo starts answering. `PIP_STARS=0` turns the
+  second response). The star is checked off the voice path once Milo starts replying. `PIP_STARS=0` turns the
   game off on the agent.
 
 Checked awards go to the app on the `milo.star` data topic (a star flies into the counter by the Milo switch
@@ -272,10 +274,11 @@ with a soft chime) and to the token server (`POST /stars`, report key), which ke
 device id. The app saves them locally and, on launch, merges back the server's copy (`GET /stars?device=<id>`,
 access key), so stars survive a reinstall. Only counts, kinds, book, page and time are stored, never what he said.
 
-The library's top corner shows his total; tapping it opens the Passport: a stamp for each city he has asked
-about (not the Travel shelf), plus Curious Cat (10 questions), Big Talker (3 long questions) and an Expert badge for asking in every
-book of a city (e.g. Paris Expert). The last page of each book shows the stars from that book. `tools/devices.py`
-lists stars per device. Pipeline mode gives stars too, but Milo doesn't announce them.
+The library's top corner shows his total; tapping it opens the Passport: a stamp for each city where he has
+earned a star (not the Travel shelf), plus Curious Cat (10 stars), Big Talker (3 long answers) and an Expert badge
+for a star in every book of a city (e.g. Paris Expert). Stars earned before the answer rule were for questions
+(`kind` `question`); new ones are `answer`, and the badges count both. The last page of each book shows the
+stars from that book. `tools/devices.py` lists stars per device. Pipeline mode gives stars too, but Milo doesn't announce them.
 
 ### Coins
 

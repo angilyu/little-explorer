@@ -15,7 +15,7 @@ enum VoiceTransportEvent: Sendable {
     case disconnected(reason: String?)
     /// The agent ended the session on purpose (`milo.ended`): "idle" after a quiet spell, "limit" at the daily limit.
     case ended(reason: String)
-    /// Milo gave a star for a curious question (`milo.star`), already checked by the agent.
+    /// Milo gave a star for answering his question (`milo.star`), already checked by the agent.
     case star(StarAward)
 }
 

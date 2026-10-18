@@ -109,7 +109,7 @@ SCHEMA = (
 )
 
 STAR_ID = re.compile(r"^[A-Za-z0-9-]{8,64}$")
-STAR_KINDS = ("question", "follow_up")
+STAR_KINDS = ("question", "follow_up", "answer")
 # One star per page per session (see stars.py); older awards keep what they were given.
 STARS_PER_AWARD = 1
 _STAR_COLUMNS = "id, device_id, awarded_at, book, page, city, kind, long, why_how, followup, stars, words, reason"

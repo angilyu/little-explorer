@@ -8,9 +8,10 @@ passes ``remaining_s``). Either way he sets his ``milo.ended`` attribute to ``id
 the app can switch its toggle off with the right message, then leaves the room. Each session's
 length and cost is reported to the token server for per-device usage (see :mod:`.usage`).
 
-Curious questions earn stars (see :mod:`.stars`): when the guard lets a question through and Milo
-answers it, :class:`StarKeeper` checks it against what was heard, and :class:`StarGame` sends each
-award to the app (``milo.star`` data topic) and backs it up on the token server.
+Answering Milo earns stars (see :mod:`.stars`): when the guard lets the child's answer to Milo's
+question through and Milo replies, :class:`StarKeeper` checks it against what was heard, and
+:class:`StarGame` sends each award to the app (``milo.star`` data topic) and backs it up on the token
+server.
 """
 
 from __future__ import annotations
@@ -175,12 +176,13 @@ async def stay_quiet() -> llm.ToolResult:
 
 class StarGame:
     """Plugs a :class:`StarKeeper` into a session: it hears every guarded turn, awards a star when a
-    real question gets an answer from Milo, and sends each award to the app and the token server.
+    real answer to Milo's question gets a reply from Milo, and sends each award to the app and the
+    token server.
 
     There is no model tool: on gpt-realtime a tool call makes the model answer in a second response,
-    which cost every star question about half a second. Milo's judgement is the relevance guard
+    which cost every star turn about half a second. Milo's judgement is the relevance guard
     (the same check that decides whether he answers at all), and a star counts only once he starts
-    answering that turn, so a question he chose to stay quiet on earns nothing."""
+    replying to that turn, so a turn he chose to stay quiet on earns nothing."""
 
     def __init__(
         self,
@@ -241,7 +243,7 @@ class StarGame:
             except asyncio.TimeoutError:
                 continue
         if self.keeper.latest() is not heard:
-            return  # he asked again before Milo answered; the newer turn is the one to judge
+            return  # he spoke again before Milo replied; the newer turn is the one to judge
         self._settle(self.keeper.judge())
 
     def _settle(self, result: StarAward | str) -> None:
