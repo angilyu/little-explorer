@@ -29,7 +29,7 @@ final class ContentTests: XCTestCase {
         XCTAssertEqual(shelves[1].books.map(\.id), ["london", "london-big-ben"])
         XCTAssertEqual(shelves[1].books.map(\.coverTitle), ["London", "Big Ben"])
         XCTAssertEqual(shelves[2].books.map(\.id), ["barcelona", "barcelona-park-guell", "barcelona-sagrada", "barcelona-casa-batllo", "barcelona-tibidabo", "barcelona-montjuic"])
-        XCTAssertEqual(shelves[2].books.map(\.coverTitle), ["Barcelona", "Park Güell", "Sagrada Família", "Casa Batlló", "Tibidabo Amusement Park", "Montjuïc Cable Car"])
+        XCTAssertEqual(shelves[2].books.map(\.coverTitle), ["Barcelona", "Park Güell", "Sagrada Família", "Casa Batlló", "Tibidabo", "Montjuïc Cable Car"])
         XCTAssertEqual(shelves[3].books.map(\.id), ["tahoe", "tahoe-heavenly", "tahoe-northstar"])
         XCTAssertEqual(shelves[3].books.map(\.coverTitle), ["Lake Tahoe", "Heavenly", "Northstar"])
         XCTAssertEqual(shelves[4].books.map(\.id), ["hawaii", "hawaii-honolulu"])
