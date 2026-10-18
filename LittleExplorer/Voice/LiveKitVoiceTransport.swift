@@ -4,8 +4,9 @@ import Foundation
 import AVFAudio
 import LiveKit
 
-/// Joins a LiveKit room with the microphone on. The agent (server/) is dispatched into the room by
-/// the token, which also carries the opening page. Page turns go to the agent as JSON on the
+/// Joins a LiveKit room and turns the microphone on (right away, or once Milo's recorded hello is
+/// over). The agent (server/) is dispatched into the room by the token, which also carries the
+/// opening page. Page turns go to the agent as JSON on the
 /// `context` data topic (the agent's `attach_room_context`), and the agent talks back as audio.
 final class LiveKitVoiceTransport: NSObject, VoiceTransport, RoomDelegate, @unchecked Sendable {
     var onEvent: ((VoiceTransportEvent) -> Void)?
@@ -21,15 +22,21 @@ final class LiveKitVoiceTransport: NSObject, VoiceTransport, RoomDelegate, @unch
     /// Set by the agent just before it leaves on purpose (see server agent.py `ENDED_ATTRIBUTE`).
     static let endedAttribute = "milo.ended"
     private var endReported = false
+    private var microphoneStarted = false
+    /// Holds what he says before Milo has joined (a cold start can take 10–20 s) and hands it to
+    /// the agent when it arrives, so a question asked while Milo wakes up isn't lost.
+    private var preConnect: PreConnectAudioBuffer?
+    static let preConnectTimeout: TimeInterval = 40
 
     init(tokenService: TokenService) {
         self.tokenService = tokenService
     }
 
-    func connect(page: PageContext?) async throws {
+    func connect(page: PageContext?, appPlaysIntro: Bool, microphone: Bool) async throws {
         guard await AVAudioApplication.requestRecordPermission() else { throw VoiceError.microphoneDenied }
         setLatestPage(page)
-        let credentials = try await tokenService.fetchCredentials(context: page)
+        let credentials = try await tokenService.fetchCredentials(context: page, appPlaysIntro: appPlaysIntro)
+        emit(.milestone(.token))
         // Turned off while the token was coming: joining now would still create a room and wake Milo.
         if isDisconnecting || Task.isCancelled { throw CancellationError() }
         let room = Room(delegate: self)
@@ -39,8 +46,10 @@ final class LiveKitVoiceTransport: NSObject, VoiceTransport, RoomDelegate, @unch
             await room.disconnect()
             throw CancellationError()
         }
-        _ = try await room.localParticipant.setMicrophone(enabled: true, captureOptions: Self.captureOptions)
+        emit(.milestone(.connected))
+        if microphone { try await startMicrophone(in: room) }
         for participant in room.remoteParticipants.values {
+            if participant.kind == .agent { emit(.milestone(.agentJoined)) }
             emitActivity(from: participant.attributes)
         }
     }
@@ -53,7 +62,39 @@ final class LiveKitVoiceTransport: NSObject, VoiceTransport, RoomDelegate, @unch
 
     func setMicrophone(enabled: Bool) async {
         guard let room else { return }
+        guard microphoneStarted else {
+            if enabled { try? await startMicrophone(in: room) }
+            return
+        }
         _ = try? await room.localParticipant.setMicrophone(enabled: enabled, captureOptions: Self.captureOptions)
+    }
+
+    /// Publishes the mic. Until Milo has joined, what he hears is also recorded and sent to the
+    /// agent when it arrives (LiveKit pre-connect audio; the agent plays it in before the live mic).
+    private func startMicrophone(in room: Room) async throws {
+        microphoneStarted = true
+        let agentReady = room.remoteParticipants.values.contains { $0.kind == .agent && $0.state == .active }
+        if !agentReady {
+            do {
+                let track = await LocalAudioTrack.createTrack(options: Self.captureOptions)
+                let recorder = LocalAudioTrackRecorder(
+                    track: track, format: .pcmFormatInt16,
+                    sampleRate: PreConnectAudioBuffer.Constants.sampleRate,
+                    maxSize: PreConnectAudioBuffer.Constants.maxSize
+                )
+                let buffer = PreConnectAudioBuffer(room: room)
+                try await buffer.startRecording(timeout: Self.preConnectTimeout, recorder: recorder)
+                preConnect = buffer
+                _ = try await room.localParticipant.publish(audioTrack: track, options: AudioPublishOptions(preConnect: true))
+                emit(.milestone(.microphone))
+                return
+            } catch {
+                preConnect?.stopRecording(flush: true)
+                preConnect = nil
+            }
+        }
+        _ = try await room.localParticipant.setMicrophone(enabled: true, captureOptions: Self.captureOptions)
+        emit(.milestone(.microphone))
     }
 
     /// On a device Apple's voice processing removes Milo's voice from the mic. The simulator has no
@@ -69,9 +110,15 @@ final class LiveKitVoiceTransport: NSObject, VoiceTransport, RoomDelegate, @unch
 
     func disconnect() async {
         isDisconnecting = true
+        preConnect?.stopRecording(flush: true)
+        preConnect = nil
         let room = self.room
         self.room = nil
         await room?.disconnect()
+    }
+
+    private func emit(_ event: VoiceTransportEvent) {
+        DispatchQueue.main.async { [weak self] in self?.onEvent?(event) }
     }
 
     private func setLatestPage(_ page: PageContext?) {
@@ -96,6 +143,7 @@ final class LiveKitVoiceTransport: NSObject, VoiceTransport, RoomDelegate, @unch
 
     /// Data messages are not stored, so when the agent (re)joins, tell it which page is open now.
     func room(_ room: Room, participantDidConnect participant: RemoteParticipant) {
+        if participant.kind == .agent { emit(.milestone(.agentJoined)) }
         guard let page = currentPage() else { return }
         Task { [weak self] in try? await self?.send(page, in: room) }
     }

@@ -7,6 +7,10 @@
 The agent picks, in order: ``pip_mode`` in the dispatch metadata (the token server copies it from
 the ``/token`` request, used by the e2e harness to compare modes), then ``PIP_MODE`` in the
 environment, then ``pipeline``.
+
+The metadata also says whether the app plays Milo's intro itself (``"intro": "app"``, copied from
+the ``/token`` request). Then the agent doesn't speak the greeting; older apps don't send it and
+still hear the greeting from the agent.
 """
 
 from __future__ import annotations
@@ -19,6 +23,8 @@ from typing import Literal
 PipMode = Literal["pipeline", "realtime"]
 PIP_MODES: tuple[PipMode, ...] = ("pipeline", "realtime")
 DEFAULT_MODE: PipMode = "pipeline"
+# The app played the pre-recorded intro the moment he tapped, so the agent stays quiet at the start.
+INTRO_APP = "app"
 
 
 def parse_mode(value: object) -> PipMode | None:
@@ -32,11 +38,18 @@ def mode_metadata(mode: PipMode) -> str:
     return json.dumps({"pip_mode": mode})
 
 
+def parse_intro(value: object) -> str | None:
+    return INTRO_APP if isinstance(value, str) and value.strip().lower() == INTRO_APP else None
+
+
 def job_metadata(
-    mode: PipMode | None = None, device_id: str | None = None, remaining_s: float | None = None
+    mode: PipMode | None = None,
+    device_id: str | None = None,
+    remaining_s: float | None = None,
+    intro: str | None = None,
 ) -> str | None:
-    """Dispatch metadata from the token server: the engine, the device, and how many seconds it
-    may still talk today (the agent ends the session then)."""
+    """Dispatch metadata from the token server: the engine, the device, how many seconds it may
+    still talk today (the agent ends the session then) and whether the app plays the intro."""
     data: dict[str, object] = {}
     if mode:
         data["pip_mode"] = mode
@@ -44,6 +57,8 @@ def job_metadata(
         data["device_id"] = device_id
     if remaining_s is not None:
         data["remaining_s"] = round(remaining_s, 1)
+    if intro:
+        data["intro"] = intro
     return json.dumps(data) if data else None
 
 
@@ -62,3 +77,7 @@ def resolve_mode(job_metadata: str | None = None, env: Mapping[str, str] | None 
     if mode := parse_mode(parse_job_metadata(job_metadata).get("pip_mode")):
         return mode
     return parse_mode(env.get("PIP_MODE")) or DEFAULT_MODE
+
+
+def app_plays_intro(meta: Mapping[str, object]) -> bool:
+    return parse_intro(meta.get("intro")) == INTRO_APP

@@ -10,10 +10,14 @@ final class MockTransport: VoiceTransport {
     private(set) var disconnectCount = 0
     private(set) var pages: [PageContext] = []
     private(set) var openingPage: PageContext?
+    private(set) var connectAppPlaysIntro: Bool?
+    private(set) var connectMicrophone: Bool?
 
-    func connect(page: PageContext?) async throws {
+    func connect(page: PageContext?, appPlaysIntro: Bool, microphone: Bool) async throws {
         connectCount += 1
         openingPage = page
+        connectAppPlaysIntro = appPlaysIntro
+        connectMicrophone = microphone
         if holdConnect {
             await withCheckedContinuation { connectGate = $0 }
         }
@@ -34,17 +38,51 @@ final class MockTransport: VoiceTransport {
 }
 
 @MainActor
+final class FakeIntroPlayer: IntroPlayer {
+    var canPlay = true
+    private(set) var playCount = 0
+    private(set) var stopCount = 0
+    private var onFinish: (@MainActor () -> Void)?
+    var isPlaying: Bool { onFinish != nil }
+
+    func play(onFinish: @escaping @MainActor () -> Void) -> Bool {
+        guard canPlay else { return false }
+        playCount += 1
+        self.onFinish = onFinish
+        return true
+    }
+
+    func stop() {
+        stopCount += 1
+        onFinish = nil
+    }
+
+    func finish() {
+        let done = onFinish
+        onFinish = nil
+        done?()
+    }
+}
+
+@MainActor
 final class VoiceModeControllerTests: XCTestCase {
     private var transports: [MockTransport] = []
     private var clock = Date(timeIntervalSince1970: 1_000)
 
-    private func makeController(configure: ((MockTransport) -> Void)? = nil) -> VoiceModeController {
+    private func makeController(
+        intro: FakeIntroPlayer? = nil, configure: ((MockTransport) -> Void)? = nil
+    ) -> VoiceModeController {
         VoiceModeController(makeTransport: { [unowned self] in
             let transport = MockTransport()
             configure?(transport)
             transports.append(transport)
             return transport
-        }, now: { [unowned self] in clock })
+        }, introPlayer: intro, now: { [unowned self] in clock })
+    }
+
+    /// Lets the controller's mic sync task (started when the intro ends) run.
+    private func settle() async {
+        for _ in 0..<5 { await Task.yield() }
     }
 
     private func page(_ n: Int) -> PageContext {
@@ -254,6 +292,112 @@ final class VoiceModeControllerTests: XCTestCase {
         XCTAssertNil(voice.notice)
     }
 
+    func testWithoutIntroTheAgentGreetsAndTheMicStartsAtOnce() async {
+        let voice = makeController()
+        await voice.turnOn()
+        XCTAssertEqual(transports.first?.connectAppPlaysIntro, false)
+        XCTAssertEqual(transports.first?.connectMicrophone, true)
+        XCTAssertNil(voice.timeline?.marks[.intro])
+    }
+
+    func testIntroPlaysTheMomentMiloIsTappedAndTheAgentSkipsItsGreeting() async {
+        let intro = FakeIntroPlayer()
+        let voice = makeController(intro: intro) { $0.holdConnect = true }
+        let turningOn = Task { await voice.turnOn() }
+        await settle()
+        XCTAssertEqual(intro.playCount, 1, "plays before the connection is ready")
+        XCTAssertTrue(voice.isIntroPlaying)
+        XCTAssertEqual(voice.timeline?.marks[.intro], 0, "no wait between the tap and the hello")
+        XCTAssertEqual(voice.statusText, "Waking Milo up…")
+        transports.first?.releaseConnect()
+        await turningOn.value
+        XCTAssertEqual(transports.first?.connectAppPlaysIntro, true)
+        XCTAssertEqual(transports.first?.connectMicrophone, false, "the mic waits for the hello to end")
+    }
+
+    func testMicComesOnWhenTheIntroEnds() async {
+        let intro = FakeIntroPlayer()
+        let voice = makeController(intro: intro)
+        await voice.turnOn()
+        XCTAssertEqual(transports.first?.microphoneChanges, [])
+        intro.finish()
+        await settle()
+        XCTAssertFalse(voice.isIntroPlaying)
+        XCTAssertEqual(transports.first?.microphoneChanges, [true])
+    }
+
+    func testIntroEndingBeforeConnectJoinsWithTheMicOn() async {
+        let intro = FakeIntroPlayer()
+        let voice = makeController(intro: intro) { $0.holdConnect = true }
+        let turningOn = Task { await voice.turnOn() }
+        await settle()
+        intro.finish()
+        await settle()
+        transports.first?.releaseConnect()
+        await turningOn.value
+        XCTAssertEqual(transports.first?.connectMicrophone, false)
+        XCTAssertEqual(transports.first?.microphoneChanges, [true], "turned on as soon as the room is ready")
+    }
+
+    func testMiloOnlyCountsAsListeningOnceTheIntroIsOver() async {
+        let intro = FakeIntroPlayer()
+        let voice = makeController(intro: intro)
+        await voice.turnOn()
+        transports.first?.send(.buddyActivity(.listening))
+        XCTAssertEqual(voice.state, .waitingForBuddy)
+        XCTAssertEqual(voice.statusText, "Waking Milo up…")
+        clock += 5
+        intro.finish()
+        XCTAssertEqual(voice.state, .listening)
+        XCTAssertEqual(voice.timeline?.marks[.listening], 5)
+    }
+
+    func testIntroStopsWhenMiloIsTurnedOffOrFails() async {
+        let intro = FakeIntroPlayer()
+        let voice = makeController(intro: intro)
+        await voice.turnOn()
+        await voice.turnOff()
+        XCTAssertEqual(intro.stopCount, 1)
+        XCTAssertFalse(voice.isIntroPlaying)
+
+        let failing = FakeIntroPlayer()
+        let broken = makeController(intro: failing) { $0.connectError = URLError(.notConnectedToInternet) }
+        await broken.turnOn()
+        XCTAssertEqual(failing.stopCount, 1)
+        XCTAssertEqual(broken.state, .failed("Milo can't reach the voice server."))
+
+        let resting = FakeIntroPlayer()
+        let tired = makeController(intro: resting) { $0.connectError = VoiceError.resting }
+        await tired.turnOn()
+        XCTAssertEqual(resting.stopCount, 1, "no hello when Milo is resting for the day")
+    }
+
+    func testMissingClipFallsBackToTheAgentsGreeting() async {
+        let intro = FakeIntroPlayer()
+        intro.canPlay = false
+        let voice = makeController(intro: intro)
+        await voice.turnOn()
+        XCTAssertFalse(voice.isIntroPlaying)
+        XCTAssertEqual(transports.first?.connectAppPlaysIntro, false)
+        XCTAssertEqual(transports.first?.connectMicrophone, true)
+    }
+
+    func testTimelineRecordsEachStepFromTheTap() async {
+        let voice = makeController()
+        await voice.turnOn()
+        clock += 0.4
+        transports.first?.send(.milestone(.token))
+        clock += 0.6
+        transports.first?.send(.milestone(.connected))
+        clock += 1
+        transports.first?.send(.milestone(.token))
+        transports.first?.send(.buddyActivity(.listening))
+        let marks = voice.timeline?.marks
+        XCTAssertEqual(marks?[.token] ?? -1, 0.4, accuracy: 0.001, "only the first time counts")
+        XCTAssertEqual(marks?[.connected] ?? -1, 1, accuracy: 0.001)
+        XCTAssertEqual(marks?[.listening] ?? -1, 2, accuracy: 0.001)
+    }
+
     func testBookCloseTurnsOffAndForgetsPage() async {
         let voice = makeController()
         await voice.pageDidChange(page(1))
@@ -272,6 +416,11 @@ final class TokenRequestTests: XCTestCase {
         XCTAssertEqual(json["context"], [
             "book": "paris", "page": "bonjour", "page_number": "2", "city": "Paris", "page_text": "They say bonjour!",
         ])
+    }
+
+    func testTokenRequestSaysWhenTheAppPlaysTheIntro() throws {
+        let body = try JSONEncoder().encode(TokenRequest(context: nil, intro: "app"))
+        XCTAssertEqual(String(decoding: body, as: UTF8.self), #"{"intro":"app"}"#)
     }
 
     func testTokenRequestWithoutPageIsEmptyObject() throws {
@@ -401,5 +550,14 @@ final class TokenServiceRefusalTests: XCTestCase {
         let body = try XCTUnwrap(StubProtocol.lastBody)
         let json = try XCTUnwrap(JSONSerialization.jsonObject(with: body) as? [String: Any])
         XCTAssertEqual(json["device"] as? [String: String], ["id": "ipad-1", "name": "iPad", "model": "iPad13,18"])
+        XCTAssertNil(json["intro"], "older behaviour: the agent greets")
+    }
+
+    func testRequestTellsTheServerTheAppPlaysTheIntro() async throws {
+        StubProtocol.status = 429
+        _ = try? await service().fetchCredentials(context: nil, appPlaysIntro: true)
+        let body = try XCTUnwrap(StubProtocol.lastBody)
+        let json = try XCTUnwrap(JSONSerialization.jsonObject(with: body) as? [String: Any])
+        XCTAssertEqual(json["intro"] as? String, "app")
     }
 }

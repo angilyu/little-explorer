@@ -9,6 +9,7 @@ from aiohttp.test_utils import TestClient, TestServer
 
 from little_explorer_agent import agent as agent_mod
 from little_explorer_agent.buddy import (
+    GREETING,
     PERSONA,
     REALTIME_RULES,
     ReadingTracker,
@@ -16,7 +17,14 @@ from little_explorer_agent.buddy import (
     realtime_instructions,
 )
 from little_explorer_agent.content import load_books
-from little_explorer_agent.modes import DEFAULT_MODE, mode_metadata, resolve_mode
+from little_explorer_agent.modes import (
+    DEFAULT_MODE,
+    app_plays_intro,
+    job_metadata,
+    mode_metadata,
+    parse_intro,
+    resolve_mode,
+)
 from little_explorer_agent.token_server import create_app
 from little_explorer_agent.voice import ContextStore, TurnDecision, UserTurn
 from little_explorer_agent.voice.realtime import ReplyGuard
@@ -106,11 +114,11 @@ class FakeCtx:
 async def test_entrypoint_runs_the_chosen_engine(monkeypatch, tmp_path, metadata, env, expected):
     ran = []
 
-    async def fake_pipeline(ctx, game, timer):
+    async def fake_pipeline(ctx, game, timer, greeting):
         ran.append("pipeline")
         return FakeSession()
 
-    async def fake_realtime(ctx, game, timer):
+    async def fake_realtime(ctx, game, timer, greeting):
         ran.append("realtime")
         return FakeSession()
 
@@ -135,11 +143,42 @@ async def test_entrypoint_runs_the_chosen_engine(monkeypatch, tmp_path, metadata
     assert f",{expected}," in (tmp_path / "usage.csv").read_text()
 
 
+@pytest.mark.parametrize(
+    ("metadata", "expected"),
+    [
+        (job_metadata("realtime", "ipad-1", 600, intro="app"), None),
+        (job_metadata("realtime", "ipad-1", 600), GREETING),
+        ("", GREETING),
+    ],
+)
+async def test_greeting_is_skipped_only_when_the_app_plays_the_intro(monkeypatch, tmp_path, metadata, expected):
+    """New apps play the recorded intro on tap; older ones still get the spoken greeting."""
+    greetings = []
+
+    async def fake_realtime(ctx, game, timer, greeting):
+        greetings.append(greeting)
+        return FakeSession()
+
+    monkeypatch.setattr(agent_mod, "attach_room_context", lambda store, room: None)
+    monkeypatch.setenv("PIP_USAGE_FILE", str(tmp_path / "usage.csv"))
+    monkeypatch.delenv("PIP_CONTENT_URL", raising=False)
+    monkeypatch.setenv("PIP_MODE", "realtime")
+    monkeypatch.setattr(agent_mod, "_realtime", fake_realtime)
+    await agent_mod.entrypoint(FakeCtx(metadata))
+    assert greetings == [expected]
+
+
+def test_intro_flag_parsing():
+    assert parse_intro("app") == "app" and parse_intro(" APP ") == "app"
+    assert parse_intro("milo") is None and parse_intro(None) is None and parse_intro(1) is None
+    assert app_plays_intro({"intro": "app"}) and not app_plays_intro({}) and not app_plays_intro({"intro": True})
+
+
 async def test_empty_room_ends_without_a_session(monkeypatch, tmp_path):
     """A tap cancelled during a cold start leaves a room nobody joins: no greeting, no session."""
     ran = []
 
-    async def fake_realtime(ctx, game, timer):
+    async def fake_realtime(ctx, game, timer, greeting):
         ran.append("realtime")
         return FakeSession()
 

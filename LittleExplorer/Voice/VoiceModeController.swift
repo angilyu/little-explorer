@@ -22,6 +22,9 @@ final class VoiceModeController {
     private(set) var isAppReadingAloud = false
     /// A gentle note shown after Milo turned itself off (a nap after a quiet spell, or rest for the day).
     private(set) var notice: String?
+    /// True while Milo's recorded hello plays. The mic stays off meanwhile, so Milo doesn't hear
+    /// (and answer) his own voice, and he only counts as listening once it's over.
+    private(set) var isIntroPlaying = false
 
     nonisolated static let napNotice = "Milo is taking a nap — tap to talk again"
     nonisolated static let restNotice = "Milo needs a rest today. Let's talk again tomorrow!"
@@ -31,14 +34,28 @@ final class VoiceModeController {
     @ObservationIgnored private var generation = 0
     @ObservationIgnored private let now: () -> Date
     @ObservationIgnored private var turnedOnAt: Date?
+    @ObservationIgnored private let introPlayer: IntroPlayer?
+    /// `connect` has returned, so the mic can be switched on and off.
+    @ObservationIgnored private var transportReady = false
+    /// What the mic was last asked to be.
+    @ObservationIgnored private var microphoneOn = false
+    /// Milo said he was listening while the intro was still playing.
+    @ObservationIgnored private var listeningAfterIntro = false
+    /// How long each step of waking Milo up took, from the tap (see ``VoiceTimeline``).
+    @ObservationIgnored private(set) var timeline: VoiceTimeline?
     /// A second tap this soon after "Talk to Milo" is a double tap, not "Stop talking". Turning off
     /// and on again while Milo was still waking up left an empty room for him to talk to.
     nonisolated static let doubleTapWindow: TimeInterval = 1.0
     /// Called with every star Milo gives (the app saves it in ``StarStore``).
     @ObservationIgnored var onStar: ((StarAward) -> Void)?
 
-    init(makeTransport: @escaping @MainActor () -> VoiceTransport, now: @escaping () -> Date = Date.init) {
+    init(
+        makeTransport: @escaping @MainActor () -> VoiceTransport,
+        introPlayer: IntroPlayer? = nil,
+        now: @escaping () -> Date = Date.init
+    ) {
         self.makeTransport = makeTransport
+        self.introPlayer = introPlayer
         self.now = now
     }
 
@@ -72,13 +89,22 @@ final class VoiceModeController {
         await turnOff()
     }
 
+    /// Milo says hello the moment he is tapped (the recorded intro) while the app connects behind
+    /// it. The agent is told not to greet again, and the mic comes on once the hello is over.
     func turnOn() async {
         guard state == .off else { return }
         notice = nil
         generation += 1
         let gen = generation
-        turnedOnAt = now()
+        let tap = now()
+        turnedOnAt = tap
+        timeline = VoiceTimeline(tap: tap)
+        transportReady = false
+        listeningAfterIntro = false
         state = .connecting
+        isIntroPlaying = introPlayer?.play { [weak self] in self?.introDidFinish(generation: gen) } ?? false
+        if isIntroPlaying { mark(.intro) }
+        let appPlaysIntro = isIntroPlaying
         let transport = makeTransport()
         self.transport = transport
         transport.onEvent = { [weak self] event in
@@ -89,17 +115,21 @@ final class VoiceModeController {
             }
         }
         let openingPage = currentPage
+        let microphone = wantsMicrophone
         do {
-            try await transport.connect(page: openingPage)
+            try await transport.connect(page: openingPage, appPlaysIntro: appPlaysIntro, microphone: microphone)
             guard gen == generation else {
                 await transport.disconnect()
                 return
             }
+            transportReady = true
+            microphoneOn = microphone
             if state == .connecting { state = .waitingForBuddy }
-            if isAppReadingAloud { await transport.setMicrophone(enabled: false) }
+            await syncMicrophone()
             if let currentPage, currentPage != openingPage { try await transport.updatePage(currentPage) }
         } catch {
             guard gen == generation else { return }
+            stopIntro()
             self.transport = nil
             await transport.disconnect()
             if case VoiceError.resting = error {
@@ -114,6 +144,8 @@ final class VoiceModeController {
     func turnOff() async {
         notice = nil
         generation += 1
+        stopIntro()
+        transportReady = false
         let transport = self.transport
         self.transport = nil
         state = .off
@@ -135,8 +167,39 @@ final class VoiceModeController {
     func appReadAloudDidChange(_ reading: Bool) async {
         guard reading != isAppReadingAloud else { return }
         isAppReadingAloud = reading
-        guard let transport, state != .connecting else { return }
-        await transport.setMicrophone(enabled: !reading)
+        await syncMicrophone()
+    }
+
+    private var wantsMicrophone: Bool { !isAppReadingAloud && !isIntroPlaying }
+
+    private func syncMicrophone() async {
+        guard transportReady, let transport else { return }
+        let wanted = wantsMicrophone
+        guard wanted != microphoneOn else { return }
+        microphoneOn = wanted
+        await transport.setMicrophone(enabled: wanted)
+    }
+
+    private func introDidFinish(generation gen: Int) {
+        guard gen == generation, isIntroPlaying else { return }
+        isIntroPlaying = false
+        if listeningAfterIntro, state == .connecting || state == .waitingForBuddy {
+            state = .listening
+            mark(.listening)
+        }
+        listeningAfterIntro = false
+        Task { await syncMicrophone() }
+    }
+
+    private func stopIntro() {
+        guard isIntroPlaying else { return }
+        introPlayer?.stop()
+        isIntroPlaying = false
+        listeningAfterIntro = false
+    }
+
+    private func mark(_ milestone: VoiceMilestone) {
+        timeline?.mark(milestone, at: now())
     }
 
     func bookDidClose() async {
@@ -150,14 +213,24 @@ final class VoiceModeController {
         case .buddyActivity(let activity):
             switch activity {
             case .initializing: state = .waitingForBuddy
-            case .listening: state = .listening
+            // "Waking Milo up…" until the hello is over and the mic is on.
+            case .listening where isIntroPlaying:
+                listeningAfterIntro = true
+                if state == .connecting { state = .waitingForBuddy }
+            case .listening:
+                state = .listening
+                mark(.listening)
             case .thinking: state = .thinking
             case .speaking: state = .speaking
             }
+        case .milestone(let milestone):
+            mark(milestone)
         case .disconnected(let reason):
+            stopIntro()
             transport = nil
             state = .failed(reason ?? "Milo fell asleep. Tap to wake Milo up.")
         case .ended(let reason):
+            stopIntro()
             let transport = self.transport
             self.transport = nil
             generation += 1
@@ -187,6 +260,6 @@ extension VoiceModeController {
             return VoiceModeController { DemoVoiceTransport(activity: activity, endReason: demo.voiceEnd, givesStar: demo.voiceStar) }
         }
         #endif
-        return VoiceModeController { makeLiveVoiceTransport() }
+        return VoiceModeController(makeTransport: { makeLiveVoiceTransport() }, introPlayer: ClipIntroPlayer())
     }
 }

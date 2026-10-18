@@ -47,7 +47,7 @@ from .buddy import (  # noqa: E402
     realtime_instructions,
 )
 from .content import BOOK_KEY, PAGE_KEY, refresh_remote  # noqa: E402
-from .modes import parse_job_metadata, resolve_mode  # noqa: E402
+from .modes import app_plays_intro, parse_job_metadata, resolve_mode  # noqa: E402
 from .speech import speech_setup  # noqa: E402
 from .stars import STAR_TOPIC, StarAward, StarKeeper, StarRules, report_star, star_payload  # noqa: E402
 from .usage import UsageMeter, report_usage  # noqa: E402
@@ -351,7 +351,7 @@ def make_realtime_guard(tracker: ReadingTracker, topic_gate: TopicGate | None) -
     return guard
 
 
-async def _pipeline(ctx: JobContext, game: StarGame, timer: TurnTimer) -> AgentSession:
+async def _pipeline(ctx: JobContext, game: StarGame, timer: TurnTimer, greeting: str | None) -> AgentSession:
     tracker = ReadingTracker()
     preset, speech = speech_setup(agent_preset())
     return await start_graph_session(
@@ -364,12 +364,12 @@ async def _pipeline(ctx: JobContext, game: StarGame, timer: TurnTimer) -> AgentS
         instructions=PERSONA,
         context_message=make_context_note(tracker),
         on_decision=game.pipeline_decision,
-        greeting=GREETING,
+        greeting=greeting,
         **speech,
     )
 
 
-async def _realtime(ctx: JobContext, game: StarGame, timer: TurnTimer) -> AgentSession:
+async def _realtime(ctx: JobContext, game: StarGame, timer: TurnTimer, greeting: str | None) -> AgentSession:
     store = ContextStore()
     config = realtime_config()
     if config.turns == "server" and config.barge_in == "vad":
@@ -387,7 +387,7 @@ async def _realtime(ctx: JobContext, game: StarGame, timer: TurnTimer) -> AgentS
         tools=[stay_quiet],
         guard=make_realtime_guard(ReadingTracker(), default_topic_gate()),
         on_decision=game.realtime_decision,
-        greeting=GREETING,
+        greeting=greeting,
         context_store=store,
         on_interrupt=timer.note_interrupt,
     )
@@ -451,7 +451,10 @@ async def entrypoint(ctx: JobContext) -> None:
         ctx.shutdown(reason="nobody joined")
         return
     timer = TurnTimer()
-    session = await (_realtime if mode == "realtime" else _pipeline)(ctx, game, timer)
+    # New apps play the recorded intro on tap; only older ones still need the spoken greeting.
+    greeting = None if app_plays_intro(meta) else GREETING
+    log.info("intro: %s", "played by the app" if greeting is None else "spoken by Milo")
+    session = await (_realtime if mode == "realtime" else _pipeline)(ctx, game, timer, greeting)
     game.watch(session)
     meter.bind(session)
     timer.attach(session)

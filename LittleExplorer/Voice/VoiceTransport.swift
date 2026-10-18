@@ -10,6 +10,8 @@ enum BuddyActivity: String, Sendable {
 
 enum VoiceTransportEvent: Sendable {
     case buddyActivity(BuddyActivity)
+    /// A step of waking Milo up, for the timing log (``VoiceTimeline``).
+    case milestone(VoiceMilestone)
     case disconnected(reason: String?)
     /// The agent ended the session on purpose (`milo.ended`): "idle" after a quiet spell, "limit" at the daily limit.
     case ended(reason: String)
@@ -22,10 +24,13 @@ enum VoiceTransportEvent: Sendable {
 protocol VoiceTransport: AnyObject {
     var onEvent: ((VoiceTransportEvent) -> Void)? { get set }
     /// Joins with the page that is open right now; the agent reads it from the token.
-    func connect(page: PageContext?) async throws
+    /// `appPlaysIntro` tells the agent the app already said hello, so it doesn't greet again.
+    /// With `microphone` false the mic stays off until ``setMicrophone(enabled:)`` turns it on.
+    func connect(page: PageContext?, appPlaysIntro: Bool, microphone: Bool) async throws
     /// Tells the agent about a page turn.
     func updatePage(_ context: PageContext) async throws
-    /// Mutes the mic while the app reads the page aloud, so Milo doesn't hear the app's own voice.
+    /// Turns the mic on once Milo's intro is over, and mutes it while the app reads the page aloud,
+    /// so Milo doesn't hear the app's own voice.
     func setMicrophone(enabled: Bool) async
     func disconnect() async
 }
@@ -50,7 +55,7 @@ enum VoiceError: LocalizedError {
 /// Used when the LiveKit SDK isn't linked.
 final class UnavailableVoiceTransport: VoiceTransport {
     var onEvent: ((VoiceTransportEvent) -> Void)?
-    func connect(page: PageContext?) async throws { throw VoiceError.unavailable }
+    func connect(page: PageContext?, appPlaysIntro: Bool, microphone: Bool) async throws { throw VoiceError.unavailable }
     func updatePage(_ context: PageContext) async throws {}
     func setMicrophone(enabled: Bool) async {}
     func disconnect() async {}
@@ -71,7 +76,7 @@ final class DemoVoiceTransport: VoiceTransport {
         self.givesStar = givesStar
     }
 
-    func connect(page: PageContext?) async throws {
+    func connect(page: PageContext?, appPlaysIntro: Bool, microphone: Bool) async throws {
         try await Task.sleep(nanoseconds: 300_000_000)
         let activity = activity
         await MainActor.run { onEvent?(.buddyActivity(activity)) }

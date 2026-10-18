@@ -284,8 +284,9 @@ final class ReadAloudVoiceModeTests: XCTestCase {
         await voice.appReadAloudDidChange(true)
         XCTAssertEqual(transport.microphoneChanges, [])
         await voice.turnOn()
-        XCTAssertEqual(transport.microphoneChanges, [false])
+        XCTAssertEqual(transport.connectMicrophone, false, "joins with the mic off")
+        XCTAssertEqual(transport.microphoneChanges, [])
         await voice.appReadAloudDidChange(false)
-        XCTAssertEqual(transport.microphoneChanges, [false, true])
+        XCTAssertEqual(transport.microphoneChanges, [true])
     }
 }

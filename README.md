@@ -104,6 +104,17 @@ If a page has no clip for its current sentence, the app falls back to the best o
 
 Tap **Talk to Milo** in a book to start voice mode. It stays on across page turns until it's turned off.
 On every page turn the app sends the current page (book, page, sentence) to the agent.
+
+**Instant hello:** the app plays Milo's recorded intro ("Hi, I'm Milo. You can read the page to me, or ask me
+anything you wonder about.", `Resources/Narration/milo-intro.m4a`, also served from `/content`) the moment he is
+tapped, and connects in the background. The token request sends `"intro": "app"`, so the agent doesn't greet again;
+older builds leave it out and the agent still says the greeting. The mic stays off while the 5 s intro plays (so
+Milo doesn't hear himself), and the button shows "Waking Milo up…" until the intro is over and Milo is listening. After
+the intro, what he says before the agent has joined (a cold start) is kept with LiveKit pre-connect audio and handed
+to Milo when he arrives. Each step is timed from the tap in the device log (category `voice-timing`, e.g.
+`Milo timing: tap→listening 6.10s (intro 0.10, token 0.52, connected 1.20, agent joined 2.40, mic on 5.25)`), no words.
+`scripts/generate_intro.py` regenerates the clip in Milo's realtime voice (one short Realtime call, levelled like
+the narration and checked with Whisper).
 The agent lives in [`server/`](server) (LiveKit Agents + LangGraph; its voice stack is in `server/src/little_explorer_agent/voice/`):
 
 - **Reading:** while he reads the page aloud, Milo stays quiet (the reading gate → LISTEN), even if he reads slowly or softly, then praises him.
