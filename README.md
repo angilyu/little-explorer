@@ -116,11 +116,19 @@ Milo's settings start with `PIP_`. Milo has two voice engines. Pick one with `PI
 - `PIP_MODE=realtime`: one OpenAI Realtime speech-to-speech model (`gpt-realtime`, voice `coral`) hears him and talks
   back. It uses `semantic_vad` with low eagerness, so slow reading isn't cut off. The page is in its instructions
   and is updated on every page turn. The instructions tell it to stay quiet (a `stay_quiet` tool) while he reads and
-  when grown-ups talk. A guard checks each transcript afterwards and cuts off a reply to reading or adult talk. It
-  never delays a reply. Realtime costs much more per minute than the pipeline.
+  when grown-ups talk. A guard checks each transcript afterwards and cuts off a reply to reading or adult talk (but
+  never a short answer to Milo's own question). It never delays a reply. Realtime costs much more per minute than the pipeline.
+  Barge-in is "soft": OpenAI's own speech detection no longer cancels Milo. Instead local Silero VAD stops him only
+  after 0.6 s of real speech, so claps, knocks, echo and a quick "um" don't cut him off or lose a pending answer.
+  Tuning knobs (env): `PIP_REALTIME_EAGERNESS` (low|medium|high|auto), `PIP_REALTIME_BARGE_IN` (vad|model),
+  `PIP_REALTIME_MIN_INTERRUPTION_DURATION` (seconds), `PIP_REALTIME_TURNS` (server|client, client is experimental).
+  Each turn logs its timing (`turn N: wait … answer … total …`, no transcripts) and each session logs a median/p90 summary.
 
 The e2e harness can try either engine without restarting the agent: `tools/e2e_smoke.py --mode realtime`.
-It reports the reply latency and how fast Milo stops when talked over.
+It reports the reply latency (median/p90), how fast Milo stops when talked over, and checks slow word-by-word
+reading, adult chatter, claps while he is quiet, a clap or "hmm" while he is about to answer, and a clap or
+"mm-hmm" while he talks. `--json FILE` saves the numbers. To A/B a change locally without touching production, run the
+worker and token server with a different `LIVEKIT_AGENT_NAME` (e.g. `little-explorer-dev`).
 
 No audio is stored. The app never holds LiveKit secrets. A small token server mints room tokens that dispatch the agent automatically.
 
@@ -201,7 +209,7 @@ device, set its address in the Grown-ups corner (e.g. `http://<your-mac>.local:8
 
 He earns stars for curious questions, not for talking a lot. Milo decides what counts as a real question about
 the book: his relevance check (the same one that decides whether he answers at all) lets it through and he
-answers it, starting with "Great question, that's a star!". The agent (`stars.py`) checks every award before it
+answers it, starting with "Star question!". The agent (`stars.py`) checks every award before it
 counts, using the input transcription; nothing the model says can hand out a star:
 
 - 1 star for a question (at least 3 words, not reading the page aloud, not "hi Milo" or other small talk).

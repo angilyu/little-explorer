@@ -6,19 +6,24 @@ then plays synthesized speech into the microphone track and checks how Milo reac
 
 1. the greeting is spoken;
 2. reading the page aloud slowly, in two pieces, is listened to and then praised once;
-3. adults talking to each other get no answer;
-4. a question about the page gets an answer;
-5. after a page turn, a question about the new page is answered from that page;
-6. talking over Milo makes him stop.
+3. reading word by word with long pauses is never talked over;
+4. adults talking to each other get no answer;
+5. claps and knocks while Milo is quiet get no answer;
+6. a question about the page gets an answer, also when a clap or a "hmm" follows it while he
+   waits for Milo;
+7. after a page turn, a question about the new page is answered from that page;
+8. a clap or an "mm-hmm" while Milo talks doesn't stop him (false interruption);
+9. talking over Milo makes him stop.
 
 It also measures, from Milo's audio track: reply latency (end of the child's speech -> Milo's first
-audible sound) and barge-in stop time (child starts talking over Milo -> Milo goes quiet).
+audible sound), barge-in stop time (child starts talking over Milo -> Milo goes quiet) and the
+false-interruption rate, with medians and p90s. ``--json FILE`` saves the numbers.
 
 Needs the agent worker and token server running, plus OPENAI_API_KEY for the test voices.
 ``TOKEN_URL`` points it at another token server; ``PIP_ACCESS_KEY`` is sent if set.
 It talks as device ``$E2E_DEVICE_ID`` (``e2e-smoke``); approve it once with
 ``tools/devices.py approve e2e-smoke`` so the unknown-device limit doesn't block it.
-Run from server/: ``uv run python tools/e2e_smoke.py [--mode pipeline|realtime] [--trials N]``.
+Run from server/: ``uv run python tools/e2e_smoke.py [--mode pipeline|realtime] [--trials N] [--json FILE]``.
 ``--mode`` asks the token server for that engine, so one running agent can be compared in both.
 No audio is saved.
 """
@@ -194,6 +199,7 @@ class Probe:
 CHILD = "You are a shy 6-year-old boy. Speak softly and a little slowly."
 READING = "You are a 6-year-old boy reading aloud slowly and carefully, word by word, a bit quietly."
 ADULTS = "An adult chatting casually in a kitchen with another adult."
+SOFT = "A 6-year-old boy, quietly, to himself."
 
 
 LATENCY_QUESTIONS = [
@@ -202,11 +208,59 @@ LATENCY_QUESTIONS = [
     "Why is the Eiffel Tower so tall?",
     "Milo, can you go up to the top of the tower?",
     "What is the river in Paris called?",
+    "Milo, how old is the Eiffel Tower?",
+    "Do people in Paris ride bikes?",
 ]
+NOISY_QUESTIONS = [
+    "Milo, what is a baguette?",
+    "Why do French people like cheese so much?",
+    "Milo, do they have a zoo in Paris?",
+    "What do the boats on the river carry?",
+]
+LONG_ASKS = [
+    "Milo, can you tell me a long story about the Eiffel Tower?",
+    "Milo, tell me everything about the river in Paris, please!",
+    "Can you tell me a long story about a cat in Paris?",
+    "Milo, tell me a long story about the painters in Paris.",
+]
+
+
+def noise(kind: str, seed: int = 0) -> np.ndarray:
+    """A clap (sharp decaying burst) or a double knock, as int16 PCM."""
+    rng = np.random.default_rng(seed)
+
+    def burst(ms: int, decay: float, amp: float) -> np.ndarray:
+        n = SAMPLE_RATE * ms // 1000
+        env = np.exp(-np.arange(n) / (decay * SAMPLE_RATE))
+        return rng.standard_normal(n) * env * amp
+
+    if kind == "clap":
+        pcm = burst(120, 0.02, 9000)
+    else:
+        gap = np.zeros(SAMPLE_RATE * 180 // 1000)
+        pcm = np.concatenate([burst(60, 0.01, 7000), gap, burst(60, 0.01, 7000)])
+    return np.clip(pcm, -32000, 32000).astype(np.int16)
+
+
+def silence(seconds: float) -> np.ndarray:
+    return np.zeros(int(SAMPLE_RATE * seconds), dtype=np.int16)
 
 
 def median(values: list[float]) -> str:
     return f"{statistics.median(values):.2f}s" if values else "n/a"
+
+
+def p90(values: list[float]) -> float | None:
+    if not values:
+        return None
+    ordered = sorted(values)
+    return ordered[min(len(ordered) - 1, round(0.9 * (len(ordered) - 1)))]
+
+
+def stats(values: list[float]) -> str:
+    if not values:
+        return "n/a"
+    return f"median {statistics.median(values):.2f}s, p90 {p90(values):.2f}s {[round(x, 2) for x in values]}"
 
 
 async def idle_check(mode: str | None, limit_s: float = 60) -> int:
@@ -224,23 +278,51 @@ async def idle_check(mode: str | None, limit_s: float = 60) -> int:
     return 0 if ok else 1
 
 
-async def main(mode: str | None, trials: int) -> int:
+async def wait_quiet(probe: Probe, seconds: float = 1.5, timeout: float = 30) -> None:
+    """Until Milo has made no sound for ``seconds``."""
+    end = probe.now() + timeout
+    while probe.now() < end:
+        last = probe.loud[-1] if probe.loud else 0.0
+        if probe.now() - last >= seconds:
+            return
+        await asyncio.sleep(0.1)
+
+
+async def wait_talking(probe: Probe, since: float, seconds: float, timeout: float = 15) -> float | None:
+    """Until Milo has been making sound for ``seconds`` after ``since``; returns when he started."""
+    end = probe.now() + timeout
+    while probe.now() < end:
+        first = probe.first_sound_after(since)
+        if first is not None and probe.now() - first >= seconds:
+            return first
+        await asyncio.sleep(0.05)
+    return None
+
+
+async def main(mode: str | None, trials: int, json_path: str | None = None) -> int:
     probe = Probe()
     await probe.connect(page_context("paris", 1), mode)
     results: dict[str, bool] = {}
     latencies: list[float] = []
+    noisy_latencies: list[float] = []
     stops: list[float] = []
+    blips: list[dict[str, object]] = []
+    unanswered = 0
 
-    def note_latency(since: float) -> None:
+    def note_latency(since: float, into: list[float]) -> bool:
         heard = probe.first_sound_after(since)
-        if heard is not None:
-            latencies.append(heard - since)
-            print(f"[{probe.now():5.1f}]   latency {heard - since:.2f}s")
+        if heard is None:
+            print(f"[{probe.now():5.1f}]   no answer")
+            return False
+        into.append(heard - since)
+        print(f"[{probe.now():5.1f}]   latency {heard - since:.2f}s")
+        return True
 
     await probe.wait_reply(0, timeout=60)
     results["greeting spoken"] = bool(probe.agent_lines)
 
-    first, _, second = load_books()["paris"].pages[1].text.partition(". ")
+    page_text = load_books()["paris"].pages[1].text
+    first, _, second = page_text.partition(". ")
     t = probe.now()
     await probe.say(first + ".", "ash", READING)
     await asyncio.sleep(2.5)
@@ -248,6 +330,23 @@ async def main(mode: str | None, trials: int) -> int:
     await probe.wait_reply(t, settle=4)
     results["slow reading -> listened, then praised once"] = len(probe.replies_since(t)) == 1
 
+    # Word by word, with the long pauses of a child sounding out words.
+    words = page_text.split()
+    chunks = [" ".join(words[i : i + 2]) for i in range(0, len(words), 2)]
+    pcms = await asyncio.gather(*(probe.synth(chunk, "ash", READING) for chunk in chunks))
+    gaps = [1.4 if i % 2 else 1.1 for i in range(len(chunks))]
+    reading = np.concatenate([np.concatenate([pcm, silence(gap)]) for pcm, gap in zip(pcms, gaps)][:-1] + [pcms[-1]])
+    await wait_quiet(probe)
+    t = probe.now()
+    await probe.say(" / ".join(chunks), "ash", READING, reading)
+    talked_over = probe.first_sound_after(t)
+    await probe.wait_reply(t, settle=3, timeout=25)
+    early = talked_over is not None and talked_over < probe.last_said - 0.1
+    results["word-by-word reading with long pauses -> never talked over"] = not early
+    if early:
+        print(f"[{probe.now():5.1f}]   Milo spoke {probe.last_said - talked_over:.1f}s before the reading ended")
+
+    await wait_quiet(probe)
     t = probe.now()
     await probe.say("Honey, did you remember to call the plumber about the sink?", "onyx", ADULTS)
     await asyncio.sleep(0.6)
@@ -255,19 +354,45 @@ async def main(mode: str | None, trials: int) -> int:
     await asyncio.sleep(8)
     results["adult chatter -> ignored"] = not probe.replies_since(t)
 
+    await wait_quiet(probe)
+    t = probe.now()
+    for i, kind in enumerate(["clap", "knock", "clap"]):
+        await probe.say(f"({kind})", "-", "", noise(kind, i))
+        await asyncio.sleep(1.5)
+    await asyncio.sleep(5)
+    results["claps and knocks while quiet -> ignored"] = probe.first_sound_after(t) is None
+
     t = probe.now()
     await probe.say(LATENCY_QUESTIONS[0], "ash", CHILD)
     said = probe.last_said
     await probe.wait_reply(t)
-    note_latency(said)
-    results["question -> answered"] = bool(probe.replies_since(t))
+    results["question -> answered"] = note_latency(said, latencies)
     for question in LATENCY_QUESTIONS[1:trials]:
+        await wait_quiet(probe)
         t = probe.now()
         await probe.say(question, "ash", CHILD)
         said = probe.last_said
         await probe.wait_reply(t)
-        note_latency(said)
+        unanswered += not note_latency(said, latencies)
 
+    # A sound in the silence while he waits for the answer must not lose the answer.
+    hmm = await probe.synth("Hmm.", "ash", SOFT)
+    noisy_ok = True
+    for i, question in enumerate(NOISY_QUESTIONS[: max(2, min(len(NOISY_QUESTIONS), trials - 1))]):
+        await wait_quiet(probe)
+        t = probe.now()
+        await probe.say(question, "ash", CHILD)
+        said = probe.last_said
+        await asyncio.sleep(0.4)
+        if probe.first_sound_after(said) is None:
+            label = "clap" if i % 2 == 0 else "hmm"
+            await probe.say(f"({label})", "ash", SOFT, noise("clap", 10 + i) if label == "clap" else hmm)
+        await probe.wait_reply(t, timeout=20)
+        answered = note_latency(said, noisy_latencies)
+        noisy_ok &= answered
+    results["clap or 'hmm' while waiting -> still answered"] = noisy_ok
+
+    await wait_quiet(probe)
     await probe.set_page(page_context("paris", 5))
     await asyncio.sleep(1)
     t = probe.now()
@@ -276,18 +401,40 @@ async def main(mode: str | None, trials: int) -> int:
     replies = " ".join(probe.replies_since(t)).lower()
     results["page turn -> answers from the new page's hidden notes"] = "brown" in replies
 
+    # Short sounds while Milo talks: he should keep going (or resume).
+    mmhm = await probe.synth("Mm-hmm.", "ash", SOFT)
+    for i in range(max(2, trials - 1)):
+        await wait_quiet(probe)
+        t = probe.now()
+        await probe.say(LONG_ASKS[i % len(LONG_ASKS)], "ash", CHILD)
+        started = await wait_talking(probe, probe.last_said, 1.2)
+        if started is None:
+            print("   Milo never started; skipping blip trial")
+            continue
+        kind = "clap" if i % 2 == 0 else "mm-hmm"
+        blip = probe.now()
+        await probe.say(f"({kind})", "ash", SOFT, noise("clap", 20 + i) if kind == "clap" else mmhm)
+        await asyncio.sleep(4.5)
+        quiet = probe.quiet_after(blip)
+        stopped = quiet is not None and quiet - blip <= 3.0
+        lost = stopped and probe.first_sound_after(quiet + QUIET_GAP) is None
+        if stopped and not lost:
+            heard = probe.first_sound_after(quiet + QUIET_GAP)
+            lost = heard is not None and heard - quiet > 4.0
+        blips.append({"kind": kind, "stopped": stopped, "lost": bool(lost)})
+        print(f"[{probe.now():5.1f}]   {kind} during reply: {'stopped' if stopped else 'kept talking'}{' and did not resume' if lost else ''}")
+        await probe.wait_reply(t, settle=2)
+    false_stops = sum(1 for b in blips if b["stopped"])
+    results["clap or 'mm-hmm' while Milo talks -> he keeps going"] = bool(blips) and not any(b["lost"] for b in blips)
+
     barge_text = "Wait Milo! Wait! Does the tower have an elevator?"
     barge_pcm = await probe.synth(barge_text, "ash", CHILD)
-    for _ in range(max(1, trials // 2)):
+    for i in range(max(1, trials // 2)):
+        await wait_quiet(probe)
         t = probe.now()
-        await probe.say("Milo, can you tell me a long story about the Eiffel Tower?", "ash", CHILD)
+        await probe.say(LONG_ASKS[i % len(LONG_ASKS)], "ash", CHILD)
         # Let Milo talk for about two seconds, then talk over him.
-        first = None
-        for _ in range(150):
-            first = probe.first_sound_after(probe.last_said)
-            if first is not None and probe.now() - first >= 2.0:
-                break
-            await asyncio.sleep(0.1)
+        first = await wait_talking(probe, probe.last_said, 2.0)
         if first is None:
             print("   Milo never started; skipping barge-in trial")
             continue
@@ -309,8 +456,25 @@ async def main(mode: str | None, trials: int) -> int:
     for name, ok in results.items():
         print(f"  {'PASS' if ok else 'FAIL'}  {name}")
     print(f"  agent states seen: {sorted({s for _, s in probe.states})}")
-    print(f"  reply latency (end of speech -> first audio): median {median(latencies)} {[round(x, 2) for x in latencies]}")
-    print(f"  barge-in stop time: median {median(stops)} {[round(x, 2) for x in stops]}")
+    print(f"  reply latency (end of speech -> first audio): {stats(latencies)}; unanswered {unanswered}")
+    print(f"  reply latency with a clap/hmm in the wait: {stats(noisy_latencies)}")
+    print(f"  barge-in stop time: {stats(stops)}")
+    print(f"  false interruptions (blip stopped Milo): {false_stops}/{len(blips)}; lost replies {sum(1 for b in blips if b['lost'])}")
+    if json_path:
+        Path(json_path).write_text(
+            json.dumps(
+                {
+                    "mode": mode,
+                    "results": results,
+                    "latencies": latencies,
+                    "noisy_latencies": noisy_latencies,
+                    "unanswered": unanswered,
+                    "barge_stops": stops,
+                    "blips": blips,
+                },
+                indent=2,
+            )
+        )
     return 0 if all(results.values()) else 1
 
 
@@ -319,5 +483,6 @@ if __name__ == "__main__":
     parser.add_argument("--mode", choices=["pipeline", "realtime"], help="ask the token server for this engine")
     parser.add_argument("--trials", type=int, default=3, help="latency questions (and half as many barge-ins)")
     parser.add_argument("--idle-check", action="store_true", help="stay silent and check that Milo naps")
+    parser.add_argument("--json", help="also write the measurements to this file")
     args = parser.parse_args()
-    sys.exit(asyncio.run(idle_check(args.mode) if args.idle_check else main(args.mode, args.trials)))
+    sys.exit(asyncio.run(idle_check(args.mode) if args.idle_check else main(args.mode, args.trials, args.json)))

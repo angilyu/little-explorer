@@ -1,8 +1,21 @@
 """Speech-to-speech sessions on the OpenAI Realtime API.
 
-One model hears the child and speaks back, so there is no separate transcribe -> think -> speak
-chain: turn-taking (``semantic_vad``) and barge-in happen inside the model service. The app's page
-context is folded into the model's instructions and refreshed on every page turn.
+One model hears the child and speaks back, so there is no separate think -> speak chain. The app's
+page context is folded into the model's instructions and refreshed on every page turn.
+
+Turn-taking (``RealtimeConfig.turns``):
+
+* ``server`` (default): OpenAI's ``semantic_vad`` decides when he has finished, so a slow reader
+  who pauses between words isn't talked over. Barge-in (``barge_in``):
+
+  * ``vad`` (default): Milo stops only once a local Silero VAD has heard
+    ``min_interruption_duration`` of continuous speech, so a clap, a bump or a short sound can't
+    cut him off, and a sound while he is about to answer can't cancel the answer.
+  * ``model``: OpenAI cancels Milo the moment its VAD hears anything (the old behavior).
+
+* ``client``: LiveKit decides turns with a local VAD (``end_of_turn="vad"``) or its end-of-turn
+  model, plus a streaming transcriber so wordless sounds never start a turn. Measured slower than
+  ``server`` (see the README), kept for experiments.
 
 Topic discipline comes from the instructions. An optional ``guard`` (a :data:`TurnGate`) runs on
 each finished transcript *after* the model has started answering; if it says LISTEN or IGNORE the
@@ -29,6 +42,10 @@ from .turns import TurnDecision, TurnGate, UserTurn, decide
 log = logging.getLogger("little_explorer.voice.realtime")
 
 Eagerness = Literal["low", "medium", "high", "auto"]
+TurnTaking = Literal["client", "server"]
+InterruptionMode = Literal["vad", "adaptive"]
+EndOfTurn = Literal["model", "vad"]
+BargeIn = Literal["vad", "model"]
 InstructionsBuilder = Callable[[Mapping[str, Any]], str]
 
 # A reply that starts this long after a guarded transcript still belongs to that turn.
@@ -40,11 +57,31 @@ MAX_GUARD_HISTORY = 8
 class RealtimeConfig:
     model: str = "gpt-realtime"
     voice: str = "coral"
-    # ``low`` waits longest before deciding he has finished, so slow reading is not cut off.
-    eagerness: Eagerness = "low"
-    transcribe_model: str = "gpt-4o-mini-transcribe"
+    turns: TurnTaking = "server"
     language: str = "en"
     noise_reduction: Literal["near_field", "far_field"] | None = "near_field"
+    # server turns: how long semantic_vad waits for more words (low waits up to ~8 s).
+    eagerness: Eagerness = "low"
+    # server turns: ``vad`` = Milo stops only after min_interruption_duration of continuous speech
+    # (local Silero VAD), so claps and short sounds don't cut him off; ``model`` = OpenAI cancels
+    # him on any sound its VAD hears.
+    barge_in: BargeIn = "vad"
+    # The model's own transcription (server turns): feeds the guard and the star check.
+    transcribe_model: str = "gpt-4o-mini-transcribe"
+    # client turns: streaming words for turn-taking, the guard and stars (None = the model's own
+    # transcription, and then any sound the VAD hears counts as a turn).
+    stt_model: str | None = "gpt-realtime-whisper"
+    # client turns: ``vad`` ends the turn min_endpointing_delay after his last word; ``model`` lets
+    # LiveKit's end-of-turn model wait up to max_endpointing_delay when he sounds mid-sentence.
+    end_of_turn: EndOfTurn = "vad"
+    min_endpointing_delay: float = 0.5
+    max_endpointing_delay: float = 3.0
+    # Barge-in: Milo stops once he has heard this much continuous speech. Client turns also need
+    # this many words, and Milo resumes after false_interruption_timeout if it was nothing.
+    interruption_mode: InterruptionMode = "vad"
+    min_interruption_duration: float = 0.6
+    min_interruption_words: int = 1
+    false_interruption_timeout: float = 1.0
 
 
 def realtime_model(config: RealtimeConfig) -> Any:
@@ -54,21 +91,76 @@ def realtime_model(config: RealtimeConfig) -> Any:
     kwargs: dict[str, Any] = {}
     if config.noise_reduction:
         kwargs["input_audio_noise_reduction"] = config.noise_reduction
-    return lk_openai.realtime.RealtimeModel(
-        model=config.model,
-        voice=config.voice,
-        modalities=["audio"],
-        input_audio_transcription=realtime.AudioTranscription(
-            model=config.transcribe_model, language=config.language
-        ),
-        turn_detection=realtime.realtime_audio_input_turn_detection.SemanticVad(
+    client = config.turns == "client"
+    transcription = None
+    if not (client and config.stt_model):
+        transcription = realtime.AudioTranscription(model=config.transcribe_model, language=config.language)
+    turn_detection = None
+    soft_barge_in = not client and config.barge_in == "vad"
+    if not client:
+        turn_detection = realtime.realtime_audio_input_turn_detection.SemanticVad(
             type="semantic_vad",
             eagerness=config.eagerness,
             create_response=True,
-            interrupt_response=True,
-        ),
+            interrupt_response=not soft_barge_in,
+        )
+    model = lk_openai.realtime.RealtimeModel(
+        model=config.model,
+        voice=config.voice,
+        modalities=["audio"],
+        input_audio_transcription=transcription,
+        turn_detection=turn_detection,
         **kwargs,
     )
+    if soft_barge_in:
+        # Otherwise LiveKit cancels Milo the moment OpenAI hears any sound (a clap, an "mm",
+        # his own echo); start_realtime_session stops him on sustained speech instead.
+        model.capabilities.supports_overlapping_speech = True
+    return model
+
+
+def client_turn_handling(config: RealtimeConfig) -> dict[str, Any]:
+    """``TurnHandlingOptions``-shaped dict for client turns (the session adds the detector)."""
+    return {
+        "endpointing": {"min_delay": config.min_endpointing_delay, "max_delay": config.max_endpointing_delay},
+        "interruption": {
+            "enabled": True,
+            "mode": config.interruption_mode,
+            "min_duration": config.min_interruption_duration,
+            "min_words": config.min_interruption_words if config.stt_model else 0,
+            "resume_false_interruption": True,
+            "false_interruption_timeout": config.false_interruption_timeout,
+        },
+        "preemptive_generation": {"enabled": False},
+    }
+
+
+def session_kwargs(config: RealtimeConfig) -> dict[str, Any]:
+    """``AgentSession`` arguments besides the model. Server turns: a local VAD that only reports
+    speech after min_interruption_duration, for the soft barge-in. Client turns: VAD, end-of-turn
+    detection and (optionally) a streaming transcriber."""
+    from livekit.agents import TurnHandlingOptions, inference
+
+    if config.turns != "client":
+        if config.barge_in != "vad":
+            return {}
+        return {
+            "vad": inference.VAD(model="silero", min_speech_duration=config.min_interruption_duration),
+            # The VAD only feeds the barge-in; OpenAI still decides when his turn ends.
+            "turn_handling": TurnHandlingOptions(turn_detection="realtime_llm"),
+        }
+
+    vad = inference.VAD(model="silero")
+    detector: Any = inference.TurnDetector(version="v1-mini") if config.end_of_turn == "model" else "vad"
+    out: dict[str, Any] = {
+        "vad": vad,
+        "turn_handling": TurnHandlingOptions(**client_turn_handling(config), turn_detection=detector),
+    }
+    if config.stt_model:
+        from livekit.plugins import openai as lk_openai
+
+        out["stt"] = lk_openai.STT(model=config.stt_model, language=config.language, vad=vad)
+    return out
 
 
 class ReplyGuard:
@@ -124,14 +216,16 @@ async def start_realtime_session(
 
     ``instructions(context)`` builds the full instructions for the current page; they are pushed
     to the model again whenever the context changes. ``preset`` only supplies the room's noise
-    cancellation; turn-taking belongs to the realtime model. Pass ``context_store`` to share the
-    page context with the caller.
+    cancellation; turn-taking follows ``config.turns``. Pass ``context_store`` to share the page
+    context with the caller.
     """
     await ctx.connect()
     store = ContextStore() if context_store is None else context_store
     attach_room_context(store, ctx.room)
     agent = Agent(instructions=instructions(store.snapshot()), tools=list(tools))
-    session = AgentSession(llm=realtime_model(config), user_away_timeout=preset.user_away_timeout)
+    session = AgentSession(
+        llm=realtime_model(config), user_away_timeout=preset.user_away_timeout, **session_kwargs(config)
+    )
     tasks: set[asyncio.Task[Any]] = set()
 
     def spawn(coro: Any) -> None:
@@ -143,6 +237,18 @@ async def start_realtime_session(
         spawn(agent.update_instructions(instructions(store.snapshot())))
 
     store.subscribe(on_context)
+
+    if config.turns == "server" and config.barge_in == "vad":
+
+        @session.on("user_state_changed")
+        def _on_user_state(ev: Any) -> None:
+            # The local VAD only says "speaking" after min_interruption_duration of speech.
+            if ev.new_state == "speaking" and session.agent_state == "speaking":
+                log.info("barge-in: he talked over Milo")
+                try:
+                    session.interrupt()
+                except RuntimeError:
+                    log.debug("barge-in: reply could not be interrupted")
 
     if guard is not None:
         reply_guard = ReplyGuard(guard)

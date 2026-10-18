@@ -115,7 +115,7 @@ async def test_entrypoint_runs_the_chosen_engine(monkeypatch, tmp_path, metadata
     await agent_mod.entrypoint(ctx)
     assert ran == [expected]
     # Every session logs its usage when the job ends.
-    assert len(ctx.shutdown_callbacks) == 3  # usage, pending star reports, timers
+    assert len(ctx.shutdown_callbacks) == 4  # usage, pending star reports, timers, turn timing
     await ctx.shutdown_callbacks[0]("room disconnected")
     await ctx.shutdown_callbacks[1]()
     await ctx.shutdown_callbacks[2]()
@@ -123,23 +123,67 @@ async def test_entrypoint_runs_the_chosen_engine(monkeypatch, tmp_path, metadata
 
 
 def test_realtime_config_from_env():
+    from little_explorer_agent.voice.realtime import RealtimeConfig
+
     config = agent_mod.realtime_config({})
-    assert (config.model, config.voice, config.eagerness) == ("gpt-realtime", "coral", "low")
-    config = agent_mod.realtime_config({"PIP_REALTIME_MODEL": "gpt-realtime-mini", "PIP_REALTIME_EAGERNESS": "medium"})
-    assert (config.model, config.eagerness) == ("gpt-realtime-mini", "medium")
+    assert config == RealtimeConfig()
+    assert (config.model, config.voice, config.turns, config.barge_in) == ("gpt-realtime", "coral", "server", "vad")
+    config = agent_mod.realtime_config(
+        {
+            "PIP_REALTIME_MODEL": "gpt-realtime-mini",
+            "PIP_REALTIME_EAGERNESS": "Low",
+            "PIP_REALTIME_BARGE_IN": "model",
+            "PIP_REALTIME_TURNS": "client",
+            "PIP_REALTIME_END_OF_TURN": "model",
+            "PIP_REALTIME_STT_MODEL": "none",
+            "PIP_REALTIME_MIN_INTERRUPTION_DURATION": "0.8",
+            "PIP_REALTIME_MIN_INTERRUPTION_WORDS": "2",
+        }
+    )
+    assert (config.model, config.eagerness, config.barge_in, config.turns) == ("gpt-realtime-mini", "low", "model", "client")
+    assert (config.end_of_turn, config.stt_model) == ("model", None)
+    assert (config.min_interruption_duration, config.min_interruption_words) == (0.8, 2)
+    with pytest.raises(ValueError):
+        agent_mod.realtime_config({"PIP_REALTIME_TURNS": "both"})
 
 
-def test_realtime_model_uses_semantic_vad(monkeypatch):
-    from little_explorer_agent.voice.realtime import RealtimeConfig, realtime_model
+def test_realtime_model_server_turns_with_soft_barge_in(monkeypatch):
+    from little_explorer_agent.voice.realtime import RealtimeConfig, realtime_model, session_kwargs
 
     monkeypatch.setenv("OPENAI_API_KEY", "test-key")
-    model = realtime_model(RealtimeConfig())
+    config = RealtimeConfig()
+    model = realtime_model(config)
     opts = model._opts
-    assert opts.model == "gpt-realtime"
-    assert opts.voice == "coral"
+    assert (opts.model, opts.voice) == ("gpt-realtime", "coral")
     assert opts.turn_detection.type == "semantic_vad"
-    assert opts.turn_detection.eagerness == "low"
-    assert opts.turn_detection.interrupt_response is True
+    assert opts.turn_detection.eagerness == config.eagerness
+    # OpenAI no longer cancels Milo on any sound; a local VAD stops him on sustained speech.
+    assert opts.turn_detection.interrupt_response is False
+    assert model.capabilities.supports_overlapping_speech is True
+    kwargs = session_kwargs(config)
+    assert set(kwargs) == {"vad", "turn_handling"}
+    assert kwargs["turn_handling"]["turn_detection"] == "realtime_llm"
+
+
+def test_realtime_model_model_barge_in_and_client_turns(monkeypatch):
+    from dataclasses import replace
+
+    from little_explorer_agent.voice.realtime import RealtimeConfig, realtime_model, session_kwargs
+
+    monkeypatch.setenv("OPENAI_API_KEY", "test-key")
+    old = replace(RealtimeConfig(), barge_in="model", eagerness="low")
+    model = realtime_model(old)
+    assert model._opts.turn_detection.interrupt_response is True
+    assert model.capabilities.supports_overlapping_speech is False
+    assert session_kwargs(old) == {}
+
+    client = replace(RealtimeConfig(), turns="client")
+    model = realtime_model(client)
+    assert model._opts.turn_detection is None
+    kwargs = session_kwargs(client)
+    assert {"vad", "turn_handling", "stt"} <= set(kwargs)
+    assert kwargs["turn_handling"]["turn_detection"] == "vad"
+    assert kwargs["turn_handling"]["interruption"]["min_words"] == client.min_interruption_words
 
 
 # --- token server ----------------------------------------------------------------------------
@@ -260,6 +304,20 @@ async def test_realtime_guard_never_cuts_a_question_to_the_buddy_by_name():
     gate = make_parallel_topic_gate(ReadingTracker(), topic)
     assert await gate(turn("milo can you go up to the top of the tower")) is TurnDecision.RESPOND
     assert await gate(turn("can you go up to the top of the tower")) is TurnDecision.IGNORE
+
+
+async def test_realtime_guard_lets_him_answer_milos_question():
+    async def topic(t):
+        return TurnDecision.IGNORE
+
+    guard = agent_mod.make_realtime_guard(ReadingTracker(), topic)
+    asked = [("assistant", "It is very tall! What would you do at the top?")]
+    told = [("assistant", "It is very tall and made of iron.")]
+    answer = "I would look at all the little cars"
+    assert await guard(UserTurn(text=answer, context=CTX, history=asked)) is TurnDecision.RESPOND
+    assert await guard(UserTurn(text=answer, context=CTX, history=told)) is TurnDecision.IGNORE
+    long = "and then we went to the shop and bought milk and bread and some apples for later"
+    assert await guard(UserTurn(text=long, context=CTX, history=asked)) is TurnDecision.IGNORE
 
 
 async def test_realtime_guard_without_topic_gate_trusts_the_model():
