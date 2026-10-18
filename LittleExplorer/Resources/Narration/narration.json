@@ -778,88 +778,76 @@
   },
   "chengdu/dujiangyan": {
    "file": "read-chengdu-dujiangyan",
-   "text": "This clever river system is over 2,000 years old and still works!",
-   "duration": 6.5,
-   "match": 1.0,
-   "heard": "This clever river system is over 2,000 years old and still works!",
+   "text": "Dujiangyan is a clever river system over 2,000 years old!",
+   "duration": 5.16,
+   "match": 0.909,
+   "heard": "Dojiangyan is a clever river system over 2,000 years old!",
    "words": [
     {
      "location": 0,
-     "length": 4,
-     "start": 0.16,
-     "end": 0.48
+     "length": 10,
+     "start": 0.07,
+     "end": 1.0
     },
     {
-     "location": 5,
-     "length": 6,
-     "start": 0.59,
-     "end": 1.06
-    },
-    {
-     "location": 12,
-     "length": 5,
-     "start": 1.06,
-     "end": 1.44
-    },
-    {
-     "location": 18,
-     "length": 6,
-     "start": 1.44,
-     "end": 1.9
-    },
-    {
-     "location": 25,
+     "location": 11,
      "length": 2,
-     "start": 2.23,
-     "end": 2.5
+     "start": 1.28,
+     "end": 1.48
     },
     {
-     "location": 28,
-     "length": 4,
-     "start": 2.5,
-     "end": 2.67
-    },
-    {
-     "location": 33,
+     "location": 14,
      "length": 1,
-     "start": 2.8,
-     "end": 3.16
+     "start": 1.56,
+     "end": 1.66
     },
     {
-     "location": 35,
-     "length": 3,
-     "start": 3.38,
-     "end": 3.82
+     "location": 16,
+     "length": 6,
+     "start": 1.66,
+     "end": 2.0
     },
     {
-     "location": 39,
+     "location": 23,
      "length": 5,
-     "start": 3.82,
-     "end": 4.16
+     "start": 2.0,
+     "end": 2.34
     },
     {
-     "location": 45,
-     "length": 3,
-     "start": 4.16,
-     "end": 4.44
+     "location": 29,
+     "length": 6,
+     "start": 2.34,
+     "end": 2.78
     },
     {
-     "location": 49,
+     "location": 36,
+     "length": 4,
+     "start": 3.15,
+     "end": 3.43
+    },
+    {
+     "location": 41,
+     "length": 1,
+     "start": 3.52,
+     "end": 3.8
+    },
+    {
+     "location": 43,
      "length": 3,
-     "start": 4.86,
-     "end": 5.23
+     "start": 3.93,
+     "end": 4.3
+    },
+    {
+     "location": 47,
+     "length": 5,
+     "start": 4.3,
+     "end": 4.62
     },
     {
      "location": 53,
-     "length": 5,
-     "start": 5.31,
-     "end": 5.61
-    },
-    {
-     "location": 59,
-     "length": 5,
-     "start": 5.78,
-     "end": 6.18
+     "length": 3,
+     "start": 4.62,
+     "end": 4.86
     }
    ],
    "lufs": -16.0,
