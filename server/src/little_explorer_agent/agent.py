@@ -309,6 +309,8 @@ def realtime_config(env: Mapping[str, str] | None = None) -> RealtimeConfig:
         ("PIP_REALTIME_MAX_ENDPOINTING_DELAY", "max_endpointing_delay", float),
         ("PIP_REALTIME_MIN_INTERRUPTION_DURATION", "min_interruption_duration", float),
         ("PIP_REALTIME_MIN_INTERRUPTION_WORDS", "min_interruption_words", int),
+        ("PIP_REALTIME_COMMIT_AFTER", "commit_after_s", float),
+        ("PIP_REALTIME_READING_COMMIT_AFTER", "reading_commit_after_s", float),
     ):
         if value := get(name):
             changes[field_name] = cast(value)
@@ -390,6 +392,7 @@ async def _realtime(ctx: JobContext, game: StarGame, timer: TurnTimer, greeting:
         greeting=greeting,
         context_store=store,
         on_interrupt=timer.note_interrupt,
+        on_commit=timer.committed,
     )
 
     def refresh() -> None:

@@ -134,9 +134,17 @@ Milo's settings start with `PIP_`. Milo has two voice engines. Pick one with `PI
   never a short answer to Milo's own question). It never delays a reply. Realtime costs much more per minute than the pipeline.
   Barge-in is "soft": OpenAI's own speech detection no longer cancels Milo. Instead local Silero VAD stops him only
   after 0.6 s of real speech, so claps, knocks, echo and a quick "um" don't cut him off or lose a pending answer.
+  Low eagerness sometimes judges a finished question unfinished ("OK, any other food?") and waits for its ~8 s cap.
+  So if Silero has heard 2.5 s of silence after his speech, OpenAI is still waiting and Milo is idle, the agent
+  commits the turn itself and asks for a reply. While he has been reading aloud in the last 30 s it waits 5 s instead;
+  a reading pause that still gets committed is handled by `stay_quiet` and the guard. If OpenAI later commits the
+  same turn's leftover silence, that second reply is cancelled.
   Tuning knobs (env): `PIP_REALTIME_EAGERNESS` (low|medium|high|auto), `PIP_REALTIME_BARGE_IN` (vad|model),
-  `PIP_REALTIME_MIN_INTERRUPTION_DURATION` (seconds), `PIP_REALTIME_TURNS` (server|client, client is experimental).
+  `PIP_REALTIME_MIN_INTERRUPTION_DURATION` (seconds), `PIP_REALTIME_COMMIT_AFTER` (seconds, 0 = off),
+  `PIP_REALTIME_READING_COMMIT_AFTER` (seconds), `PIP_REALTIME_TURNS` (server|client, client is experimental).
   Each turn logs its timing (`turn N: wait … answer … total …`, no transcripts) and each session logs a median/p90 summary.
+  `wait` is Silero hearing him stop → his turn committed, `answer` is the commit → Milo's first audio; a turn the
+  agent committed itself ends with `forced commit`, after a `forced commit after …s of silence` line.
   An `interrupted by …` line says what stopped a reply (`barge_in`, `guard`, or `programmatic` for the session
   closing) and how long he had been talking; `he talked over Milo for …` gives the full length once he stops.
   The transcriber sometimes repeats his last words on a noise or on Milo's echo, or turns a noise into another

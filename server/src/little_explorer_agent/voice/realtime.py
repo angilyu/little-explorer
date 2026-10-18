@@ -13,6 +13,10 @@ Turn-taking (``RealtimeConfig.turns``):
     cut him off, and a sound while he is about to answer can't cancel the answer.
   * ``model``: OpenAI cancels Milo the moment its VAD hears anything (the old behavior).
 
+  If OpenAI is still waiting for more words after a long local silence (``commit_after_s``,
+  longer while he is reading), :class:`CommitFallback` commits the turn and asks for a reply, so
+  a finished question that *sounds* unfinished doesn't wait for semantic_vad's ~8 s cap.
+
 * ``client``: LiveKit decides turns with a local VAD (``end_of_turn="vad"``) or its end-of-turn
   model, plus a streaming transcriber so wordless sounds never start a turn. Measured slower than
   ``server`` (see the README), kept for experiments.
@@ -32,7 +36,7 @@ import logging
 import time
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
-from typing import Any, Literal
+from typing import Any, Literal, Protocol
 
 from livekit.agents import Agent, AgentSession, JobContext
 
@@ -57,6 +61,11 @@ MAX_GUARD_HISTORY = 8
 DUPLICATE_WINDOW_S = 4.0
 # After a barge-in, a short sound this soon is never cut: Milo may finish what he was saying.
 RESUME_WINDOW_S = 6.0
+# The longer commit fallback applies this long after the guard last heard him reading.
+READING_WINDOW_S = 30.0
+# After a forced commit, OpenAI committing again this soon with no new speech is the leftover
+# silence of the same turn; its auto-response is cancelled.
+STALE_COMMIT_WINDOW_S = 10.0
 
 
 @dataclass(frozen=True)
@@ -88,6 +97,11 @@ class RealtimeConfig:
     min_interruption_duration: float = 0.6
     min_interruption_words: int = 1
     false_interruption_timeout: float = 1.0
+    # server turns with barge_in="vad": once the local VAD has heard this much silence after his
+    # speech and OpenAI still hasn't ended his turn, commit it and answer (0 = off). The longer
+    # value applies while he has been reading aloud. See CommitFallback.
+    commit_after_s: float = 2.5
+    reading_commit_after_s: float = 5.0
 
 
 def realtime_model(config: RealtimeConfig) -> Any:
@@ -234,6 +248,142 @@ class ReplyGuard:
         self._reject_until = 0.0
 
 
+class _Timer(Protocol):
+    def cancel(self) -> None: ...
+
+
+Scheduler = Callable[[float, Callable[[], None]], _Timer]
+
+
+def _call_later(delay: float, callback: Callable[[], None]) -> _Timer:
+    return asyncio.get_event_loop().call_later(delay, callback)
+
+
+class CommitFallback:
+    """Ends his turn when OpenAI's ``semantic_vad`` is still waiting after a long silence.
+
+    With ``eagerness="low"`` OpenAI waits up to ~8 s when a finished question sounds unfinished
+    ("OK, any other food?"). This watches the local VAD: once it has heard ``delay`` of silence
+    after his speech (``reading_delay`` if the guard heard him reading in the last
+    ``READING_WINDOW_S``), OpenAI's turn is still open and Milo is idle (``can_force()``), it calls
+    ``force()`` to commit the audio and ask for a reply. A reading pause that gets committed is
+    still handled by stay_quiet and the reply guard.
+
+    If OpenAI then commits again with no new speech (the leftover silence of the same turn),
+    :meth:`openai_event` returns the id of the auto-response to cancel. Pure bookkeeping:
+    ``schedule`` and ``clock`` are injectable, so it is testable without LiveKit.
+    """
+
+    def __init__(
+        self,
+        *,
+        delay: float,
+        reading_delay: float,
+        can_force: Callable[[], bool],
+        force: Callable[[], None],
+        on_commit: Callable[[bool], None] | None = None,
+        schedule: Scheduler = _call_later,
+        clock: Callable[[], float] = time.monotonic,
+    ) -> None:
+        self.delay = delay
+        self.reading_delay = reading_delay
+        self.can_force = can_force
+        self.force = force
+        self.on_commit = on_commit
+        self.schedule = schedule
+        self.clock = clock
+        self.forced = 0
+        self.stale_cancelled = 0
+        self._turn_open = False
+        self._heard_speech = False
+        self._timer: _Timer | None = None
+        self._silence_at = 0.0
+        self._reading_at = float("-inf")
+        self._stale_until = float("-inf")
+        self._cancel_next_response = False
+        self._forced_reply_seen = False
+
+    @property
+    def enabled(self) -> bool:
+        return self.delay > 0
+
+    def _cancel_timer(self) -> None:
+        if self._timer is not None:
+            self._timer.cancel()
+            self._timer = None
+
+    def _new_speech(self) -> None:
+        self._stale_until = float("-inf")
+        self._cancel_next_response = False
+
+    def reading(self) -> None:
+        """The guard just heard him reading aloud: wait longer before forcing his turn."""
+        self._reading_at = self.clock()
+
+    def user_state(self, state: str) -> None:
+        """The local VAD's view: ``speaking`` (after min_speech_duration) or ``listening``."""
+        if state == "speaking":
+            self._cancel_timer()
+            self._heard_speech = True
+            self._new_speech()
+        elif state == "listening" and self._heard_speech and self.enabled:
+            self._cancel_timer()
+            now = self.clock()
+            reading = now - self._reading_at <= READING_WINDOW_S
+            self._silence_at = now
+            self._timer = self.schedule(max(self.reading_delay, self.delay) if reading else self.delay, self._fire)
+
+    def agent_state(self, state: str) -> None:
+        if state in ("thinking", "speaking"):
+            self._cancel_timer()
+
+    def openai_event(self, event: Mapping[str, Any]) -> str | None:
+        """Follow OpenAI's raw server events; returns a response id to cancel, if any."""
+        kind = event.get("type")
+        if kind == "input_audio_buffer.speech_started":
+            self._turn_open = True
+            self._new_speech()
+        elif kind == "input_audio_buffer.committed":
+            self._turn_open = False
+            if self.clock() <= self._stale_until:
+                self._stale_until = float("-inf")
+                self._cancel_next_response = True
+                return None
+            self._cancel_timer()
+            self._heard_speech = False
+            if self.on_commit is not None:
+                self.on_commit(False)
+        elif kind == "response.created":
+            response = event.get("response") or {}
+            if (response.get("metadata") or {}).get("client_event_id"):
+                self._forced_reply_seen = True
+            elif self._cancel_next_response:
+                self._cancel_next_response = False
+                # OpenAI committed first and our reply was refused: this one is the answer.
+                if self._forced_reply_seen:
+                    self.stale_cancelled += 1
+                    return response.get("id")
+        return None
+
+    def _fire(self) -> None:
+        self._timer = None
+        if not self._turn_open or not self.can_force():
+            return
+        waited = self.clock() - self._silence_at
+        self._turn_open = False
+        self._heard_speech = False
+        self._stale_until = self.clock() + STALE_COMMIT_WINDOW_S
+        self._forced_reply_seen = False
+        self.forced += 1
+        log.info("forced commit after %.2fs of silence (OpenAI still waiting for more)", waited)
+        self.force()
+        if self.on_commit is not None:
+            self.on_commit(True)
+
+    def close(self) -> None:
+        self._cancel_timer()
+
+
 async def start_realtime_session(
     ctx: JobContext,
     *,
@@ -246,6 +396,7 @@ async def start_realtime_session(
     greeting: str | None = None,
     context_store: ContextStore | None = None,
     on_interrupt: Callable[[str], None] | None = None,
+    on_commit: Callable[[bool], None] | None = None,
 ) -> AgentSession:
     """Connect, follow the app's page context, and start a realtime ``AgentSession``.
 
@@ -253,7 +404,8 @@ async def start_realtime_session(
     to the model again whenever the context changes. ``preset`` only supplies the room's noise
     cancellation; turn-taking follows ``config.turns``. Pass ``context_store`` to share the page
     context with the caller. ``on_interrupt(cause)`` is told just before Milo is cut off on purpose
-    (``barge_in`` or ``guard``), for the timing log.
+    (``barge_in`` or ``guard``), for the timing log. With server turns, ``on_commit(forced)`` is
+    told when his turn is committed: by OpenAI, or ``forced`` by the :class:`CommitFallback`.
     """
     await ctx.connect()
     store = ContextStore() if context_store is None else context_store
@@ -283,6 +435,32 @@ async def start_realtime_session(
             reply_guard.cut_off()
         session.interrupt()
 
+    rt_holder: list[Any] = []
+    fallback: CommitFallback | None = None
+    if config.turns == "server":
+
+        def can_force() -> bool:
+            rt = rt_holder[0] if rt_holder else None
+            return rt is not None and not rt.has_active_generation and session.agent_state not in ("thinking", "speaking")
+
+        def force() -> None:
+            rt_holder[0].commit_audio()
+            try:
+                session.generate_reply()
+            except RuntimeError:
+                log.warning("forced commit: could not ask for a reply")
+
+        fallback = CommitFallback(
+            delay=config.commit_after_s if config.barge_in == "vad" else 0.0,
+            reading_delay=config.reading_commit_after_s,
+            can_force=can_force,
+            force=force,
+            on_commit=on_commit,
+        )
+        session.on("user_state_changed", lambda ev: fallback.user_state(ev.new_state))
+        session.on("agent_state_changed", lambda ev: fallback.agent_state(ev.new_state))
+        session.on("close", lambda _ev: fallback.close())
+
     if config.turns == "server" and config.barge_in == "vad":
 
         @session.on("user_state_changed")
@@ -305,6 +483,8 @@ async def start_realtime_session(
 
         async def run_guard(text: str) -> None:
             turn, decision = await reply_guard.check(text, store.snapshot())
+            if decision is TurnDecision.LISTEN and fallback is not None:
+                fallback.reading()
             if on_decision is not None:
                 try:
                     result = on_decision(turn, decision)
@@ -335,6 +515,15 @@ async def start_realtime_session(
                 reply_guard.remember("assistant", getattr(item, "text_content", "") or "")
 
     await session.start(agent=agent, room=ctx.room, room_options=_room_options(preset))
+    if fallback is not None:
+        rt = agent.realtime_llm_session
+        rt_holder.append(rt)
+
+        @rt.on("openai_server_event_received")
+        def _on_openai_event(event: dict[str, Any]) -> None:
+            if (response_id := fallback.openai_event(event)) is not None:
+                log.info("forced commit: cancelled a second reply to the same turn's silence")
+                rt.send_event({"type": "response.cancel", "response_id": response_id})
     if greeting:
         session.generate_reply(instructions=f'Greet him by saying exactly: "{greeting}"')
     return session

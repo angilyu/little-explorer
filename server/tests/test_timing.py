@@ -104,3 +104,28 @@ def test_programmatic_without_a_recent_cause_stays_programmatic():
     timer.speech_created(handle)
     handle.finish("programmatic")
     assert timer.interruptions == {"programmatic": 1}
+
+
+def test_realtime_commit_splits_wait_and_answer_and_counts_forced(caplog):
+    clock = Clock()
+    timer = TurnTimer(clock=clock)
+    caplog.set_level(logging.INFO, logger="little_explorer.voice.timing")
+    timer.user_state("speaking")
+    clock.t = 2.0
+    timer.user_state("listening")
+    clock.t = 4.5
+    timer.committed(forced=True)
+    clock.t = 5.2
+    timer.agent_state("speaking")
+    assert "turn 1: wait 2.50s, answer 0.70s, total 3.20s, forced commit" in caplog.text
+    timer.agent_state("listening")
+    clock.t = 6.0
+    timer.user_state("speaking")
+    clock.t = 7.0
+    timer.user_state("listening")
+    clock.t = 7.4
+    timer.committed()
+    clock.t = 8.0
+    timer.agent_state("speaking")
+    assert "turn 2: wait 0.40s, answer 0.60s, total 1.00s\n" in caplog.text + "\n"
+    assert "forced commits 1" in timer.summary()

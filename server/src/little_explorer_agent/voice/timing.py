@@ -2,9 +2,10 @@
 
 Only timings, counts and causes are logged, never what anyone said. One ``turn`` line per reply:
 
-* ``wait``: the child stopped talking (as the turn detector saw it) -> Milo's turn began
-  (``thinking``); with client-side turns this is the end-of-turn wait.
-* ``answer``: ``thinking`` -> Milo's first audio.
+* ``wait``: the child stopped talking (as the local VAD saw it) -> Milo's turn began: ``thinking``
+  with client-side turns (the end-of-turn wait), or OpenAI committing his turn with realtime
+  server turns (:meth:`TurnTimer.committed`; ``forced`` when the commit fallback ended it).
+* ``answer``: the turn began -> Milo's first audio.
 * ``total``: the child stopped -> Milo's first audio.
 
 An ``interrupted`` line says what stopped a reply (``barge_in`` = the soft barge-in heard him talk
@@ -60,6 +61,8 @@ class TurnTimer:
     false_interruptions: int = 0
     resumed: int = 0
     overlaps: list[float] = field(default_factory=list)
+    forced_commits: int = 0
+    _forced: bool = False
     _user_started: float | None = None
     _user_stopped: float | None = None
     _thinking: float | None = None
@@ -99,6 +102,7 @@ class TurnTimer:
         elif state == "speaking":
             self._agent_speaking = True
             stopped, thinking = self._user_stopped, self._thinking
+            forced, self._forced = self._forced, False
             self._user_stopped = self._thinking = None
             if stopped is None:
                 return  # greeting, a resumed reply, or Milo speaking on his own
@@ -110,6 +114,8 @@ class TurnTimer:
                 self.waits.append(thinking - stopped)
                 self.answers.append(now - thinking)
                 parts = [f"wait {thinking - stopped:.2f}s", f"answer {now - thinking:.2f}s", *parts]
+            if forced:
+                parts.append("forced commit")
             log.info("turn %d: %s", self.replies, ", ".join(parts))
         else:
             self._agent_speaking = False
@@ -137,6 +143,12 @@ class TurnTimer:
 
         handle.add_done_callback(done)
 
+    def committed(self, forced: bool = False) -> None:
+        """The realtime model's turn was committed (``forced`` by the commit fallback)."""
+        self._thinking = self.clock()
+        self._forced = forced
+        self.forced_commits += int(forced)
+
     def note_interrupt(self, cause: str) -> None:
         """Say why the next programmatic interruption happens (``barge_in`` or ``guard``)."""
         self._cause, self._cause_at = cause, self.clock()
@@ -154,7 +166,8 @@ class TurnTimer:
     def summary(self) -> str:
         cut = ", ".join(f"{k} {v}" for k, v in sorted(self.interruptions.items())) or "none"
         return (
-            f"user speech {self.segments}, replies {self.replies}, stayed quiet {self.quiet_turns}; "
+            f"user speech {self.segments}, replies {self.replies}, stayed quiet {self.quiet_turns}, "
+            f"forced commits {self.forced_commits}; "
             f"wait {_stats(self.waits)}; answer {_stats(self.answers)}; total {_stats(self.totals)}; "
             f"interrupted: {cut}; talked over Milo {_stats(self.overlaps)}; "
             f"false interruptions {self.false_interruptions} (resumed {self.resumed})"
