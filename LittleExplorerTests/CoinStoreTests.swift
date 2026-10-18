@@ -285,10 +285,5 @@ final class ParentGateTests: XCTestCase {
         XCTAssertEqual(demo?.openGate, true)
         XCTAssertEqual(demo?.openParent, true)
         XCTAssertNil(DemoLaunch.parse(["app"]))
-        let preview = DemoLaunch.parse(["app", "-demoCoinIcon", "stack", "-demoCoinIcons", "-demoLock", "bottom"])
-        XCTAssertEqual(preview?.coinStyle, .stack)
-        XCTAssertEqual(preview?.showCoinIcons, true)
-        XCTAssertEqual(preview?.lockPlace, .bottom)
-        XCTAssertNil(DemoLaunch.parse(["app", "-demoLock", "top"])?.lockPlace)
     }
 }

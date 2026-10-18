@@ -7,11 +7,10 @@ import Foundation
 /// `-demoVoice star` turns Milo on and has him give a star for the opening page.
 /// `-demoStars 23` seeds that many saved stars; `-demoPassport` opens the Passport.
 /// `-demoRead` starts reading the opening page aloud, to show the word highlight.
-/// `-demoShelf paris-french` scrolls the shelf to that book's cover (without opening it).
+/// `-demoShelf paris-french` scrolls the shelf to that book's cover (without opening it);
+/// `-demoShelf grown-ups` scrolls to the Grown-ups button at the bottom.
 /// `-demoCoins 2` seeds that many coins (made from 10 stars each, so they come off `-demoStars`).
 /// `-demoGate` opens the grown-ups gate; `-demoParent` opens the grown-ups corner without it.
-/// Preview choices: `-demoCoinIcon crown|dollar|stack`, `-demoCoinIcons` (all of them side by side) and
-/// `-demoLock corner|bottom` (where the grown-ups button sits; `-demoShelf grown-ups` scrolls to the bottom one).
 struct DemoLaunch: Equatable {
     var bookId: String?
     var pageIndex: Int = 0
@@ -27,9 +26,6 @@ struct DemoLaunch: Equatable {
     var seedCoins = 0
     var openGate = false
     var openParent = false
-    var coinStyle: CoinStyle?
-    var showCoinIcons = false
-    var lockPlace: GrownUpsPlace?
 
     var startsWithVoice: Bool { voiceActivity != nil || liveVoice }
 
@@ -58,9 +54,6 @@ struct DemoLaunch: Equatable {
         if let coins = value(after: "-demoCoins").flatMap(Int.init) { demo.seedCoins = max(0, coins); found = true }
         if arguments.contains("-demoGate") { demo.openGate = true; found = true }
         if arguments.contains("-demoParent") { demo.openParent = true; found = true }
-        if let style = value(after: "-demoCoinIcon").flatMap(CoinStyle.init) { demo.coinStyle = style; found = true }
-        if arguments.contains("-demoCoinIcons") { demo.showCoinIcons = true; found = true }
-        if let place = value(after: "-demoLock").flatMap(GrownUpsPlace.init) { demo.lockPlace = place; found = true }
         if let voice = value(after: "-demoVoice") {
             if voice == "star" {
                 demo.voiceActivity = .listening
