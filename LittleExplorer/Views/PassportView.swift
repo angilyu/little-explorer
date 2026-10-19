@@ -1,6 +1,7 @@
 import SwiftUI
 
-/// His travel passport: a stamp for each city he asked Milo about, and badges for being curious.
+/// His travel passport: a stamp for each city he asked Milo about, badges for being curious, and a
+/// calendar of the stars he earned each day.
 struct PassportView: View {
     let shelves: [CityShelf]
 
@@ -10,22 +11,41 @@ struct PassportView: View {
     @Environment(\.horizontalSizeClass) private var sizeClass
 
     private var regular: Bool { sizeClass == .regular }
+    private static let calendarAnchor = "star-calendar"
+
+    private var calendarLayout: StarCalendarView.Layout {
+        #if DEBUG
+        DemoLaunch.current?.calendarLayout ?? .month
+        #else
+        .month
+        #endif
+    }
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: regular ? 28 : 20) {
-                    totalCard
-                    sectionTitle("City stamps")
-                    LazyVGrid(columns: [GridItem(.adaptive(minimum: regular ? 200 : 150), spacing: 14)], spacing: 14) {
-                        ForEach(stars.stamps(shelves: shelves)) { StampView(stamp: $0, regular: regular) }
+            ScrollViewReader { proxy in
+                ScrollView {
+                    VStack(alignment: .leading, spacing: regular ? 28 : 20) {
+                        totalCard
+                        sectionTitle("City stamps")
+                        LazyVGrid(columns: [GridItem(.adaptive(minimum: regular ? 200 : 150), spacing: 14)], spacing: 14) {
+                            ForEach(stars.stamps(shelves: shelves)) { StampView(stamp: $0, regular: regular) }
+                        }
+                        sectionTitle("Badges")
+                        VStack(spacing: 12) {
+                            ForEach(stars.badges(shelves: shelves)) { BadgeRow(badge: $0, regular: regular) }
+                        }
+                        sectionTitle("My star calendar")
+                            .id(Self.calendarAnchor)
+                        StarCalendarView(days: stars.days(), layout: calendarLayout, regular: regular)
                     }
-                    sectionTitle("Badges")
-                    VStack(spacing: 12) {
-                        ForEach(stars.badges(shelves: shelves)) { BadgeRow(badge: $0, regular: regular) }
-                    }
+                    .padding(regular ? 32 : 18)
                 }
-                .padding(regular ? 32 : 18)
+                .task {
+                    guard DemoLaunch.current?.calendarLayout != nil else { return }
+                    try? await Task.sleep(for: .milliseconds(700))
+                    proxy.scrollTo(Self.calendarAnchor, anchor: .top)
+                }
             }
             .background(
                 LinearGradient(colors: [Theme.sky, Theme.paper], startPoint: .top, endPoint: .bottom)
