@@ -182,29 +182,40 @@ extension StarStore {
         return StarStore()
     }
 
-    /// Screenshot demo: about `total` stars spread over most of the first city's books and one more city.
-    static func demoAwards(total: Int, shelves: [CityShelf]) -> [StarAward] {
+    /// Screenshot demo: about `total` stars spread over most of the first city's books and one more city,
+    /// and over the last few weeks (some days off) so the Passport calendar has something to show.
+    static func demoAwards(
+        total: Int, shelves: [CityShelf], now: Date = Date(), calendar: Calendar = .current
+    ) -> [StarAward] {
         let first = shelves.first.map { Array($0.books.dropLast(2)) } ?? []
         let books = first + shelves.dropFirst().prefix(1).compactMap(\.books.first)
         guard !books.isEmpty else { return [] }
-        var awards: [StarAward] = []
-        var sum = 0
-        var i = 0
-        while sum < total {
-            let book = books[i % books.count]
-            let stars = 1  // one star per page
-            let date = Date(timeIntervalSince1970: 1_750_000_000 + Double(i) * 600)
-            awards.append(
-                StarAward(
-                    id: "demo-\(i)", awardedAt: ISO8601DateFormatter().string(from: date), book: book.id,
-                    page: book.pages[i % book.pages.count].id, city: book.city, long: i % 2 == 0,
-                    whyHow: i % 3 == 0, stars: stars, words: i % 2 == 0 ? 9 : 5
-                )
-            )
-            sum += stars
-            i += 1
+        // Stars per day, going back from today; the pattern repeats for bigger totals.
+        let perDay = [3, 0, 2, 5, 1, 0, 0, 4, 2, 3, 0, 6, 1, 2, 0, 0, 3, 1, 4, 2, 0, 7, 2, 0, 1, 3, 0, 2]
+        let today = calendar.startOfDay(for: now)
+        var slots: [Date] = []
+        var back = 0
+        while slots.count < total {
+            let n = perDay[back % perDay.count]
+            let day = calendar.date(byAdding: .day, value: -back, to: today) ?? today
+            for k in 0..<n where slots.count < total {
+                // Mornings and afternoons, never later than now on today.
+                let minutes = 9 * 60 + k * 47
+                let time = calendar.date(byAdding: .minute, value: minutes, to: day) ?? day
+                slots.append(back == 0 ? min(time, now) : time)
+            }
+            back += 1
         }
-        return awards
+        let formatter = ISO8601DateFormatter()
+        formatter.timeZone = calendar.timeZone
+        return slots.reversed().enumerated().map { i, date in
+            let book = books[i % books.count]
+            return StarAward(
+                id: "demo-\(i)", awardedAt: formatter.string(from: date), book: book.id,
+                page: book.pages[i % book.pages.count].id, city: book.city, long: i % 2 == 0,
+                whyHow: i % 3 == 0, stars: 1, words: i % 2 == 0 ? 9 : 5  // one star per page
+            )
+        }
     }
 
     /// Pulls this device's stars back from the Milo server (after a reinstall) and keeps any it lacks.

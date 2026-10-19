@@ -10,6 +10,8 @@ import Foundation
 /// `-demoShelf paris-french` scrolls the shelf to that book's cover (without opening it);
 /// `-demoShelf grown-ups` scrolls to the Grown-ups button at the bottom.
 /// `-demoCoins 2` seeds that many coins (made from 10 stars each, so they come off `-demoStars`).
+/// `-demoCalendar` opens the Passport at its star calendar (with 60 stars over the last few weeks
+/// unless `-demoStars` says otherwise).
 /// `-demoGate` opens the grown-ups gate; `-demoParent` opens the grown-ups corner without it.
 struct DemoLaunch: Equatable {
     var bookId: String?
@@ -26,6 +28,7 @@ struct DemoLaunch: Equatable {
     var seedCoins = 0
     var openGate = false
     var openParent = false
+    var showCalendar = false
 
     var startsWithVoice: Bool { voiceActivity != nil || liveVoice }
 
@@ -54,6 +57,12 @@ struct DemoLaunch: Equatable {
         if let coins = value(after: "-demoCoins").flatMap(Int.init) { demo.seedCoins = max(0, coins); found = true }
         if arguments.contains("-demoGate") { demo.openGate = true; found = true }
         if arguments.contains("-demoParent") { demo.openParent = true; found = true }
+        if arguments.contains("-demoCalendar") {
+            demo.showCalendar = true
+            demo.openPassport = true
+            if demo.seedStars == 0 { demo.seedStars = 60 }
+            found = true
+        }
         if let voice = value(after: "-demoVoice") {
             if voice == "star" {
                 demo.voiceActivity = .listening
