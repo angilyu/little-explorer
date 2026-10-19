@@ -280,6 +280,12 @@ for a star in every book of a city (e.g. Paris Expert). Stars earned before the 
 (`kind` `question`); new ones are `answer`, and the badges count both. The last page of each book shows the
 stars from that book. `tools/devices.py` lists stars per device. Pipeline mode gives stars too, but Milo doesn't announce them.
 
+The Passport ends with **My star calendar**: a month grid with a gold star and the count on each day he earned
+stars, today outlined, and the month's total ("33 stars in October"). The arrows or a sideways swipe go back to
+earlier months (as far as his first star). Days use each award's `awarded_at` in the device's time zone, so a
+reinstall restores them from the server, and turning stars into coins never changes a day. An award without a
+readable time is left off the calendar with a short note. VoiceOver reads each day, e.g. "October 18, today, 3 stars".
+
 ### Coins
 
 A grown-up can turn stars into coins (10 stars = 1 coin by default) in the Grown-ups corner, behind the parent
@@ -397,7 +403,8 @@ scripts/screenshots.sh <iphone-udid> <ipad-udid>   # regenerates docs/screenshot
 ```
 
 DEBUG builds accept launch arguments for screenshots: `-demoBook paris-food -demoPage 4 -demoLove`,
-`-demoVoice listening|live|nap|rest|star`, `-demoRead`, `-demoStars 23`, `-demoPassport`, `-demoCoins 2`,
+`-demoVoice listening|live|nap|rest|star`, `-demoRead`, `-demoStars 23`, `-demoPassport`, `-demoCalendar`
+(the Passport's star calendar, with stars spread over the last few weeks), `-demoCoins 2`,
 `-demoGate` (the parent gate) and `-demoParent` (the Grown-ups corner). `-demoShelf grown-ups` scrolls to the
 Grown-ups button.
 

@@ -107,10 +107,10 @@ final class StarDaysTests: XCTestCase {
     }
 
     func testCalendarLaunchArgumentOpensThePassportWithStars() {
-        let demo = DemoLaunch.parse(["app", "-demoCalendar", "week"])
-        XCTAssertEqual(demo?.calendarLayout, .week)
+        let demo = DemoLaunch.parse(["app", "-demoCalendar"])
+        XCTAssertEqual(demo?.showCalendar, true)
         XCTAssertEqual(demo?.openPassport, true)
         XCTAssertEqual(demo?.seedStars, 60)
-        XCTAssertNil(DemoLaunch.parse(["app", "-demoCalendar", "year"]))
+        XCTAssertEqual(DemoLaunch.parse(["app", "-demoStars", "5", "-demoCalendar"])?.seedStars, 5)
     }
 }

@@ -1,21 +1,14 @@
 import SwiftUI
 
-/// The last Passport section: how many stars he earned on each day (device time zone).
+/// The last Passport section: a month calendar of how many stars he earned on each day (device
+/// time zone), with the month's total; arrows or a sideways swipe go to earlier months.
 struct StarCalendarView: View {
-    enum Layout: String, CaseIterable {
-        case month, week
-    }
-
     let days: StarDays
-    var layout: Layout = .month
     let regular: Bool
 
     var body: some View {
         VStack(alignment: .leading, spacing: regular ? 14 : 10) {
-            switch layout {
-            case .month: StarMonthGrid(days: days, regular: regular)
-            case .week: StarWeekStrip(days: days, regular: regular)
-            }
+            StarMonthGrid(days: days, regular: regular)
             if days.datedStars == 0 && days.undatedStars == 0 {
                 note("Answer Milo's questions and your stars will show up here!")
             }
@@ -37,8 +30,6 @@ struct StarCalendarView: View {
             .multilineTextAlignment(.center)
     }
 }
-
-// MARK: - Shared pieces
 
 private enum CalendarText {
     static func string(_ date: Date, template: String, calendar: Calendar) -> String {
@@ -149,8 +140,6 @@ private extension View {
         )
     }
 }
-
-// MARK: - Month grid
 
 private struct StarMonthGrid: View {
     let days: StarDays
@@ -274,113 +263,5 @@ private struct MonthDayCell: View {
         .opacity(isFuture ? 0.4 : 1)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(label)
-    }
-}
-
-// MARK: - Week strip
-
-/// The last 7 days ending today; arrows step back a week at a time.
-private struct StarWeekStrip: View {
-    let days: StarDays
-    let regular: Bool
-
-    @State private var weeksBack = 0
-    @State private var forward = true
-
-    private static let maxDrawn = 5
-
-    private var calendar: Calendar { days.calendar }
-    private var today: Date { calendar.startOfDay(for: Date()) }
-    private var shown: Date { calendar.date(byAdding: .day, value: -6 - 7 * weeksBack, to: today) ?? today }
-    private var canGoBack: Bool {
-        guard let first = days.firstDate else { return false }
-        return calendar.startOfDay(for: first) < shown
-    }
-
-    var body: some View {
-        VStack(spacing: regular ? 14 : 10) {
-            PagerHeader(
-                title: title, canGoBack: canGoBack, canGoForward: weeksBack > 0,
-                backLabel: "Previous week", forwardLabel: "Next week", regular: regular, move: move
-            )
-            TotalPill(text: "\(CalendarText.stars(weekTotal)) in 7 days", regular: regular)
-            strip
-                .id(weeksBack)
-                .transition(.push(from: forward ? .trailing : .leading))
-        }
-        .padding(regular ? 22 : 12)
-        .background(RoundedRectangle(cornerRadius: 24, style: .continuous).fill(.white))
-        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-        .contentShape(Rectangle())
-        .pageSwipe(move)
-    }
-
-    private var weekTotal: Int {
-        days.stars(from: shown, to: calendar.date(byAdding: .day, value: 7, to: shown) ?? shown)
-    }
-
-    private var title: String {
-        let end = calendar.date(byAdding: .day, value: 6, to: shown) ?? shown
-        return "\(CalendarText.string(shown, template: "MMMd", calendar: calendar)) – \(CalendarText.string(end, template: "MMMd", calendar: calendar))"
-    }
-
-    private func move(_ step: Int) {
-        guard step < 0 ? canGoBack : weeksBack > 0 else { return }
-        forward = step > 0
-        withAnimation(.easeInOut(duration: 0.3)) { weeksBack -= step }
-    }
-
-    private var strip: some View {
-        let today = days.day(of: Date())
-        return HStack(alignment: .bottom, spacing: regular ? 10 : 5) {
-            ForEach(0..<7, id: \.self) { offset in
-                let date = calendar.date(byAdding: .day, value: offset, to: shown) ?? shown
-                let key = days.day(of: date)
-                let stars = days.counts[key] ?? 0
-                column(date: date, stars: stars, isToday: key == today, isFuture: key > today)
-            }
-        }
-    }
-
-    private func column(date: Date, stars: Int, isToday: Bool, isFuture: Bool) -> some View {
-        let starSize: CGFloat = regular ? 30 : 20
-        return VStack(spacing: regular ? 4 : 2) {
-            Text(stars > 0 ? "\(stars)" : " ")
-                .font(.system(size: regular ? 24 : 18, weight: .black, design: .rounded))
-                .foregroundStyle(Theme.ink)
-            ForEach(0..<min(stars, Self.maxDrawn), id: \.self) { _ in
-                Image(systemName: "star.fill")
-                    .font(.system(size: starSize, weight: .bold))
-                    .foregroundStyle(Color.starGold)
-            }
-            if stars > Self.maxDrawn {
-                Image(systemName: "plus")
-                    .font(.system(size: starSize * 0.6, weight: .heavy))
-                    .foregroundStyle(Color.orange)
-            }
-            Text(isToday ? "Today" : CalendarText.string(date, template: "EEE", calendar: calendar))
-                .font(.system(size: regular ? 16 : 12, weight: .heavy, design: .rounded))
-                .foregroundStyle(isToday ? Color.orange : Theme.ink.opacity(0.6))
-                .lineLimit(1)
-                .minimumScaleFactor(0.6)
-            Text("\(calendar.component(.day, from: date))")
-                .font(.system(size: regular ? 22 : 17, weight: .black, design: .rounded))
-                .foregroundStyle(isToday ? Color.white : Theme.ink)
-                .padding(.horizontal, 6)
-                .background(Capsule().fill(isToday ? Color.orange : .clear))
-        }
-        .padding(.vertical, regular ? 10 : 8)
-        .frame(maxWidth: .infinity, minHeight: regular ? 300 : 210, alignment: .bottom)
-        .background(
-            RoundedRectangle(cornerRadius: regular ? 16 : 12, style: .continuous)
-                .fill(stars > 0 ? Color.starGold.opacity(0.16) : Theme.sky.opacity(0.35))
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: regular ? 16 : 12, style: .continuous)
-                .strokeBorder(isToday ? Color.orange : .clear, lineWidth: 3)
-        )
-        .opacity(isFuture ? 0.4 : 1)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(CalendarText.dayLabel(date, stars: stars, isToday: isToday, calendar: calendar))
     }
 }

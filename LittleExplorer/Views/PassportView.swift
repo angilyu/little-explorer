@@ -13,14 +13,6 @@ struct PassportView: View {
     private var regular: Bool { sizeClass == .regular }
     private static let calendarAnchor = "star-calendar"
 
-    private var calendarLayout: StarCalendarView.Layout {
-        #if DEBUG
-        DemoLaunch.current?.calendarLayout ?? .month
-        #else
-        .month
-        #endif
-    }
-
     var body: some View {
         NavigationStack {
             ScrollViewReader { proxy in
@@ -37,12 +29,12 @@ struct PassportView: View {
                         }
                         sectionTitle("My star calendar")
                             .id(Self.calendarAnchor)
-                        StarCalendarView(days: stars.days(), layout: calendarLayout, regular: regular)
+                        StarCalendarView(days: stars.days(), regular: regular)
                     }
                     .padding(regular ? 32 : 18)
                 }
                 .task {
-                    guard DemoLaunch.current?.calendarLayout != nil else { return }
+                    guard DemoLaunch.current?.showCalendar == true else { return }
                     try? await Task.sleep(for: .milliseconds(700))
                     proxy.scrollTo(Self.calendarAnchor, anchor: .top)
                 }
