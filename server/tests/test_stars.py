@@ -122,6 +122,19 @@ def test_milos_question_can_be_anywhere_in_his_reply(keeper, clock):
     assert isinstance(keeper.judge(), StarAward)
 
 
+NUDGE = "Ooh, the boats! Can you tell me more? You could say, I would ride the boat because..."
+
+
+def test_finishing_milos_sentence_start_earns_a_star(keeper, clock):
+    hear(keeper, "boats", clock=clock)
+    assert keeper.judge() == "answer too short"
+    hear(keeper, "I would ride the boat because it goes fast", clock=clock, milo=NUDGE)
+    award = keeper.judge()
+    assert isinstance(award, StarAward) and award.why_how
+    hear(keeper, "the big one", clock=clock, milo=NUDGE)
+    assert keeper.judge() == "answer too short"
+
+
 def test_reading_the_page_aloud_earns_nothing(keeper, clock):
     page = {**PAGE, "page_text": "The Eiffel Tower is tall and brown and stands next to the river."}
     hear(keeper, "The Eiffel Tower is tall and brown and stands next to the river", context=page, clock=clock)
@@ -333,6 +346,11 @@ def test_status_line_and_instructions(keeper, clock):
     text = realtime_instructions(PAGE, stars=keeper.status_line(PAGE))
     assert STAR_RULES in text and "Great answer, that's a star!" in text and "up to five stars" in text
     assert "Great question" not in text
+    assert "fewer than 5 words" in text and "at most once per question" in text and "never sound like a correction" in text
+    full = realtime_instructions(OTHER_PAGE, stars="Stars right now: this page's stars are all taken for today.")
+    assert "fewer than 5 words" in full  # he is still invited to say more once the stars are taken
+    assert "fewer than 5 words" in realtime_instructions(PAGE)  # and with the star game off
+    assert "fewer than 4 words" in realtime_instructions(PAGE, min_words=4)
     assert "that's a star" not in realtime_instructions(PAGE)
 
 

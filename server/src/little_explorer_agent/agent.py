@@ -349,9 +349,12 @@ def realtime_config(env: Mapping[str, str] | None = None) -> RealtimeConfig:
 
 
 ANSWER_MAX_WORDS = 12
+
+
 def _milo_just_asked(turn: UserTurn) -> bool:
     last = turn.history[-1] if turn.history else None
-    return last is not None and last[0] == "assistant" and last[1].rstrip().endswith("?")
+    # Anywhere in the reply: an invitation to say more ends with a sentence start, not the "?".
+    return last is not None and last[0] == "assistant" and "?" in last[1]
 
 
 def make_realtime_guard(tracker: ReadingTracker, topic_gate: TopicGate | None) -> TopicGate:
@@ -408,7 +411,7 @@ async def _realtime(ctx: JobContext, game: StarGame, timer: TurnTimer, greeting:
 
     def instructions(context: Mapping[str, Any]) -> str:
         stars = game.keeper.status_line(context) if game.enabled else None
-        return realtime_instructions(context, stars=stars)
+        return realtime_instructions(context, stars=stars, min_words=game.keeper.rules.min_words)
 
     session = await start_realtime_session(
         ctx,

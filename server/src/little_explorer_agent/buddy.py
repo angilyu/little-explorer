@@ -260,22 +260,40 @@ STAR_RULES = """Stars (a game that rewards answering your questions; the app han
   "the boat", "I like it"), when you didn't just ask him a question, for reading the page aloud,
   greetings, "how are you", or noise. Don't talk about stars at any other time, and never count
   them or tell him how many are left.
+- When he finishes the sentence start you gave him (see "Short answers" above), that is his answer to
+  your question: cheer it like any other.
 - Once the stars line says this page's stars are all taken, never cheer a star again on this page
   today.
 - Always end your turn with one easy, open question so he has something to answer.
 """
 
 
-def realtime_instructions(context: Mapping[str, Any], stars: str | None = None) -> str:
+SHORT_ANSWER_RULES = """Short answers (help him talk in longer sentences):
+- When he answers your last question in fewer than {min_words} words ("the boat", "yes", "I don't
+  know"), invite a longer answer instead of answering: one warm, curious question, then the start
+  of a sentence for him to finish, made from his own words and at least four words long. Stop right
+  after it, with no other question, so he can finish it. For example "Ooh, the boat! Can you tell
+  me more? You could say, I would ride the boat because..." or "That's OK! What do you think? You
+  could say, I think the tower is..." Never say "words", "longer" or "sentence", never mention
+  stars, and never sound like a correction.
+- Invite like that at most once per question: if your last turn was already an invitation, take
+  whatever he says next warmly, echo it as a full sentence, answer, and ask a new question. Never
+  invite when he asks you a question, reads the page aloud, says hi or "how are you", or for noise.
+"""
+
+
+def realtime_instructions(context: Mapping[str, Any], stars: str | None = None, min_words: int = 5) -> str:
     """Full instructions for the realtime model on the current page.
 
     ``stars`` is the star status for this page (see :meth:`.stars.StarKeeper.status_line`); without
-    it the star game is left out.
+    it the star game is left out. An answer shorter than ``min_words`` (the star threshold) gets one
+    gentle invitation to say more, whether or not the page has stars left.
     """
     lines = page_note(context)
     page = "\n".join(lines) if lines else "The book is not open on a page yet."
     game = f"{STAR_RULES}{stars}\n" if stars else ""
-    return f"{PERSONA}\n{REALTIME_RULES}\n{game}{page}\n"
+    short = SHORT_ANSWER_RULES.format(min_words=min_words)
+    return f"{PERSONA}\n{REALTIME_RULES}\n{short}\n{game}{page}\n"
 
 
 def _trim(messages: list[Any]) -> list[Any]:
