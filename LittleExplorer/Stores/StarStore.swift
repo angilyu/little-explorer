@@ -94,7 +94,7 @@ final class StarStore {
     @ObservationIgnored var onCelebrate: (() -> Void)?
 
     static let curiousCatGoal = 10
-    /// Only a page's first answer earns a star (and an award), so long ones are rarer than before.
+    /// Every answer of 5+ words earns a star (up to 5 per page); 8+ words also counts as long.
     static let bigTalkerGoal = 3
 
     init(defaults: UserDefaults = .standard, key: String = "starAwards.v1") {
@@ -213,7 +213,7 @@ extension StarStore {
             return StarAward(
                 id: "demo-\(i)", awardedAt: formatter.string(from: date), book: book.id,
                 page: book.pages[i % book.pages.count].id, city: book.city, long: i % 2 == 0,
-                whyHow: i % 3 == 0, stars: 1, words: i % 2 == 0 ? 9 : 5  // one star per page
+                whyHow: i % 3 == 0, stars: 1, words: i % 2 == 0 ? 9 : 5  // one star per award
             )
         }
     }

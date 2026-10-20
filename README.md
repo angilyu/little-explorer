@@ -249,22 +249,29 @@ device, set its address in the Grown-ups corner (e.g. `http://<your-mac>.local:8
 
 ### Stars and the Passport
 
-He earns stars for answering Milo, not for talking a lot: one star per page. Milo ends his replies with one
-easy, open question, and he earns the page's star by answering it in a whole sentence of his own. Asking
-Milo a question doesn't earn a star (Milo still answers it). When that page's star is still waiting and he
-answers Milo's question that way, Milo's reply starts with "Great answer, that's a star!" and the rest follows
-right away; once the page has its star he doesn't mention stars there. The agent (`stars.py`) checks every award
-before it counts, using the input transcription and what Milo said last; nothing the model says can hand out a
-star:
+He earns stars for answering Milo, not for talking a lot: up to 5 stars on each page each day. Milo ends his
+replies with one easy, open question, and each answer of 5 words or more earns a star until the page has 5
+for the day. Asking Milo a question doesn't earn a star (Milo still answers it). The first star on a page starts Milo's reply with
+"Great answer, that's a star!"; later ones get a short, varied cheer ("Another star!", "Ooh, star!") and the
+rest follows right away. Milo never counts stars or says how many are left, and once a page has all 5 for
+the day he doesn't mention stars there. The agent (`stars.py`) checks every award before it counts, using the input
+transcription and what Milo said last; nothing the model says can hand out a star:
 
-- 1 star for the first real answer on a page: Milo's last reply asked a question, and the answer has at least
-  6 words (`PIP_STAR_MIN_WORDS`). Reading the page aloud, a question of his own, "hi Milo" or other small talk,
-  grown-ups or noise earn nothing. Later answers on that page earn nothing; the next page has its own star.
+- 1 star per real answer: Milo's last reply asked a question, and the answer has at least 5 words
+  (`PIP_STAR_MIN_WORDS`). Reading the page aloud, a question of his own, "hi Milo" or other small talk,
+  grown-ups or noise earn nothing. Each star needs a new question from Milo and a new answer.
+- The 5 per page count across every session on that device that day, so reconnecting doesn't start a page
+  over, but his favorite books earn again tomorrow. The day is his local day: the app sends its time zone
+  (`"tz"`) with `/token`, the agent stamps each award's `awarded_at` in it (older apps fall back to
+  `PIP_TIMEZONE`), and a star's day is the date in its own `awarded_at`, the same day the star calendar
+  shows. When a session starts, the agent loads the device's earlier stars per page and day from
+  `GET /stars` (report key) in the background, off the voice path; if that fails it counts this session only.
 - Long (8+ words, `PIP_STAR_LONG_WORDS`) answers and ones that explain with "because" are noted for the badges
-  but earn no extra stars. `PIP_STAR_COOLDOWN_S` can add a pause between stars (off by default).
-- The token server enforces the same rule, so an older agent can't go over it: `POST /stars` stores at most one
-  award per device, session, book and page, and counts each award as 1 star. Stars stored before the rule are
-  kept as they were.
+  but earn no extra stars. `PIP_STAR_COOLDOWN_S` can add a pause between stars (off by default: turn-taking
+  already paces them, and a cooldown could make Milo cheer for a star that is then refused).
+- The token server enforces the same limit, so an older agent can't go over it: `POST /stars` refuses an award
+  once the device already has 5 stars on that book and page that day (across all sessions), and counts each
+  award as 1 star. Pages that already had more stars from before the rule keep them.
 - There is no model tool, so the game never delays Milo's reply (a tool call made gpt-realtime answer in a
   second response). The star is checked off the voice path once Milo starts replying. `PIP_STARS=0` turns the
   game off on the agent.
@@ -272,13 +279,14 @@ star:
 Checked awards go to the app on the `milo.star` data topic (a star flies into the counter by the Milo switch
 with a soft chime) and to the token server (`POST /stars`, report key), which keeps them in the database by
 device id. The app saves them locally and, on launch, merges back the server's copy (`GET /stars?device=<id>`,
-access key), so stars survive a reinstall. Only counts, kinds, book, page and time are stored, never what he said.
+access key, or the report key for the agent), so stars survive a reinstall. Only counts, kinds, book, page and time are stored, never what he said.
 
 The library's top corner shows his total; tapping it opens the Passport: a stamp for each city where he has
 earned a star (not the Travel shelf), plus Curious Cat (10 stars), Big Talker (3 long answers) and an Expert badge
 for a star in every book of a city (e.g. Paris Expert). Stars earned before the answer rule were for questions
 (`kind` `question`); new ones are `answer`, and the badges count both. The last page of each book shows the
-stars from that book. `tools/devices.py` lists stars per device. Pipeline mode gives stars too, but Milo doesn't announce them.
+stars from that book, and each book's cover in the library shows a gold star with the number earned in that
+book (hidden until it has one; VoiceOver reads e.g. "Famous Places, 7 stars, 1 loved page"). `tools/devices.py` lists stars per device. Pipeline mode gives stars too, but Milo doesn't announce them.
 
 The Passport ends with **My star calendar**: a month grid with a gold star and the count on each day he earned
 stars, today outlined, and the month's total ("33 stars in October"). The arrows or a sideways swipe go back to

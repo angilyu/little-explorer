@@ -48,9 +48,18 @@ from .buddy import (  # noqa: E402
     realtime_instructions,
 )
 from .content import BOOK_KEY, PAGE_KEY, refresh_remote  # noqa: E402
-from .modes import app_plays_intro, parse_job_metadata, resolve_mode  # noqa: E402
+from .modes import app_plays_intro, parse_job_metadata, parse_tz, resolve_mode  # noqa: E402
 from .speech import speech_setup  # noqa: E402
-from .stars import STAR_TOPIC, StarAward, StarKeeper, StarRules, report_star, star_payload  # noqa: E402
+from .stars import (  # noqa: E402
+    STAR_TOPIC,
+    StarAward,
+    StarKeeper,
+    StarRules,
+    device_clock,
+    fetch_page_stars,
+    report_star,
+    star_payload,
+)
 from .usage import UsageMeter, report_usage  # noqa: E402
 from .voice import ContextStore, TurnDecision, UserTurn, VoicePreset, preset_from_env  # noqa: E402
 from .voice.turns import is_noise  # noqa: E402
@@ -190,12 +199,14 @@ class StarGame:
         keeper: StarKeeper,
         *,
         report: Callable[[StarAward], Awaitable[bool]] = report_star,
+        earlier: Callable[[str], Awaitable[dict[tuple[str, str, str], int] | None]] = fetch_page_stars,
         enabled: bool = True,
         answer_wait_s: float = 6.0,
     ) -> None:
         self.ctx = ctx
         self.keeper = keeper
         self.report = report
+        self.earlier = earlier
         self.refresh: Callable[[], None] | None = None
         self.enabled = enabled
         self.answer_wait_s = answer_wait_s
@@ -208,6 +219,22 @@ class StarGame:
         self._tasks.add(task)
         task.add_done_callback(self._tasks.discard)
         return task
+
+    def load_earlier(self) -> None:
+        """Read the stars he already has on each page (off the voice path), so the 5-per-page daily
+        limit counts earlier sessions that day too. Until it arrives (or if it can't be read) only this session's
+        stars count here; the token server still refuses a page's sixth star."""
+        if self.enabled and self.keeper.device_id:
+            self._spawn(self._load_earlier())
+
+    async def _load_earlier(self) -> None:
+        counts = await self.earlier(self.keeper.device_id)
+        if counts is None:
+            return
+        self.keeper.earlier = counts
+        log.info("earlier stars: %d on %d pages", sum(counts.values()), len(counts))
+        if self.refresh is not None:
+            self.refresh()
 
     def on_decision(self, turn: UserTurn, decision: TurnDecision) -> None:
         _log_decision(turn, decision)
@@ -447,10 +474,16 @@ async def entrypoint(ctx: JobContext) -> None:
     await refresh_remote()
     game = StarGame(
         ctx,
-        StarKeeper(device_id=device_id, room=ctx.job.room.name, rules=StarRules.from_env()),
+        StarKeeper(
+            device_id=device_id,
+            room=ctx.job.room.name,
+            rules=StarRules.from_env(),
+            wall=device_clock(parse_tz(meta.get("tz"))),
+        ),
         enabled=os.environ.get("PIP_STARS", "1").strip() != "0",
     )
     ctx.add_shutdown_callback(game.drain)
+    game.load_earlier()
     if not await participant_joined(ctx):
         meter.ended_reason = "nobody joined"
         ctx.shutdown(reason="nobody joined")

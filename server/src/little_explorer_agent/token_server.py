@@ -13,11 +13,14 @@ The app also sends ``"device": {"id", "name", "model"}``. Each device has a dail
 :mod:`.devices`): a blocked device gets ``403 {"error": "blocked"}``, one that has used up today
 gets ``429 {"error": "limit"}``, both with a kid-friendly ``message``. Otherwise the participant
 identity is ``device-<id>`` and the agent learns the device and its remaining seconds through the
-dispatch metadata. Requests without a device count as the shared ``anonymous`` device.
+dispatch metadata. Requests without a device count as the shared ``anonymous`` device. The app
+also sends ``"tz"`` (its IANA time zone), which the agent uses to count stars per local day.
 
 Stars (see :mod:`.stars`): the agent backs each award up with ``POST /stars`` (report key), and
 the app restores them after a reinstall with ``GET /stars?device=<id>`` (access key), which
-returns ``{"stars": [...], "total": N}``. Awards carry counts and labels only, never transcripts.
+returns ``{"stars": [...], "total": N}``. The agent reads the same list (report key) when a session
+starts, to keep the 5-stars-per-page daily limit across sessions. Awards carry counts and labels only,
+never transcripts.
 
 ``POST /usage`` (``Authorization: Bearer $PIP_REPORT_KEY``) is how the agent reports each finished
 session. ``/admin/...`` (``Authorization: Bearer $PIP_ADMIN_KEY``) is for the owner, usually via
@@ -49,7 +52,7 @@ from .coins import CoinError, CoinLedger
 from .config import load_env
 from .content import BOOK_KEY, CITY_KEY, PAGE_KEY, PAGE_NUMBER_KEY, PAGE_TEXT_KEY
 from .devices import ANONYMOUS, REST_MESSAGE, STATUSES, Decision, DeviceStore, valid_device_id
-from .modes import PipMode, job_metadata, parse_intro, parse_mode
+from .modes import PipMode, job_metadata, parse_intro, parse_mode, parse_tz
 
 log = logging.getLogger("little_explorer.tokens")
 
@@ -133,7 +136,9 @@ async def handle_token(request: web.Request) -> web.Response:
         payload = credentials(
             identity,
             clean_context(body.get("context")),
-            metadata=job_metadata(mode, device_id, decision.remaining_s, parse_intro(body.get("intro"))),
+            metadata=job_metadata(
+                mode, device_id, decision.remaining_s, parse_intro(body.get("intro")), parse_tz(body.get("tz"))
+            ),
         )
     except RuntimeError as exc:
         log.error("%s", exc)
@@ -198,7 +203,8 @@ async def handle_star_report(request: web.Request) -> web.Response:
 
 
 async def handle_stars(request: web.Request) -> web.Response:
-    if not authorized(request, request.app[ACCESS_KEY]):
+    # The app restores its stars with the access key; Milo reads the per-page counts with the report key.
+    if not (authorized(request, request.app[ACCESS_KEY]) or authorized(request, request.app[REPORT_KEY], required=True)):
         return web.json_response({"error": "unauthorized"}, status=401)
     device_id = request.query.get("device", "")
     if not valid_device_id(device_id):

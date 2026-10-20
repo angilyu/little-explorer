@@ -29,6 +29,8 @@ struct TokenRequest: Encodable {
     var device: DeviceInfo? = nil
     /// "app" when the app plays Milo's recorded hello itself, so the agent doesn't greet again.
     var intro: String? = nil
+    /// The device's time zone (e.g. "America/Los_Angeles"): stars count up to 5 per page per local day.
+    var tz: String? = nil
 }
 
 struct VoiceCredentials: Decodable, Equatable {
@@ -55,7 +57,8 @@ struct TokenService {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         if let accessKey { request.setValue("Bearer \(accessKey)", forHTTPHeaderField: "Authorization") }
         request.httpBody = try JSONEncoder().encode(TokenRequest(
-            context: context?.attributes, device: device, intro: appPlaysIntro ? "app" : nil
+            context: context?.attributes, device: device, intro: appPlaysIntro ? "app" : nil,
+            tz: TimeZone.current.identifier
         ))
         let (data, response) = try await session.data(for: request)
         let status = (response as? HTTPURLResponse)?.statusCode ?? 0
