@@ -101,10 +101,16 @@ struct LibraryView: View {
         Button {
             openBook = OpenBook(book: book)
         } label: {
-            BookCoverView(book: book, lovedCount: hearts.lovedCount(bookId: book.id), regular: regular)
+            BookCoverView(
+                book: book, lovedCount: hearts.lovedCount(bookId: book.id), starCount: stars.stars(inBook: book.id),
+                regular: regular
+            )
         }
         .buttonStyle(.plain)
         .accessibilityLabel(book.openLabel)
+        .accessibilityValue(
+            BookCoverView.accessibilityValue(starCount: stars.stars(inBook: book.id), lovedCount: hearts.lovedCount(bookId: book.id))
+        )
         .id(book.id)
     }
 
@@ -210,7 +216,17 @@ struct CityHeader: View {
 struct BookCoverView: View {
     let book: Book
     let lovedCount: Int
+    /// Every star he has earned in this book (coins don't take them away). Hidden at 0.
+    var starCount = 0
     var regular = true
+
+    /// What VoiceOver adds after "Open the Paris book", e.g. "7 stars, 2 loved pages".
+    static func accessibilityValue(starCount: Int, lovedCount: Int) -> String {
+        var parts: [String] = []
+        if starCount > 0 { parts.append(starCount == 1 ? "1 star" : "\(starCount) stars") }
+        if lovedCount > 0 { parts.append(lovedCount == 1 ? "1 loved page" : "\(lovedCount) loved pages") }
+        return parts.joined(separator: ", ")
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -219,16 +235,33 @@ struct BookCoverView: View {
                 .frame(maxWidth: .infinity)
                 .clipped()
                 .overlay(alignment: .topTrailing) {
-                    if lovedCount > 0 {
-                        Label("\(lovedCount)", systemImage: "heart.fill")
-                            .font(.system(size: regular ? 20 : 15, weight: .bold, design: .rounded))
-                            .foregroundStyle(.white)
+                    HStack(spacing: regular ? 8 : 5) {
+                        if starCount > 0 {
+                            HStack(spacing: regular ? 5 : 3) {
+                                Image(systemName: "star.fill")
+                                    .foregroundStyle(Color.starGold)
+                                Text("\(starCount)")
+                                    .foregroundStyle(Theme.ink)
+                            }
+                            .font(.system(size: regular ? 20 : 15, weight: .heavy, design: .rounded))
                             .padding(.horizontal, regular ? 12 : 8)
                             .padding(.vertical, regular ? 6 : 4)
-                            .background(Capsule().fill(Color.red))
-                            .padding(regular ? 12 : 8)
-                            .accessibilityLabel("\(lovedCount) loved pages")
+                            .background(Capsule().fill(.white))
+                            .shadow(color: .black.opacity(0.15), radius: 3, x: 0, y: 1)
+                        }
+                        if lovedCount > 0 {
+                            Label("\(lovedCount)", systemImage: "heart.fill")
+                                .font(.system(size: regular ? 20 : 15, weight: .bold, design: .rounded))
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, regular ? 12 : 8)
+                                .padding(.vertical, regular ? 6 : 4)
+                                .background(Capsule().fill(Color.red))
+                        }
                     }
+                    .lineLimit(1)
+                    .fixedSize()
+                    .padding(regular ? 12 : 8)
+                    .accessibilityHidden(true)
                 }
             VStack(alignment: .leading, spacing: 4) {
                 Text(book.coverTitle)

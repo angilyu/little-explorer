@@ -134,7 +134,16 @@ final class StarStoreTests: XCTestCase {
     func testDemoAwardsAddUpToTheAskedTotal() throws {
         let awards = StarStore.demoAwards(total: 23, shelves: try shelves())
         XCTAssertEqual(awards.reduce(0) { $0 + $1.stars }, 23)
-        XCTAssertTrue(awards.allSatisfy { $0.stars == 1 }, "one star per page")
+        XCTAssertTrue(awards.allSatisfy { $0.stars == 1 }, "one star per award")
         XCTAssertEqual(Set(awards.map(\.id)).count, awards.count)
+        let perPage = Dictionary(grouping: awards) { "\($0.book)/\($0.page)" }.mapValues(\.count)
+        XCTAssertLessThanOrEqual(perPage.values.max() ?? 0, 5, "at most 5 stars per page")
+    }
+
+    func testBookCoverReadsItsStarsAndHearts() {
+        XCTAssertEqual(BookCoverView.accessibilityValue(starCount: 0, lovedCount: 0), "")
+        XCTAssertEqual(BookCoverView.accessibilityValue(starCount: 1, lovedCount: 0), "1 star")
+        XCTAssertEqual(BookCoverView.accessibilityValue(starCount: 7, lovedCount: 1), "7 stars, 1 loved page")
+        XCTAssertEqual(BookCoverView.accessibilityValue(starCount: 0, lovedCount: 3), "3 loved pages")
     }
 }

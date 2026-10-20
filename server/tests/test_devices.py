@@ -191,6 +191,20 @@ async def test_token_uses_the_device_as_identity_and_passes_the_allowance(client
     assert meta == {"device_id": DEVICE["id"], "remaining_s": 600.0}
 
 
+async def test_token_passes_the_device_time_zone(client):
+    for body, tz in (
+        ({"tz": "America/New_York"}, "America/New_York"),
+        ({"tz": "Mars/Olympus"}, None),
+        ({"tz": "../etc/passwd"}, None),
+        ({"tz": 7}, None),
+        ({}, None),
+    ):
+        resp = await client.post("/token", json={"device": DEVICE, **body})
+        assert resp.status == 200
+        meta = parse_job_metadata(claims((await resp.json())["participantToken"])["roomConfig"]["agents"][0]["metadata"])
+        assert meta.get("tz") == tz
+
+
 async def test_token_tells_the_agent_when_the_app_plays_the_intro(client):
     for body, intro in (({"intro": "app"}, "app"), ({"intro": "nonsense"}, None), ({}, None)):
         resp = await client.post("/token", json={"device": DEVICE, **body})
@@ -288,6 +302,7 @@ def test_job_metadata_round_trip():
     meta = parse_job_metadata(job_metadata("realtime", "ipad-1", 123.456))
     assert meta == {"pip_mode": "realtime", "device_id": "ipad-1", "remaining_s": 123.5}
     assert parse_job_metadata(job_metadata(intro="app")) == {"intro": "app"}
+    assert parse_job_metadata(job_metadata(tz="Europe/Paris")) == {"tz": "Europe/Paris"}
     assert agent_mod.remaining_seconds(meta) == 123.5
     assert agent_mod.remaining_seconds({}) is None
     assert agent_mod.remaining_seconds({"remaining_s": "lots"}) is None

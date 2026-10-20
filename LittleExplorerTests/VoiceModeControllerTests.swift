@@ -553,6 +553,14 @@ final class TokenServiceRefusalTests: XCTestCase {
         XCTAssertNil(json["intro"], "older behaviour: the agent greets")
     }
 
+    func testRequestSendsTheTimeZoneForDailyStars() async throws {
+        StubProtocol.status = 429
+        _ = try? await service().fetchCredentials(context: nil)
+        let body = try XCTUnwrap(StubProtocol.lastBody)
+        let json = try XCTUnwrap(JSONSerialization.jsonObject(with: body) as? [String: Any])
+        XCTAssertEqual(json["tz"] as? String, TimeZone.current.identifier)
+    }
+
     func testRequestTellsTheServerTheAppPlaysTheIntro() async throws {
         StubProtocol.status = 429
         _ = try? await service().fetchCredentials(context: nil, appPlaysIntro: true)

@@ -42,14 +42,29 @@ def parse_intro(value: object) -> str | None:
     return INTRO_APP if isinstance(value, str) and value.strip().lower() == INTRO_APP else None
 
 
+def parse_tz(value: object) -> str | None:
+    """The device's IANA time zone (e.g. ``America/Los_Angeles``), or None if missing or unknown."""
+    if not isinstance(value, str) or not value or len(value) > 64 or not value.isascii():
+        return None
+    from zoneinfo import ZoneInfo
+
+    try:
+        ZoneInfo(value)
+    except (ValueError, KeyError, OSError):
+        return None
+    return value
+
+
 def job_metadata(
     mode: PipMode | None = None,
     device_id: str | None = None,
     remaining_s: float | None = None,
     intro: str | None = None,
+    tz: str | None = None,
 ) -> str | None:
     """Dispatch metadata from the token server: the engine, the device, how many seconds it may
-    still talk today (the agent ends the session then) and whether the app plays the intro."""
+    still talk today (the agent ends the session then), whether the app plays the intro and the
+    device's time zone (stars count per page per local day)."""
     data: dict[str, object] = {}
     if mode:
         data["pip_mode"] = mode
@@ -59,6 +74,8 @@ def job_metadata(
         data["remaining_s"] = round(remaining_s, 1)
     if intro:
         data["intro"] = intro
+    if tz:
+        data["tz"] = tz
     return json.dumps(data) if data else None
 
 

@@ -110,8 +110,10 @@ SCHEMA = (
 
 STAR_ID = re.compile(r"^[A-Za-z0-9-]{8,64}$")
 STAR_KINDS = ("question", "follow_up", "answer")
-# One star per page per session (see stars.py); older awards keep what they were given.
+# One star per award, up to 5 per page per device each day (same as stars.py); older awards keep
+# what they were given.
 STARS_PER_AWARD = 1
+STARS_PER_PAGE = 5
 _STAR_COLUMNS = "id, device_id, awarded_at, book, page, city, kind, long, why_how, followup, stars, words, reason"
 
 REST_MESSAGE = "Milo needs a rest today. Let's talk again tomorrow!"
@@ -119,6 +121,17 @@ REST_MESSAGE = "Milo needs a rest today. Let's talk again tomorrow!"
 
 def _text(value: object) -> str:
     return value.strip()[:MAX_TEXT] if isinstance(value, str) else ""
+
+
+def award_day(awarded_at: object) -> str | None:
+    """The local day of an award: the date in its own ``awarded_at`` offset (the agent stamps it in
+    the device's time zone, so this is the day the Passport calendar shows). None if unreadable."""
+    if not isinstance(awarded_at, str) or not awarded_at:
+        return None
+    try:
+        return datetime.fromisoformat(awarded_at.strip()).date().isoformat()
+    except ValueError:
+        return None
 
 
 def valid_device_id(value: object) -> bool:
@@ -400,8 +413,9 @@ class DeviceStore:
     def record_star(self, award: Mapping[str, Any]) -> bool:
         """Store one star award from the agent; True if it was new (the id makes retries safe).
 
-        Any award counts as one star, and a page that already has a star in this session (same
-        device, room, book and page) gets no second one, whatever build of the agent sent it."""
+        Any award counts as one star, and a page that already has :data:`STARS_PER_PAGE` stars on
+        this device that day (any session; the day is :func:`award_day`, the device's local date)
+        gets no more, whatever build of the agent sent it."""
         star_id, device_id = award.get("id"), award.get("device_id") or ANONYMOUS
         if not isinstance(star_id, str) or not STAR_ID.match(star_id) or not valid_device_id(device_id):
             raise ValueError("a valid id and device_id are required")
@@ -429,16 +443,18 @@ class DeviceStore:
             _text(award.get("reason")),
         )
 
-        room, book, page = values[2], values[5], values[6]
+        book, page = values[5], values[6]
 
         def run(cur: Any) -> bool:
             if book and page:
-                taken = self._exec(
+                rows = self._exec(
                     cur,
-                    "SELECT 1 FROM stars WHERE device_id = ? AND room = ? AND book = ? AND page = ? AND id <> ? LIMIT 1",
-                    (device_id, room, book, page, star_id),
-                ).fetchone()
-                if taken:
+                    "SELECT awarded_at, stars FROM stars WHERE device_id = ? AND book = ? AND page = ? AND id <> ?",
+                    (device_id, book, page, star_id),
+                ).fetchall()
+                today = award_day(awarded)
+                on_page = sum(int(n or 0) for at, n in rows if award_day(at) == today)
+                if on_page >= STARS_PER_PAGE:
                     return False
             self._exec(
                 cur,

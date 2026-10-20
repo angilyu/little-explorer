@@ -2,18 +2,22 @@
 
 import asyncio
 import json
+from datetime import datetime, timedelta, timezone
 
 import pytest
 from aiohttp.test_utils import TestClient, TestServer
 
 from little_explorer_agent import agent as agent_mod
 from little_explorer_agent.buddy import STAR_RULES, realtime_instructions
-from little_explorer_agent.devices import DeviceStore, Limits
+from little_explorer_agent.devices import DeviceStore, Limits, award_day
 from little_explorer_agent.stars import (
     StarAward,
     StarKeeper,
     StarRules,
     asks_milo,
+    count_page_stars,
+    device_clock,
+    fetch_page_stars,
     is_small_talk,
     report_star,
     star_payload,
@@ -39,6 +43,19 @@ def clock():
     return Clock()
 
 
+PACIFIC = timezone(timedelta(hours=-7))
+
+
+class Wall:
+    """The device's local time, settable (the keeper's ``wall``)."""
+
+    def __init__(self, text: str = "2026-10-19T15:00:00-07:00") -> None:
+        self.now = datetime.fromisoformat(text)
+
+    def __call__(self) -> datetime:
+        return self.now
+
+
 @pytest.fixture
 def keeper(clock):
     return StarKeeper(device_id="ipad-1", room="room-1", clock=clock)
@@ -62,17 +79,17 @@ def hear(keeper, text, decision=TurnDecision.RESPOND, context=PAGE, clock=None, 
 # --- the rules ---------------------------------------------------------------------------------
 
 
-def test_an_answer_of_six_words_earns_one_star(keeper, clock):
-    hear(keeper, "I would look at the river", clock=clock)
+def test_an_answer_of_five_words_earns_one_star(keeper, clock):
+    hear(keeper, "I would see the river", clock=clock)
     award = keeper.judge("looking at the river")
     assert isinstance(award, StarAward)
     assert (award.stars, award.kind, award.book, award.page, award.city) == (1, "answer", "paris", "eiffel", "Paris")
-    assert (award.long, award.why_how, award.followup, award.words) == (False, False, False, 6)
+    assert (award.long, award.why_how, award.followup, award.words) == (False, False, False, 5)
     assert award.device_id == "ipad-1" and award.reason == "looking at the river"
 
 
-def test_five_words_is_too_short(keeper, clock):
-    hear(keeper, "I would look at boats", clock=clock)
+def test_four_words_is_too_short(keeper, clock):
+    hear(keeper, "I would see boats", clock=clock)
     assert keeper.judge() == "answer too short"
     assert keeper.total() == 0
 
@@ -128,22 +145,92 @@ def test_long_and_because_answers_are_noted_but_still_one_star(keeper, clock, te
     assert award.stars == 1 and (award.long or award.why_how)
 
 
-def test_one_star_per_page(keeper, clock):
-    hear(keeper, "I would look at the tiny cars", clock=clock)
-    assert keeper.judge().stars == 1
+def test_up_to_five_stars_per_page(keeper, clock):
+    for _ in range(5):
+        hear(keeper, "I would look at the tiny cars", clock=clock)
+        assert keeper.judge().stars == 1
     hear(keeper, "I would wave at all the people", clock=clock)
-    assert keeper.judge() == "this page's star is taken"
-    assert keeper.page_stars("paris", "eiffel") == 1
+    assert keeper.judge() == "this page's stars are all taken"
+    assert keeper.page_stars("paris", "eiffel") == 5
     hear(keeper, "I would look at the big paintings", context=OTHER_PAGE, clock=clock)
-    assert keeper.judge().stars == 1  # a new page has its own star
-    assert keeper.total() == 2
+    assert keeper.judge().stars == 1  # a new page has its own stars
+    assert keeper.total() == 6
 
 
-def test_a_page_turn_star_is_not_refused_as_too_soon(keeper, clock):
+def test_stars_from_earlier_sessions_count_toward_the_page_limit(clock):
+    earlier = {
+        ("paris", "eiffel", "2026-10-19"): 4,
+        ("paris", "louvre", "2026-10-19"): 5,
+        ("paris", "eiffel", "2026-10-18"): 5,  # yesterday's stars don't count today
+    }
+    keeper = StarKeeper(clock=clock, wall=Wall(), earlier=earlier)
+    assert keeper.stars_left(PAGE) == 1 and keeper.stars_left(OTHER_PAGE) == 0
+    hear(keeper, ANSWER, clock=clock)
+    assert keeper.judge().stars == 1
+    hear(keeper, ANSWER, clock=clock)
+    assert keeper.judge() == "this page's stars are all taken"
+    hear(keeper, ANSWER, context=OTHER_PAGE, clock=clock)
+    assert keeper.judge() == "this page's stars are all taken"
+    assert keeper.total() == 1  # the session total counts this session's stars only
+
+
+def test_count_page_stars_per_local_day():
+    late, early = "2026-10-19T23:59:00-07:00", "2026-10-20T00:01:00-07:00"
+    awards = [
+        {"book": "paris", "page": "eiffel", "stars": 1, "awarded_at": late},
+        {"book": "paris", "page": "eiffel", "stars": 3, "awarded_at": late},
+        {"book": "paris", "page": "eiffel", "stars": 1, "awarded_at": early},
+        {"book": "paris", "page": "louvre", "stars": 1, "awarded_at": late},
+        {"book": "", "page": "x", "stars": 1, "awarded_at": late},
+        {"book": "paris", "page": "eiffel", "stars": True, "awarded_at": late},
+        {"book": "paris", "page": "eiffel", "stars": 0, "awarded_at": late},
+        {"book": "paris", "page": "eiffel", "stars": 1, "awarded_at": "not a time"},
+        {"book": "paris", "page": "eiffel", "stars": 1},
+    ]
+    assert count_page_stars(awards) == {
+        ("paris", "eiffel", "2026-10-19"): 4,
+        ("paris", "eiffel", "2026-10-20"): 1,
+        ("paris", "louvre", "2026-10-19"): 1,
+    }
+
+
+def test_award_day_is_the_local_date_of_the_award():
+    assert award_day("2026-10-19T23:59:00-07:00") == "2026-10-19"  # 06:59 UTC on the 20th
+    assert award_day("2026-10-20T00:01:00-07:00") == "2026-10-20"
+    assert award_day("2026-10-20T06:59:00Z") == "2026-10-20"
+    assert award_day("") is None and award_day("soon") is None and award_day(None) is None
+
+
+def test_the_page_limit_starts_over_at_local_midnight(clock):
+    wall = Wall("2026-10-19T23:58:00-07:00")
+    keeper = StarKeeper(device_id="ipad-1", clock=clock, wall=wall)
+    for _ in range(5):
+        hear(keeper, ANSWER, clock=clock)
+        assert keeper.judge().awarded_at.startswith("2026-10-19T23:58")
+    wall.now = datetime(2026, 10, 19, 23, 59, tzinfo=PACIFIC)
+    hear(keeper, ANSWER, clock=clock)
+    assert keeper.judge() == "this page's stars are all taken"
+    wall.now = datetime(2026, 10, 20, 0, 1, tzinfo=PACIFIC)
+    assert keeper.stars_left(PAGE) == 5  # a new day in his time zone
+    hear(keeper, ANSWER, clock=clock)
+    assert keeper.judge().awarded_at == "2026-10-20T00:01:00-07:00"
+    assert keeper.total() == 6
+
+
+def test_device_clock_uses_the_device_time_zone():
+    assert device_clock("Asia/Tokyo", env={})().utcoffset() == timedelta(hours=9)
+    paris = device_clock(None, env={"PIP_TIMEZONE": "Europe/Paris"})()
+    assert str(paris.tzinfo) == "Europe/Paris"
+    assert str(device_clock("Mars/Olympus", env={})().tzinfo) == "America/Los_Angeles"
+
+
+def test_a_quick_next_star_is_not_refused_as_too_soon(keeper, clock):
     hear(keeper, ANSWER, clock=clock)
     assert isinstance(keeper.judge(), StarAward)
     hear(keeper, "I would look at the big paintings", context=OTHER_PAGE, clock=clock, gap=2.0)
     assert isinstance(keeper.judge(), StarAward)
+    hear(keeper, "I would look at the big paintings", context=OTHER_PAGE, clock=clock, gap=2.0)
+    assert isinstance(keeper.judge(), StarAward)  # the same page again
 
 
 def test_cooldown_can_be_turned_on(clock):
@@ -221,24 +308,30 @@ def test_rules_from_env():
     rules = StarRules.from_env({"PIP_STAR_COOLDOWN_S": "3", "PIP_STAR_LONG_WORDS": "10", "PIP_STAR_MIN_WORDS": "4"})
     assert (rules.cooldown_s, rules.long_words, rules.min_words) == (3.0, 10, 4)
     assert StarRules.from_env({}) == StarRules()
-    assert StarRules().cooldown_s == 0 and StarRules().min_words == 6
+    assert StarRules().cooldown_s == 0 and StarRules().min_words == 5
 
 
 def test_min_words_is_configurable(clock):
     keeper = StarKeeper(clock=clock, rules=StarRules(min_words=4))
     hear(keeper, "I like the boats", clock=clock)
     assert isinstance(keeper.judge(), StarAward)
+    hear(keeper, "I like boats", clock=clock)
+    assert keeper.judge() == "answer too short"
 
 
 def test_status_line_and_instructions(keeper, clock):
-    assert "still waiting" in keeper.status_line(PAGE) and "at least 6 words" in keeper.status_line(PAGE)
+    assert "stars waiting" in keeper.status_line(PAGE) and "at least 5 words" in keeper.status_line(PAGE)
+    for _ in range(4):
+        hear(keeper, ANSWER, clock=clock)
+        keeper.judge()
+    assert "stars waiting" in keeper.status_line(PAGE)  # one left
     hear(keeper, ANSWER, clock=clock)
     keeper.judge()
     assert "Don't mention stars" in keeper.status_line(PAGE)
-    assert "still waiting" in keeper.status_line(OTHER_PAGE)
+    assert "stars waiting" in keeper.status_line(OTHER_PAGE)
     assert "Don't mention stars" in keeper.status_line({})
     text = realtime_instructions(PAGE, stars=keeper.status_line(PAGE))
-    assert STAR_RULES in text and "Great answer, that's a star!" in text
+    assert STAR_RULES in text and "Great answer, that's a star!" in text and "up to five stars" in text
     assert "Great question" not in text
     assert "that's a star" not in realtime_instructions(PAGE)
 
@@ -279,7 +372,43 @@ async def test_star_game_sends_awards_to_the_app_and_the_server(clock):
     payload, reliable, topic = ctx.room.local_participant.sent[0]
     assert topic == "milo.star" and reliable and payload["stars"] == 1 and payload["session_total"] == 1
     assert reported[0].stars == 1
-    assert refreshed == [True]  # the page's one star is taken, so the model's instructions change
+    assert refreshed == []  # the page still has stars waiting
+    for _ in range(4):
+        hear(game.keeper, ANSWER, clock=clock)
+        game.award(game.keeper.judge())
+    await game.drain()
+    assert refreshed == [True]  # the page's stars are all taken, so the model's instructions change
+    assert ctx.room.local_participant.sent[-1][0]["session_total"] == 5
+
+
+async def test_star_game_loads_earlier_stars(clock):
+    asked, refreshed = [], []
+
+    async def earlier(device_id):
+        asked.append(device_id)
+        return {("paris", "eiffel", "2026-10-19"): 5, ("paris", "louvre", "2026-10-18"): 5}
+
+    keeper = StarKeeper(device_id="ipad-1", clock=clock, wall=Wall())
+    game = agent_mod.StarGame(FakeCtx(), keeper, report=_report_ok, earlier=earlier)
+    game.refresh = lambda: refreshed.append(True)
+    game.load_earlier()
+    await game.drain()
+    assert asked == ["ipad-1"] and refreshed == [True]
+    assert keeper.stars_left(PAGE) == 0 and keeper.stars_left(OTHER_PAGE) == 5
+
+
+async def test_star_game_without_earlier_stars_keeps_going(clock):
+    async def earlier(device_id):
+        return None
+
+    keeper = StarKeeper(device_id="ipad-1", clock=clock)
+    game = agent_mod.StarGame(FakeCtx(), keeper, report=_report_ok, earlier=earlier)
+    game.load_earlier()
+    await game.drain()
+    assert keeper.earlier == {} and keeper.stars_left(PAGE) == 5
+    nobody = agent_mod.StarGame(FakeCtx(), StarKeeper(clock=clock), report=_report_ok, earlier=earlier)
+    nobody.load_earlier()  # no device: nothing to read
+    assert nobody._tasks == set()
 
 
 def new_game(clock, **kw):
@@ -394,8 +523,9 @@ async def test_pipeline_awards_answers_directly(clock):
     game.pipeline_decision(turn(ANSWER), TurnDecision.RESPOND)
     game.pipeline_decision(turn("The tower is brown."), TurnDecision.LISTEN)
     game.pipeline_decision(turn("I would look at the river and the boats"), TurnDecision.RESPOND)
+    game.pipeline_decision(turn("Why is the tower brown?"), TurnDecision.RESPOND)
     await game.drain()
-    assert game.keeper.total() == 1 and len(ctx.room.local_participant.sent) == 1
+    assert game.keeper.total() == 2 and len(ctx.room.local_participant.sent) == 2
 
 
 async def test_watch_tracks_who_is_speaking(clock):
@@ -460,14 +590,37 @@ def test_summary_counts_stars(store, keeper, clock):
     assert row["stars"] == 2
 
 
-def test_store_allows_one_star_per_page_per_session(store, keeper, clock):
-    """Whatever build of the agent reports it, a page gets one star per session, and one star."""
+def test_store_allows_five_stars_per_page_over_all_sessions(store, keeper, clock):
+    """Whatever build of the agent reports it, a page gets at most 5 stars per device, 1 per award."""
     first = award_dict(keeper, clock)
     assert store.record_star({**first, "stars": 3}) is True  # an old agent's bonus counts as 1
-    second = {**first, "id": "b" * 32, "stars": 2}
-    assert store.record_star(second) is False  # the page already has its star in this room
-    assert store.record_star({**second, "id": "c" * 32, "room": "room-2"}) is True  # a new session
-    assert [s["stars"] for s in store.stars_for("ipad-1")] == [1, 1]
+    for i, room in enumerate(["room-1", "room-1", "room-2", "room-3"]):
+        assert store.record_star({**first, "id": f"{i:032d}", "room": room}) is True
+    assert store.record_star({**first, "id": "f" * 32, "room": "room-4"}) is False  # a sixth, even in a new session
+    assert store.record_star({**first, "id": "e" * 32, "device_id": "iphone-2"}) is True  # another device
+    assert store.record_star({**first, "id": "d" * 32, "page": "louvre"}) is True  # another page
+    assert store.record_star(first) is False  # a retry of a stored award is still not new
+    assert [s["stars"] for s in store.stars_for("ipad-1")] == [1] * 6
+
+
+def test_store_limit_matches_the_agent():
+    from little_explorer_agent import devices, stars
+
+    assert devices.STARS_PER_PAGE == stars.STARS_PER_PAGE == 5
+
+
+def test_store_limit_is_per_local_day(store):
+    """5 at 23:59 his time fill the page; at 00:01 his time it has stars again, though both are
+    the same UTC day (and the same day where the server runs)."""
+    base = {"device_id": "ipad-1", "room": "r", "book": "paris", "page": "eiffel", "stars": 1}
+    for i in range(5):
+        late = {**base, "id": f"{i:032d}", "awarded_at": "2026-10-19T23:59:00-07:00"}
+        assert store.record_star(late) is True
+    assert store.record_star({**base, "id": "a" * 32, "awarded_at": "2026-10-19T23:59:30-07:00"}) is False
+    assert store.record_star({**base, "id": "b" * 32, "awarded_at": "2026-10-20T00:01:00-07:00"}) is True
+    in_tokyo = {**base, "id": "c" * 32, "awarded_at": "2026-10-20T15:59:00+09:00"}  # 23:59 Pacific, a new Tokyo day
+    assert store.record_star(in_tokyo) is True
+    assert len(store.stars_for("ipad-1")) == 7
 
 
 def test_stars_already_stored_are_kept(store):
@@ -497,8 +650,20 @@ async def test_star_endpoints(client, keeper, clock):
     assert junk.status == 400
 
     assert (await client.get("/stars?device=ipad-1")).status == 401
+    milo = await client.get("/stars?device=ipad-1", headers={"Authorization": "Bearer report-secret"})
+    assert milo.status == 200 and (await milo.json())["total"] == 1  # Milo reads the page counts too
     app = {"Authorization": "Bearer app-key"}
     assert (await client.get("/stars?device=bad id", headers=app)).status == 400
     resp = await client.get("/stars?device=ipad-1", headers=app)
     body = await resp.json()
     assert body["total"] == 1 and body["stars"][0]["id"] == data["id"]
+
+
+async def test_fetch_page_stars_reads_the_server(client, keeper, clock):
+    data = award_dict(keeper, clock)
+    assert (await client.post("/stars", json=data, headers={"Authorization": "Bearer report-secret"})).status == 200
+    url = str(client.make_url("/stars"))
+    day = award_day(data["awarded_at"])
+    assert await fetch_page_stars("ipad-1", (url, "report-secret")) == {("paris", "eiffel", day): 1}
+    assert await fetch_page_stars("ipad-1", (url, "wrong-key")) is None
+    assert await fetch_page_stars("", (url, "report-secret")) is None
