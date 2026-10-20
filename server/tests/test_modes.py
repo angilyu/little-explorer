@@ -433,6 +433,8 @@ async def test_realtime_guard_lets_him_answer_milos_question():
     answer = "I would look at all the little cars"
     assert await guard(UserTurn(text=answer, context=CTX, history=asked)) is TurnDecision.RESPOND
     assert await guard(UserTurn(text=answer, context=CTX, history=told)) is TurnDecision.IGNORE
+    invited = [("assistant", "Ooh, the cars! Can you tell me more? You could say, I would look at the...")]
+    assert await guard(UserTurn(text=answer, context=CTX, history=invited)) is TurnDecision.RESPOND
     long = "and then we went to the shop and bought milk and bread and some apples for later"
     assert await guard(UserTurn(text=long, context=CTX, history=asked)) is TurnDecision.IGNORE
 

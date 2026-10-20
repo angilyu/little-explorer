@@ -254,7 +254,12 @@ replies with one easy, open question, and each answer of 5 words or more earns a
 for the day. Asking Milo a question doesn't earn a star (Milo still answers it). The first star on a page starts Milo's reply with
 "Great answer, that's a star!"; later ones get a short, varied cheer ("Another star!", "Ooh, star!") and the
 rest follows right away. Milo never counts stars or says how many are left, and once a page has all 5 for
-the day he doesn't mention stars there. The agent (`stars.py`) checks every award before it counts, using the input
+the day he doesn't mention stars there. When he answers Milo's question in fewer than 5 words ("the boat"), Milo
+(realtime mode) gently asks for more and gives him a sentence start to finish from his own words ("Ooh, the boat! Can
+you tell me more? You could say, I would ride the boat because..."), never mentioning words or stars. He does this at
+most once per question (a second short answer is taken warmly and the talk moves on), even when the page's stars
+are all taken, and never for reading the page aloud, small talk, noise or a question of his own. Finishing the
+sentence earns the star as usual. The agent (`stars.py`) checks every award before it counts, using the input
 transcription and what Milo said last; nothing the model says can hand out a star:
 
 - 1 star per real answer: Milo's last reply asked a question, and the answer has at least 5 words
