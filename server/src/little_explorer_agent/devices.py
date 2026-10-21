@@ -19,6 +19,11 @@ database, because Render's free disk is wiped on every deploy and restart), othe
 Star awards (see :mod:`.stars`) are kept here too, so a reinstall can restore them, and so are the
 coin ledger and the owner's coin rules (see :mod:`.coins`).
 Only ids, names, models, timings, book ids, costs and star and coin counts are stored; never transcripts or audio.
+
+Accounts (see :mod:`.accounts`) add a grown-up's email. A device signed in to an account is *linked*
+(``devices.account_id``): its stars and coin conversions are stamped with the account, and its stars,
+coins and per-page star limit are the account's, shared by every device signed in to it. Rows earned
+before a device was linked are claimed by the first account it links to (``legacy_account_id``).
 """
 
 from __future__ import annotations
@@ -106,6 +111,66 @@ SCHEMA = (
         value TEXT NOT NULL,
         updated_at TEXT NOT NULL
     )""",
+    # Accounts (see accounts.py): a grown-up's email, and the books on the account's shelf.
+    """CREATE TABLE IF NOT EXISTS accounts (
+        id TEXT PRIMARY KEY,
+        email TEXT NOT NULL UNIQUE,
+        all_books INTEGER NOT NULL DEFAULT 0,
+        created_at TEXT NOT NULL,
+        last_seen TEXT NOT NULL
+    )""",
+    """CREATE TABLE IF NOT EXISTS account_books (
+        account_id TEXT NOT NULL,
+        book_id TEXT NOT NULL,
+        granted_at TEXT NOT NULL,
+        PRIMARY KEY (account_id, book_id)
+    )""",
+    # Sign-in codes: only an HMAC of the code is kept, and an HMAC of the asker's IP for rate limits.
+    """CREATE TABLE IF NOT EXISTS email_codes (
+        id TEXT PRIMARY KEY,
+        email TEXT NOT NULL,
+        purpose TEXT NOT NULL,
+        code_hash TEXT NOT NULL,
+        ip_hash TEXT NOT NULL DEFAULT '',
+        created_s INTEGER NOT NULL,
+        expires_s INTEGER NOT NULL,
+        attempts INTEGER NOT NULL DEFAULT 0,
+        used INTEGER NOT NULL DEFAULT 0
+    )""",
+    "CREATE INDEX IF NOT EXISTS email_codes_email ON email_codes (email, purpose)",
+    # Signed-in devices: only a SHA-256 of each session token is kept.
+    """CREATE TABLE IF NOT EXISTS auth_sessions (
+        token_hash TEXT PRIMARY KEY,
+        account_id TEXT NOT NULL,
+        device_id TEXT NOT NULL,
+        created_at TEXT NOT NULL,
+        last_seen TEXT NOT NULL
+    )""",
+    "CREATE INDEX IF NOT EXISTS auth_sessions_account ON auth_sessions (account_id)",
+    """CREATE TABLE IF NOT EXISTS hearts (
+        account_id TEXT NOT NULL,
+        page_key TEXT NOT NULL,
+        loved_at TEXT NOT NULL,
+        PRIMARY KEY (account_id, page_key)
+    )""",
+)
+
+# Columns added after the first release, as (table, column, type). Added on startup if missing.
+COLUMNS = (
+    ("devices", "account_id", "TEXT"),
+    ("devices", "legacy_account_id", "TEXT"),
+    ("stars", "account_id", "TEXT"),
+    ("coin_conversions", "account_id", "TEXT"),
+)
+INDEXES = (
+    "CREATE INDEX IF NOT EXISTS stars_account ON stars (account_id)",
+    "CREATE INDEX IF NOT EXISTS coin_conversions_account ON coin_conversions (account_id)",
+    "CREATE INDEX IF NOT EXISTS devices_account ON devices (account_id)",
+)
+# Every table, for /admin/backup and restore (in an order that restores cleanly).
+TABLES = (
+    "devices", "sessions", "stars", "coin_conversions", "settings",
+    "accounts", "account_books", "email_codes", "auth_sessions", "hearts",
 )
 
 STAR_ID = re.compile(r"^[A-Za-z0-9-]{8,64}$")
@@ -136,6 +201,19 @@ def award_day(awarded_at: object) -> str | None:
 
 def valid_device_id(value: object) -> bool:
     return isinstance(value, str) and bool(DEVICE_ID.match(value))
+
+
+@dataclass(frozen=True)
+class Scope:
+    """Whose stars and coins: an account's (every device signed in to it), or an unlinked device's."""
+
+    account_id: str | None = None
+    device_id: str | None = None
+
+    def where(self) -> tuple[str, tuple[str, ...]]:
+        if self.account_id:
+            return "account_id = ?", (self.account_id,)
+        return "device_id = ? AND account_id IS NULL", (self.device_id or "",)
 
 
 @dataclass(frozen=True)
@@ -265,6 +343,7 @@ class DeviceStore:
                     if not self._ready:
                         for statement in SCHEMA:
                             cur.execute(statement)
+                        self._migrate(cur)
                         self._ready = True
                     return fn(cur)
                 except Exception as exc:
@@ -273,6 +352,38 @@ class DeviceStore:
                     log.info("database connection dropped; reconnecting")
                     self.close_quietly()
         raise AssertionError("unreachable")
+
+    def _columns(self, cur: Any, table: str) -> set[str]:
+        if self.url:
+            rows = self._exec(
+                cur, "SELECT column_name FROM information_schema.columns WHERE table_schema = current_schema() AND table_name = ?", (table,)
+            ).fetchall()
+            return {r[0] for r in rows}
+        return {r[1] for r in cur.execute(f"PRAGMA table_info({table})").fetchall()}
+
+    def _migrate(self, cur: Any) -> None:
+        """Add columns newer than the tables (only ever adds; old builds ignore them)."""
+        for table, column, kind in COLUMNS:
+            if column not in self._columns(cur, table):
+                cur.execute(f"ALTER TABLE {table} ADD COLUMN {column} {kind}")
+                log.info("added column %s.%s", table, column)
+        for statement in INDEXES:
+            cur.execute(statement)
+
+    def transaction(self, fn: Callable[[Any], T]) -> T:
+        """Run ``fn(cursor)`` all-or-nothing."""
+
+        def run(cur: Any) -> T:
+            cur.execute("BEGIN")
+            try:
+                result = fn(cur)
+            except BaseException:
+                cur.execute("ROLLBACK")
+                raise
+            cur.execute("COMMIT")
+            return result
+
+        return self._run(run)
 
     def close_quietly(self) -> None:
         try:
@@ -308,6 +419,18 @@ class DeviceStore:
 
     def get(self, device_id: str) -> Device | None:
         return self._run(lambda cur: self._get(cur, device_id))
+
+    def _account_of(self, cur: Any, device_id: str) -> str | None:
+        row = self._exec(cur, "SELECT account_id FROM devices WHERE id = ?", (device_id,)).fetchone()
+        return row[0] if row and row[0] else None
+
+    def _scope(self, cur: Any, device_id: str) -> Scope:
+        """A linked device's stars and coins are its account's."""
+        account = self._account_of(cur, device_id)
+        return Scope(account_id=account) if account else Scope(device_id=device_id)
+
+    def scope(self, device_id: str) -> Scope:
+        return self._run(lambda cur: self._scope(cur, device_id))
 
     def _touch(self, cur: Any, device_id: str, name: str, model: str, now: datetime) -> Device:
         stamp = now.isoformat(timespec="seconds")
@@ -414,23 +537,60 @@ class DeviceStore:
         """Store one star award from the agent; True if it was new (the id makes retries safe).
 
         Any award counts as one star, and a page that already has :data:`STARS_PER_PAGE` stars on
-        this device that day (any session; the day is :func:`award_day`, the device's local date)
-        gets no more, whatever build of the agent sent it."""
-        star_id, device_id = award.get("id"), award.get("device_id") or ANONYMOUS
-        if not isinstance(star_id, str) or not STAR_ID.match(star_id) or not valid_device_id(device_id):
+        this device (or its account) that day (any session; the day is :func:`award_day`, the
+        device's local date) gets no more, whatever build of the agent sent it. A linked device's
+        star is stamped with its account."""
+        device_id = award.get("device_id") or ANONYMOUS
+        if not valid_device_id(device_id):
             raise ValueError("a valid id and device_id are required")
+        if not isinstance(award.get("id"), str) or not STAR_ID.match(award["id"]):
+            raise ValueError("a valid id and device_id are required")
+        values = self.star_values(award, device_id, self.day_of, self.now().isoformat(timespec="seconds"))
+
+        def run(cur: Any) -> bool:
+            return self._insert_star(cur, self._scope(cur, device_id), values)
+
+        return self._run(run)
+
+    def _insert_star(self, cur: Any, scope: Scope, values: tuple[Any, ...], *, capped: bool = True) -> bool:
+        star_id, awarded, book, page = values[0], values[3], values[5], values[6]
+        if capped and book and page:
+            where, params = scope.where()
+            rows = self._exec(
+                cur,
+                f"SELECT awarded_at, stars FROM stars WHERE {where} AND book = ? AND page = ? AND id <> ?",
+                (*params, book, page, star_id),
+            ).fetchall()
+            today = award_day(awarded)
+            on_page = sum(int(n or 0) for at, n in rows if award_day(at) == today)
+            if on_page >= STARS_PER_PAGE:
+                return False
+        self._exec(
+            cur,
+            """INSERT INTO stars (id, device_id, room, awarded_at, day, book, page, city, kind, long, why_how,
+                followup, stars, words, reason, account_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT (id) DO NOTHING""",
+            (*values, scope.account_id),
+        )
+        return cur.rowcount == 1
+
+    @staticmethod
+    def star_values(award: Mapping[str, Any], device_id: str, day_of: Callable[[str], str], now: str) -> tuple[Any, ...]:
+        """The ``stars`` row for an award (raises ``ValueError`` if it isn't one)."""
+        star_id = award.get("id")
+        if not isinstance(star_id, str) or not STAR_ID.match(star_id):
+            raise ValueError("a valid id is required")
         stars = award.get("stars")
         if isinstance(stars, bool) or not isinstance(stars, int) or stars < 1:
             raise ValueError("stars must be a positive whole number")
-        stars = STARS_PER_AWARD
         kind = award.get("kind") if award.get("kind") in STAR_KINDS else "question"
-        awarded = str(award.get("awarded_at") or self.now().isoformat(timespec="seconds"))[:40]
-        values = (
+        awarded = str(award.get("awarded_at") or now)[:40]
+        return (
             star_id,
             device_id,
             _text(award.get("room")),
             awarded,
-            self.day_of(awarded),
+            day_of(awarded),
             _text(award.get("book")),
             _text(award.get("page")),
             _text(award.get("city")),
@@ -438,48 +598,29 @@ class DeviceStore:
             int(bool(award.get("long"))),
             int(bool(award.get("why_how"))),
             int(bool(award.get("followup"))),
-            stars,
+            STARS_PER_AWARD,
             max(int(award.get("words") or 0), 0),
             _text(award.get("reason")),
         )
 
-        book, page = values[5], values[6]
-
-        def run(cur: Any) -> bool:
-            if book and page:
-                rows = self._exec(
-                    cur,
-                    "SELECT awarded_at, stars FROM stars WHERE device_id = ? AND book = ? AND page = ? AND id <> ?",
-                    (device_id, book, page, star_id),
-                ).fetchall()
-                today = award_day(awarded)
-                on_page = sum(int(n or 0) for at, n in rows if award_day(at) == today)
-                if on_page >= STARS_PER_PAGE:
-                    return False
-            self._exec(
-                cur,
-                """INSERT INTO stars (id, device_id, room, awarded_at, day, book, page, city, kind, long, why_how,
-                    followup, stars, words, reason) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                ON CONFLICT (id) DO NOTHING""",
-                values,
-            )
-            return cur.rowcount == 1
-
-        return self._run(run)
-
     def stars_for(self, device_id: str) -> list[dict[str, Any]]:
-        """Every award a device has earned, oldest first (for restoring after a reinstall)."""
-        rows = self._run(
-            lambda cur: self._exec(
-                cur, f"SELECT {_STAR_COLUMNS} FROM stars WHERE device_id = ? ORDER BY awarded_at, id", (device_id,)
-            ).fetchall()
-        )
+        """Every award a device (or, if it's linked, its account) has earned, oldest first (for
+        restoring after a reinstall, and for the agent's per-page counts)."""
+        return self._run(lambda cur: self._stars_in(cur, self._scope(cur, device_id)))
+
+    def stars_of(self, scope: Scope) -> list[dict[str, Any]]:
+        return self._run(lambda cur: self._stars_in(cur, scope))
+
+    def _stars_in(self, cur: Any, scope: Scope) -> list[dict[str, Any]]:
+        where, params = scope.where()
+        rows = self._exec(cur, f"SELECT {_STAR_COLUMNS} FROM stars WHERE {where} ORDER BY awarded_at, id", params).fetchall()
         keys = [k.strip() for k in _STAR_COLUMNS.split(",")]
         out = []
         for row in rows:
             item = dict(zip(keys, row))
             for flag in ("long", "why_how", "followup"):
                 item[flag] = bool(item[flag])
+            item["stars"] = int(item["stars"])
             out.append(item)
         return out
 
@@ -567,9 +708,14 @@ class DeviceStore:
                     cur, "SELECT device_id, SUM(stars_spent), SUM(coins) FROM coin_conversions GROUP BY device_id"
                 ).fetchall()
             }
-            return devices, totals, stars, coins
+            emails = dict(
+                self._exec(
+                    cur, "SELECT d.id, a.email FROM devices d JOIN accounts a ON a.id = d.account_id"
+                ).fetchall()
+            )
+            return devices, totals, stars, coins, emails
 
-        devices, totals, stars, coins = self._run(run)
+        devices, totals, stars, coins, emails = self._run(run)
         out = []
         for d in devices:
             sessions, total_s, total_usd, today_s, today_usd = totals.get(d.id, (0, 0, 0, 0, 0))
@@ -586,6 +732,7 @@ class DeviceStore:
                     "stars": int(stars.get(d.id, 0)),
                     "stars_spent": int(coins.get(d.id, (0, 0))[0] or 0),
                     "coins": int(coins.get(d.id, (0, 0))[1] or 0),
+                    "account": emails.get(d.id),
                 }
             )
         return sorted(out, key=lambda r: r["last_seen"], reverse=True)
@@ -617,6 +764,47 @@ class DeviceStore:
             }
             for r in rows
         ]
+
+    # -- backup ----------------------------------------------------------------------------------
+
+    def backup(self) -> dict[str, Any]:
+        """Every row of every table, as ``{"tables": {name: {"columns": [...], "rows": [[...]]}}}``."""
+
+        def run(cur: Any) -> dict[str, Any]:
+            tables = {}
+            for table in TABLES:
+                cur.execute(f"SELECT * FROM {table}")
+                columns = [c[0] for c in cur.description]
+                tables[table] = {"columns": columns, "rows": [list(r) for r in cur.fetchall()]}
+            return {"kind": self.kind, "taken_at": self.now().isoformat(timespec="seconds"), "tables": tables}
+
+        return self._run(run)
+
+    def restore(self, dump: Mapping[str, Any]) -> dict[str, int]:
+        """Replace every table in ``dump`` with its rows, all-or-nothing. Columns the dump lacks keep
+        their defaults (e.g. an older backup has no ``account_id``)."""
+        tables = dump.get("tables") or {}
+        unknown = set(tables) - set(TABLES)
+        if unknown:
+            raise ValueError(f"unknown table(s) in backup: {', '.join(sorted(unknown))}")
+
+        def run(cur: Any) -> dict[str, int]:
+            counts = {}
+            for table in TABLES:
+                if table not in tables:
+                    continue
+                columns, rows = tables[table]["columns"], tables[table]["rows"]
+                known = self._columns(cur, table)
+                if not set(columns) <= known:
+                    raise ValueError(f"backup has columns {table} doesn't: {set(columns) - known}")
+                cur.execute(f"DELETE FROM {table}")
+                marks = ", ".join("?" for _ in columns)
+                for row in rows:
+                    self._exec(cur, f"INSERT INTO {table} ({', '.join(columns)}) VALUES ({marks})", row)
+                counts[table] = len(rows)
+            return counts
+
+        return self.transaction(run)
 
 
 def _is_connection_error(exc: BaseException) -> bool:

@@ -15,7 +15,13 @@ import Foundation
 /// `-demoBadges` opens the Passport at its badges, with some earned and some still to go (40 stars,
 /// an early-morning star and 3 loved pages unless `-demoStars` says otherwise).
 /// `-demoGate` opens the grown-ups gate; `-demoParent` opens the grown-ups corner without it.
+/// `-demoAccount welcome|email|code` shows the signed-out welcome screen (and sign-in's email or code step);
+/// `-demoAccount new` signs in as a new account with only the default books. Other demos run signed in to a
+/// family account with every book.
 struct DemoLaunch: Equatable {
+    enum AccountScreen: String { case welcome, email, code, new }
+
+
     var bookId: String?
     var pageIndex: Int = 0
     var lovePage = false
@@ -32,6 +38,16 @@ struct DemoLaunch: Equatable {
     var openParent = false
     var showCalendar = false
     var showBadges = false
+    var accountScreen: AccountScreen?
+
+    /// Who the demo is signed in as: nobody on the welcome and sign-in screens.
+    var account: Account? {
+        switch accountScreen {
+        case .welcome, .email, .code: nil
+        case .new: Account(id: "demo-new", email: "parent@example.com", books: Account.defaultBooks)
+        case nil: Account(id: "demo-family", email: "family@example.com", books: nil)
+        }
+    }
 
     var startsWithVoice: Bool { voiceActivity != nil || liveVoice }
 
@@ -60,6 +76,9 @@ struct DemoLaunch: Equatable {
         if let coins = value(after: "-demoCoins").flatMap(Int.init) { demo.seedCoins = max(0, coins); found = true }
         if arguments.contains("-demoGate") { demo.openGate = true; found = true }
         if arguments.contains("-demoParent") { demo.openParent = true; found = true }
+        if let screen = value(after: "-demoAccount").flatMap(AccountScreen.init(rawValue:)) {
+            demo.accountScreen = screen; found = true
+        }
         if arguments.contains("-demoCalendar") {
             demo.showCalendar = true
             demo.openPassport = true

@@ -103,12 +103,15 @@ enum CoinError: Error, Equatable {
     }
 }
 
-/// `GET /coins?device=<id>` and `POST /coins/convert` on the Milo token server.
+/// `GET /coins?device=<id>` and `POST /coins/convert` on the Milo token server, or with an account sign-in
+/// `GET /account/coins` and `POST /account/coins/convert` (the account's stars and coins, on any device).
 struct CoinService {
     var baseURL: URL
     var deviceId: String
     var accessKey: String? = VoiceSettings.accessKey
     var session: URLSession = .shared
+    /// The account sign-in; nil before accounts.
+    var token: String? = nil
 
     private struct ConvertResponse: Decodable {
         let conversion: CoinConversion?
@@ -123,10 +126,12 @@ struct CoinService {
         var request = URLRequest(url: baseURL.appendingPathComponent(path))
         request.timeoutInterval = 20
         if let accessKey { request.setValue("Bearer " + accessKey, forHTTPHeaderField: "Authorization") }
+        if let token { request.setValue(token, forHTTPHeaderField: AccountService.sessionHeader) }
         return request
     }
 
     func fetchRequest() -> URLRequest {
+        if token != nil { return request("account/coins") }
         var request = request("coins")
         var components = URLComponents(url: request.url!, resolvingAgainstBaseURL: false)!
         components.queryItems = [URLQueryItem(name: "device", value: deviceId)]
@@ -135,7 +140,7 @@ struct CoinService {
     }
 
     func convertRequest(id: String, coins: Int, starsPerCoin: Int) -> URLRequest {
-        var request = request("coins/convert")
+        var request = request(token == nil ? "coins/convert" : "account/coins/convert")
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         let body: [String: Any] = ["device": deviceId, "id": id, "coins": coins, "stars_per_coin": starsPerCoin]
@@ -161,12 +166,13 @@ struct CoinService {
         return (data, (response as? HTTPURLResponse)?.statusCode ?? 0)
     }
 
-    private static func error(status: Int, data: Data) -> CoinError {
+    private static func error(status: Int, data: Data) -> Error {
+        if status == 401, AccountService.error(status: status, data: data) == .signedOut { return AccountError.signedOut }
         guard [400, 403, 409].contains(status), let refusal = try? JSONDecoder().decode(Refusal.self, from: data) else {
-            return .server(status: status)
+            return CoinError.server(status: status)
         }
         let state = try? JSONDecoder().decode(CoinState.self, from: data)
-        return .refused(code: refusal.error, message: refusal.message ?? refusal.error, state: state)
+        return CoinError.refused(code: refusal.error, message: refusal.message ?? refusal.error, state: state)
     }
 }
 
@@ -181,13 +187,31 @@ final class CoinStore {
     private(set) var state: CoinState?
 
     @ObservationIgnored private let defaults: UserDefaults
-    @ObservationIgnored private let prefix: String
+    @ObservationIgnored private let basePrefix: String
+    @ObservationIgnored private var prefix: String
 
     init(defaults: UserDefaults = .standard, prefix: String = "coins.v1") {
         self.defaults = defaults
+        basePrefix = prefix
         self.prefix = prefix
         coins = defaults.integer(forKey: prefix + ".coins")
         starsSpent = defaults.integer(forKey: prefix + ".starsSpent")
+    }
+
+    /// Shows the coins saved for this account (nil: the ones from before accounts) until the server answers.
+    func switchAccount(_ accountId: String?) {
+        let next = AccountKeys.key(basePrefix, accountId)
+        guard next != prefix else { return }
+        prefix = next
+        state = nil
+        coins = defaults.integer(forKey: prefix + ".coins")
+        starsSpent = defaults.integer(forKey: prefix + ".starsSpent")
+    }
+
+    /// Forgets an account's saved copy here (after signing out; the server keeps the coins).
+    func forgetAccount(_ accountId: String) {
+        let gone = AccountKeys.key(basePrefix, accountId)
+        for suffix in [".coins", ".starsSpent", ".pending"] { defaults.removeObject(forKey: gone + suffix) }
     }
 
     /// Stars he can still spend, out of the `earned` stars this device knows about.
@@ -224,6 +248,9 @@ final class CoinStore {
             clearPending()
             if case let .refused(_, _, state?) = error { apply(state) }
             throw error
+        } catch AccountError.signedOut {
+            clearPending()
+            throw AccountError.signedOut
         }
     }
 
@@ -273,7 +300,7 @@ extension CoinStore {
         state = nil
     }
 
-    static func service() -> CoinService {
-        CoinService(baseURL: VoiceSettings.tokenServerURL(), deviceId: DeviceIdentity.current().id)
+    static func service(token: String? = nil) -> CoinService {
+        CoinService(baseURL: VoiceSettings.tokenServerURL(), deviceId: DeviceIdentity.current().id, token: token)
     }
 }

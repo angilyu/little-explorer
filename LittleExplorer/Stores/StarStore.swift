@@ -92,8 +92,9 @@ struct PassportStamp: Identifiable, Equatable {
     var id: String { city }
 }
 
-/// The stars he has earned, saved on this device and backed up on the Milo server by device id
-/// (so a reinstall can restore them with ``merge(_:)``).
+/// The stars he has earned, saved on this device and kept on the Milo server (by account once a grown-up
+/// signs in, by device before that), so a reinstall or another device can restore them with ``merge(_:)``.
+/// Each account has its own saved copy here; the one from before accounts stays under the old key.
 @MainActor
 @Observable
 final class StarStore {
@@ -103,15 +104,41 @@ final class StarStore {
     private(set) var lastAward: StarAward?
 
     @ObservationIgnored private let defaults: UserDefaults
-    @ObservationIgnored private let key: String
+    @ObservationIgnored private let baseKey: String
+    @ObservationIgnored private var key: String
     @ObservationIgnored var onCelebrate: (() -> Void)?
 
     init(defaults: UserDefaults = .standard, key: String = "starAwards.v1") {
         self.defaults = defaults
+        baseKey = key
         self.key = key
-        let saved = defaults.data(forKey: key).flatMap { try? JSONDecoder().decode([StarAward].self, from: $0) }
-        awards = saved ?? []
+        awards = Self.load(defaults, key)
         seenBadges = Set(defaults.stringArray(forKey: key + ".seenBadges") ?? [])
+    }
+
+    private static func load(_ defaults: UserDefaults, _ key: String) -> [StarAward] {
+        defaults.data(forKey: key).flatMap { try? JSONDecoder().decode([StarAward].self, from: $0) } ?? []
+    }
+
+    /// Shows the stars saved for this account (nil: the ones from before accounts).
+    func switchAccount(_ accountId: String?) {
+        let next = AccountKeys.key(baseKey, accountId)
+        guard next != key else { return }
+        key = next
+        awards = Self.load(defaults, key)
+        seenBadges = Set(defaults.stringArray(forKey: key + ".seenBadges") ?? [])
+        lastAward = nil
+    }
+
+    /// What this device saved before accounts (never deleted), for the account that claims it.
+    var legacyAwards: [StarAward] { Self.load(defaults, baseKey) }
+    var legacySeenBadges: [String] { defaults.stringArray(forKey: baseKey + ".seenBadges") ?? [] }
+
+    /// Forgets an account's saved copy here (after signing out; the server keeps the stars).
+    func forgetAccount(_ accountId: String) {
+        let gone = AccountKeys.key(baseKey, accountId)
+        defaults.removeObject(forKey: gone)
+        defaults.removeObject(forKey: gone + ".seenBadges")
     }
 
     /// Earned badges he has already seen in the Passport; the rest show as NEW there. Local only.
@@ -226,29 +253,36 @@ extension StarStore {
         ]
     }
 
-    /// Pulls this device's stars back from the Milo server (after a reinstall) and keeps any it lacks.
+    /// Pulls the stars back from the Milo server (after a reinstall, or earned on another device) and keeps
+    /// any it lacks.
     func restore(from backup: StarBackup) async {
         guard let saved = try? await backup.fetch() else { return }
         merge(saved)
     }
 }
 
-/// Reads the server's copy of this device's stars (`GET /stars?device=<id>`). The agent writes it.
+/// Reads the server's copy of the stars: the account's (`GET /account/stars`) when signed in, else this
+/// device's (`GET /stars?device=<id>`). The agent writes them.
 struct StarBackup {
     var baseURL: URL
     var deviceId: String
     var accessKey: String? = VoiceSettings.accessKey
     var session: URLSession = .shared
+    /// The account sign-in; nil before accounts.
+    var token: String? = nil
 
     struct Response: Decodable {
         let stars: [StarAward]
     }
 
     func request() -> URLRequest {
-        var components = URLComponents(url: baseURL.appendingPathComponent("stars"), resolvingAgainstBaseURL: false)!
-        components.queryItems = [URLQueryItem(name: "device", value: deviceId)]
+        var components = URLComponents(
+            url: baseURL.appendingPathComponent(token == nil ? "stars" : "account/stars"), resolvingAgainstBaseURL: false
+        )!
+        if token == nil { components.queryItems = [URLQueryItem(name: "device", value: deviceId)] }
         var request = URLRequest(url: components.url!)
         request.timeoutInterval = 20
+        if let token { request.setValue(token, forHTTPHeaderField: AccountService.sessionHeader) }
         if let accessKey { request.setValue("Bearer \(accessKey)", forHTTPHeaderField: "Authorization") }
         return request
     }

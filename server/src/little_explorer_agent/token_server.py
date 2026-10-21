@@ -27,6 +27,15 @@ session. ``/admin/...`` (``Authorization: Bearer $PIP_ADMIN_KEY``) is for the ow
 ``tools/devices.py``: ``GET /admin/devices``, ``GET /admin/usage?days=7`` and
 ``POST /admin/devices/<id or name>`` with ``{"status", "label", "daily_limit_min"}``.
 
+Accounts (see :mod:`.accounts`): a grown-up signs in with ``POST /auth/start {"email"}`` (emails a
+6-digit code) and ``POST /auth/verify {"email", "code", "device"}``, which returns
+``{"token", "account", "claimed_device"}``. The app sends the token as ``X-Pip-Session`` (with the
+access key) to ``GET /account``, ``POST /auth/signout``, ``POST /account/delete {"code"}`` and the
+account's ``/account/stars``, ``/account/coins``, ``/account/coins/convert``, ``/account/hearts`` and
+``/account/import``. Errors are ``{"error": "bad_email" | "bad_code" | "expired" | "too_many" |
+"signed_out" | "email_off" | "email_failed", ...}``. The owner manages accounts with
+``/admin/accounts...`` and saves everything with ``GET /admin/backup``.
+
 It also serves the book content (see :mod:`.catalog`): ``GET /content/manifest.json`` and
 ``GET /content/<path>`` for each file in it, so books can change without an app update.
 
@@ -37,6 +46,7 @@ from __future__ import annotations
 
 import asyncio
 import hmac
+import json
 import logging
 import os
 import uuid
@@ -47,11 +57,13 @@ from pathlib import Path
 from aiohttp import web
 
 from . import agent_name
+from .accounts import Accounts, AuthError, Session, normalize_email, valid_book_id
 from .catalog import build_manifest, content_files, resources_dir
 from .coins import CoinError, CoinLedger
 from .config import load_env
 from .content import BOOK_KEY, CITY_KEY, PAGE_KEY, PAGE_NUMBER_KEY, PAGE_TEXT_KEY
-from .devices import ANONYMOUS, REST_MESSAGE, STATUSES, Decision, DeviceStore, valid_device_id
+from .devices import ANONYMOUS, REST_MESSAGE, STATUSES, Decision, DeviceStore, Scope, valid_device_id
+from .mail import Mailer, MailError, compose
 from .modes import PipMode, job_metadata, parse_intro, parse_mode, parse_tz
 
 log = logging.getLogger("little_explorer.tokens")
@@ -333,6 +345,301 @@ async def handle_admin_coins(request: web.Request) -> web.Response:
     return web.json_response(settings)
 
 
+# -- accounts --------------------------------------------------------------------------------------
+
+SESSION_HEADER = "X-Pip-Session"
+
+
+def _client_ip(request: web.Request) -> str:
+    # Render puts the caller first in X-Forwarded-For.
+    forwarded = request.headers.get("X-Forwarded-For", "").split(",")[0].strip()
+    return forwarded or request.remote or ""
+
+
+def _refusal(exc: AuthError) -> web.Response:
+    return web.json_response(exc.as_json(), status=exc.status)
+
+
+def _signed_out() -> web.Response:
+    return web.json_response({"error": "signed_out", "message": "sign in again"}, status=401)
+
+
+async def _session(request: web.Request) -> Session | web.Response:
+    if not authorized(request, request.app[ACCESS_KEY]):
+        return web.json_response({"error": "unauthorized"}, status=401)
+    token = request.headers.get(SESSION_HEADER, "").strip()
+    session = await asyncio.to_thread(request.app[ACCOUNTS].session, token) if token else None
+    return session or _signed_out()
+
+
+async def handle_auth_start(request: web.Request) -> web.Response:
+    if not authorized(request, request.app[ACCESS_KEY]):
+        return web.json_response({"error": "unauthorized"}, status=401)
+    body = await _json_body(request)
+    if body is None:
+        return web.json_response({"error": "bad body"}, status=400)
+    purpose = body.get("purpose") or "sign_in"
+    if purpose == "delete":
+        # Only a signed-in grown-up can ask to delete, and the code goes to the account's email.
+        session = await _session(request)
+        if isinstance(session, web.Response):
+            return session
+        email = session.account.email
+    else:
+        email = normalize_email(body.get("email"))
+        if not email:
+            return web.json_response({"error": "bad_email", "message": "not an email address"}, status=400)
+    mailer, accounts = request.app[MAILER], request.app[ACCOUNTS]
+    if not mailer.ready and not (accounts.review_code and email == accounts.review_email):
+        log.error("sign-in asked for but email is %s", mailer.describe())
+        return web.json_response({"error": "email_off", "message": "email sign-in isn't set up"}, status=503)
+    try:
+        code, resend_after = await asyncio.to_thread(accounts.start, email, purpose, _client_ip(request))
+    except AuthError as exc:
+        return _refusal(exc)
+    if code is not None:
+        subject, text = compose(purpose, code, 10)
+        try:
+            await asyncio.to_thread(mailer.send, email, subject, text)
+        except MailError as exc:
+            log.error("couldn't email a %s code: %s", purpose, exc)
+            await asyncio.to_thread(accounts.forget_code, email, purpose)
+            return web.json_response({"error": "email_failed", "message": "couldn't send the email"}, status=502)
+    log.info("emailed a %s code", purpose)
+    return web.json_response({"ok": True, "resend_after_s": resend_after})
+
+
+async def handle_auth_verify(request: web.Request) -> web.Response:
+    if not authorized(request, request.app[ACCESS_KEY]):
+        return web.json_response({"error": "unauthorized"}, status=401)
+    body = await _json_body(request)
+    if body is None:
+        return web.json_response({"error": "bad body"}, status=400)
+    email = normalize_email(body.get("email"))
+    if not email:
+        return web.json_response({"error": "bad_email", "message": "not an email address"}, status=400)
+    device = parse_device(body.get("device"))
+    if device is None or device[0] == ANONYMOUS:
+        return web.json_response({"error": "bad device"}, status=400)
+    try:
+        token, account, claimed = await asyncio.to_thread(request.app[ACCOUNTS].verify, email, body.get("code"), device)
+    except AuthError as exc:
+        return _refusal(exc)
+    log.info("device %s signed in to account %s (claimed: %s)", device[0], account.id, claimed)
+    return web.json_response({"token": token, "account": account.as_json(), "claimed_device": claimed})
+
+
+async def handle_account(request: web.Request) -> web.Response:
+    session = await _session(request)
+    if isinstance(session, web.Response):
+        return session
+    return web.json_response({"account": session.account.as_json()})
+
+
+async def handle_sign_out(request: web.Request) -> web.Response:
+    if not authorized(request, request.app[ACCESS_KEY]):
+        return web.json_response({"error": "unauthorized"}, status=401)
+    token = request.headers.get(SESSION_HEADER, "").strip()
+    if token:
+        await asyncio.to_thread(request.app[ACCOUNTS].sign_out, token)
+    return web.json_response({"ok": True})
+
+
+async def handle_account_delete(request: web.Request) -> web.Response:
+    session = await _session(request)
+    if isinstance(session, web.Response):
+        return session
+    body = await _json_body(request) or {}
+    account = session.account
+    try:
+        counts = await asyncio.to_thread(request.app[ACCOUNTS].delete, account.id, account.email, body.get("code"))
+    except AuthError as exc:
+        return _refusal(exc)
+    return web.json_response({"ok": True, "deleted": counts})
+
+
+async def handle_account_stars(request: web.Request) -> web.Response:
+    session = await _session(request)
+    if isinstance(session, web.Response):
+        return session
+    stars = await asyncio.to_thread(request.app[STORE].stars_of, Scope(account_id=session.account.id))
+    return web.json_response({"stars": stars, "total": sum(s["stars"] for s in stars)})
+
+
+async def handle_account_coins(request: web.Request) -> web.Response:
+    session = await _session(request)
+    if isinstance(session, web.Response):
+        return session
+    balance = await asyncio.to_thread(request.app[COINS].balance_of, Scope(account_id=session.account.id))
+    return web.json_response(balance.as_json())
+
+
+async def handle_account_convert(request: web.Request) -> web.Response:
+    session = await _session(request)
+    if isinstance(session, web.Response):
+        return session
+    body = await _json_body(request)
+    if body is None:
+        return web.json_response({"error": "bad body"}, status=400)
+    coins, rate = body.get("coins"), body.get("stars_per_coin")
+    if (coins is not None and _whole(coins) is None) or (rate is not None and _whole(rate) is None):
+        return web.json_response({"error": "coins and stars_per_coin must be whole numbers"}, status=400)
+    ledger, scope = request.app[COINS], Scope(account_id=session.account.id)
+    try:
+        conversion, balance, replayed = await asyncio.to_thread(
+            lambda: ledger.convert(session.device_id, body.get("id"), coins, rate, account_id=session.account.id)
+        )
+    except CoinError as exc:
+        balance = await asyncio.to_thread(ledger.balance_of, scope)
+        return web.json_response({"error": exc.code, "message": exc.message, **balance.as_json()}, status=exc.status)
+    if not replayed:
+        log.info("coins: account %s turned %d stars into %d coins", session.account.id, conversion["stars_spent"], conversion["coins"])
+    return web.json_response({**balance.as_json(), "conversion": {**conversion, "replayed": replayed}})
+
+
+async def handle_account_hearts(request: web.Request) -> web.Response:
+    session = await _session(request)
+    if isinstance(session, web.Response):
+        return session
+    accounts = request.app[ACCOUNTS]
+    if request.method == "GET":
+        return web.json_response({"hearts": await asyncio.to_thread(accounts.hearts, session.account.id)})
+    body = await _json_body(request)
+    if body is None:
+        return web.json_response({"error": "bad body"}, status=400)
+    loved, unloved = body.get("loved") or [], body.get("unloved") or []
+    if not isinstance(loved, list) or not isinstance(unloved, list):
+        return web.json_response({"error": "loved and unloved must be lists"}, status=400)
+    hearts = await asyncio.to_thread(accounts.set_hearts, session.account.id, loved, unloved)
+    return web.json_response({"hearts": hearts})
+
+
+async def handle_account_import(request: web.Request) -> web.Response:
+    session = await _session(request)
+    if isinstance(session, web.Response):
+        return session
+    body = await _json_body(request)
+    if body is None:
+        return web.json_response({"error": "bad body"}, status=400)
+    stars, hearts = body.get("stars") or [], body.get("hearts") or []
+    if not isinstance(stars, list) or not isinstance(hearts, list):
+        return web.json_response({"error": "stars and hearts must be lists"}, status=400)
+    try:
+        added = await asyncio.to_thread(request.app[ACCOUNTS].import_device, session, stars, hearts)
+    except AuthError as exc:
+        return _refusal(exc)
+    log.info("account %s imported device %s: %s", session.account.id, session.device_id, added)
+    return web.json_response({"ok": True, **added})
+
+
+# -- owner: accounts ---------------------------------------------------------------------------------
+
+
+async def _account_detail(app: web.Application, ref: str) -> dict | None:
+    accounts = app[ACCOUNTS]
+    account = await asyncio.to_thread(accounts.get, ref)
+    if not account:
+        return None
+    scope = Scope(account_id=account.id)
+    stars = await asyncio.to_thread(app[STORE].stars_of, scope)
+    balance = await asyncio.to_thread(app[COINS].balance_of, scope)
+    return {
+        "account": {**account.as_json(), "created_at": account.created_at},
+        "devices": await asyncio.to_thread(accounts.devices_of, account.id),
+        "stars": sum(s["stars"] for s in stars),
+        "star_days": len({s["awarded_at"][:10] for s in stars}),
+        "coins": balance.as_json(),
+        "hearts": len(await asyncio.to_thread(accounts.hearts, account.id)),
+    }
+
+
+async def handle_admin_accounts(request: web.Request) -> web.Response:
+    if denied := _admin(request):
+        return denied
+    accounts = request.app[ACCOUNTS]
+    if request.method == "GET":
+        return web.json_response({"accounts": await asyncio.to_thread(accounts.summary)})
+    body = await _json_body(request)
+    if body is None:
+        return web.json_response({"error": "bad body"}, status=400)
+    try:
+        account, created = await asyncio.to_thread(
+            lambda: accounts.create(body.get("email") or "", all_books=bool(body.get("all_books")))
+        )
+    except ValueError as exc:
+        return web.json_response({"error": str(exc)}, status=400)
+    log.info("owner %s account %s", "created" if created else "found", account.id)
+    detail = await _account_detail(request.app, account.id)
+    return web.json_response({**(detail or {}), "created": created})
+
+
+async def handle_admin_account(request: web.Request) -> web.Response:
+    if denied := _admin(request):
+        return denied
+    detail = await _account_detail(request.app, request.match_info["ref"])
+    if detail is None:
+        return web.json_response({"error": "no such account"}, status=404)
+    return web.json_response(detail)
+
+
+async def handle_admin_account_action(request: web.Request) -> web.Response:
+    if denied := _admin(request):
+        return denied
+    ref, action = request.match_info["ref"], request.match_info["action"]
+    body = await _json_body(request)
+    if body is None:
+        return web.json_response({"error": "bad body"}, status=400)
+    accounts = request.app[ACCOUNTS]
+    try:
+        if action == "link":
+            account, claimed = await asyncio.to_thread(accounts.link, ref, body.get("device") or "")
+            log.info("owner linked device %s to account %s (claimed: %s)", body.get("device"), account.id, claimed)
+        elif action == "unlink":
+            device = body.get("device") or ""
+            if not valid_device_id(device):
+                return web.json_response({"error": "bad device id"}, status=400)
+            await asyncio.to_thread(accounts.unlink, device)
+        elif action == "books":
+            grant, revoke, every = body.get("grant") or [], body.get("revoke") or [], body.get("all_books")
+            if not isinstance(grant, list) or not isinstance(revoke, list) or every not in (None, True, False):
+                return web.json_response({"error": "grant/revoke must be lists, all_books true or false"}, status=400)
+            known = set(request.app[MANIFEST].get("order", []))
+            unknown = [b for b in grant if valid_book_id(b) and b not in known]
+            if unknown:
+                return web.json_response({"error": f"no such book: {', '.join(unknown)}"}, status=400)
+            await asyncio.to_thread(lambda: accounts.set_books(ref, grant=grant, revoke=revoke, all_books=every))
+        else:
+            return web.json_response({"error": "unknown action"}, status=404)
+    except LookupError:
+        return web.json_response({"error": "no such account"}, status=404)
+    except ValueError as exc:
+        return web.json_response({"error": str(exc)}, status=400)
+    detail = await _account_detail(request.app, ref)
+    return web.json_response(detail or {})
+
+
+async def handle_admin_backup(request: web.Request) -> web.Response:
+    if denied := _admin(request):
+        return denied
+    dump = await asyncio.to_thread(request.app[STORE].backup)
+    log.info("owner took a backup (%s)", {t: len(v["rows"]) for t, v in dump["tables"].items()})
+    return web.json_response(dump, dumps=lambda o: json.dumps(o, default=str))
+
+
+async def handle_admin_restore(request: web.Request) -> web.Response:
+    if denied := _admin(request):
+        return denied
+    body = await _json_body(request)
+    if body is None or body.get("confirm") != "restore" or not isinstance(body.get("backup"), dict):
+        return web.json_response({"error": 'send {"confirm": "restore", "backup": {...}}'}, status=400)
+    try:
+        counts = await asyncio.to_thread(request.app[STORE].restore, body["backup"])
+    except ValueError as exc:
+        return web.json_response({"error": str(exc)}, status=400)
+    log.warning("owner restored a backup: %s", counts)
+    return web.json_response({"ok": True, "restored": counts})
+
+
 async def handle_health(request: web.Request) -> web.Response:
     # The deploy workflow polls this until the new commit and book content are live.
     commit = os.environ.get("RENDER_GIT_COMMIT", "").strip() or None
@@ -383,6 +690,8 @@ STORE = web.AppKey("device_store", DeviceStore)
 COINS = web.AppKey("coin_ledger", CoinLedger)
 MANIFEST = web.AppKey("manifest", dict)
 FILES = web.AppKey("files", dict)
+ACCOUNTS = web.AppKey("accounts", Accounts)
+MAILER = web.AppKey("mailer", Mailer)
 
 
 def create_app(
@@ -393,6 +702,8 @@ def create_app(
     admin_key: str | None = None,
     report_key: str | None = None,
     coins: CoinLedger | None = None,
+    accounts: Accounts | None = None,
+    mailer: Mailer | None = None,
 ) -> web.Application:
     app = web.Application()
     app[ACCESS_KEY] = (os.environ.get("PIP_ACCESS_KEY", "") if access_key is None else access_key).strip()
@@ -400,6 +711,8 @@ def create_app(
     app[REPORT_KEY] = (os.environ.get("PIP_REPORT_KEY", "") if report_key is None else report_key).strip()
     app[STORE] = store or DeviceStore.from_env()
     app[COINS] = coins or CoinLedger.from_env(app[STORE])
+    app[ACCOUNTS] = accounts or Accounts.from_env(app[STORE])
+    app[MAILER] = mailer or Mailer.from_env()
     root = content_root or resources_dir()
     app[MANIFEST] = build_manifest(root)
     app[FILES] = content_files(root)
@@ -417,6 +730,23 @@ def create_app(
     app.router.add_post("/admin/devices/{ref}", handle_admin_update)
     app.router.add_get("/admin/coins", handle_admin_coins)
     app.router.add_post("/admin/coins", handle_admin_coins)
+    app.router.add_post("/auth/start", handle_auth_start)
+    app.router.add_post("/auth/verify", handle_auth_verify)
+    app.router.add_post("/auth/signout", handle_sign_out)
+    app.router.add_get("/account", handle_account)
+    app.router.add_post("/account/delete", handle_account_delete)
+    app.router.add_get("/account/stars", handle_account_stars)
+    app.router.add_get("/account/coins", handle_account_coins)
+    app.router.add_post("/account/coins/convert", handle_account_convert)
+    app.router.add_get("/account/hearts", handle_account_hearts)
+    app.router.add_post("/account/hearts", handle_account_hearts)
+    app.router.add_post("/account/import", handle_account_import)
+    app.router.add_get("/admin/accounts", handle_admin_accounts)
+    app.router.add_post("/admin/accounts", handle_admin_accounts)
+    app.router.add_get("/admin/accounts/{ref}", handle_admin_account)
+    app.router.add_post("/admin/accounts/{ref}/{action}", handle_admin_account_action)
+    app.router.add_get("/admin/backup", handle_admin_backup)
+    app.router.add_post("/admin/restore", handle_admin_restore)
 
     target = keepalive_target()
     if target:
@@ -442,6 +772,7 @@ def main() -> None:
     log.info("serving content version %s (%d files)", app[MANIFEST]["version"], len(app[FILES]))
     log.info("device limits in %s storage: %s", app[STORE].kind, app[STORE].limits)
     log.info("coin defaults (env): %s", app[COINS].defaults)
+    log.info("sign-in email: %s; new accounts get %d books", app[MAILER].describe(), len(app[ACCOUNTS].default_books))
     if not app[ADMIN_KEY] or not app[REPORT_KEY]:
         log.warning("PIP_ADMIN_KEY or PIP_REPORT_KEY is not set: /admin or /usage is turned off")
     web.run_app(app, host=host, port=port)

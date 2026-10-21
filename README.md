@@ -13,49 +13,27 @@ iPad versions are in [`docs/screenshots`](docs/screenshots).
 
 ## Books
 
-The first screen is a shelf with every book, grouped by city, with a general Travel shelf last. Tap a cover to open it.
+The first screen is a shelf of the books on the family's account, grouped by city. Tap a cover to open it.
+
+A new account starts with these 12 books, the best ones for five famous travel cities (`PIP_DEFAULT_BOOKS` on
+the server; `Account.defaultBooks` in the app). The rest of the library (more Paris, Barcelona and Beijing
+books, Lake Tahoe, Hawaii, Chengdu, Longyan, Israel and the Travel shelf) stays hidden until the owner grants
+it to an account (see [Accounts](#accounts)).
 
 | City | Book (`id`) | Theme |
 |---|---|---|
 | Paris | Famous Places (`paris`) | The Seine, Eiffel Tower (repainting, sparkles), Louvre and Mona Lisa, Notre-Dame, Arc de Triomphe, toy sailboats |
 | Paris | Yummy Paris (`paris-food`) | Baguettes, pain au chocolat, macarons, crêpes, cheese, a market, a café, ice cream, snails, a picnic |
-| Paris | Fun & Art (`paris-fun`) | Carousels, puppet shows, a Seine boat, the Louvre's old castle, Orsay, Monet's water lilies, Montmartre painters and funicular, The Thinker, the river beach |
-| Paris | Notre-Dame (`paris-notre-dame`) | The island in the Seine, gargoyle rain spouts, chimeras, rose windows, the Emmanuel bell, the kind bell ringer, the 2019 fire and its firefighters, the rebuilders, the golden rooster on the spire, the 2024 reopening, Point Zéro |
 | Paris | Eiffel Tower (`paris-eiffel`) | The Iron Lady, building it in two years, rivets, Gustave Eiffel's name, repainting by hand every seven years, growing in summer heat, 674 steps, the lifts, fireworks, Eiffel's secret apartment, the hourly sparkle |
-| Paris | Jardin d'Acclimatation (`paris-jardin`) | The little train in, an 1860 park, peacocks and a white peahen, goose families, parrots, Enchanted River boats, the old carousel, puppet theater, the Korean garden |
-| Paris | Louvre Museum (`paris-louvre`) | The glass pyramid and the upside-down one, a king's palace, the very long hall, art copyists, the small Mona Lisa, Winged Victory, Venus de Milo, the giant sphinx, Egyptian coffins, too big for one day |
-| Paris | Palace of Versailles (`paris-versailles`) | The Sun King, the golden gate, the Hall of Mirrors, the king's getting-up crowd, huge gardens, orange trees in boxes, the Apollo fountain, Grand Canal rowboats, Marie Antoinette's hamlet and its farm |
-| Paris | Seine River Cruise (`paris-seine`) | Bateaux-mouches and waving, Pont Neuf, stone faces, Pont Alexandre III's gold, the Zouave flood gauge, houseboats, the bouquinistes' green boxes, the little Statue of Liberty, the 2024 Olympic boat parade, Swan Island |
-| Paris | Speak French (`paris-french`) | Travel French, one phrase per page: bonjour in shops, merci at the market, s'il vous plaît for crêpes, a croissant from the baker, oui and non on a carousel, je m'appelle with Guignol, où sont les toilettes, un-deux-trois macarons, j'aime la glace, excusez-moi on the métro, au revoir at the TGV. Milo role-plays the baker or shopkeeper so he says each phrase out loud |
 | London | London (`london`) | The Thames, Big Ben, Tower Bridge, buses, ravens, guards, London Eye, the Tube, the museum whale, fish and chips |
 | London | Big Ben (`london-big-ben`) | Big Ben the bell vs the Elizabeth Tower, who it's named after, the giant clock faces and minute hands, the bongs, the radio chimes, pennies on the pendulum, the Ayrton Light, 334 steps, Westminster Bridge |
 | Barcelona | Barcelona (`barcelona`) | Beach, Sagrada Família, Casa Batlló, Park Güell's dragon, churros, human towers, football, the magic fountain |
 | Barcelona | Park Güell (`barcelona-park-guell`) | A garden town where only two houses were built, gingerbread gatehouses, the mosaic dragon (or salamander) on the stairs, trencadís broken-tile mosaics, the hall of 86 columns and its ceiling suns, rainwater saved under the square, the long wavy bench, the leaning laundry portico, Gaudí's pink house, the hill with three crosses |
 | Barcelona | Sagrada Família (`barcelona-sagrada`) | A church still being built after 140+ years, cranes, Gaudí's 43 years on it, towers like sand castles, fruit on the pinnacles, a turtle and a tortoise holding up columns, a forest of columns with colored light, the magic square that adds up to 33, the wavy-roofed school, the upside-down chain model, Mary's glowing star, the tallest church tower |
-| Barcelona | Casa Batlló (`barcelona-casa-batllo`) | The stepped-roof house next door, bone-like pillars, mask balconies, the big wavy window, a swirly ceiling, the mushroom fireplace, the blue tiled light well, the white arches in the attic, the dragon-scale roof, Sant Jordi's lance, mosaic chimneys, roses for Sant Jordi day |
-| Barcelona | Tibidabo (`barcelona-tibidabo`) | A 1901 amusement park on a mountain, a Latin name meaning "I will give you", the Cuca de Llum funicular, the Tramvia Blau, the red airplane flying since 1928, the Ferris wheel, the Talaia, the automaton museum, the temple on top, the view to the sea, wild boars in the forest |
-| Barcelona | Montjuïc Cable Car (`barcelona-montjuic`) | A green hill by the sea, cable cars up to the castle, the castle and its cannon, the old port cable car over the water, the Magic Fountain's music and lights, the big palace museum, the 1992 Olympic stadium, the burning-arrow cauldron, the Calatrava tower, cactus gardens, the Poble Espanyol village |
-| Lake Tahoe | Lake Tahoe (`tahoe`) | Half California, half Nevada, deeper than the Empire State Building is tall, so clear you see the rocks, Emerald Bay's teahouse island, Vikingsholm's grass roof, Sand Harbor boulders, kayaks, black bears, the Truckee River, a lake that never freezes, the 1960 Olympics |
-| Lake Tahoe | Heavenly (`tahoe-heavenly`) | Winter: the village gondola, the lake-view deck, skiing from California into Nevada, chairlifts, ski school, pizza and french fries, the magic carpet, tubing, snow guns, hot cocoa |
-| Lake Tahoe | Northstar (`tahoe-northstar`) | Winter: the village ice rink, s'mores by the fire, chairlifts through the pines, a far-off lake view, ski school, corduroy snow, night snowcats, tubing, snowy pines, cocoa |
-| Hawaii | Hawaii (`hawaii`) | Volcano islands, the eight-stripe flag, Kīlauea lava, black sand, honu turtles (look, don't touch), leis, hula stories, ancient surfing, humpback whales, shave ice, the humuhumunukunukuāpuaʻa, the nēnē goose, what aloha means |
-| Hawaii | Honolulu (`hawaii-honolulu`) | Waikīkī's gentle surf, Diamond Head crater, ʻIolani Palace, King Kamehameha's long leis, Duke's statue, Hanauma Bay fish, outrigger canoes, Aloha Tower, the aquarium, spam musubi |
-| Chengdu | Chengdu (`chengdu`) | Ni hao, China's five-star flag, giant pandas munching bamboo, tiny pink panda babies, red pandas' stripy tails, hot pot, tingly Sichuan peppercorns, face-changing opera masks, People's Park teahouses (long-spout kettles, ear cleaners, mahjong), Jinli's lanterns and sugar painting, Zhuge Liang's straw-boat arrow legend, the 2,000-year-old Dujiangyan river system, the Leshan Giant Buddha, the Wide and Narrow Alleys |
-| Longyan | Longyan (`longyan`) | A city in green Fujian mountains, round earth tulou houses, Hakka families living together, earth walls with bamboo inside, one big door, a well in the courtyard, Chengqi Lou's four rings and ~400 rooms, Zhencheng Lou's eight pizza slices, kitchens below and beds on top, Hakka stuffed tofu, Guanzhai's red cliffs, South China tigers on Meihua Mountain, the Ting River, Hakka mountain songs |
 | Beijing | Beijing (`beijing`) | China's capital, the sunrise flag raising at Tiananmen, hutong alleys and courtyard homes, pedal rickshaws, crispy Peking duck in pancakes, tanghulu candied fruit, swallow and dragon kites, pandas at Beijing Zoo, the long subway, the Bird's Nest and both Olympics, painted opera faces, the Drum Tower's time-telling drums |
 | Beijing | Great Wall (`beijing-great-wall`) | Mutianyu's walkway, about 21,000 km of walls, 2,000 years of builders and old rammed-earth walls, battlements, watchtowers, smoke-by-day fire-by-night beacons, sticky-rice mortar, the Mutianyu cable car and toboggan, steep steps, the seen-from-space myth, snow at Badaling, Old Dragon Head at the sea |
 | Beijing | Forbidden City (`beijing-forbidden-city`) | The Meridian Gate, why it was forbidden, the moat and corner towers, the 9,999½ rooms legend, the emperor's yellow roofs, the little roof animals, the lion and cub, the Hall of Supreme Harmony and dragon throne, the Nine Dragon Wall, fire vats kept warm in winter, palace cats, the Imperial Garden |
-| Beijing | Summer Palace (`beijing-summer-palace`) | A royal summer escape, Kunming Lake, Longevity Hill made from the lake's dirt, the Long Corridor and its 14,000 paintings, the stone Marble Boat, the Seventeen-Arch Bridge and its lions, winter-solstice golden arches, the bronze ox, pretend shopping on Suzhou Street, Cixi's three-floor opera stage, lotus, ice skating |
-| Beijing | Temple of Heaven (`beijing-temple-of-heaven`) | Praying for good harvests, the round three-roof blue hall, wood without nails, pillars for seasons, months and hours, round heaven and square earth, the echoing center stone, the whispering Echo Wall, the raised walkway, old cypresses, morning tai chi, jianzi kicking, water calligraphy |
 | Shanghai | Shanghai (`shanghai`) | A huge port city, the Huangpu River, the old Bund, the Oriental Pearl Tower's glass floor, twisty Shanghai Tower, the bottle opener, the floating maglev train, xiaolongbao soup dumplings, Yu Garden, the zigzag bridge, the Disneyland castle, the lights at night, a ferry goodbye |
-| Israel | Tel Aviv (`israel-tel-aviv`) | A sunny city by the sea founded with a seashell lottery, lifeguard huts and beach flags, matkot paddle ball (count hits together, no winner), the tayelet seaside path, Jaffa's old port and Andromeda's Rock legend, the Jaffa clock tower and flea market, the Carmel shuk (taste before you buy), falafel and tahini, the White City's Bauhaus houses, Tel-O-Fun bikes, Yarkon Park's paddle boats, giraffes at the Ramat Gan Safari, a sunset goodbye |
-| Israel | Dead Sea (`israel-dead-sea`) | A lake of salt (Yam HaMelach), the sea-level sign and the lowest land on Earth, ten times saltier than the ocean, floating safely with a newspaper, why no fish live there, salt "mushrooms" and cube crystals, black mud statues, Mount Sodom's salt caves, Ein Gedi's desert waterfalls, ibex horn rings, the whistling rock hyrax (an elephant cousin), the Masada cable car and Snake Path, sunrise over the water |
-| Israel | Hebrew Words (`israel-hebrew`) | First Hebrew words, one per page with the Hebrew word on its own line above an English sentence he can read: Ivrit and reading right to left, shalom, boker tov, toda (and bevakasha), mayim, yam, glida, tapuz (golden apple), kelev (dogs say hav hav), gamal, counting achat-shtayim-shalosh, lehitraot. Milo's notes give pronunciations and little role-plays |
-| Travel | Take a Flight (`travel-flight`) | Check-in and the moving belt, the scanner that sees inside bags, the boarding pass, watching planes at the gate, the window seat, the seatbelt light, a snack when ears pop, above the clouds, two pilots, the cabin crew, wheels down |
-| Travel | Pack Your Bag (`travel-packing`) | A checklist, rolling clothes, toothbrush, a teddy from home, a backpack with a snack and a book, small bottles in a clear bag, weighing the bag, a name tag, packing for the weather, zipping it shut |
-| Travel | Passport (`travel-passport`) | What a passport is, the calm-face photo, cover colors, pretty pages and secret glowing marks, entry stamps, passport control, e-gates, a grown-up keeps it safe, kids' passports renewing sooner |
-| Travel | Hotel Stay (`travel-hotel`) | The front desk, the luggage cart, the key card, the lift, how room numbers show the floor, quiet hallways, no bed jumping, the view, Do Not Disturb, towel animals, the breakfast buffet, the pool with a grown-up |
-| Travel | Jet Lag (`travel-jetlag`) | Clocks around the world, day here and night there, time zones, the body clock, sleepy days and owl nights, why flying east is harder, sunshine, water, short naps, eating and sleeping at the new time (no medicine advice) |
 
 Books are JSON files in [`LittleExplorer/Resources/Books`](LittleExplorer/Resources/Books) with 10–14 pages each.
 Every page has a 4–12 word sentence, hidden `about` notes for Milo, and a photo. The shelf order is `BookLibrary.order`.
@@ -64,7 +42,8 @@ Travel books have `"city": "Travel"` and `"kind": "travel"`: they share one Trav
 badge (`travel-flag.png`), Milo is told they are general travel books rather than about one city, and they
 don't give a Passport stamp.
 
-Hearts are stored on the device as `<book id>/<page id>`, so each themed book keeps its own hearts.
+Hearts are stored as `<book id>/<page id>`, so each themed book keeps its own hearts. They are saved on the
+device and, when signed in, on the account so every device shows the same ones.
 Grown-ups can see the loved pages for every book behind the parent gate (the "Grown-ups" button after the last
 shelf of the library). The gate writes a random number from 101 to 999 in words, like "three hundred forty-eight", and the
 grown-up types its digits on the gate's number pad (no multiple choice, no digits in the prompt). Round hundreds
@@ -82,6 +61,72 @@ python3 scripts/fetch_photos.py --only paris-fun/carousel --force   # re-fetch o
 ```
 
 Pin a specific file by setting the page's `photo.commonsTitle`.
+
+## Accounts
+
+A grown-up signs in with an email and a 6-digit code sent to it; there are no passwords, and signing up is the
+same as signing in. Each account has its own books, stars, coins and hearts, shared by every iPad and iPhone
+signed in with that email. The only personal data is the grown-up's email: nothing about the child is asked for.
+
+- **Signed out**, the app shows a welcome screen for grown-ups. Tapping **Sign in or sign up** opens the parent
+  gate first, then asks for the email and the code. The code works for 10 minutes and 5 tries; a new one can be
+  sent after 60 seconds (at most 5 an hour per email, 20 an hour per network, and `PIP_EMAIL_DAILY_CAP`, default
+  100, a day in all). The sign-in token is kept in the Keychain on this device only.
+- **Signed in**, the shelf shows the account's books. **Sign out** and **Delete account…** are in the Grown-ups
+  corner (behind the gate). Signing out keeps everything on the server. Deleting asks for a new code sent to
+  the account's email, then removes the email, books list, stars, coins and hearts from the server and signs
+  out every device (Apple requires apps with accounts to offer this).
+- Each account's copy of the stars, coins and hearts is saved on the device per account, so they show offline,
+  and is removed on sign-out. What the device saved before accounts stays under its old keys and is never deleted.
+- Milo's daily time limits stay per device (see [Naps and daily limits](#naps-and-daily-limits-per-device)).
+
+**Devices from before accounts.** Stars and coins used to belong to a device id. The first account a device
+signs in to claims them (`legacy_account_id`), and the app sends that account what it kept only on the device:
+its hearts, and any stars the server is missing (`POST /account/import`, safe to repeat). A different account
+signing in on that device later starts with its own things. Stars Milo gives while a device is signed in go to
+the account. Older app builds keep working: `GET /stars?device=`, `GET /coins?device=` and `POST /coins/convert`
+answer with the account's stars and coins when the device is linked to one, and the agent didn't change.
+
+**Email.** The server sends the codes with SMTP (Gmail with an App Password) or [Resend](https://resend.com):
+
+| Env var | What it is |
+|---|---|
+| `PIP_AUTH_SECRET` | Long random string; codes and sign-in tokens are stored as HMACs with it. Required. |
+| `PIP_EMAIL_PROVIDER` | `smtp`, `resend`, or `console` (local development: logs the code instead of sending it) |
+| `PIP_EMAIL_FROM` | Sender, e.g. `Little Explorer <you@gmail.com>` |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD` | e.g. `smtp.gmail.com`, `587` (STARTTLS; `465` uses SSL), the Gmail address and a Gmail App Password |
+| `RESEND_API_KEY` | For `resend` |
+| `PIP_DEFAULT_BOOKS` | Comma-separated book ids for new accounts (default: the 12 books above) |
+| `PIP_EMAIL_DAILY_CAP` | Most codes sent a day, for all emails together (default 100) |
+| `PIP_REVIEW_EMAIL`, `PIP_REVIEW_CODE` | Optional: an email that signs in with a fixed code and no email, for App Store review |
+
+Without an email provider, `POST /auth/start` answers `503 email_off`.
+
+**Endpoints** (all with the app's access key; signed-in ones also with `X-Pip-Session: <token>`):
+`POST /auth/start {email, purpose?}`, `POST /auth/verify {email, code, device}` (returns `token`, `account`,
+`claimed_device`), `POST /auth/signout`, `GET /account`, `POST /account/delete {code}`, `GET /account/stars`,
+`GET /account/coins`, `POST /account/coins/convert`, `GET`/`POST /account/hearts {loved, unloved}` and
+`POST /account/import {stars, hearts}`. Errors: `bad_email`, `bad_code` (with `tries_left`), `expired`,
+`too_many` (with `retry_after_s`), `signed_out`.
+
+**Owner tools.** Grant books, link devices and back up the data with `tools/devices.py` (from `server/`):
+
+```sh
+uv run python tools/devices.py accounts                               # every account: books, devices, stars, coins
+uv run python tools/devices.py account mom@example.com                # one account and its devices
+uv run python tools/devices.py create-account mom@example.com --all-books
+uv run python tools/devices.py grant mom@example.com hawaii tahoe     # show more books; revoke hides them again
+uv run python tools/devices.py all-books mom@example.com on           # every book, including future ones
+uv run python tools/devices.py link mom@example.com <device id>       # as if it signed in there; it claims the device
+uv run python tools/devices.py unlink mom@example.com <device id>
+uv run python tools/devices.py backup                                 # every table to backups/<time>.json (git-ignored)
+uv run python tools/devices.py restore backups/<time>.json            # replaces ALL data, asks first
+```
+
+The same as HTTP: `GET`/`POST /admin/accounts`, `GET /admin/accounts/<email or id>`,
+`POST /admin/accounts/<ref>/link|unlink {device}`, `POST /admin/accounts/<ref>/books {grant, revoke, all_books}`,
+`GET /admin/backup` and `POST /admin/restore {"confirm": "restore", "backup": ...}`, all with
+`Authorization: Bearer $PIP_ADMIN_KEY`. The device list shows each device's account.
 
 ## Read aloud
 
@@ -333,8 +378,8 @@ The grown-up can convert as many coins as the stars cover (stepper, or quick pic
 the server sets a maximum. The kid can't convert. His coins (a gold dollar coin) always show next to the stars
 on the library badge and in the Passport, even at 0.
 
-The token server owns the rules and the balance. It keeps a ledger per device (`coin_conversions`), so coins
-survive a reinstall and an app can't convert more stars than the server has stored. Spending stars lowers the
+The token server owns the rules and the balance. It keeps a ledger per account (per device for a device that
+isn't signed in; `coin_conversions`), so coins survive a reinstall and an app can't convert more stars than the server has stored. Spending stars lowers the
 number on the badge and in the book, but badges and Passport progress keep counting every star he ever earned,
 so converting never takes a badge away. Older app builds ignore coins and keep showing all his stars.
 
@@ -407,7 +452,8 @@ changed, runs the server tests, and deploys only the pieces that need it:
 
 - **Render** builds `server/Dockerfile.web` from the repo root. Its env vars are
   `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET`, `PIP_ACCESS_KEY`, `KEEPALIVE_SECONDS`, `DATABASE_URL`,
-  `PIP_ADMIN_KEY` and `PIP_REPORT_KEY`, set in the Render dashboard, not in git. A free service sleeps after 15 idle minutes, so with `KEEPALIVE_SECONDS` set the
+  `PIP_ADMIN_KEY`, `PIP_REPORT_KEY` and the [account email settings](#accounts) (`PIP_AUTH_SECRET`,
+  `PIP_EMAIL_PROVIDER`, `PIP_EMAIL_FROM`, `SMTP_*`), set in the Render dashboard, not in git. A free service sleeps after 15 idle minutes, so with `KEEPALIVE_SECONDS` set the
   server pings its own `/healthz` to stay awake (one always-on service fits in the free 750 hours a month). If it
   does fall asleep (e.g. after a redeploy fails), the first token takes about a minute.
 - **Agent:** `scripts/deploy_agent.sh` reads the env file, uploads `OPENAI_API_KEY` and the `PIP_*` settings as
