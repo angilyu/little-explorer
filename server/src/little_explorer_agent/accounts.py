@@ -9,6 +9,8 @@ A good code returns a session token (only its SHA-256 is stored) that the app ke
 and sends as ``X-Pip-Session``. Signing in also *links* the device to the account (see
 :mod:`.devices`): its stars and coins become the account's, shared by every device signed in to it.
 The first account a device links to also claims what the device earned before accounts existed.
+Milo's daily minutes are the account's too: a new account gets ``PIP_LIMIT_UNKNOWN_MIN`` (10) a
+day until the owner approves it (``PIP_LIMIT_APPROVED_MIN``, 60), blocks it or sets its own limit.
 
 A new account's shelf is ``PIP_DEFAULT_BOOKS`` (comma-separated ids); the owner can grant more, or
 every book (``all_books``), with ``tools/devices.py``.
@@ -28,7 +30,7 @@ from collections.abc import Callable, Iterable, Mapping, Sequence
 from dataclasses import dataclass
 from typing import Any
 
-from .devices import STAR_ID, STARS_PER_AWARD, DeviceStore, Scope, valid_device_id
+from .devices import STAR_ID, STARS_PER_AWARD, DeviceStore, Scope, limit_min, valid_device_id
 
 log = logging.getLogger("little_explorer.accounts")
 
@@ -513,6 +515,8 @@ class Accounts:
         ):
             counts[table] = ex(cur, f"DELETE FROM {table} WHERE {column} = ?", (account_id,)).rowcount
         ex(cur, "DELETE FROM email_codes WHERE email = ?", (email,))
+        # Session minutes stay as the device's (they're how much Milo was used, not the account's).
+        ex(cur, "UPDATE sessions SET account_id = NULL WHERE account_id = ?", (account_id,))
         ex(cur, "UPDATE devices SET account_id = NULL WHERE account_id = ?", (account_id,))
         ex(cur, "UPDATE devices SET legacy_account_id = NULL WHERE legacy_account_id = ?", (account_id,))
         ex(cur, "DELETE FROM accounts WHERE id = ?", (account_id,))
@@ -588,8 +592,33 @@ class Accounts:
 
     # -- owner -----------------------------------------------------------------------------------
 
+    def milo(self, account_id: str) -> dict[str, Any]:
+        """The account's Milo status, limit and minutes today."""
+        day = self.store.day_of()
+        return self.store._run(lambda cur: self.store.milo_of(cur, account_id, day))
+
+    def set_milo(
+        self, ref: str, *, status: str | None = None, daily_limit_min: float | None = None, clear_limit: bool = False
+    ) -> Account:
+        """Approve, block or unblock (``unknown``) an account found by email or id, or set its limit."""
+
+        def run(cur: Any) -> Account:
+            account = self._by_ref(cur, ref)
+            if not account:
+                raise LookupError(ref)
+            self.store.set_milo(
+                cur, account.id, status=status, daily_limit_min=daily_limit_min, clear_limit=clear_limit
+            )
+            return account
+
+        account = self.store.transaction(run)
+        log.info("account %s Milo -> status %s, limit %s", account.id, status, None if clear_limit else daily_limit_min)
+        return account
+
     def summary(self) -> list[dict[str, Any]]:
-        """Every account with its devices and totals, for ``GET /admin/accounts``."""
+        """Every account with its devices, totals and Milo time, for ``GET /admin/accounts``."""
+        day = self.store.day_of()
+        limits = self.store.limits
 
         def run(cur: Any) -> list[tuple[Any, ...]]:
             return self.store._exec(
@@ -600,8 +629,11 @@ class Accounts:
                     (SELECT COALESCE(SUM(s.stars), 0) FROM stars s WHERE s.account_id = a.id),
                     (SELECT COALESCE(SUM(c.stars_spent), 0) FROM coin_conversions c WHERE c.account_id = a.id),
                     (SELECT COALESCE(SUM(c.coins), 0) FROM coin_conversions c WHERE c.account_id = a.id),
-                    (SELECT COUNT(*) FROM hearts h WHERE h.account_id = a.id)
+                    (SELECT COUNT(*) FROM hearts h WHERE h.account_id = a.id),
+                    a.milo_status, a.daily_limit_min,
+                    (SELECT COALESCE(SUM(m.duration_s), 0) FROM sessions m WHERE m.account_id = a.id AND m.day = ?)
                 FROM accounts a ORDER BY a.created_at""",
+                (day,),
             ).fetchall()
 
         return [
@@ -617,6 +649,10 @@ class Accounts:
                 "stars_spent": int(r[8]),
                 "coins": int(r[9]),
                 "hearts": int(r[10]),
+                "milo_status": r[11],
+                "daily_limit_min": r[12],
+                "limit_min": 0.0 if r[11] == "blocked" else limit_min(r[11], r[12], limits),
+                "today_min": round(float(r[13] or 0) / 60, 1),
             }
             for r in self.store._run(run)
         ]

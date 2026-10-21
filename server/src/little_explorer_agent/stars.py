@@ -120,6 +120,8 @@ class StarAward:
     stars: int
     words: int
     reason: str
+    # The signed-in account the stars are for (from the dispatch metadata); empty for old apps.
+    account_id: str = ""
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -175,6 +177,7 @@ class StarKeeper:
     device's time zone (see :func:`device_clock`), which also decides the day for the page limit."""
 
     device_id: str = ""
+    account_id: str = ""
     room: str = ""
     rules: StarRules = field(default_factory=StarRules)
     clock: Callable[[], float] = time.monotonic
@@ -257,6 +260,7 @@ class StarKeeper:
         award = StarAward(
             id=uuid.uuid4().hex,
             device_id=self.device_id,
+            account_id=self.account_id,
             room=self.room,
             awarded_at=self.wall().isoformat(timespec="seconds"),
             book=book,
@@ -307,10 +311,11 @@ def count_page_stars(awards: Sequence[Mapping[str, Any]]) -> dict[tuple[str, str
 
 
 async def fetch_page_stars(
-    device_id: str, target: tuple[str, str] | None = None, timeout: float = 4.0
+    device_id: str, target: tuple[str, str] | None = None, timeout: float = 4.0, *, account_id: str = ""
 ) -> dict[tuple[str, str, str], int] | None:
-    """Stars this device already has on each page each day, from the token server (``GET /stars``
-    with the report key), so the 5-per-page daily limit holds across sessions. None if unreadable."""
+    """Stars the account (or, for an old app, this device) already has on each page each day, from
+    the token server (``GET /stars`` with the report key), so the 5-per-page daily limit holds
+    across sessions and devices. None if unreadable."""
     from urllib.parse import quote
 
     from aiohttp import ClientSession, ClientTimeout
@@ -318,12 +323,13 @@ async def fetch_page_stars(
     from .usage import report_target
 
     target = report_target(path="stars") if target is None else target
-    if target is None or not device_id:
+    if target is None or not (device_id or account_id):
         return None
     url, key = target
+    query = f"account={quote(account_id)}" if account_id else f"device={quote(device_id)}"
     try:
         async with ClientSession(timeout=ClientTimeout(total=timeout)) as http:
-            async with http.get(f"{url}?device={quote(device_id)}", headers={"Authorization": "Bearer " + key}) as resp:
+            async with http.get(f"{url}?{query}", headers={"Authorization": "Bearer " + key}) as resp:
                 if resp.status != 200:
                     log.warning("could not read earlier stars: HTTP %s", resp.status)
                     return None
@@ -341,5 +347,6 @@ def star_payload(award: StarAward, total: int) -> bytes:
 
     data = award.to_dict()
     data.pop("room", None)
+    data.pop("account_id", None)
     data["session_total"] = total
     return json.dumps(data).encode()

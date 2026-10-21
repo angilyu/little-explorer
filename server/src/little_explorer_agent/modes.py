@@ -61,10 +61,12 @@ def job_metadata(
     remaining_s: float | None = None,
     intro: str | None = None,
     tz: str | None = None,
+    account_id: str | None = None,
 ) -> str | None:
     """Dispatch metadata from the token server: the engine, the device, how many seconds it may
-    still talk today (the agent ends the session then), whether the app plays the intro and the
-    device's time zone (stars count per page per local day)."""
+    still talk today (the agent ends the session then), whether the app plays the intro, the
+    device's time zone (stars count per page per local day) and the account whose minutes and
+    stars these are."""
     data: dict[str, object] = {}
     if mode:
         data["pip_mode"] = mode
@@ -76,6 +78,8 @@ def job_metadata(
         data["intro"] = intro
     if tz:
         data["tz"] = tz
+    if account_id:
+        data["account_id"] = account_id
     return json.dumps(data) if data else None
 
 

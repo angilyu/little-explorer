@@ -1,15 +1,22 @@
-"""Which devices may talk to Milo, and for how long each day.
+"""Who may talk to Milo, and for how long each day.
 
-Each app install sends a stable device id (kept in the Keychain) with its name and model. The token
-server records it here and checks its minutes for today before handing out a token; the agent
-reports every session's length and estimated cost when it ends (``POST /usage``).
+Milo's daily time belongs to the grown-up's *account* (see :mod:`.accounts`). The app sends its
+session (``X-Pip-Session``) with ``/token``; an old build without one counts as the account its
+device is linked to. The token server checks the account's minutes for today (every device signed
+in to it together) before handing out a token, and the agent reports every session's length and
+estimated cost when it ends (``POST /usage``), stamped with the account.
 
-A device is ``unknown`` until the owner approves it, ``approved``, or ``blocked``:
+An account's Milo status is ``unknown`` until the owner approves it, ``approved``, or ``blocked``:
 
-* unknown devices get ``PIP_LIMIT_UNKNOWN_MIN`` (10) minutes a day. Going over blocks them until
-  the owner unblocks or approves them.
-* approved devices get ``PIP_LIMIT_APPROVED_MIN`` (60) minutes a day, then rest until tomorrow.
-* a per-device ``daily_limit_min`` overrides either.
+* unknown accounts get ``PIP_LIMIT_UNKNOWN_MIN`` (10) minutes a day, then Milo rests until tomorrow.
+* approved accounts get ``PIP_LIMIT_APPROVED_MIN`` (60) minutes a day, then rest until tomorrow.
+* blocked accounts get none.
+* a per-account ``daily_limit_min`` overrides either.
+
+Each app install also sends a stable device id (kept in the Keychain) with its name and model; it
+is recorded as which device was used. Only an old build on a device that isn't linked to any
+account still gets the per-device rules: the same statuses and limits on the device, except an
+unknown device that goes over its limit is blocked until the owner unblocks or approves it.
 
 Days run midnight to midnight in ``PIP_TIMEZONE`` (America/Los_Angeles).
 
@@ -161,12 +168,18 @@ COLUMNS = (
     ("devices", "legacy_account_id", "TEXT"),
     ("stars", "account_id", "TEXT"),
     ("coin_conversions", "account_id", "TEXT"),
+    ("accounts", "milo_status", "TEXT NOT NULL DEFAULT 'unknown'"),
+    ("accounts", "daily_limit_min", "REAL"),
+    ("sessions", "account_id", "TEXT"),
 )
 INDEXES = (
     "CREATE INDEX IF NOT EXISTS stars_account ON stars (account_id)",
     "CREATE INDEX IF NOT EXISTS coin_conversions_account ON coin_conversions (account_id)",
     "CREATE INDEX IF NOT EXISTS devices_account ON devices (account_id)",
+    "CREATE INDEX IF NOT EXISTS sessions_account_day ON sessions (account_id, day)",
 )
+# One-time data moves, each recorded in ``settings`` once done (see ``DeviceStore._migrate``).
+MILO_PER_ACCOUNT = "migration.milo_per_account"
 # Every table, for /admin/backup and restore (in an order that restores cleanly).
 TABLES = (
     "devices", "sessions", "stars", "coin_conversions", "settings",
@@ -256,14 +269,33 @@ class Device:
         return self.label or self.name or self.id
 
     def limit_min(self, limits: Limits) -> float:
-        if self.daily_limit_min is not None:
-            return float(self.daily_limit_min)
-        return limits.approved_min if self.status == "approved" else limits.unknown_min
+        return limit_min(self.status, self.daily_limit_min, limits)
+
+
+def limit_min(status: str, daily_limit_min: float | None, limits: Limits) -> float:
+    """Minutes a day for a status (blocked is refused before this matters), or the custom limit."""
+    if daily_limit_min is not None:
+        return float(daily_limit_min)
+    return limits.approved_min if status == "approved" else limits.unknown_min
+
+
+@dataclass(frozen=True)
+class MiloAccount:
+    """An account's Milo status and custom limit (the rest of the account is in :mod:`.accounts`)."""
+
+    id: str
+    email: str
+    status: str = "unknown"
+    daily_limit_min: float | None = None
+
+    def limit_min(self, limits: Limits) -> float:
+        return limit_min(self.status, self.daily_limit_min, limits)
 
 
 @dataclass(frozen=True)
 class Decision:
-    """Whether a device may start a session now, and for how many seconds at most."""
+    """Whether a device may start a session now, and for how many seconds at most. ``account_id``
+    is whose minutes they are (None for an unlinked device on the per-device rules)."""
 
     allowed: bool
     reason: str  # ok | blocked | limit
@@ -271,6 +303,7 @@ class Decision:
     used_s: float = 0.0
     limit_s: float = 0.0
     device: Device | None = None
+    account_id: str | None = None
 
 
 _DEVICE_COLUMNS = "id, name, model, label, status, daily_limit_min, unblocked_on, first_seen, last_seen"
@@ -362,13 +395,52 @@ class DeviceStore:
         return {r[1] for r in cur.execute(f"PRAGMA table_info({table})").fetchall()}
 
     def _migrate(self, cur: Any) -> None:
-        """Add columns newer than the tables (only ever adds; old builds ignore them)."""
+        """Add columns newer than the tables (only ever adds; old builds ignore them), then run any
+        one-time data move not done yet."""
         for table, column, kind in COLUMNS:
             if column not in self._columns(cur, table):
                 cur.execute(f"ALTER TABLE {table} ADD COLUMN {column} {kind}")
                 log.info("added column %s.%s", table, column)
         for statement in INDEXES:
             cur.execute(statement)
+        if not self._exec(cur, "SELECT 1 FROM settings WHERE key = ?", (MILO_PER_ACCOUNT,)).fetchone():
+            cur.execute("BEGIN")
+            try:
+                moved = self._milo_per_account(cur)
+                self._exec(
+                    cur,
+                    "INSERT INTO settings (key, value, updated_at) VALUES (?, ?, ?)",
+                    (MILO_PER_ACCOUNT, "done", self.now().isoformat(timespec="seconds")),
+                )
+            except BaseException:
+                cur.execute("ROLLBACK")
+                raise
+            cur.execute("COMMIT")
+            log.info("moved Milo's minutes to accounts: %s", moved)
+
+    def _milo_per_account(self, cur: Any) -> dict[str, int]:
+        """Milo's minutes moved from devices to accounts: every session of a linked device counts
+        for its account (so today's minutes carry over), and an account is approved, or keeps a
+        custom limit, if one of its linked devices had."""
+        sessions = self._exec(
+            cur,
+            """UPDATE sessions SET account_id = (SELECT d.account_id FROM devices d WHERE d.id = sessions.device_id)
+            WHERE account_id IS NULL
+                AND device_id IN (SELECT id FROM devices WHERE account_id IS NOT NULL)""",
+        ).rowcount
+        approved = self._exec(
+            cur,
+            """UPDATE accounts SET milo_status = 'approved' WHERE milo_status = 'unknown' AND EXISTS
+                (SELECT 1 FROM devices d WHERE d.account_id = accounts.id AND d.status = 'approved')""",
+        ).rowcount
+        limits = self._exec(
+            cur,
+            """UPDATE accounts SET daily_limit_min =
+                (SELECT MAX(d.daily_limit_min) FROM devices d WHERE d.account_id = accounts.id)
+            WHERE daily_limit_min IS NULL AND EXISTS
+                (SELECT 1 FROM devices d WHERE d.account_id = accounts.id AND d.daily_limit_min IS NOT NULL)""",
+        ).rowcount
+        return {"sessions": max(sessions, 0), "approved": max(approved, 0), "limits": max(limits, 0)}
 
     def transaction(self, fn: Callable[[Any], T]) -> T:
         """Run ``fn(cursor)`` all-or-nothing."""
@@ -432,6 +504,26 @@ class DeviceStore:
     def scope(self, device_id: str) -> Scope:
         return self._run(lambda cur: self._scope(cur, device_id))
 
+    def _milo_account(self, cur: Any, account_id: object) -> MiloAccount | None:
+        if not valid_device_id(account_id):
+            return None
+        row = self._exec(
+            cur, "SELECT id, email, milo_status, daily_limit_min FROM accounts WHERE id = ?", (account_id,)
+        ).fetchone()
+        if not row:
+            return None
+        return MiloAccount(row[0], row[1], row[2] if row[2] in STATUSES else "unknown", row[3])
+
+    def _whose(self, cur: Any, account_id: object, device_id: str) -> MiloAccount | None:
+        """The account a session or star counts for: the one the agent named, else the device's link."""
+        return self._milo_account(cur, account_id) or self._milo_account(cur, self._account_of(cur, device_id))
+
+    def _account_used_s(self, cur: Any, account_id: str, day: str) -> float:
+        row = self._exec(
+            cur, "SELECT COALESCE(SUM(duration_s), 0) FROM sessions WHERE account_id = ? AND day = ?", (account_id, day)
+        ).fetchone()
+        return float(row[0] or 0)
+
     def _touch(self, cur: Any, device_id: str, name: str, model: str, now: datetime) -> Device:
         stamp = now.isoformat(timespec="seconds")
         self._exec(
@@ -472,28 +564,41 @@ class DeviceStore:
             device.status = "blocked"
         return device
 
-    def check(self, device_id: str, name: str = "", model: str = "", now: datetime | None = None) -> Decision:
-        """Record that ``device_id`` asked to talk, and decide whether it may (see module docs)."""
+    def check(
+        self,
+        device_id: str,
+        name: str = "",
+        model: str = "",
+        now: datetime | None = None,
+        account_id: str | None = None,
+    ) -> Decision:
+        """Record that ``device_id`` asked to talk, and decide whether it may: on ``account_id``'s
+        minutes (the signed-in account), else its linked account's, else its own (see module docs)."""
         now = now or self.now()
         day = self.day_of(now)
 
-        def run(cur: Any) -> tuple[Device, float, float]:
+        def run(cur: Any) -> tuple[Device, str | None, str, float, float]:
             device = self._touch(cur, device_id, _text(name), _text(model), now)
+            account = self._whose(cur, account_id, device_id)
+            if account:
+                used = self._account_used_s(cur, account.id, day)
+                return device, account.id, account.status, used, account.limit_min(self.limits) * 60
             used, limit = self._over_limit(cur, device, day)
             if device.status != "blocked" and limit - used < self.limits.min_start_s:
                 device = self._auto_block(cur, device, day, max(used, limit), limit)
-            return device, used, limit
+            return device, None, device.status, used, limit
 
-        device, used, limit = self._run(run)
-        if device.status == "blocked":
-            return Decision(False, "blocked", 0.0, used, limit, device)
+        device, account, status, used, limit = self._run(run)
+        if status == "blocked":
+            return Decision(False, "blocked", 0.0, used, limit, device, account)
         remaining = max(limit - used, 0.0)
         if remaining < self.limits.min_start_s:
-            return Decision(False, "limit", remaining, used, limit, device)
-        return Decision(True, "ok", remaining, used, limit, device)
+            return Decision(False, "limit", remaining, used, limit, device, account)
+        return Decision(True, "ok", remaining, used, limit, device, account)
 
     def record_session(self, report: Mapping[str, Any]) -> Device:
-        """Store one finished session (idempotent per room) and block an unknown device that went over."""
+        """Store one finished session (idempotent per room) for its account (the report's
+        ``account_id``, else the device's link), or block an unlinked unknown device that went over."""
         room = _text(report.get("room")) or None
         device_id = report.get("device_id") or ANONYMOUS
         if not room or not valid_device_id(device_id):
@@ -517,15 +622,20 @@ class DeviceStore:
 
         def run(cur: Any) -> Device:
             device = self._touch(cur, device_id, "", "", self.now())
+            account = self._whose(cur, report.get("account_id"), device_id)
             self._exec(
                 cur,
                 """INSERT INTO sessions (room, device_id, started_at, day, duration_s, mode, model, book,
-                    pages, responses, est_usd, ended_reason) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    pages, responses, est_usd, ended_reason, account_id)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ON CONFLICT (room) DO UPDATE SET duration_s = excluded.duration_s, pages = excluded.pages,
                     responses = excluded.responses, est_usd = excluded.est_usd,
-                    ended_reason = excluded.ended_reason""",
-                values,
+                    ended_reason = excluded.ended_reason,
+                    account_id = COALESCE(sessions.account_id, excluded.account_id)""",
+                (*values, account.id if account else None),
             )
+            if account:
+                return device
             used, limit = self._over_limit(cur, device, day)
             return self._auto_block(cur, device, day, used, limit)
 
@@ -538,8 +648,9 @@ class DeviceStore:
 
         Any award counts as one star, and a page that already has :data:`STARS_PER_PAGE` stars on
         this device (or its account) that day (any session; the day is :func:`award_day`, the
-        device's local date) gets no more, whatever build of the agent sent it. A linked device's
-        star is stamped with its account."""
+        device's local date) gets no more, whatever build of the agent sent it. The star is the
+        award's ``account_id``'s (the signed-in account the agent was told about), else the device's
+        linked account's, else the device's."""
         device_id = award.get("device_id") or ANONYMOUS
         if not valid_device_id(device_id):
             raise ValueError("a valid id and device_id are required")
@@ -548,7 +659,9 @@ class DeviceStore:
         values = self.star_values(award, device_id, self.day_of, self.now().isoformat(timespec="seconds"))
 
         def run(cur: Any) -> bool:
-            return self._insert_star(cur, self._scope(cur, device_id), values)
+            account = self._whose(cur, award.get("account_id"), device_id)
+            scope = Scope(account_id=account.id) if account else Scope(device_id=device_id)
+            return self._insert_star(cur, scope, values)
 
         return self._run(run)
 
@@ -746,9 +859,9 @@ class DeviceStore:
             return self._exec(
                 cur,
                 """SELECT s.day, s.device_id, COALESCE(MAX(d.label), ''), COALESCE(MAX(d.name), ''), COUNT(*),
-                    COALESCE(SUM(s.duration_s), 0), COALESCE(SUM(s.est_usd), 0)
-                FROM sessions s LEFT JOIN devices d ON d.id = s.device_id
-                WHERE s.day >= ? GROUP BY s.day, s.device_id ORDER BY s.day DESC, s.device_id""",
+                    COALESCE(SUM(s.duration_s), 0), COALESCE(SUM(s.est_usd), 0), COALESCE(a.email, '')
+                FROM sessions s LEFT JOIN devices d ON d.id = s.device_id LEFT JOIN accounts a ON a.id = s.account_id
+                WHERE s.day >= ? GROUP BY s.day, s.device_id, a.email ORDER BY s.day DESC, a.email, s.device_id""",
                 (since,),
             ).fetchall()
 
@@ -758,12 +871,49 @@ class DeviceStore:
                 "day": r[0],
                 "device_id": r[1],
                 "display_name": r[2] or r[3] or r[1],
+                "account": r[7] or None,
                 "sessions": int(r[4]),
                 "minutes": round(float(r[5]) / 60, 1),
                 "usd": round(float(r[6]), 4),
             }
             for r in rows
         ]
+
+    # -- accounts' Milo time ---------------------------------------------------------------------
+
+    def milo_of(self, cur: Any, account_id: str, day: str) -> dict[str, Any]:
+        """An account's Milo status, limit and minutes on ``day`` (for the owner's views)."""
+        account = self._milo_account(cur, account_id)
+        if not account:
+            return {}
+        return {
+            "status": account.status,
+            "daily_limit_min": account.daily_limit_min,
+            "limit_min": 0.0 if account.status == "blocked" else account.limit_min(self.limits),
+            "today_min": round(self._account_used_s(cur, account.id, day) / 60, 1),
+        }
+
+    def set_milo(
+        self,
+        cur: Any,
+        account_id: str,
+        *,
+        status: str | None = None,
+        daily_limit_min: float | None = None,
+        clear_limit: bool = False,
+    ) -> None:
+        """Change an account's Milo status or custom limit (unblocking is just ``unknown``: accounts
+        are never blocked automatically)."""
+        if status is not None and status not in STATUSES:
+            raise ValueError(f"status must be one of {', '.join(STATUSES)}")
+        if daily_limit_min is not None and daily_limit_min < 0:
+            raise ValueError("daily_limit_min must be >= 0")
+        if status is not None:
+            self._exec(cur, "UPDATE accounts SET milo_status = ? WHERE id = ?", (status, account_id))
+        if clear_limit:
+            self._exec(cur, "UPDATE accounts SET daily_limit_min = NULL WHERE id = ?", (account_id,))
+        elif daily_limit_min is not None:
+            self._exec(cur, "UPDATE accounts SET daily_limit_min = ? WHERE id = ?", (daily_limit_min, account_id))
 
     # -- backup ----------------------------------------------------------------------------------
 

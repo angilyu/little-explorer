@@ -39,8 +39,10 @@ enum VoiceError: LocalizedError {
     case tokenServer(status: Int)
     case unavailable
     case microphoneDenied
-    /// The server refused a token: this device is blocked or used up today's minutes.
+    /// The server refused a token: the account is blocked or used up today's minutes.
     case resting
+    /// The account sign-in on this device is no longer valid.
+    case signedOut
 
     var errorDescription: String? {
         switch self {
@@ -48,6 +50,7 @@ enum VoiceError: LocalizedError {
         case .unavailable: "Milo isn't available in this build."
         case .microphoneDenied: "Milo needs the microphone. Ask a grown-up to turn it on in Settings."
         case .resting: VoiceModeController.restNotice
+        case .signedOut: "Ask a grown-up to sign in again so Milo can talk."
         }
     }
 }

@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// Parent-only screen: the account, turning his stars into coins, voice server settings, and photo
-/// credits with links.
+/// Parent-only screen: the account, turning his stars into coins, book updates, and photo credits
+/// with links.
 struct ParentCornerView: View {
     let books: [Book]
 
@@ -11,8 +11,6 @@ struct ParentCornerView: View {
     @Environment(AccountStore.self) private var account
     @State private var confirmSignOut = false
     @State private var showDelete = false
-    @AppStorage(VoiceSettings.tokenServerKey) private var tokenServer = VoiceSettings.defaultTokenServer
-    @State private var device: DeviceInfo?
     @State private var coinsLoading = false
     @State private var coinsReached = true
     @State private var coinsToMake = 1
@@ -25,26 +23,6 @@ struct ParentCornerView: View {
             List {
                 accountSection
                 coinSection
-
-                Section {
-                    TextField("Token server URL", text: $tokenServer)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
-                        .keyboardType(.URL)
-                    Button("Reset to default") { tokenServer = VoiceSettings.defaultTokenServer }
-                    if let device {
-                        LabeledContent("This device") {
-                            Text(device.id)
-                                .font(.caption.monospaced())
-                                .textSelection(.enabled)
-                        }
-                        Button("Copy device id") { UIPasteboard.general.string = device.id }
-                    }
-                } header: {
-                    Text("Voice buddy (Milo)")
-                } footer: {
-                    Text("Milo's server hands out voice tokens and new books. The default is the hosted server; for a server on your Mac use http://127.0.0.1:8787 (simulator) or the Mac's address, e.g. http://192.168.1.20:8787. Audio is not recorded. Milo's minutes are counted per device: approve this device with `tools/devices.py approve <id>` for the longer daily limit.")
-                }
 
                 Section {
                     LabeledContent("Books version", value: content.version.map { String($0.prefix(8)) } ?? "Built in")
@@ -79,7 +57,6 @@ struct ParentCornerView: View {
             }
             .navigationTitle("Grown-ups corner")
             .task {
-                device = DeviceIdentity.current()
                 await loadCoins()
             }
             .toolbar {
@@ -112,7 +89,7 @@ struct ParentCornerView: View {
             } header: {
                 Text("Account")
             } footer: {
-                Text("Every iPad and iPhone signed in with this email shares the same books, stars and coins. The owner can add more books to the account.")
+                Text("Every iPad and iPhone signed in with this email shares the same books, stars, coins and Milo's daily talk time. The owner can add more books to the account.")
             }
             .sheet(isPresented: $showDelete) {
                 DeleteAccountView().environment(account)

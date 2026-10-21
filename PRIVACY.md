@@ -13,8 +13,9 @@ child reads, listens and, if the grown-up turns it on, talks with Milo, a voice 
   star records the book, the page, when it was earned, and a short note from Milo about the answer (a few
   words, not a recording). Earlier versions of the app also saved the pages the child marked with a heart
   ("hearts"). The app doesn't do that anymore; hearts already saved stay with the account until it is deleted.
-- **Device information:** a random id for each iPad or iPhone, its name and model, and how many minutes it
-  talked with Milo each day, so we can apply a daily time limit and see what the voice service costs.
+- **Milo time:** how many minutes each iPad or iPhone talked with Milo each day, and which account it was
+  signed in to, so we can apply the account's daily time limit (shared by its devices) and see what the voice
+  service costs. Each device is known by a random id, its name and model.
 - **Sign-in codes.** A code works for 10 minutes. We keep only a scrambled (hashed) form of it and clear it
   within two days. To stop abuse we also keep a scrambled form of the network address that asked for a code.
 
@@ -45,8 +46,8 @@ On the device, and on our server (hosted by [Render](https://render.com), with t
 In the app, open the **Grown-ups** corner (behind the grown-up check) and tap **Delete account…**. After you
 type a new code we email you, the account is deleted for good: its email, books list, stars, coins, hearts and
 sign-ins are removed from the server right away, and every device signed in to it is signed out. Backups made
-before that are overwritten over time. Device records (the random id and minutes used) aren't tied to an
-account; email us to remove them too.
+before that are overwritten over time. The minutes each device used are unlinked from the account and kept
+only with the device's random id; email us to remove them too.
 
 ## Children
 

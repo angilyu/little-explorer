@@ -1,13 +1,16 @@
-"""See who talks to Milo, and approve, block or unblock devices.
+"""See who talks to Milo, and approve, block, unblock or limit accounts (and old devices).
 
 Run from server/ (it reads ``PIP_SERVER_URL`` and ``PIP_ADMIN_KEY`` from the usual env file)::
 
     uv run python tools/devices.py                     # every device: today, totals, $
-    uv run python tools/devices.py usage --days 7      # minutes and $ per day and device
-    uv run python tools/devices.py approve "Leo's iPad" --label "Leo's iPad"
-    uv run python tools/devices.py block 3F2A...       # by id or name
-    uv run python tools/devices.py unblock 3F2A...
-    uv run python tools/devices.py limit "Leo's iPad" 90   # minutes a day; "default" to reset
+    uv run python tools/devices.py usage --days 7      # minutes and $ per day, device and account
+    uv run python tools/devices.py approve mom@example.com          # Milo's time is the account's:
+    uv run python tools/devices.py block mom@example.com            # an email means the account
+    uv run python tools/devices.py unblock mom@example.com
+    uv run python tools/devices.py limit mom@example.com 90         # minutes a day; "default" to reset
+    uv run python tools/devices.py approve "Leo's iPad" --label "Leo's iPad"   # old builds that never
+    uv run python tools/devices.py block 3F2A...       # signed in: by device id or name
+    uv run python tools/devices.py limit "Leo's iPad" 90
     uv run python tools/devices.py rename 3F2A... "Grandma's iPhone"
     uv run python tools/devices.py coins               # star-to-coin rules in force
     uv run python tools/devices.py coins rate=20 max=5 # change them; "off"/"on", "<key>=default"
@@ -25,7 +28,9 @@ Run from server/ (it reads ``PIP_SERVER_URL`` and ``PIP_ADMIN_KEY`` from the usu
     uv run python tools/devices.py restore backups/<time>.json        # asks before replacing all data
 
 ``--direct`` skips the token server and uses ``DATABASE_URL`` (or the local SQLite file) directly.
-The app shows its device id in the Grown-ups corner. Accounts take an email or an account id.
+Accounts take an email or an account id; approve, block, unblock and limit take an email for an
+account and a device id or name otherwise. A signed-in app's minutes count for its account, and so
+do an old build's on a device that is linked to one; only unlinked devices go by their own status.
 """
 
 from __future__ import annotations
@@ -151,12 +156,22 @@ class Admin:
                     accounts.link(ref, body["device"], body.get("claim", True))
                 elif action == "unlink":
                     accounts.unlink(body["device"])
+                elif action == "milo":
+                    limit = body.get("daily_limit_min")
+                    accounts.set_milo(
+                        ref,
+                        status=body.get("status"),
+                        daily_limit_min=limit,
+                        clear_limit="daily_limit_min" in body and limit is None,
+                    )
                 else:
                     accounts.set_books(
                         ref, grant=body.get("grant") or [], revoke=body.get("revoke") or [], all_books=body.get("all_books")
                     )
-            except (LookupError, ValueError) as exc:
-                raise SystemExit(str(exc) or "no such account") from None
+            except LookupError:
+                raise SystemExit(f"no such account: {ref}") from None
+            except ValueError as exc:
+                raise SystemExit(str(exc)) from None
             return self._detail(ref)
         return self._call("POST", f"/admin/accounts/{urllib.parse.quote(ref, safe='')}/{action}", body)
 
@@ -197,6 +212,7 @@ class Admin:
             "star_days": len({str(s["awarded_at"])[:10] for s in stars}),
             "coins": CoinLedger.from_env(self.store).balance_of(scope).as_json(),
             "hearts": len(accounts.hearts(account.id)),
+            "milo": accounts.milo(account.id),
         }
 
 
@@ -208,12 +224,15 @@ def _table(rows: list[list[str]]) -> str:
 def show_devices(data: dict[str, Any]) -> str:
     limits = data["limits"]
     head = (
-        f"Today is {data['day']}. Daily limits: unknown {limits['unknown_min']:g} min "
-        f"(blocked when used up), approved {limits['approved_min']:g} min."
+        f"Today is {data['day']}. Daily limits: unknown {limits['unknown_min']:g} min, "
+        f"approved {limits['approved_min']:g} min. Devices on an ACCOUNT use the account's "
+        "limit (see `accounts`); only unlinked devices are blocked when they use theirs up."
     )
     if not data["devices"]:
         return head + "\nNo devices yet."
-    rows = [["DEVICE", "STATUS", "TODAY", "TODAY $", "TOTAL", "TOTAL $", "SESSIONS", "STARS", "COINS", "LAST SEEN", "ID"]]
+    rows = [
+        ["DEVICE", "STATUS", "TODAY", "TODAY $", "TOTAL", "TOTAL $", "SESSIONS", "STARS", "COINS", "ACCOUNT", "LAST SEEN", "ID"]
+    ]
     for d in data["devices"]:
         name = d["display_name"] + (f" ({d['model']})" if d.get("model") else "")
         rows.append(
@@ -227,6 +246,7 @@ def show_devices(data: dict[str, Any]) -> str:
                 str(d["sessions"]),
                 str(d.get("stars", 0)),
                 str(d.get("coins", 0)),
+                d.get("account") or "-",
                 (d.get("last_seen") or "")[:16].replace("T", " "),
                 d["id"],
             ]
@@ -237,8 +257,11 @@ def show_devices(data: dict[str, Any]) -> str:
 def show_usage(days: list[dict[str, Any]]) -> str:
     if not days:
         return "No sessions in that time."
-    rows = [["DAY", "DEVICE", "SESSIONS", "MINUTES", "$"]]
-    rows += [[d["day"], d["display_name"][:40], str(d["sessions"]), f"{d['minutes']:g}", f"${d['usd']:.2f}"] for d in days]
+    rows = [["DAY", "ACCOUNT", "DEVICE", "SESSIONS", "MINUTES", "$"]]
+    rows += [
+        [d["day"], d.get("account") or "-", d["display_name"][:40], str(d["sessions"]), f"{d['minutes']:g}", f"${d['usd']:.2f}"]
+        for d in days
+    ]
     return _table(rows)
 
 
@@ -278,14 +301,25 @@ def show_device(d: dict[str, Any]) -> str:
     return f"{d['display_name']} ({d['id']}): {d['status']}, daily limit {limit}"
 
 
+def milo_line(m: dict[str, Any]) -> str:
+    """``approved, 12/60 min today`` (``custom`` when the limit is the account's own)."""
+    if not m:
+        return "-"
+    if m.get("milo_status", m.get("status")) == "blocked":
+        return f"blocked, {m['today_min']:g} min today"
+    custom = " custom" if m.get("daily_limit_min") is not None else ""
+    return f"{m.get('milo_status', m.get('status'))}, {m['today_min']:g}/{m['limit_min']:g} min{custom} today"
+
+
 def show_accounts(accounts: list[dict[str, Any]]) -> str:
     if not accounts:
         return "No accounts yet."
-    rows = [["EMAIL", "BOOKS", "DEVICES", "STARS", "COINS", "HEARTS", "CREATED", "ID"]]
+    rows = [["EMAIL", "MILO", "BOOKS", "DEVICES", "STARS", "COINS", "HEARTS", "CREATED", "ID"]]
     for a in accounts:
         rows.append(
             [
                 a["email"],
+                milo_line(a),
                 "all" if a["all_books"] else str(a["books"]),
                 str(a["devices"]),
                 str(a["stars"]),
@@ -304,6 +338,7 @@ def show_account(d: dict[str, Any]) -> str:
     lines = [
         ("Created" if d.get("created") else "Account") + f" {a['email']} ({a['id']})",
         f"Books: {books}",
+        f"Milo: {milo_line(d.get('milo') or {})}",
         f"Stars: {d['stars']} earned on {d['star_days']} day(s); {coins['stars']} left after {coins['coins']} coin(s)",
         f"Hearts: {d['hearts']}",
     ]
@@ -329,14 +364,14 @@ def main(argv: list[str] | None = None) -> int:
     for name, help_text in (
         ("approve", "allow the approved daily limit"),
         ("block", "refuse all sessions"),
-        ("unblock", "back to unknown (not blocked again until tomorrow)"),
+        ("unblock", "back to unknown: the new-account limit (a device is not blocked again until tomorrow)"),
     ):
         p = sub.add_parser(name, help=help_text)
-        p.add_argument("device", help="device id or name")
+        p.add_argument("device", help="an account's email, or (old builds) a device id or name")
         if name == "approve":
-            p.add_argument("--label", help="a name to show for it")
-    limit = sub.add_parser("limit", help="minutes a day for one device, or 'default'")
-    limit.add_argument("device")
+            p.add_argument("--label", help="a name to show for a device")
+    limit = sub.add_parser("limit", help="minutes a day for an account (email) or device, or 'default'")
+    limit.add_argument("device", help="an account's email, or (old builds) a device id or name")
     limit.add_argument("minutes")
     rename = sub.add_parser("rename", help="the name to show for a device")
     rename.add_argument("device")
@@ -452,6 +487,12 @@ def main(argv: list[str] | None = None) -> int:
                 changes = {"daily_limit_min": float(args.minutes)}
             except ValueError:
                 parser.error("minutes must be a number or 'default'")
+    if "@" in args.device:
+        if command == "rename" or changes.get("label"):
+            parser.error("accounts have no label; rename and --label are for devices")
+        data = admin.account_action(args.device, "milo", changes)
+        print(json.dumps(data, indent=2) if args.json else show_account(data))
+        return 0
     device = admin.update(args.device, **changes)
     print(json.dumps(device, indent=2) if args.json else show_device(device))
     return 0

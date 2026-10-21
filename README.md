@@ -64,8 +64,8 @@ Pin a specific file by setting the page's `photo.commonsTitle`.
 ## Accounts
 
 A grown-up signs in with an email and a 6-digit code sent to it; there are no passwords, and signing up is the
-same as signing in. Each account has its own books, stars and coins, shared by every iPad and iPhone
-signed in with that email. The only personal data is the grown-up's email: nothing about the child is asked for. See [PRIVACY.md](PRIVACY.md).
+same as signing in. Each account has its own books, stars, coins and daily Milo time, shared by every iPad
+and iPhone signed in with that email. The only personal data is the grown-up's email: nothing about the child is asked for. See [PRIVACY.md](PRIVACY.md).
 
 - **Signed out**, the app shows a welcome screen for grown-ups. Tapping **Sign in or sign up** opens the parent
   gate first, then asks for the email and the code. The code works for 10 minutes and 5 tries; a new one can be
@@ -77,14 +77,16 @@ signed in with that email. The only personal data is the grown-up's email: nothi
   from the server and signs out every device (Apple requires apps with accounts to offer this).
 - Each account's copy of the stars and coins is saved on the device per account, so they show offline,
   and is removed on sign-out. What the device saved before accounts stays under its old keys and is never deleted.
-- Milo's daily time limits stay per device (see [Naps and daily limits](#naps-and-daily-limits-per-device)).
+- Milo's daily time is the account's too: every device signed in to it shares the minutes (see
+  [Naps and daily limits](#naps-and-daily-limits-per-account)).
 
 **Devices from before accounts.** Stars and coins used to belong to a device id. The first account a device
 signs in to claims them (`legacy_account_id`), and the app sends that account what it kept only on the device:
 any stars the server is missing (`POST /account/import`, safe to repeat). A different account
 signing in on that device later starts with its own things. Stars Milo gives while a device is signed in go to
-the account. Older app builds keep working: `GET /stars?device=`, `GET /coins?device=` and `POST /coins/convert`
-answer with the account's stars and coins when the device is linked to one, and the agent didn't change.
+the account: the app sends its sign-in with `/token`, and the agent awards the stars for that account. Older app
+builds keep working: `GET /stars?device=`, `GET /coins?device=` and `POST /coins/convert` answer with the
+account's stars and coins when the device is linked to one, and their Milo minutes count for that account too.
 
 **Email.** Production sends the codes from the family's Gmail with the **Gmail API** over HTTPS
 (`PIP_EMAIL_PROVIDER=gmail`), because Render's free plan blocks outgoing SMTP. SMTP (e.g. Gmail with an App
@@ -123,7 +125,8 @@ removed (or the app went back to Testing); run step 3 again and update `GMAIL_RE
 
 Without an email provider, `POST /auth/start` answers `503 email_off`.
 
-**Endpoints** (all with the app's access key; signed-in ones also with `X-Pip-Session: <token>`):
+**Endpoints** (all with the app's access key; signed-in ones also with `X-Pip-Session: <token>`, which
+`POST /token` takes as well):
 `POST /auth/start {email, purpose?}`, `POST /auth/verify {email, code, device}` (returns `token`, `account`,
 `claimed_device`), `POST /auth/signout`, `GET /account`, `POST /account/delete {code}`, `GET /account/stars`,
 `GET /account/coins`, `POST /account/coins/convert` and `POST /account/import {stars}`. The app used to have
@@ -132,11 +135,12 @@ a heart button for pages he loved; it's gone, but the server still answers `GET`
 already saved (deleting the account removes them). Errors: `bad_email`, `bad_code` (with `tries_left`), `expired`,
 `too_many` (with `retry_after_s`), `signed_out`.
 
-**Owner tools.** Grant books, link devices and back up the data with `tools/devices.py` (from `server/`):
+**Owner tools.** Approve accounts, grant books, link devices and back up the data with `tools/devices.py` (from `server/`):
 
 ```sh
-uv run python tools/devices.py accounts                               # every account: books, devices, stars, coins
+uv run python tools/devices.py accounts                               # every account: Milo time, books, devices, stars, coins
 uv run python tools/devices.py account mom@example.com                # one account and its devices
+uv run python tools/devices.py approve mom@example.com                # Milo time: also block, unblock, limit <email> 30|default
 uv run python tools/devices.py create-account mom@example.com --all-books
 uv run python tools/devices.py grant mom@example.com hawaii tahoe     # show more books; revoke hides them again
 uv run python tools/devices.py all-books mom@example.com on           # every book, including future ones
@@ -149,6 +153,7 @@ uv run python tools/devices.py restore backups/<time>.json            # replaces
 
 The same as HTTP: `GET`/`POST /admin/accounts`, `GET /admin/accounts/<email or id>`,
 `POST /admin/accounts/<ref>/link|unlink {device, claim?}`, `POST /admin/accounts/<ref>/books {grant, revoke, all_books}`,
+`POST /admin/accounts/<ref>/milo {status?, daily_limit_min?}` (`null` limit = the status's default),
 `GET /admin/backup` and `POST /admin/restore {"confirm": "restore", "backup": ...}`, all with
 `Authorization: Bearer $PIP_ADMIN_KEY`. The device list shows each device's account.
 
@@ -275,49 +280,66 @@ prices per 1M tokens, kept in `usage.py` with the source link; override one with
 uv run python tools/usage_report.py   # total minutes, $, $/minute, $/session, per day and per model
 ```
 
-### Naps and daily limits per device
+### Naps and daily limits per account
 
 **Naps.** When neither he nor Milo has said anything for 20 seconds (`PIP_IDLE_TIMEOUT_S`, `0` = never), Milo ends
 the session. The app switches the mic off and shows "Milo is taking a nap — tap to talk again". Reading aloud
 counts as talking. Tapping **Talk to Milo** starts a fresh session.
 
-**Devices.** The app sends a device id with every token request: its vendor id, saved in the Keychain so it
-survives a reinstall, plus the device name and model. The Grown-ups corner shows the id. The token server keeps
-each device's status and Milo minutes per day:
+**Accounts.** The app sends its sign-in (`X-Pip-Session`) with every token request, and Milo's minutes count
+for that account: every iPad and iPhone signed in to it shares them. The token server keeps each account's status:
 
-| Status | Daily Milo time | When the time is used up |
+| Account status | Daily Milo time | When the time is used up |
 |---|---|---|
-| unknown (any new device) | 10 min (`PIP_LIMIT_UNKNOWN_MIN`) | blocked automatically |
+| unknown (any new account) | 10 min (`PIP_LIMIT_UNKNOWN_MIN`) | rests until tomorrow |
 | approved | 60 min (`PIP_LIMIT_APPROVED_MIN`) | rests until tomorrow |
 | blocked | none | until you unblock it |
 
-Days run midnight to midnight in `PIP_TIMEZONE` (default `America/Los_Angeles`). A device that is blocked or
+A custom limit (`limit <email> 30`) replaces the status's default. Accounts are never blocked automatically. A
+token request with a sign-in the server no longer knows gets `401 signed_out`, and the app asks a grown-up to
+sign in again. The session's account goes into the agent's dispatch metadata, so the agent reports the minutes
+and awards the stars for it.
+
+**Devices.** The app also sends a device id: its vendor id, saved in the Keychain so it survives a reinstall,
+plus the device name and model. The server keeps it to list each account's devices and the minutes each used.
+Builds from before sign-in send only the device id: on a device linked to an account they use the account's
+status, minutes and stars; an unlinked device keeps the old per-device rules (unknown 10 min and then blocked
+automatically, approved 60, blocked none).
+
+Days run midnight to midnight in `PIP_TIMEZONE` (default `America/Los_Angeles`). An account that is blocked or
 out of time gets no token, and the app shows "Milo needs a rest today. Let's talk again tomorrow!". The token
 carries the time left, so a session that reaches the limit ends with a short goodbye from Milo. When a session
-ends, the agent reports its length and estimated cost to the token server (`POST /usage`, with `PIP_REPORT_KEY`),
-which stores it. Usage is stored per conversation, never transcripts or audio.
+ends, the agent reports its length, estimated cost, device and account to the token server (`POST /usage`, with
+`PIP_REPORT_KEY`), which stores it. Usage is stored per conversation, never transcripts or audio. Minutes count
+when a session ends, so two devices talking at the same moment can each use what was left.
+
+The move from devices to accounts ran once, on the first start after the update
+(`migration.milo_per_account` in `settings`): earlier sessions on linked devices count for their account (so
+today's minutes carry over), an account with an approved device became approved, and an account takes the largest
+custom limit of its devices.
 
 Storage is Postgres when `DATABASE_URL` is set (production uses a free [Neon](https://neon.tech) database:
 Render's free disk is wiped on every deploy and restart, and Neon keeps the data, needs no server and costs
 nothing at this size). Without it, a local SQLite file is used (`PIP_DEVICES_DB`, default
 `~/.config/little-explorer/devices.sqlite3`). If the database can't be reached, tokens are still given out with
-the unknown-device limit.
+the unknown limit.
 
-Check usage and manage devices with `tools/devices.py`. It calls the server's `/admin` endpoints with
+Check usage and manage accounts and devices with `tools/devices.py`. It calls the server's `/admin` endpoints with
 `PIP_ADMIN_KEY` from your env file (`--direct` uses `DATABASE_URL` instead). The admin key is never in the app.
 
 ```sh
-uv run python tools/devices.py                      # devices: status, today, last 7 days, total minutes and $
-uv run python tools/devices.py usage --days 14      # minutes and $ per device per day
-uv run python tools/devices.py approve <id> --label "Leo's iPad"   # by id, or by name/label if unique
-uv run python tools/devices.py block <id or label>  # also: unblock, limit <ref> 30, limit <ref> default, rename
+uv run python tools/devices.py accounts             # accounts: Milo status, today/limit, books, stars, coins
+uv run python tools/devices.py approve mom@example.com   # also: block, unblock, limit <email> 30, limit <email> default
+uv run python tools/devices.py                      # devices: account, status, today, total minutes and $
+uv run python tools/devices.py usage --days 14      # minutes and $ per day, account and device
+uv run python tools/devices.py approve <id> --label "Leo's iPad"   # old builds on an unlinked device: by id or name
 ```
 
-Approve your own devices after each has used Milo once (it appears in the list as unknown). iOS reports every
-iPad as just "iPad", so use the id shown in the Grown-ups corner (it has a copy button) and give it a label.
+Approve your family's account once; every device signed in to it shares its 60 minutes.
 
-The app uses the deployed server (`PIP_SERVER_URL` in `Config/Milo.xcconfig`). To try a local token server from a
-device, set its address in the Grown-ups corner (e.g. `http://<your-mac>.local:8787`).
+The app always uses the deployed server (`PIP_SERVER_URL` in `Config/Milo.xcconfig`). Debug builds can use a
+local token server with a launch argument, e.g. `-voice.tokenServerURL http://127.0.0.1:8787` (simulator) or
+`http://<your-mac>.local:8787` (a device), in the Xcode scheme's Arguments; release builds ignore it.
 
 ### Stars and the Passport
 
@@ -337,26 +359,27 @@ transcription and what Milo said last; nothing the model says can hand out a sta
 - 1 star per real answer: Milo's last reply asked a question, and the answer has at least 5 words
   (`PIP_STAR_MIN_WORDS`). Reading the page aloud, a question of his own, "hi Milo" or other small talk,
   grown-ups or noise earn nothing. Each star needs a new question from Milo and a new answer.
-- The 5 per page count across every session on that device that day, so reconnecting doesn't start a page
+- The 5 per page count across every session on that account (or unlinked device) that day, so reconnecting doesn't start a page
   over, but his favorite books earn again tomorrow. The day is his local day: the app sends its time zone
   (`"tz"`) with `/token`, the agent stamps each award's `awarded_at` in it (older apps fall back to
   `PIP_TIMEZONE`), and a star's day is the date in its own `awarded_at`, the same day the star calendar
-  shows. When a session starts, the agent loads the device's earlier stars per page and day from
-  `GET /stars` (report key) in the background, off the voice path; if that fails it counts this session only.
+  shows. When a session starts, the agent loads the account's earlier stars per page and day from
+  `GET /stars?account=<id>` (report key; `?device=<id>` for an old build) in the background, off the voice path; if that fails it counts this session only.
 - Long (8+ words, `PIP_STAR_LONG_WORDS`) answers and ones that explain with "because" are noted for the badges
   but earn no extra stars. `PIP_STAR_COOLDOWN_S` can add a pause between stars (off by default: turn-taking
   already paces them, and a cooldown could make Milo cheer for a star that is then refused).
 - The token server enforces the same limit, so an older agent can't go over it: `POST /stars` refuses an award
-  once the device already has 5 stars on that book and page that day (across all sessions), and counts each
+  once the account (or unlinked device) already has 5 stars on that book and page that day (across all sessions), and counts each
   award as 1 star. Pages that already had more stars from before the rule keep them.
 - There is no model tool, so the game never delays Milo's reply (a tool call made gpt-realtime answer in a
   second response). The star is checked off the voice path once Milo starts replying. `PIP_STARS=0` turns the
   game off on the agent.
 
 Checked awards go to the app on the `milo.star` data topic (a star flies into the counter by the Milo switch
-with a soft chime) and to the token server (`POST /stars`, report key), which keeps them in the database by
-device id. The app saves them locally and, on launch, merges back the server's copy (`GET /stars?device=<id>`,
-access key, or the report key for the agent), so stars survive a reinstall. Only counts, kinds, book, page and time are stored, never what he said.
+with a soft chime) and to the token server (`POST /stars`, report key), which keeps them in the database for
+the session's account (an old build's for its device's account, or the unlinked device). The app saves them
+locally and, on launch, merges back the server's copy (`GET /account/stars`; `GET /stars?device=<id>` for old
+builds), so stars survive a reinstall. Only counts, kinds, book, page and time are stored, never what he said.
 
 The library's top corner shows his total; tapping it opens the Passport: a stamp for each city where he has
 earned a star (not the Travel shelf), then a grid of badges. Stars earned before the answer rule were for questions
@@ -385,7 +408,7 @@ Motion), a "New badge!" banner and the star chime; they count as seen when he cl
 device only). VoiceOver reads e.g. "Why Wizard badge, earned. You answered with “because” 3 times!" or "Bookworm
 badge, not yet. Earn stars in 10 different books. 9 of 10." The last page of each book shows the
 stars from that book, and each book's cover in the library shows a gold star with the number earned in that
-book (hidden until it has one; VoiceOver reads e.g. "Famous Places, 7 stars"). `tools/devices.py` lists stars per device. Pipeline mode gives stars too, but Milo doesn't announce them.
+book (hidden until it has one; VoiceOver reads e.g. "Famous Places, 7 stars"). `tools/devices.py` lists stars per account (and per device). Pipeline mode gives stars too, but Milo doesn't announce them.
 
 The Passport ends with **My star calendar**: a month grid with a gold star and the count on each day he earned
 stars, today outlined, and the month's total ("33 stars in October"). The arrows or a sideways swipe go back to
@@ -483,7 +506,7 @@ changed, runs the server tests, and deploys only the pieces that need it:
   LiveKit secrets, and creates the agent (first run, region `$LK_AGENT_REGION`, default `us-east`) or deploys a
   new version. Set `PIP_CONTENT_URL=https://little-explorer-pip.onrender.com/content` so Milo reads the same
   books as the app. Set `PIP_SERVER_URL=https://little-explorer-pip.onrender.com` and the same `PIP_REPORT_KEY`
-  as Render so Milo reports each device's minutes. Stop any local `agent dev` worker afterwards; it would compete for the same rooms.
+  as Render so Milo reports each account's minutes and stars. Stop any local `agent dev` worker afterwards; it would compete for the same rooms.
   `lk agent status .` and `lk agent logs .` (from `server/`, with `LIVEKIT_*` in the environment) show it.
 - **Check it:** `TOKEN_URL=https://little-explorer-pip.onrender.com/token uv run python tools/e2e_smoke.py --mode realtime --trials 1`.
 

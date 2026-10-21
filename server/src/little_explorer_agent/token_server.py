@@ -9,23 +9,28 @@ app already played Milo's recorded intro, so the agent skips its greeting. Later
 on the ``context`` data topic. When ``PIP_ACCESS_KEY`` is set, ``/token`` needs
 ``Authorization: Bearer <key>``, so a public deployment can't be used to run up the OpenAI bill.
 
-The app also sends ``"device": {"id", "name", "model"}``. Each device has a daily allowance (see
-:mod:`.devices`): a blocked device gets ``403 {"error": "blocked"}``, one that has used up today
-gets ``429 {"error": "limit"}``, both with a kid-friendly ``message``. Otherwise the participant
-identity is ``device-<id>`` and the agent learns the device and its remaining seconds through the
-dispatch metadata. Requests without a device count as the shared ``anonymous`` device. The app
-also sends ``"tz"`` (its IANA time zone), which the agent uses to count stars per local day.
+The app sends its account session as ``X-Pip-Session`` and ``"device": {"id", "name", "model"}``.
+Each account has a daily allowance shared by its devices (see :mod:`.devices`); an old build
+without a session uses its device's linked account, or the device's own allowance if it has none.
+A blocked account or device gets ``403 {"error": "blocked"}``, one that has used up today gets
+``429 {"error": "limit"}``, both with a kid-friendly ``message``; a session that is no longer valid
+gets ``401 {"error": "signed_out"}``. Otherwise the participant identity is ``device-<id>`` and the
+agent learns the device, the account and the remaining seconds through the dispatch metadata.
+Requests without a device count as the shared ``anonymous`` device. The app also sends ``"tz"``
+(its IANA time zone), which the agent uses to count stars per local day.
 
-Stars (see :mod:`.stars`): the agent backs each award up with ``POST /stars`` (report key), and
-the app restores them after a reinstall with ``GET /stars?device=<id>`` (access key), which
-returns ``{"stars": [...], "total": N}``. The agent reads the same list (report key) when a session
-starts, to keep the 5-stars-per-page daily limit across sessions. Awards carry counts and labels only,
-never transcripts.
+Stars (see :mod:`.stars`): the agent backs each award up with ``POST /stars`` (report key), stamped
+with the account, and reads the account's list with ``GET /stars?account=<id>`` (report key) when a
+session starts, to keep the 5-stars-per-page daily limit across sessions. Old builds restore a
+device's stars with ``GET /stars?device=<id>`` (access key); signed-in builds use
+``/account/stars``. Both return ``{"stars": [...], "total": N}``. Awards carry counts and labels
+only, never transcripts.
 
 ``POST /usage`` (``Authorization: Bearer $PIP_REPORT_KEY``) is how the agent reports each finished
 session. ``/admin/...`` (``Authorization: Bearer $PIP_ADMIN_KEY``) is for the owner, usually via
-``tools/devices.py``: ``GET /admin/devices``, ``GET /admin/usage?days=7`` and
-``POST /admin/devices/<id or name>`` with ``{"status", "label", "daily_limit_min"}``.
+``tools/devices.py``: ``GET /admin/devices``, ``GET /admin/usage?days=7``,
+``POST /admin/accounts/<email or id>/milo`` with ``{"status", "daily_limit_min"}`` and, for old
+builds on unlinked devices, ``POST /admin/devices/<id or name>`` with ``{"status", "label", "daily_limit_min"}``.
 
 Accounts (see :mod:`.accounts`): a grown-up signs in with ``POST /auth/start {"email"}`` (emails a
 6-digit code) and ``POST /auth/verify {"email", "code", "device"}``, which returns
@@ -137,9 +142,19 @@ async def handle_token(request: web.Request) -> web.Response:
     if device is None:
         return web.json_response({"error": "bad device"}, status=400)
     device_id, name, model = device
-    decision = await check_device(request.app[STORE], device_id, name, model)
+    account_id = None
+    if token := request.headers.get(SESSION_HEADER, "").strip():
+        try:
+            session = await asyncio.to_thread(request.app[ACCOUNTS].session, token)
+        except Exception:
+            log.exception("session check failed; going by the device")
+        else:
+            if session is None:
+                return _signed_out()
+            account_id = session.account.id
+    decision = await check_device(request.app[STORE], device_id, name, model, account_id)
     if not decision.allowed:
-        log.info("refused device %s: %s", device_id, decision.reason)
+        log.info("refused device %s (account %s): %s", device_id, decision.account_id, decision.reason)
         status = 403 if decision.reason == "blocked" else 429
         return web.json_response({"error": decision.reason, "message": REST_MESSAGE}, status=status)
     if device_id != ANONYMOUS or identity is None:
@@ -149,13 +164,21 @@ async def handle_token(request: web.Request) -> web.Response:
             identity,
             clean_context(body.get("context")),
             metadata=job_metadata(
-                mode, device_id, decision.remaining_s, parse_intro(body.get("intro")), parse_tz(body.get("tz"))
+                mode,
+                device_id,
+                decision.remaining_s,
+                parse_intro(body.get("intro")),
+                parse_tz(body.get("tz")),
+                decision.account_id,
             ),
         )
     except RuntimeError as exc:
         log.error("%s", exc)
         return web.json_response({"error": "token server is not configured"}, status=500)
-    log.info("token for room %s, device %s, %.0f s left today", payload["roomName"], device_id, decision.remaining_s)
+    log.info(
+        "token for room %s, device %s, account %s, %.0f s left today",
+        payload["roomName"], device_id, decision.account_id, decision.remaining_s,
+    )
     return web.json_response(payload)
 
 
@@ -169,13 +192,15 @@ def parse_device(raw: object) -> tuple[str, str, str] | None:
     return raw["id"], name if isinstance(name, str) else "", model if isinstance(model, str) else ""
 
 
-async def check_device(store: DeviceStore, device_id: str, name: str, model: str) -> Decision:
+async def check_device(
+    store: DeviceStore, device_id: str, name: str, model: str, account_id: str | None = None
+) -> Decision:
     try:
-        return await asyncio.to_thread(store.check, device_id, name, model)
+        return await asyncio.to_thread(lambda: store.check(device_id, name, model, account_id=account_id))
     except Exception:
-        # Fail open so a database hiccup doesn't silence Milo, but only for an unknown device's day.
+        # Fail open so a database hiccup doesn't silence Milo, but only for a new account's day.
         log.exception("device check failed; allowing a short session")
-        return Decision(True, "ok", store.limits.unknown_min * 60)
+        return Decision(True, "ok", store.limits.unknown_min * 60, account_id=account_id)
 
 
 async def _json_body(request: web.Request) -> dict | None:
@@ -210,14 +235,27 @@ async def handle_star_report(request: web.Request) -> web.Response:
         new = await asyncio.to_thread(request.app[STORE].record_star, body)
     except ValueError as exc:
         return web.json_response({"error": str(exc)}, status=400)
-    log.info("star: device %s on %s (%s)", body.get("device_id"), body.get("book"), "new" if new else "not stored")
+    log.info(
+        "star: device %s, account %s on %s (%s)",
+        body.get("device_id"), body.get("account_id"), body.get("book"), "new" if new else "not stored",
+    )
     return web.json_response({"ok": True, "new": new})
 
 
 async def handle_stars(request: web.Request) -> web.Response:
-    # The app restores its stars with the access key; Milo reads the per-page counts with the report key.
-    if not (authorized(request, request.app[ACCESS_KEY]) or authorized(request, request.app[REPORT_KEY], required=True)):
+    # Old apps restore a device's stars with the access key; Milo reads the per-page counts with the
+    # report key, by account (only the agent may read an account's stars without its session).
+    reporter = authorized(request, request.app[REPORT_KEY], required=True)
+    if not (reporter or authorized(request, request.app[ACCESS_KEY])):
         return web.json_response({"error": "unauthorized"}, status=401)
+    if "account" in request.query:
+        account_id = request.query["account"]
+        if not reporter:
+            return web.json_response({"error": "unauthorized"}, status=401)
+        if not valid_device_id(account_id):
+            return web.json_response({"error": "bad account"}, status=400)
+        stars = await asyncio.to_thread(request.app[STORE].stars_of, Scope(account_id=account_id))
+        return web.json_response({"stars": stars, "total": sum(s["stars"] for s in stars)})
     device_id = request.query.get("device", "")
     if not valid_device_id(device_id):
         return web.json_response({"error": "bad device"}, status=400)
@@ -550,6 +588,7 @@ async def _account_detail(app: web.Application, ref: str) -> dict | None:
         "star_days": len({s["awarded_at"][:10] for s in stars}),
         "coins": balance.as_json(),
         "hearts": len(await asyncio.to_thread(accounts.hearts, account.id)),
+        "milo": await asyncio.to_thread(accounts.milo, account.id),
     }
 
 
@@ -609,6 +648,18 @@ async def handle_admin_account_action(request: web.Request) -> web.Response:
             if unknown:
                 return web.json_response({"error": f"no such book: {', '.join(unknown)}"}, status=400)
             await asyncio.to_thread(lambda: accounts.set_books(ref, grant=grant, revoke=revoke, all_books=every))
+        elif action == "milo":
+            status = body.get("status")
+            if status is not None and status not in STATUSES:
+                return web.json_response({"error": f"status must be one of {', '.join(STATUSES)}"}, status=400)
+            clear_limit = "daily_limit_min" in body and body["daily_limit_min"] is None
+            limit = body.get("daily_limit_min")
+            if limit is not None and (isinstance(limit, bool) or not isinstance(limit, (int, float))):
+                return web.json_response({"error": "daily_limit_min must be a number or null"}, status=400)
+            account = await asyncio.to_thread(
+                lambda: accounts.set_milo(ref, status=status, daily_limit_min=limit, clear_limit=clear_limit)
+            )
+            log.info("owner set account %s Milo: %s", account.id, body)
         else:
             return web.json_response({"error": "unknown action"}, status=404)
     except LookupError:

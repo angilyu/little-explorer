@@ -1,9 +1,10 @@
 import Foundation
 
 enum VoiceSettings {
+    /// Debug builds only: a developer's own server, e.g. launch with
+    /// `-voice.tokenServerURL http://127.0.0.1:8787` for one on this Mac. Release builds ignore it.
     static let tokenServerKey = "voice.tokenServerURL"
-    /// The Milo server (tokens and book updates) from Config/Milo.xcconfig; the grown-ups corner can
-    /// override it, e.g. http://127.0.0.1:8787 for a server running on this Mac.
+    /// The Milo server (tokens, accounts and book updates) from Config/Milo.xcconfig.
     static let defaultTokenServer: String = {
         let value = (Bundle.main.object(forInfoDictionaryKey: "PipServerURL") as? String)?
             .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
@@ -18,9 +19,16 @@ enum VoiceSettings {
     }()
 
     static func tokenServerURL(defaults: UserDefaults = .standard) -> URL {
-        let raw = defaults.string(forKey: tokenServerKey)?.trimmingCharacters(in: .whitespacesAndNewlines)
-        if let raw, !raw.isEmpty, let url = URL(string: raw), url.scheme != nil { return url }
+        #if DEBUG
+        if let url = debugOverride(defaults) { return url }
+        #endif
         return URL(string: defaultTokenServer)!
+    }
+
+    static func debugOverride(_ defaults: UserDefaults) -> URL? {
+        let raw = defaults.string(forKey: tokenServerKey)?.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard let raw, !raw.isEmpty, let url = URL(string: raw), url.scheme != nil else { return nil }
+        return url
     }
 }
 
@@ -44,8 +52,10 @@ struct TokenService {
     var baseURL: URL
     var accessKey: String? = VoiceSettings.accessKey
     var session: URLSession = .shared
-    /// Sent so the server can count Milo's minutes per device (and refuse a blocked one).
+    /// Which iPad or iPhone is asking (the owner's device list; old builds' limits went by it).
     var device: DeviceInfo?
+    /// The account sign-in, read on every request: Milo's daily minutes and stars are the account's.
+    var sessionToken: () -> String? = { nil }
 
     /// `context` is the page open when voice mode starts; the server puts it in the token so the
     /// agent knows the page from its first word. `appPlaysIntro` tells the agent to skip its spoken
@@ -56,14 +66,16 @@ struct TokenService {
         request.timeoutInterval = 30
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         if let accessKey { request.setValue("Bearer \(accessKey)", forHTTPHeaderField: "Authorization") }
+        if let token = sessionToken() { request.setValue(token, forHTTPHeaderField: AccountService.sessionHeader) }
         request.httpBody = try JSONEncoder().encode(TokenRequest(
             context: context?.attributes, device: device, intro: appPlaysIntro ? "app" : nil,
             tz: TimeZone.current.identifier
         ))
         let (data, response) = try await session.data(for: request)
         let status = (response as? HTTPURLResponse)?.statusCode ?? 0
-        // 403 = blocked device, 429 = used up today's minutes.
+        // 403 = blocked account, 429 = used up today's minutes, 401 = the sign-in expired.
         if status == 403 || status == 429 { throw VoiceError.resting }
+        if status == 401, AccountService.error(status: status, data: data) == .signedOut { throw VoiceError.signedOut }
         guard (200..<300).contains(status) else { throw VoiceError.tokenServer(status: status) }
         return try JSONDecoder().decode(VoiceCredentials.self, from: data)
     }

@@ -182,7 +182,10 @@ final class LiveKitVoiceTransport: NSObject, VoiceTransport, RoomDelegate, @unch
 @MainActor
 func makeLiveVoiceTransport() -> VoiceTransport {
     #if canImport(LiveKit)
-    let tokens = TokenService(baseURL: VoiceSettings.tokenServerURL(), device: DeviceIdentity.current())
+    let tokens = TokenService(
+        baseURL: VoiceSettings.tokenServerURL(), device: DeviceIdentity.current(),
+        sessionToken: { KeychainSessionTokenStore().read() }
+    )
     return LiveKitVoiceTransport(tokenService: tokens)
     #else
     return UnavailableVoiceTransport()
