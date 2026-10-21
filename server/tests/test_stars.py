@@ -402,7 +402,7 @@ async def test_star_game_sends_awards_to_the_app_and_the_server(clock):
 async def test_star_game_loads_earlier_stars(clock):
     asked, refreshed = [], []
 
-    async def earlier(device_id):
+    async def earlier(device_id, account_id=""):
         asked.append(device_id)
         return {("paris", "eiffel", "2026-10-19"): 5, ("paris", "louvre", "2026-10-18"): 5}
 
@@ -416,7 +416,7 @@ async def test_star_game_loads_earlier_stars(clock):
 
 
 async def test_star_game_without_earlier_stars_keeps_going(clock):
-    async def earlier(device_id):
+    async def earlier(device_id, account_id=""):
         return None
 
     keeper = StarKeeper(device_id="ipad-1", clock=clock)

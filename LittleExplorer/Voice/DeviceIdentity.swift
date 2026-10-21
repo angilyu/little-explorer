@@ -2,7 +2,9 @@ import Foundation
 import Security
 import UIKit
 
-/// Who is asking for a voice token. The server keys Milo's daily minutes and blocking on `id`.
+/// Which iPad or iPhone is asking for a voice token or signing in. Milo's daily minutes and stars are
+/// the signed-in account's; the server keeps `id` to list the account's devices (and builds from
+/// before sign-in still go by it).
 struct DeviceInfo: Encodable, Equatable, Sendable {
     let id: String
     let name: String
@@ -45,7 +47,7 @@ struct KeychainDeviceIDStore: DeviceIDStore {
 }
 
 enum DeviceIdentity {
-    /// Shown in the grown-ups corner so a parent can approve this device by id.
+    /// This device's stable id, name and model.
     @MainActor
     static func current(store: DeviceIDStore = KeychainDeviceIDStore()) -> DeviceInfo {
         let device = UIDevice.current

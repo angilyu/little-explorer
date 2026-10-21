@@ -487,9 +487,12 @@ final class TokenServiceRefusalTests: XCTestCase {
     final class StubProtocol: URLProtocol {
         nonisolated(unsafe) static var status = 200
         nonisolated(unsafe) static var lastBody: Data?
+        nonisolated(unsafe) static var lastSession: String?
+        nonisolated(unsafe) static var reply = #"{"error":"limit","message":"Milo needs a rest today."}"#
         override class func canInit(with request: URLRequest) -> Bool { true }
         override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
         override func startLoading() {
+            Self.lastSession = request.value(forHTTPHeaderField: AccountService.sessionHeader)
             if let stream = request.httpBodyStream {
                 stream.open()
                 var data = Data()
@@ -506,17 +509,67 @@ final class TokenServiceRefusalTests: XCTestCase {
             }
             let response = HTTPURLResponse(url: request.url!, statusCode: Self.status, httpVersion: nil, headerFields: nil)!
             client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
-            client?.urlProtocol(self, didLoad: Data(#"{"error":"limit","message":"Milo needs a rest today."}"#.utf8))
+            client?.urlProtocol(self, didLoad: Data(Self.reply.utf8))
             client?.urlProtocolDidFinishLoading(self)
         }
         override func stopLoading() {}
     }
 
-    private func service() -> TokenService {
+    override func setUp() {
+        StubProtocol.reply = #"{"error":"limit","message":"Milo needs a rest today."}"#
+        StubProtocol.lastSession = nil
+    }
+
+    private func service(token: String? = nil) -> TokenService {
         let config = URLSessionConfiguration.ephemeral
         config.protocolClasses = [StubProtocol.self]
         return TokenService(baseURL: URL(string: "https://milo.test")!, accessKey: nil, session: URLSession(configuration: config),
-                            device: DeviceInfo(id: "ipad-1", name: "iPad", model: "iPad13,18"))
+                            device: DeviceInfo(id: "ipad-1", name: "iPad", model: "iPad13,18"), sessionToken: { token })
+    }
+
+    func testRequestSendsTheAccountSignInSoMinutesAreTheAccounts() async {
+        StubProtocol.status = 429
+        _ = try? await service(token: "session-abc").fetchCredentials(context: nil)
+        XCTAssertEqual(StubProtocol.lastSession, "session-abc")
+        _ = try? await service().fetchCredentials(context: nil)
+        XCTAssertNil(StubProtocol.lastSession)
+    }
+
+    func testAnExpiredSignInAsksForAGrownUp() async {
+        StubProtocol.status = 401
+        StubProtocol.reply = #"{"error":"signed_out"}"#
+        do {
+            _ = try await service(token: "stale").fetchCredentials(context: nil)
+            XCTFail("expected signed out")
+        } catch VoiceError.signedOut {
+            XCTAssertTrue(VoiceError.signedOut.errorDescription?.contains("sign in again") == true)
+        } catch {
+            XCTFail("\(error)")
+        }
+        StubProtocol.reply = #"{"error":"unauthorized"}"#
+        do {
+            _ = try await service().fetchCredentials(context: nil)
+            XCTFail("expected an error")
+        } catch VoiceError.tokenServer(let status) {
+            XCTAssertEqual(status, 401)
+        } catch {
+            XCTFail("\(error)")
+        }
+    }
+
+    func testOnlyDebugBuildsTakeALocalServer() {
+        let defaults = UserDefaults(suiteName: "token-server-tests")!
+        defaults.removePersistentDomain(forName: "token-server-tests")
+        XCTAssertEqual(VoiceSettings.tokenServerURL(defaults: defaults).absoluteString, VoiceSettings.defaultTokenServer)
+        defaults.set("http://127.0.0.1:8787", forKey: VoiceSettings.tokenServerKey)
+        XCTAssertEqual(VoiceSettings.debugOverride(defaults)?.absoluteString, "http://127.0.0.1:8787")
+        #if DEBUG
+        XCTAssertEqual(VoiceSettings.tokenServerURL(defaults: defaults).absoluteString, "http://127.0.0.1:8787")
+        #else
+        XCTAssertEqual(VoiceSettings.tokenServerURL(defaults: defaults).absoluteString, VoiceSettings.defaultTokenServer)
+        #endif
+        defaults.set("not a url", forKey: VoiceSettings.tokenServerKey)
+        XCTAssertNil(VoiceSettings.debugOverride(defaults))
     }
 
     func testLimitAndBlockedBecomeResting() async {

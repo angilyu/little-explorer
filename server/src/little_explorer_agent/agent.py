@@ -199,7 +199,7 @@ class StarGame:
         keeper: StarKeeper,
         *,
         report: Callable[[StarAward], Awaitable[bool]] = report_star,
-        earlier: Callable[[str], Awaitable[dict[tuple[str, str, str], int] | None]] = fetch_page_stars,
+        earlier: Callable[..., Awaitable[dict[tuple[str, str, str], int] | None]] = fetch_page_stars,
         enabled: bool = True,
         answer_wait_s: float = 6.0,
     ) -> None:
@@ -224,11 +224,11 @@ class StarGame:
         """Read the stars he already has on each page (off the voice path), so the 5-per-page daily
         limit counts earlier sessions that day too. Until it arrives (or if it can't be read) only this session's
         stars count here; the token server still refuses a page's sixth star."""
-        if self.enabled and self.keeper.device_id:
+        if self.enabled and (self.keeper.device_id or self.keeper.account_id):
             self._spawn(self._load_earlier())
 
     async def _load_earlier(self) -> None:
-        counts = await self.earlier(self.keeper.device_id)
+        counts = await self.earlier(self.keeper.device_id, account_id=self.keeper.account_id)
         if counts is None:
             return
         self.keeper.earlier = counts
@@ -464,9 +464,14 @@ async def entrypoint(ctx: JobContext) -> None:
     mode = resolve_mode(ctx.job.metadata)
     meta = parse_job_metadata(ctx.job.metadata)
     device_id = str(meta.get("device_id") or "")
+    # The signed-in account whose minutes and stars these are (old apps: none; the server falls back
+    # to the device's link).
+    account_id = str(meta.get("account_id") or "")
     remaining_s = remaining_seconds(meta)
-    log.info("Milo mode: %s, device %s, %s s left today", mode, device_id or "?", remaining_s)
-    meter = UsageMeter(mode=mode, model=session_model(mode), room=ctx.job.room.name, device_id=device_id)
+    log.info("Milo mode: %s, device %s, account %s, %s s left today", mode, device_id or "?", account_id or "?", remaining_s)
+    meter = UsageMeter(
+        mode=mode, model=session_model(mode), room=ctx.job.room.name, device_id=device_id, account_id=account_id
+    )
 
     async def write_usage(reason: str = "") -> None:
         meter.finish()
@@ -479,6 +484,7 @@ async def entrypoint(ctx: JobContext) -> None:
         ctx,
         StarKeeper(
             device_id=device_id,
+            account_id=account_id,
             room=ctx.job.room.name,
             rules=StarRules.from_env(),
             wall=device_clock(parse_tz(meta.get("tz"))),

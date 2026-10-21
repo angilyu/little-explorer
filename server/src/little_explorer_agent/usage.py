@@ -256,11 +256,13 @@ class UsageMeter:
         clock=time.monotonic,
         room: str = "",
         device_id: str = "",
+        account_id: str = "",
     ) -> None:
         self.usage = SessionUsage(started_at=datetime.now().astimezone(), mode=mode, model=model)
         self.path = path
         self.room = room
         self.device_id = device_id
+        self.account_id = account_id
         self.ended_reason = ""
         self.row: dict[str, Any] | None = None
         self._clock = clock
@@ -322,6 +324,7 @@ class UsageMeter:
         return {
             "room": self.room,
             "device_id": self.device_id,
+            **({"account_id": self.account_id} if self.account_id else {}),
             "started_at": self.row["started_at"],
             "duration_s": self.row["duration_s"],
             "mode": self.row["mode"],
