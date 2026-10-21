@@ -1,0 +1,208 @@
+{
+  "id": "israel-hebrew",
+  "city": "Israel",
+  "country": "Israel",
+  "flagImage": "israel-flag.png",
+  "flag": "🇮🇱",
+  "theme": "Hebrew Words",
+  "coverColor": "#3949AB",
+  "tagline": "Shalom, toda and a scoop of glida!",
+  "narration": {
+    "instructions": "This book teaches a child first words in Hebrew. Say every Hebrew word, whether it is written in Hebrew letters or in English letters, the way a native Israeli Hebrew speaker says it, clearly and warmly, never anglicized: Ivrit (eev-REET), Shalom (shah-LOHM), Boker tov (BOH-ker TOHV), Toda (toh-DAH), Mayim (MAH-yeem), Yam (YAHM, rhymes with mom), Glida (glee-DAH), Tapuz (tah-POOZ), Kelev (KEH-lev), Gamal (gah-MAHL), Achat (ah-KHAHT), Shtayim (shtah-YEEM), Shalosh (shah-LOHSH), Lehitraot (leh-heet-rah-OHT). When the text is only Hebrew letters, say just that Hebrew word or words, slowly and clearly, like a teacher showing a new word. A short hint like shah-LOHM is how to sound out the word: say it as one smooth word, the way an Israeli would. Everything else is English.",
+    "phraseByPhrase": true
+  },
+  "pages": [
+    {
+      "id": "welcome",
+      "text": "עברית\nIvrit means Hebrew. It reads from right to left!",
+      "about": "Ivrit (eev-REET) is the word for Hebrew, the main language spoken in Israel. The Hebrew word is on the top line, and it starts on the right! Hebrew is written and read from right to left, so Hebrew books open from what feels like the back. The alphabet is called the alef-bet, after its first two letters, alef and bet: that is where our word 'alphabet' comes from too. It has 22 letters and no capital letters. In the picture, alef (א) is at the top right, and the little arrow shows which way to read. Ask Francis: Can you trace the Hebrew word with your finger, starting on the right?",
+      "emoji": "🔤",
+      "photo": {
+        "commonsTitle": "File:Alefbet Hebrew.png",
+        "query": "",
+        "file": "israel-hebrew-welcome.png",
+        "author": "Immanuel Giel",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Alefbet_Hebrew.png",
+        "verified": true
+      }
+    },
+    {
+      "id": "shalom",
+      "text": "שלום\nShalom means hello! It means goodbye too.",
+      "about": "Shalom (shah-LOHM, say it with the strong part at the end) is the first word everyone learns. It means hello and goodbye, and it also means peace. You can wave and say shalom to friends, shopkeepers and the bus driver. Play: wave at Francis and say 'Shalom!' and let him wave back and answer 'Shalom!'. Then switch and say it as goodbye. Ask Francis: Can you find the Hebrew word shalom at the top? It has four letters.",
+      "emoji": "👋",
+      "photo": {
+        "commonsTitle": "File:The Skate Park Shadows.jpg",
+        "query": "",
+        "file": "israel-hebrew-shalom.jpg",
+        "author": "D. Sharon Pruitt from Hill Air Force Base, Utah, USA",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:The_Skate_Park_Shadows.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "boker-tov",
+      "text": "בוקר טוב\nBoker tov means good morning!",
+      "about": "Boker tov (BOH-ker TOHV) means good morning: boker is morning and tov is good. Notice that Hebrew puts the word 'good' after 'morning'. A fun reply is boker or (BOH-ker OHR), which means 'morning of light'. An Israeli breakfast is a big spread: eggs, cheeses, bread, olives and a salad of tomatoes and cucumbers chopped very small. Ask Francis: Will you say boker tov to everyone at breakfast tomorrow?",
+      "emoji": "🍳",
+      "photo": {
+        "commonsTitle": "File:Liat Portal for Foodie Disorder - Puzzle Pieces of Israeli breakfast in San Francisco.jpg",
+        "query": "",
+        "file": "israel-hebrew-boker-tov.jpg",
+        "author": "HaJunkiyada",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Liat_Portal_for_Foodie_Disorder_-_Puzzle_Pieces_of_Israeli_breakfast_in_San_Francisco.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "toda",
+      "text": "תודה\nToda means thank you. Say it with a smile!",
+      "about": "Toda (toh-DAH, the strong part at the end) means thank you. To say thank you very much, say toda raba (toh-DAH rah-BAH). When someone thanks you, answer bevakasha (beh-vah-kah-SHAH), which means you're welcome and also please. Play: hand Francis a toy or a snack so he can say toda, then let him hand you something back. Ask Francis: Who could you say toda to today?",
+      "emoji": "💐",
+      "photo": {
+        "commonsTitle": "File:Flower Bouquet-2.jpg",
+        "query": "",
+        "file": "israel-hebrew-toda.jpg",
+        "author": "David Condrey",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Flower_Bouquet-2.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "mayim",
+      "text": "מים\nMayim means water. Even cats get thirsty!",
+      "about": "Mayim (MAH-yim) means water. Funny fact: in Hebrew, water is always a plural word, a bit like saying 'waters'. Israeli summers are hot, so many parks and streets have drinking fountains, and this cat found one! There is even a happy circle dance and song called Mayim Mayim. Ask Francis: When you are thirsty today, can you ask for mayim?",
+      "emoji": "💧",
+      "photo": {
+        "commonsTitle": "File:חתול שותה מברזייה.jpg",
+        "query": "",
+        "file": "israel-hebrew-mayim.jpg",
+        "author": "שלום1234321",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:%D7%97%D7%AA%D7%95%D7%9C_%D7%A9%D7%95%D7%AA%D7%94_%D7%9E%D7%91%D7%A8%D7%96%D7%99%D7%99%D7%94.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "yam",
+      "text": "ים\nYam means sea. A dolphin swims in it!",
+      "about": "Yam (YAHM, it rhymes with 'mom') means sea. It is one of the shortest Hebrew words: just two letters! Israel has the Mediterranean Sea by Tel Aviv, the Red Sea in the south, and the Dead Sea, called Yam HaMelach, the sea of salt. This dolphin lives at Dolphin Reef in Eilat on the Red Sea, where dolphins swim free and visitors watch from floating piers. Ask Francis: Do you remember the Dead Sea's Hebrew name? Yam HaMelach!",
+      "emoji": "🐬",
+      "photo": {
+        "commonsTitle": "File:DOLPHIN REEF EILAT, ISRAEL- It is on the shores of the Red Sea in the southernmost corner of Israel offers natural views, secluded beach and opportunity to meet dolphins in their natural habitat. (16).jpg",
+        "query": "",
+        "file": "israel-hebrew-yam.jpg",
+        "author": "Mohammad Shad Siddiqui",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:DOLPHIN_REEF_EILAT,_ISRAEL-_It_is_on_the_shores_of_the_Red_Sea_in_the_southernmost_corner_of_Israel_offers_natural_views,_secluded_beach_and_opportunity_to_meet_dolphins_in_their_natural_habitat._(16).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "glida",
+      "text": "גלידה\nGlida means ice cream. Yum, what flavor?",
+      "about": "Glida (glee-DAH, the strong part at the end) means ice cream, and in the hot Israeli summer there is a glida shop on almost every corner. To ask nicely, you say 'Glida, bevakasha!' which means 'Ice cream, please!'. Play ice cream shop: you are the seller, and Francis orders with 'Glida, bevakasha!' and says 'Toda!' when he gets it. Ask Francis: What flavor of glida would you pick?",
+      "emoji": "🍦",
+      "photo": {
+        "commonsTitle": "File:Ice cream in cones.jpg",
+        "query": "",
+        "file": "israel-hebrew-glida.jpg",
+        "author": "AlphaLemur",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ice_cream_in_cones.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "tapuz",
+      "text": "תפוז\nTapuz means orange. It grows on a tree!",
+      "about": "Tapuz (tah-POOZ) means orange. It is a squished-together word: tapuach zahav (tah-POO-akh ZAH-hav) means golden apple! Israel grows lots of oranges, and sweet Jaffa oranges were once shipped from the old port of Jaffa all over the world. Ask Francis: Tapuach means apple and zahav means gold. So what is a golden apple? An orange!",
+      "emoji": "🍊",
+      "photo": {
+        "commonsTitle": "File:PikiWiki Israel 29260 Plants of Israel.jpg",
+        "query": "",
+        "file": "israel-hebrew-tapuz.jpg",
+        "author": "Lehava Activity 2013 Pikiwiki Israel",
+        "license": "CC BY 2.5",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.5",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:PikiWiki_Israel_29260_Plants_of_Israel.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "kelev",
+      "text": "כלב\nKelev means dog. Woof woof on the beach!",
+      "about": "Kelev (KEH-lev) means dog, and a puppy is a klavlav (klahv-LAHV)! Here is a fun surprise: dogs in Israel do not say woof woof. In Hebrew, dogs say hav hav! This husky is enjoying a sunset walk on an Israeli beach. Ask Francis: What does a dog say in Hebrew? Can you bark hav hav like an Israeli dog?",
+      "emoji": "🐕",
+      "photo": {
+        "commonsTitle": "File:SiberianHuskyInIsrael.jpg",
+        "query": "",
+        "file": "israel-hebrew-kelev.jpg",
+        "author": "בר",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:SiberianHuskyInIsrael.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "gamal",
+      "text": "גמל\nGamal means camel. It sounds almost the same!",
+      "about": "Gamal (gah-MAHL) means camel, and it sounds a lot like camel because our English word came from very old words like it. The third letter of the alef-bet, gimel, sounds almost the same too. Camels live in the Negev (NEH-gev) desert in the south of Israel. Their humps store fat, not water, so they can go a long time without eating. Ask Francis: Can you find the letter that looks like a little walking person? It is gimel, the first letter of the word, on the right!",
+      "emoji": "🐪",
+      "photo": {
+        "commonsTitle": "File:Negev Camel, Negev Desert, Israel (469303693).jpg",
+        "query": "",
+        "file": "israel-hebrew-gamal.jpg",
+        "author": "brewbooks from near Seattle, USA",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Negev_Camel,_Negev_Desert,_Israel_(469303693).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "counting",
+      "text": "אחת שתיים שלוש\nAchat, shtayim, shalosh: one, two, three!",
+      "about": "Let's count in Hebrew: achat (ah-KHAHT) is one, shtayim (shtah-YEEM) is two, and shalosh (shah-LOHSH) is three. The 'kh' in achat is a scratchy sound in the throat, like a soft cat hiss. Count the three ducklings together, pointing at each one. Bonus: arba (ar-BAH) is four and chamesh (khah-MESH) is five. Ask Francis: Can you count your fingers to three in Hebrew?",
+      "emoji": "🐥",
+      "photo": {
+        "commonsTitle": "File:Three little ducklings (26803684613).jpg",
+        "query": "",
+        "file": "israel-hebrew-counting.jpg",
+        "author": "hedera.baltica from Wrocław, Poland",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Three_little_ducklings_(26803684613).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "goodbye",
+      "text": "להתראות\nLehitraot means see you later! Bye, Israel!",
+      "about": "Lehitraot (leh-heet-rah-OHT) means see you later; it means 'until we see each other again'. Say it slowly in pieces: leh, heet, rah, oht. Israelis also often say 'Yalla, bye!' (YAH-lah), which means 'let's go, bye!'. This El Al plane, with the blue star of the Israeli flag on its tail, is flying home. Now a quick review game: shalom, boker tov, toda, mayim, yam, glida, tapuz, kelev, gamal. Point to a page and see if Francis remembers the word. Every try is a win, so celebrate! Ask Francis: Which Hebrew word is your favorite?",
+      "emoji": "✈️",
+      "photo": {
+        "commonsTitle": "File:4X-ERC b Micha.jpg",
+        "query": "",
+        "file": "israel-hebrew-goodbye.jpg",
+        "author": "LLHZ2805",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:4X-ERC_b_Micha.jpg",
+        "verified": true
+      }
+    }
+  ]
+}

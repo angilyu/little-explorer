@@ -138,7 +138,8 @@ def transcribe(audio: bytes, prompt: str, key: str) -> dict:
 
 def norm(word: str) -> str:
     word = unicodedata.normalize("NFKD", word.lower())
-    return re.sub(r"[^a-z0-9]", "", "".join(c for c in word if not unicodedata.combining(c)))
+    # Hebrew letters count as word characters too, so a Hebrew word is spoken and highlighted.
+    return re.sub(r"[^a-z0-9\u05d0-\u05ea]", "", "".join(c for c in word if not unicodedata.combining(c)))
 
 
 def utf16(text: str, index: int) -> int:
@@ -257,12 +258,13 @@ def snap_to_pauses(text: str, words: list[dict], gaps: list[tuple[float, float]]
 
 
 def phrases(text: str) -> list[tuple[str, list[re.Match]]]:
-    """Split a page into short spoken phrases at punctuation and brackets, e.g.
-    "Ask the baker: Un croissant, s'il vous plaît!" -> "Ask the baker" / "Un croissant" / "s'il vous plaît!"."""
+    """Split a page into short spoken phrases at punctuation, brackets and line breaks, e.g.
+    "Ask the baker: Un croissant, s'il vous plaît!" -> "Ask the baker" / "Un croissant" / "s'il vous plaît!",
+    and "שלום\nShalom means hello!" -> "שלום" / "Shalom means hello!"."""
     tokens = [m for m in TOKEN.finditer(text) if norm(m.group())]
     groups, current = [], tokens[:1]
     for prev, tok in zip(tokens, tokens[1:]):
-        if re.search(r"[,.!?;:()]", text[prev.end():tok.start()]):
+        if re.search(r"[,.!?;:()\n]", text[prev.end():tok.start()]):
             groups.append(current)
             current = []
         current.append(tok)

@@ -1,0 +1,223 @@
+{
+  "id": "israel-tel-aviv",
+  "city": "Israel",
+  "country": "Israel",
+  "flagImage": "israel-flag.png",
+  "flag": "🇮🇱",
+  "theme": "Tel Aviv",
+  "coverColor": "#0277BD",
+  "tagline": "Beaches, matkot, falafel and a giraffe safari",
+  "narration": {
+    "instructions": "This book is about Tel Aviv in Israel. Say every Hebrew word and name the way a native Israeli says it, warmly and naturally, never spelled out or anglicized: Shalom (shah-LOHM), Tel Aviv (tel ah-VEEV), Jaffa (JAF-uh), matkot (maht-KOHT), Carmel (KAR-mel), falafel (fah-LAH-fel), Yarkon (yar-KOHN). A short hint like shah-LOHM is how to sound out the word."
+  },
+  "pages": [
+    {
+      "id": "welcome",
+      "text": "Shalom! Welcome to Tel Aviv, a sunny city by the sea.",
+      "about": "Shalom (shah-LOHM) means hello in Hebrew. Tel Aviv sits right on the Mediterranean Sea and is one of the sunniest cities around, with warm days almost all year. It is a young city: in 1909, 66 families met on the sand dunes and picked their plots of land with a lottery of seashells, writing names on white shells and numbers on grey ones. Tel Aviv means 'hill of spring'. Ask Francis: If you picked a seashell to choose your new house, what would your house look like?",
+      "emoji": "👋",
+      "photo": {
+        "commonsTitle": "File:Israel Tel Aviv Skyline (34714425090).jpg",
+        "query": "",
+        "file": "israel-tel-aviv-welcome.jpg",
+        "author": "FLASHPACKER TRAVELGUIDE",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Israel_Tel_Aviv_Skyline_(34714425090).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "beach",
+      "text": "Tel Aviv has long sandy beaches with lifeguard huts.",
+      "about": "Tel Aviv has about 14 kilometres of beaches, one after another along the sea. Lifeguards sit up high in little huts on stilts so they can see every swimmer. Flags tell you about the waves: white means swimming is fine, red means be careful, and black means no swimming today. The rule is to swim only where a lifeguard is watching. Ask Francis: Why do you think the lifeguard hut is up so high?",
+      "emoji": "🏖️",
+      "photo": {
+        "commonsTitle": "File:Israel-2013-Tel Aviv 02-Aviv Beach.jpg",
+        "query": "",
+        "file": "israel-tel-aviv-beach.jpg",
+        "author": "Andrew Shiva / Wikipedia",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Israel-2013-Tel_Aviv_02-Aviv_Beach.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "matkot",
+      "text": "On the beach, people play matkot with wooden paddles.",
+      "about": "Matkot (maht-KOHT) is the favorite beach game in Israel. Two players hit a small rubber ball back and forth with wooden paddles, as fast as they can. There is no net and nobody wins or loses: you count how many hits in a row you can make together before the ball drops. On a busy beach you hear tok, tok, tok everywhere! Ask Francis: Do you want to try a game where we count our hits together, with a ball or a balloon?",
+      "emoji": "🏓",
+      "photo": {
+        "commonsTitle": "File:Matkot players on the beach in Tel Aviv Israel.jpg",
+        "query": "",
+        "file": "israel-tel-aviv-matkot.jpg",
+        "author": "David Shankbone",
+        "license": "CC BY 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Matkot_players_on_the_beach_in_Tel_Aviv_Israel.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "promenade",
+      "text": "A long path by the sea is great for bikes.",
+      "about": "The seaside path is called the tayelet (tah-YEH-let), which means a place to stroll. It runs for kilometres beside the beach, from old Jaffa in the south to the port in the north. People walk, jog, ride bikes and scooters, and families sit on benches to watch the waves and the sunset. Ask Francis: Would you rather walk, bike or scoot along the sea?",
+      "emoji": "🚲",
+      "photo": {
+        "commonsTitle": "File:Tel Aviv Tayelet-Strand-Promenade Beach (34257299744).jpg",
+        "query": "",
+        "file": "israel-tel-aviv-promenade.jpg",
+        "author": "FLASHPACKER TRAVELGUIDE",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Tel_Aviv_Tayelet-Strand-Promenade_Beach_(34257299744).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "jaffa-port",
+      "text": "Old Jaffa has a tiny port with colorful fishing boats.",
+      "about": "Jaffa, or Yafo (YAH-fo) in Hebrew, is the old town at the south end of Tel Aviv, and its port is one of the oldest in the world: ships have docked here for thousands of years. Fishermen still bring in their catch in small painted boats. Just outside the port are some rocks in the water, and an old Greek story says a hero rescued a princess there from a sea monster! Ask Francis: What color boat would you paint, and what would you name it?",
+      "emoji": "⛵",
+      "photo": {
+        "commonsTitle": "File:Israel-2013-Jaffa 21-Fishing boats.JPG",
+        "query": "",
+        "file": "israel-tel-aviv-jaffa-port.jpg",
+        "author": "Andrew Shiva / Wikipedia",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Israel-2013-Jaffa_21-Fishing_boats.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "clock-tower",
+      "text": "Jaffa's clock tower is made of golden stone.",
+      "about": "This clock tower in Jaffa is about 120 years old. It was built when most people did not have their own watch, so everyone could look up and see the time. Nearby is a big flea market, full of old lamps, toys, furniture and treasures. Ask Francis: How many clocks can you see on the tower? What time do you think it shows?",
+      "emoji": "🕰️",
+      "photo": {
+        "commonsTitle": "File:ISR-2015-Jaffa-Clock tower.jpg",
+        "query": "",
+        "file": "israel-tel-aviv-clock-tower.jpg",
+        "author": "Andrew Shiva / Wikipedia",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISR-2015-Jaffa-Clock_tower.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "market",
+      "text": "Carmel Market is full of fruit, vegetables and noise!",
+      "about": "A market in Hebrew is a shuk (SHOOK), and Carmel Market is the biggest one in Tel Aviv. Sellers call out their prices loudly, piles of shiny tomatoes, garlic, artichokes, oranges and dates are stacked high, and there are spices in every color. Sellers often let you taste before you buy. Friday is the busiest day, when families shop for the weekend. Ask Francis: Can you name the vegetables in the picture? Which would you taste first?",
+      "emoji": "🍅",
+      "photo": {
+        "commonsTitle": "File:Carmel Market Tel Aviv Yafo - 2.jpg",
+        "query": "",
+        "file": "israel-tel-aviv-market.jpg",
+        "author": "andynash",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Carmel_Market_Tel_Aviv_Yafo_-_2.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "falafel",
+      "text": "Falafel are crunchy chickpea balls tucked in a pita.",
+      "about": "Falafel (fah-LAH-fel) are little balls made from mashed chickpeas and green herbs, fried until they are crunchy outside and soft and green inside. In Tel Aviv you get them stuffed in a pita pocket with salad, pickles and a creamy sesame sauce called tahini (tah-HEE-nee). Some stands even put French fries inside the pita! Ask Francis: What would you put in your pita?",
+      "emoji": "🧆",
+      "photo": {
+        "commonsTitle": "File:Falafel in a pita.jpg",
+        "query": "",
+        "file": "israel-tel-aviv-falafel.jpg",
+        "author": "Israel_photo_gallery",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Falafel_in_a_pita.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "white-city",
+      "text": "Tel Aviv has thousands of white buildings with long balconies.",
+      "about": "Tel Aviv is nicknamed the White City. About 90 years ago, builders put up around 4,000 white houses in a style called Bauhaus (BOW-house): simple shapes, rounded corners like the front of a ship, and long balconies. The light colors bounce away the hot sun and keep the homes cooler. The whole area is a World Heritage Site, a treasure for everyone. Ask Francis: How many balconies can you count? Is our home white too?",
+      "emoji": "🏢",
+      "photo": {
+        "commonsTitle": "File:Bauhaus Tel-Aviv museum.jpg",
+        "query": "",
+        "file": "israel-tel-aviv-white-city.jpg",
+        "author": "Talmoryair",
+        "license": "CC BY 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bauhaus_Tel-Aviv_museum.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "bikes",
+      "text": "Green rental bikes wait for riders all over town.",
+      "about": "Tel Aviv is flat and sunny, so lots of people ride bikes. The green city bikes, called Tel-O-Fun, wait in racks all over town: you borrow one, ride, and leave it at another rack. Ofanayim (oh-fah-NAH-yim) means bicycle in Hebrew. The city has more than 100 kilometres of bike paths. Ask Francis: Where would you ride a bike in Tel Aviv: the beach, the park or the market?",
+      "emoji": "🚴",
+      "photo": {
+        "commonsTitle": "File:Tel Aviv 44110 (14298197969).jpg",
+        "query": "",
+        "file": "israel-tel-aviv-bikes.jpg",
+        "author": "Ted Eytan",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Tel_Aviv_44110_(14298197969).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "yarkon",
+      "text": "Yarkon Park is a giant green park along a river.",
+      "about": "Yarkon (yar-KOHN) Park is the biggest park in Tel Aviv, stretched along the Yarkon River. Families rent paddle boats, feed the ducks, picnic on the grass and ride bikes on the paths. There is also a water park, a rock garden with cactuses and a lake with swans. Ask Francis: If you had a whole afternoon here, would you pick the paddle boats, the water park or a picnic?",
+      "emoji": "🌳",
+      "photo": {
+        "commonsTitle": "File:Yarkon Park Tel Aviv 2019.jpg",
+        "query": "",
+        "file": "israel-tel-aviv-yarkon.jpg",
+        "author": "Laliv g",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Yarkon_Park_Tel_Aviv_2019.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "safari",
+      "text": "At the safari near Tel Aviv, giraffes walk past your car!",
+      "about": "The Safari in Ramat Gan (rah-MAHT GAHN), right next to Tel Aviv, is a big zoo where you can drive through an African savanna. Giraffes, zebras, ostriches and rhinos walk around freely, and a giraffe may stroll right past your car window! A baby giraffe is already about as tall as a grown-up when it is born. Ask Francis: Can you find the baby giraffe? How tall do you think it is next to you?",
+      "emoji": "🦒",
+      "photo": {
+        "commonsTitle": "File:TLV Safari 170812 Giraffes 03.jpg",
+        "query": "",
+        "file": "israel-tel-aviv-safari.jpg",
+        "author": "Oren Rozen",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:TLV_Safari_170812_Giraffes_03.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "goodbye",
+      "text": "Shalom, Tel Aviv! Goodbye, golden sunset over the sea.",
+      "about": "Shalom means hello, and it also means goodbye and peace, all in one word. In the evening, people gather on the beach to watch the sun sink into the Mediterranean Sea, with old Jaffa on its hill. Next stop: the Dead Sea, where you float like a cork! Ask Francis: What was your favorite part of Tel Aviv: the beach, matkot, the market, falafel or the giraffes?",
+      "emoji": "🌅",
+      "photo": {
+        "commonsTitle": "File:Tel Aviv-Yafo. Mediterranean Sea.jpg",
+        "query": "",
+        "file": "israel-tel-aviv-goodbye.jpg",
+        "author": "Namikilisu",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Tel_Aviv-Yafo._Mediterranean_Sea.jpg",
+        "verified": true
+      }
+    }
+  ]
+}

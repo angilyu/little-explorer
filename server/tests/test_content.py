@@ -3,7 +3,7 @@ from little_explorer_agent.content import load_books, lookup
 
 def test_loads_all_books_from_app_resources():
     books = load_books()
-    assert {"paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "paris-french", "london", "london-big-ben", "barcelona", "barcelona-park-guell", "barcelona-sagrada", "barcelona-casa-batllo", "barcelona-tibidabo", "barcelona-montjuic", "tahoe", "tahoe-heavenly", "tahoe-northstar", "hawaii", "hawaii-honolulu", "chengdu", "longyan", "beijing", "beijing-great-wall", "beijing-forbidden-city", "beijing-summer-palace", "beijing-temple-of-heaven", "shanghai", "travel-flight", "travel-packing", "travel-passport", "travel-hotel", "travel-jetlag"} <= set(books)
+    assert {"paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "paris-french", "london", "london-big-ben", "barcelona", "barcelona-park-guell", "barcelona-sagrada", "barcelona-casa-batllo", "barcelona-tibidabo", "barcelona-montjuic", "tahoe", "tahoe-heavenly", "tahoe-northstar", "hawaii", "hawaii-honolulu", "chengdu", "longyan", "beijing", "beijing-great-wall", "beijing-forbidden-city", "beijing-summer-palace", "beijing-temple-of-heaven", "shanghai", "israel-tel-aviv", "israel-dead-sea", "israel-hebrew", "travel-flight", "travel-packing", "travel-passport", "travel-hotel", "travel-jetlag"} <= set(books)
     for book in books.values():
         assert 10 <= len(book.pages) <= 14
         for page in book.pages:
@@ -47,7 +47,7 @@ async def test_refresh_remote_swaps_in_server_books(monkeypatch):
         assert await content.refresh_remote(base, max_age=0) is False  # same version
         assert await content.refresh_remote(base) is False  # checked moments ago
     books = content.current_books()
-    assert set(books) == {"paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "paris-french", "london", "london-big-ben", "barcelona", "barcelona-park-guell", "barcelona-sagrada", "barcelona-casa-batllo", "barcelona-tibidabo", "barcelona-montjuic", "tahoe", "tahoe-heavenly", "tahoe-northstar", "hawaii", "hawaii-honolulu", "chengdu", "longyan", "beijing", "beijing-great-wall", "beijing-forbidden-city", "beijing-summer-palace", "beijing-temple-of-heaven", "shanghai", "travel-flight", "travel-packing", "travel-passport", "travel-hotel", "travel-jetlag"}
+    assert set(books) == {"paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "paris-french", "london", "london-big-ben", "barcelona", "barcelona-park-guell", "barcelona-sagrada", "barcelona-casa-batllo", "barcelona-tibidabo", "barcelona-montjuic", "tahoe", "tahoe-heavenly", "tahoe-northstar", "hawaii", "hawaii-honolulu", "chengdu", "longyan", "beijing", "beijing-great-wall", "beijing-forbidden-city", "beijing-summer-palace", "beijing-temple-of-heaven", "shanghai", "israel-tel-aviv", "israel-dead-sea", "israel-hebrew", "travel-flight", "travel-packing", "travel-passport", "travel-hotel", "travel-jetlag"}
     book, page = content.lookup({"book": "paris", "page": books["paris"].pages[1].id})
     assert page is books["paris"].pages[1]
 
@@ -184,6 +184,8 @@ def test_narration_reads_french_book_phrase_by_phrase():
     text = "Ask the baker: Un croissant, s'il vous plaît!"
     assert [spoken for spoken, _ in narration.phrases(text)] == ["Ask the baker", "Un croissant", "s'il vous plaît!"]
     assert sum(len(words) for _, words in narration.phrases(text)) == 8
+    # A Hebrew word on its own line is its own phrase, and its letters are words (spoken and highlighted).
+    assert [spoken for spoken, _ in narration.phrases("שלום\nShalom means hello!")] == ["שלום", "Shalom means hello!"]
     # Books without their own narration note keep the shared style, so their clips aren't regenerated.
     assert narration.style_hash() == narration.style_hash("", False) != narration.style_hash("note", True)
 
@@ -281,6 +283,47 @@ def test_beijing_and_shanghai_shelves_are_new_china_books_with_fresh_photos():
     assert "Gansu" in page.about
     _, page = lookup({"book": "shanghai", "page": "xiaolongbao"})
     assert "soup" in page.text and "bite a tiny hole" in page.about
+
+
+def test_israel_shelf_has_tel_aviv_dead_sea_and_hebrew_words_with_fresh_photos():
+    import json
+
+    from little_explorer_agent.buddy import page_note
+    from little_explorer_agent.content import content_dir
+
+    books = load_books()
+    new = {"israel-tel-aviv": "Tel Aviv", "israel-dead-sea": "Dead Sea", "israel-hebrew": "Hebrew Words"}
+    raw = {p.stem: json.loads(p.read_text(encoding="utf-8")) for p in content_dir().glob("*.json")}
+    old_titles = {pg["photo"]["commonsTitle"] for bid, b in raw.items() if bid not in new for pg in b["pages"]}
+    seen: set[str] = set()
+    for bid, theme in new.items():
+        book = books[bid]
+        assert (book.city, book.country, book.theme, book.kind) == ("Israel", "Israel", theme, "")
+        assert book.pages[0].id == "welcome" and book.pages[-1].id == "goodbye"
+        titles = {pg["photo"]["commonsTitle"] for pg in raw[bid]["pages"]}
+        assert not titles & old_titles and not titles & seen, f"{bid} reuses a photo"
+        seen |= titles
+        assert all(pg["photo"]["verified"] for pg in raw[bid]["pages"])
+        assert raw[bid]["flag"] == "🇮🇱" and raw[bid]["flagImage"] == "israel-flag.png"
+        assert (content_dir().parent / "Photos" / "israel-flag.png").exists()
+        for page in book.pages:
+            assert "Ask Francis" in page.about
+        note = page_note({"book": bid, "page": book.pages[1].id})
+        assert "Israel" in note[1] and theme in note[1]
+
+    # Hebrew Words: each page shows the Hebrew word on its own line above an English sentence he can read,
+    # and is read phrase by phrase so the Hebrew line is spoken (in Hebrew) on its own.
+    hebrew = books["israel-hebrew"]
+    assert raw["israel-hebrew"]["narration"]["phraseByPhrase"] is True
+    for page in hebrew.pages:
+        script, english = page.text.split("\n")
+        assert script and all("\u05d0" <= ch <= "\u05ea" or ch == " " for ch in script), page.id
+        assert not any("\u0591" <= ch <= "\u05c7" for ch in page.text), f"{page.id} has nikud"
+        assert english.isascii() and len(english.split()) >= 5, page.id
+    _, page = lookup({"book": "israel-hebrew", "page": "shalom"})
+    assert page.text.startswith("שלום\nShalom means hello") and "shah-LOHM" in page.about
+    _, page = lookup({"book": "israel-dead-sea", "page": "float"})
+    assert "float" in page.text and "face out of the water" in page.about
 
 
 def test_travel_books_are_a_general_shelf_not_a_city():

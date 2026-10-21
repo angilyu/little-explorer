@@ -114,7 +114,7 @@ final class StarStoreTests: XCTestCase {
         store.merge([award("t", book: "travel-flight", city: "Travel")])
         let stamps = store.stamps(shelves: try shelves())
         XCTAssertFalse(stamps.contains { $0.city == "Travel" })
-        XCTAssertEqual(stamps.map(\.city), ["Paris", "London", "Barcelona", "Lake Tahoe", "Hawaii", "Chengdu", "Longyan", "Beijing", "Shanghai"])
+        XCTAssertEqual(stamps.map(\.city), ["Paris", "London", "Barcelona", "Lake Tahoe", "Hawaii", "Chengdu", "Longyan", "Beijing", "Shanghai", "Israel"])
         XCTAssertEqual(store.total, 1)
     }
 
