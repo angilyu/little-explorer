@@ -287,9 +287,32 @@ device id. The app saves them locally and, on launch, merges back the server's c
 access key, or the report key for the agent), so stars survive a reinstall. Only counts, kinds, book, page and time are stored, never what he said.
 
 The library's top corner shows his total; tapping it opens the Passport: a stamp for each city where he has
-earned a star (not the Travel shelf), plus Curious Cat (10 stars), Big Talker (3 long answers) and an Expert badge
-for a star in every book of a city (e.g. Paris Expert). Stars earned before the answer rule were for questions
-(`kind` `question`); new ones are `answer`, and the badges count both. The last page of each book shows the
+earned a star (not the Travel shelf), then a grid of badges. Stars earned before the answer rule were for questions
+(`kind` `question`); new ones are `answer`, and the badges count both.
+
+| Badge | How to earn it |
+|---|---|
+| Curious Cat | 10 stars |
+| Big Talker | 3 long answers |
+| Why Wizard | 3 answers that explain with "because" (`why_how`) |
+| Star Shower | 5 stars in one day |
+| Come-Back Kid | stars on 5 different days (any days, not a streak) |
+| Early Bird | a star before 9 am |
+| Night Owl | a star at 7 pm or later |
+| Bookworm | stars in 10 different books |
+| Globe Trotter | stamps from 3 cities |
+| Big Heart | 5 loved pages |
+| Super Star | 50 stars |
+| *City* Expert | a star in every book of a city with several books, e.g. Paris Expert (the medal shows the city's flag) |
+
+Badges are worked out from the saved stars, the shelves and his hearts (`Stores/Badges.swift`), so a new city or
+book just works, and every goal counts things he has done, so no badge can be lost. Days and times are in the
+device's time zone, as in the calendar. A badge he hasn't earned yet is gray with a short hint ("Earn a star at
+bedtime") and how close he is (9/10); an earned one is a colored medal that says what he did ("Stars on 5 different
+days!"). Badges earned since he last opened the Passport get a NEW! ribbon and a little wiggle (none with Reduce
+Motion), a "New badge!" banner and the star chime; they count as seen when he closes the Passport (kept on the
+device only). VoiceOver reads e.g. "Why Wizard badge, earned. You answered with “because” 3 times!" or "Bookworm
+badge, not yet. Earn stars in 10 different books. 9 of 10." The last page of each book shows the
 stars from that book, and each book's cover in the library shows a gold star with the number earned in that
 book (hidden until it has one; VoiceOver reads e.g. "Famous Places, 7 stars, 1 loved page"). `tools/devices.py` lists stars per device. Pipeline mode gives stars too, but Milo doesn't announce them.
 
@@ -417,7 +440,8 @@ scripts/screenshots.sh <iphone-udid> <ipad-udid>   # regenerates docs/screenshot
 
 DEBUG builds accept launch arguments for screenshots: `-demoBook paris-food -demoPage 4 -demoLove`,
 `-demoVoice listening|live|nap|rest|star`, `-demoRead`, `-demoStars 23`, `-demoPassport`, `-demoCalendar`
-(the Passport's star calendar, with stars spread over the last few weeks), `-demoCoins 2`,
+(the Passport's star calendar, with stars spread over the last few weeks), `-demoBadges` (the Passport's badges,
+some earned and some not, from 40 stars, an early-morning star and 3 loved pages), `-demoCoins 2`,
 `-demoGate` (the parent gate) and `-demoParent` (the Grown-ups corner). `-demoShelf grown-ups` scrolls to the
 Grown-ups button.
 

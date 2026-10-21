@@ -2,7 +2,7 @@ import SwiftUI
 
 @main
 struct LittleExplorerApp: App {
-    @State private var hearts = HeartStore()
+    @State private var hearts = HeartStore.live()
     @State private var voice = VoiceModeController.live()
     @State private var readAloud = ReadAloudController()
     @State private var content = ContentStore()

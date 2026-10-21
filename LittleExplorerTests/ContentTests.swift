@@ -148,5 +148,8 @@ final class ContentTests: XCTestCase {
         XCTAssertEqual(star?.openPassport, true)
         XCTAssertEqual(star?.voiceStar, true)
         XCTAssertEqual(star?.voiceActivity, .listening)
+        let badges = DemoLaunch.parse(["app", "-demoBadges"])
+        XCTAssertEqual(badges, DemoLaunch(seedStars: 40, openPassport: true, showBadges: true))
+        XCTAssertEqual(DemoLaunch.parse(["app", "-demoStars", "12", "-demoBadges"])?.seedStars, 12)
     }
 }

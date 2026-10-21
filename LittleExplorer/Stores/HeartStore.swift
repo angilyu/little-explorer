@@ -40,3 +40,18 @@ final class HeartStore {
         book.pages.filter { isLoved(bookId: book.id, pageId: $0.id) }
     }
 }
+
+extension HeartStore {
+    /// Screenshot demos keep their hearts in their own store, so they never touch his real ones.
+    static func live() -> HeartStore {
+        #if DEBUG
+        if DemoLaunch.current != nil {
+            let suite = "demo.hearts"
+            let defaults = UserDefaults(suiteName: suite)!
+            defaults.removePersistentDomain(forName: suite)
+            return HeartStore(defaults: defaults)
+        }
+        #endif
+        return HeartStore()
+    }
+}

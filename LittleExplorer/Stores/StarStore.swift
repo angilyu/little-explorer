@@ -59,16 +59,29 @@ struct StarAward: Codable, Equatable, Identifiable, Sendable {
     }
 }
 
-/// A Passport badge and how close he is to it.
+/// A Passport badge and how close he is to it. Locked badges show `detail`, a hint he can follow;
+/// earned ones show `doneText`, what he did to earn it.
 struct StarBadge: Identifiable, Equatable {
     let id: String
     let title: String
     let detail: String
+    let doneText: String
     let systemImage: String
+    /// The badge's circle color once earned (hex, like book cover colors).
+    let tint: String
     let progress: Int
     let goal: Int
+    /// City Expert badges show that city's flag on the medal.
+    var flagBook: Book? = nil
 
     var earned: Bool { progress >= goal }
+
+    /// What VoiceOver reads for the badge card.
+    func accessibilityLabel(isNew: Bool = false) -> String {
+        if earned { return "\(title) badge, earned. \(doneText)\(isNew ? " New badge!" : "")" }
+        let progress = goal > 1 ? " \(self.progress) of \(goal)." : ""
+        return "\(title) badge, not yet. \(detail).\(progress)"
+    }
 }
 
 /// A Passport stamp: a city he has asked Milo about.
@@ -93,15 +106,22 @@ final class StarStore {
     @ObservationIgnored private let key: String
     @ObservationIgnored var onCelebrate: (() -> Void)?
 
-    static let curiousCatGoal = 10
-    /// Every answer of 5+ words earns a star (up to 5 per page); 8+ words also counts as long.
-    static let bigTalkerGoal = 3
-
     init(defaults: UserDefaults = .standard, key: String = "starAwards.v1") {
         self.defaults = defaults
         self.key = key
         let saved = defaults.data(forKey: key).flatMap { try? JSONDecoder().decode([StarAward].self, from: $0) }
         awards = saved ?? []
+        seenBadges = Set(defaults.stringArray(forKey: key + ".seenBadges") ?? [])
+    }
+
+    /// Earned badges he has already seen in the Passport; the rest show as NEW there. Local only.
+    private(set) var seenBadges: Set<String>
+
+    func markBadgesSeen(_ ids: some Sequence<String>) {
+        let next = seenBadges.union(ids)
+        guard next != seenBadges else { return }
+        seenBadges = next
+        defaults.set(next.sorted(), forKey: key + ".seenBadges")
     }
 
     var total: Int { awards.reduce(0) { $0 + $1.stars } }
@@ -139,33 +159,6 @@ final class StarStore {
     /// One stamp per place; the Travel shelf isn't a place, so it gets no stamp.
     func stamps(shelves: [CityShelf]) -> [PassportStamp] {
         shelves.filter { !$0.isTravel }.map { PassportStamp(city: $0.city, flagBook: $0.flagBook, stamped: hasAsked(inCity: $0.city)) }
-    }
-
-    /// Curious Cat (10 stars), Big Talker (3 long answers), and an Expert badge for each city
-    /// with several books (a star in every one of them), e.g. Paris Expert.
-    func badges(shelves: [CityShelf]) -> [StarBadge] {
-        var badges = [
-            StarBadge(
-                id: "curious-cat", title: "Curious Cat", detail: "Earn \(Self.curiousCatGoal) stars",
-                systemImage: "cat.fill", progress: min(questionCount, Self.curiousCatGoal), goal: Self.curiousCatGoal
-            ),
-            StarBadge(
-                id: "big-talker", title: "Big Talker", detail: "Give \(Self.bigTalkerGoal) long answers",
-                systemImage: "bubble.left.and.bubble.right.fill",
-                progress: min(longQuestionCount, Self.bigTalkerGoal), goal: Self.bigTalkerGoal
-            ),
-        ]
-        for shelf in shelves where shelf.books.count > 1 {
-            let asked = shelf.books.filter { hasAsked(inBook: $0.id) }.count
-            badges.append(
-                StarBadge(
-                    id: "expert-\(shelf.city)", title: "\(shelf.city) Expert",
-                    detail: "Earn a star in every \(shelf.city) book", systemImage: "medal.fill",
-                    progress: asked, goal: shelf.books.count
-                )
-            )
-        }
-        return badges
     }
 }
 
@@ -216,6 +209,21 @@ extension StarStore {
                 whyHow: i % 3 == 0, stars: 1, words: i % 2 == 0 ? 9 : 5  // one star per award
             )
         }
+    }
+
+    /// Screenshot demo for the badges: one star early in the morning, so Early Bird shows as earned.
+    static func demoBadgeExtras(shelves: [CityShelf], now: Date = Date(), calendar: Calendar = .current) -> [StarAward] {
+        guard let book = shelves.first?.books.first, let page = book.pages.first else { return [] }
+        let day = calendar.date(byAdding: .day, value: -2, to: calendar.startOfDay(for: now)) ?? now
+        let morning = calendar.date(byAdding: .minute, value: 7 * 60 + 40, to: day) ?? day
+        let formatter = ISO8601DateFormatter()
+        formatter.timeZone = calendar.timeZone
+        return [
+            StarAward(
+                id: "demo-early", awardedAt: formatter.string(from: morning), book: book.id, page: page.id,
+                city: book.city, whyHow: true, stars: 1, words: 6
+            ),
+        ]
     }
 
     /// Pulls this device's stars back from the Milo server (after a reinstall) and keeps any it lacks.

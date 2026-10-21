@@ -54,6 +54,7 @@ struct LibraryView: View {
             PassportView(shelves: BookLibrary.shelves(books))
                 .environment(stars)
                 .environment(coins)
+                .environment(hearts)
                 .passportSizing()
         }
         .sheet(isPresented: $showGate) {
@@ -174,6 +175,10 @@ struct LibraryView: View {
         didApplyDemo = true
         if demo.seedStars > 0 {
             stars.merge(StarStore.demoAwards(total: demo.seedStars, shelves: BookLibrary.shelves(books)))
+        }
+        if demo.showBadges {
+            stars.merge(StarStore.demoBadgeExtras(shelves: BookLibrary.shelves(books)))
+            for book in books.prefix(3) { hearts.setLoved(true, bookId: book.id, pageId: book.pages[0].id) }
         }
         if demo.seedCoins > 0 { coins.seedDemo(coins: demo.seedCoins) }
         if demo.openPassport { showPassport = true }
