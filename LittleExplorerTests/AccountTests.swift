@@ -217,12 +217,11 @@ final class AccountTests: XCTestCase {
         let account = store()
         try await account.verify(email: "mom@example.com", code: "123456", device: device)
         var order: [String] = []
-        account.willSignOut = { order.append("will") }
         account.onSignOut = { _ in order.append("done") }
         await account.signOut()
         XCTAssertEqual(StubAccountServer.sent.last?.path, "/auth/signout")
         XCTAssertEqual(StubAccountServer.sent.last?.session, "tok-1")
-        XCTAssertEqual(order, ["will", "done"])
+        XCTAssertEqual(order, ["done"])
         XCTAssertFalse(account.isSignedIn)
         XCTAssertNil(store().account)
     }
@@ -258,95 +257,53 @@ final class AccountTests: XCTestCase {
         XCTAssertEqual(oldCoins.fetchRequest().url?.absoluteString, "https://account.test/coins?device=IPAD-1")
     }
 
-    // MARK: - Hearts
-
-    func testHeartsSyncSendsChangesAndShowsTheAccountsHearts() async {
-        let hearts = HeartStore(defaults: defaults)
-        hearts.switchAccount("fam")
-        var changes = 0
-        hearts.onChange = { changes += 1 }
-        hearts.setLoved(true, bookId: "paris", pageId: "eiffel")
-        hearts.setLoved(false, bookId: "london", pageId: "eye")
-        XCTAssertEqual(changes, 2)
-        XCTAssertTrue(hearts.hasPending)
-
-        let heartService = HeartService(baseURL: base, token: "tok", accessKey: "k", session: urlSession)
-        StubAccountServer.replies = [nil]
-        await heartService.updateIgnoringErrors(hearts)
-        XCTAssertTrue(hearts.hasPending, "offline keeps the changes for next time")
-
-        StubAccountServer.replies = [(200, #"{"hearts":["paris/eiffel","beijing/wall"]}"#)]
-        await hearts.sync(using: heartService)
-        let sent = StubAccountServer.sent.last!
-        XCTAssertEqual(sent.method, "POST")
-        XCTAssertEqual(sent.body["loved"] as? [String], ["paris/eiffel"])
-        XCTAssertEqual(sent.body["unloved"] as? [String], ["london/eye"])
-        XCTAssertFalse(hearts.hasPending)
-        XCTAssertEqual(hearts.loved, ["paris/eiffel", "beijing/wall"], "a heart from another device shows here")
-
-        let relaunched = HeartStore(defaults: defaults)
-        relaunched.switchAccount("fam")
-        XCTAssertEqual(relaunched.loved, ["paris/eiffel", "beijing/wall"])
-        XCTAssertFalse(relaunched.hasPending)
-    }
-
-    func testHeartsBeforeAccountsDoNotQueueForTheServer() {
-        let hearts = HeartStore(defaults: defaults)
-        var changes = 0
-        hearts.onChange = { changes += 1 }
-        hearts.setLoved(true, bookId: "paris", pageId: "eiffel")
-        XCTAssertEqual(changes, 0)
-        XCTAssertFalse(hearts.hasPending)
-        XCTAssertEqual(hearts.legacyLoved, ["paris/eiffel"])
-    }
-
     // MARK: - AccountSync
 
-    private func sync(_ account: AccountStore, _ stars: StarStore, _ coins: CoinStore, _ hearts: HeartStore) -> AccountSync {
+    private func sync(_ account: AccountStore, _ stars: StarStore, _ coins: CoinStore) -> AccountSync {
         let base = base
         return AccountSync(
-            account: account, stars: stars, coins: coins, hearts: hearts, defaults: defaults,
+            account: account, stars: stars, coins: coins, defaults: defaults,
             baseURL: { base }, deviceId: { "IPAD-1" }, session: urlSession
         )
     }
 
     func testClaimingADeviceKeepsEverythingFromBeforeAccounts() async throws {
-        // His iPad before accounts: 2 stars, a seen badge, a heart and 3 coins, all under the old keys.
+        // His iPad before accounts: 2 stars, a seen badge, 3 coins and an old heart (from when the app
+        // had them), all under the old keys.
         let stars = StarStore(defaults: defaults)
         stars.merge([award("a"), award("b", book: "london")])
         stars.markBadgesSeen(["first-star"])
-        let hearts = HeartStore(defaults: defaults)
-        hearts.setLoved(true, bookId: "paris", pageId: "eiffel")
+        defaults.set(["paris/eiffel"], forKey: "lovedPages.v1")
         let coins = CoinStore(defaults: defaults)
         coins.apply(CoinState(starsEarned: 30, starsSpent: 30, coins: 3))
 
         let account = store()
-        let sync = sync(account, stars, coins, hearts)
+        let sync = sync(account, stars, coins)
         sync.start()
         XCTAssertEqual(stars.total, 2, "signed out, the old stars stay where they were")
 
-        // Sign in; the account claims the iPad. Then: import, stars, coins, hearts.
+        // Sign in; the account claims the iPad. Then: import, stars, coins.
         StubAccountServer.replies = [
             (200, signInReply(claimed: true)),
             (200, #"{"account":\#(family)}"#),
-            (200, #"{"ok":true,"stars_added":0,"hearts_added":1}"#),
+            (200, #"{"ok":true,"stars_added":0}"#),
         ]
         try await account.verify(email: "mom@example.com", code: "123456", device: device)
 
         XCTAssertEqual(stars.total, 2)
         XCTAssertTrue(stars.seenBadges.contains("first-star"), "badges he saw don't come back as NEW")
-        XCTAssertTrue(hearts.isLoved(bookId: "paris", pageId: "eiffel"))
         let paths = StubAccountServer.sent.map(\.path)
         XCTAssertTrue(paths.contains("/account/import"), "\(paths)")
         let imported = StubAccountServer.sent.first { $0.path == "/account/import" }!
         XCTAssertEqual((imported.body["stars"] as? [[String: Any]])?.compactMap { $0["id"] as? String }, ["a", "b"])
-        XCTAssertEqual(imported.body["hearts"] as? [String], ["paris/eiffel"])
+        XCTAssertNil(imported.body["hearts"], "hearts are gone from the app")
+        XCTAssertFalse(paths.contains("/account/hearts"), "\(paths)")
         XCTAssertEqual(imported.session, "tok-1")
         XCTAssertFalse(defaults.bool(forKey: "account.fam.importPending"))
 
         // The old keys are never touched.
         XCTAssertEqual(StarStore(defaults: defaults).total, 2)
-        XCTAssertEqual(HeartStore(defaults: defaults).legacyLoved, ["paris/eiffel"])
+        XCTAssertEqual(defaults.stringArray(forKey: "lovedPages.v1"), ["paris/eiffel"])
         XCTAssertEqual(CoinStore(defaults: defaults).coins, 3)
     }
 
@@ -354,7 +311,7 @@ final class AccountTests: XCTestCase {
         let stars = StarStore(defaults: defaults)
         stars.merge([award("a")])
         let account = store()
-        let sync = sync(account, stars, CoinStore(defaults: defaults), HeartStore(defaults: defaults))
+        let sync = sync(account, stars, CoinStore(defaults: defaults))
         sync.start()
         StubAccountServer.replies = [(200, signInReply(claimed: true))]  // then offline
         try await account.verify(email: "mom@example.com", code: "123456", device: device)
@@ -368,18 +325,15 @@ final class AccountTests: XCTestCase {
     func testAnotherAccountOnTheDeviceStartsEmptyAndSignOutForgetsIt() async throws {
         let stars = StarStore(defaults: defaults)
         stars.merge([award("a")])
-        let hearts = HeartStore(defaults: defaults)
-        hearts.setLoved(true, bookId: "paris", pageId: "eiffel")
         let coins = CoinStore(defaults: defaults)
         let account = store()
-        let sync = sync(account, stars, coins, hearts)
+        let sync = sync(account, stars, coins)
         sync.start()
 
         let other = #"{"id":"other","email":"aunt@example.com","all_books":false,"books":["paris"]}"#
         StubAccountServer.replies = [(200, signInReply(claimed: false, account: other))]
         try await account.verify(email: "aunt@example.com", code: "123456", device: device)
         XCTAssertEqual(stars.total, 0, "his stars are not hers")
-        XCTAssertTrue(hearts.loved.isEmpty)
         XCTAssertFalse(StubAccountServer.sent.contains { $0.path == "/account/import" })
 
         stars.receive(award("z"))
@@ -390,9 +344,4 @@ final class AccountTests: XCTestCase {
         XCTAssertEqual(stars.total, 1, "signed out, the device's own stars show again")
         XCTAssertEqual(stars.awards.map(\.id), ["a"])
     }
-}
-
-private extension HeartService {
-    /// Like ``HeartStore/sync(using:)`` for a dropped network: nothing changes.
-    @MainActor func updateIgnoringErrors(_ hearts: HeartStore) async { await hearts.sync(using: self) }
 }

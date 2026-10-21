@@ -6,7 +6,6 @@ struct BookReaderView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.horizontalSizeClass) private var sizeClass
-    @Environment(HeartStore.self) private var hearts
     @Environment(VoiceModeController.self) private var voice
     @Environment(ReadAloudController.self) private var readAloud
     @Environment(StarStore.self) private var stars
@@ -34,7 +33,6 @@ struct BookReaderView: View {
                         book: book,
                         page: book.pages[index],
                         pageNumber: index + 1,
-                        hearts: hearts,
                         readAloud: readAloud
                     )
                 )
@@ -65,7 +63,7 @@ struct BookReaderView: View {
         .background(tint.opacity(0.18).ignoresSafeArea())
         .task { await voice.pageDidChange(PageContext(book: book, index: pageIndex)) }
         .onChange(of: pageIndex) { _, newIndex in
-            readAloud.pageDidChange(to: HeartStore.id(bookId: book.id, pageId: book.pages[newIndex].id))
+            readAloud.pageDidChange(to: NarrationLibrary.key(bookId: book.id, pageId: book.pages[newIndex].id))
             Task { await voice.pageDidChange(PageContext(book: book, index: newIndex)) }
         }
         .onChange(of: scenePhase) { _, phase in
@@ -83,7 +81,7 @@ struct BookReaderView: View {
             if DemoLaunch.current?.readAloud == true {
                 let page = book.pages[pageIndex]
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    readAloud.toggle(pageId: HeartStore.id(bookId: book.id, pageId: page.id), text: page.text)
+                    readAloud.toggle(pageId: NarrationLibrary.key(bookId: book.id, pageId: page.id), text: page.text)
                 }
             }
         }

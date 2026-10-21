@@ -30,8 +30,8 @@ final class StarStoreTests: XCTestCase {
         return calendar
     }
 
-    private func badges(_ store: StarStore, lovedPages: Int = 0) throws -> [String: StarBadge] {
-        let list = store.badges(shelves: try shelves(), lovedPages: lovedPages, calendar: pacific)
+    private func badges(_ store: StarStore) throws -> [String: StarBadge] {
+        let list = store.badges(shelves: try shelves(), calendar: pacific)
         return Dictionary(uniqueKeysWithValues: list.map { ($0.id, $0) })
     }
 
@@ -147,7 +147,7 @@ final class StarStoreTests: XCTestCase {
 
     func testNewBadgesStartLockedWithAHint() throws {
         let all = try badges(StarStore(defaults: defaults))
-        for id in ["why-wizard", "star-shower", "come-back-kid", "early-bird", "night-owl", "bookworm", "globe-trotter", "big-heart", "super-star"] {
+        for id in ["why-wizard", "star-shower", "come-back-kid", "early-bird", "night-owl", "bookworm", "globe-trotter", "super-star"] {
             let badge = try XCTUnwrap(all[id], id)
             XCTAssertFalse(badge.earned, id)
             XCTAssertFalse(badge.detail.isEmpty, id)
@@ -219,14 +219,6 @@ final class StarStoreTests: XCTestCase {
         XCTAssertEqual(try badges(store)["super-star"]?.progress, 50, "progress stops at the goal")
     }
 
-    func testBigHeartCountsLovedPages() throws {
-        let store = StarStore(defaults: defaults)
-        XCTAssertEqual(try badges(store, lovedPages: 4)["big-heart"]?.progress, 4)
-        let heart = try XCTUnwrap(try badges(store, lovedPages: 6)["big-heart"])
-        XCTAssertTrue(heart.earned)
-        XCTAssertEqual(heart.doneText, "Loved 5 pages!")
-    }
-
     func testExpertBadgesFollowTheShelves() throws {
         var shelves = try shelves()
         let extra = shelves[0].books.prefix(2).map { $0 }
@@ -269,6 +261,16 @@ final class StarStoreTests: XCTestCase {
         XCTAssertEqual(store.newBadgeIds(in: store.badges(shelves: try shelves())), ["why-wizard"])
     }
 
+    func testRemovedBigHeartBadgeIsGoneAndItsSeenMarkIsHarmless() throws {
+        let store = StarStore(defaults: defaults)
+        store.markBadgesSeen(["big-heart"])
+        store.merge((0..<10).map { award("q\($0)") })
+        let list = store.badges(shelves: try shelves())
+        XCTAssertFalse(list.contains { $0.id == "big-heart" })
+        XCTAssertEqual(store.newBadgeIds(in: list), ["curious-cat", "star-shower"])
+        XCTAssertEqual(list.filter(\.earned).count, 2)
+    }
+
     func testDemoBadgeExtrasGiveAnEarlyMorningStar() throws {
         let extras = StarStore.demoBadgeExtras(shelves: try shelves(), calendar: pacific)
         XCTAssertEqual(extras.count, 1)
@@ -286,10 +288,9 @@ final class StarStoreTests: XCTestCase {
         XCTAssertLessThanOrEqual(perPage.values.max() ?? 0, 5, "at most 5 stars per page")
     }
 
-    func testBookCoverReadsItsStarsAndHearts() {
-        XCTAssertEqual(BookCoverView.accessibilityValue(starCount: 0, lovedCount: 0), "")
-        XCTAssertEqual(BookCoverView.accessibilityValue(starCount: 1, lovedCount: 0), "1 star")
-        XCTAssertEqual(BookCoverView.accessibilityValue(starCount: 7, lovedCount: 1), "7 stars, 1 loved page")
-        XCTAssertEqual(BookCoverView.accessibilityValue(starCount: 0, lovedCount: 3), "3 loved pages")
+    func testBookCoverReadsItsStars() {
+        XCTAssertEqual(BookCoverView.accessibilityValue(starCount: 0), "")
+        XCTAssertEqual(BookCoverView.accessibilityValue(starCount: 1), "1 star")
+        XCTAssertEqual(BookCoverView.accessibilityValue(starCount: 7), "7 stars")
     }
 }

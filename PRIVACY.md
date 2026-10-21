@@ -9,9 +9,10 @@ child reads, listens and, if the grown-up turns it on, talks with Milo, a voice 
 
 - **The grown-up's email address.** It is the only personal information we ask for. We never ask for the
   child's name, age, photo or anything else about the child.
-- **The family's progress:** which books the account can see, and the stars, coins and loved pages ("hearts")
-  earned in the app. A star records the book, the page, when it was earned, and a short note from Milo about
-  the answer (a few words, not a recording).
+- **The family's progress:** which books the account can see, and the stars and coins earned in the app. A
+  star records the book, the page, when it was earned, and a short note from Milo about the answer (a few
+  words, not a recording). Earlier versions of the app also saved the pages the child marked with a heart
+  ("hearts"). The app doesn't do that anymore; hearts already saved stay with the account until it is deleted.
 - **Device information:** a random id for each iPad or iPhone, its name and model, and how many minutes it
   talked with Milo each day, so we can apply a daily time limit and see what the voice service costs.
 - **Sign-in codes.** A code works for 10 minutes. We keep only a scrambled (hashed) form of it and clear it
@@ -19,7 +20,7 @@ child reads, listens and, if the grown-up turns it on, talks with Milo, a voice 
 
 ## How we use it
 
-- The email is used only to send 6-digit sign-in codes and to keep the books, stars, coins and hearts the same
+- The email is used only to send 6-digit sign-in codes and to keep the books, stars and coins the same
   on all of the family's devices.
 - No ads, no tracking, no analytics companies, and we never sell or share your information for marketing.
 - Sign-in emails are sent from the app owner's Gmail account through the Gmail API. The app has permission

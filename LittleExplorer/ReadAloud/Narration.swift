@@ -25,8 +25,10 @@ struct Narration: Decodable, Equatable {
     }
 }
 
-/// The narration manifest (downloaded or bundled), keyed like hearts: `book/page`.
+/// The narration manifest (downloaded or bundled), keyed by ``key(bookId:pageId:)``: `book/page`.
 struct NarrationLibrary {
+    static func key(bookId: String, pageId: String) -> String { "\(bookId)/\(pageId)" }
+
     private struct Manifest: Decodable {
         let clips: [String: Narration]
     }

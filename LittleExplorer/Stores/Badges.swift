@@ -1,8 +1,8 @@
 import Foundation
 
 /// The Passport badges, worked out from what the app already keeps: his stars (with their kind, time
-/// and book), the cities and books on the shelves, and his loved pages. Nothing here can be lost again:
-/// every goal counts things he has done, never a streak.
+/// and book) and the cities and books on the shelves. Nothing here can be lost again: every goal counts
+/// things he has done, never a streak.
 extension StarStore {
     static let curiousCatGoal = 10
     /// Every answer of 5+ words earns a star (up to 5 per page); 8+ words also counts as long.
@@ -12,7 +12,6 @@ extension StarStore {
     static let comeBackGoal = 5
     static let bookwormGoal = 10
     static let globeTrotterGoal = 3
-    static let bigHeartGoal = 5
     static let superStarGoal = 50
     /// A star before this hour is an Early Bird star; one at or after `nightOwlHour` is a Night Owl star.
     static let earlyBirdHour = 9
@@ -22,7 +21,7 @@ extension StarStore {
 
     /// Every badge in Passport order: the fixed ones, then an Expert badge for each city with several
     /// books (a star in every one of them), e.g. Paris Expert. New cities and books just work.
-    func badges(shelves: [CityShelf], lovedPages: Int = 0, calendar: Calendar = .current) -> [StarBadge] {
+    func badges(shelves: [CityShelf], calendar: Calendar = .current) -> [StarBadge] {
         let days = StarDays(awards: awards, calendar: calendar)
         let hours = awards.compactMap { award in
             StarDays.date(from: award.awardedAt, timeZone: calendar.timeZone).map { calendar.component(.hour, from: $0) }
@@ -87,11 +86,6 @@ extension StarStore {
                 "globe-trotter", "Globe Trotter", "globe.americas.fill", "#1E88E5", hint: "Get stamps from \(globeGoal) cities",
                 done: "Stamps from \(globeGoal) cities!",
                 progress: places.filter(\.stamped).count, goal: globeGoal
-            ),
-            badge(
-                "big-heart", "Big Heart", "heart.fill", "#E8457C", hint: "Tap the heart on \(Self.bigHeartGoal) pages you love",
-                done: "Loved \(Self.bigHeartGoal) pages!",
-                progress: lovedPages, goal: Self.bigHeartGoal
             ),
             badge(
                 "super-star", "Super Star", "trophy.fill", "#E63946", hint: "Earn \(Self.superStarGoal) stars",

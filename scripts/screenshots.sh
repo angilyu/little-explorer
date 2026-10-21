@@ -31,7 +31,7 @@ for pair in "$IPHONE iphone 640" "$IPAD ipad 1000"; do
   read -r udid name width <<<"$pair"
   xcrun simctl boot "$udid" 2>/dev/null || true
   xcrun simctl install "$udid" "$APP"
-  launch "$udid" -demoBook paris-food -demoPage 4 -demoLove; sleep 5; snap "$udid" "$name-yummy-paris-heart" "$width"
+  launch "$udid" -demoBook paris-food -demoPage 4; sleep 5; snap "$udid" "$name-yummy-paris" "$width"
   launch "$udid" -demoBook paris-fun -demoPage 5 -demoVoice listening; sleep 5; snap "$udid" "$name-fun-art-voice" "$width"
   launch "$udid" -demoBook paris-fun -demoPage 2 -demoRead; sleep 3.6; snap "$udid" "$name-read-aloud" "$width"
   launch "$udid"; sleep 4; snap "$udid" "$name-shelf" "$width"

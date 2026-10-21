@@ -1,7 +1,7 @@
 import Foundation
 
 /// DEBUG-only launch arguments used to take screenshots without tapping, e.g.
-/// `xcrun simctl launch booted com.angilyu.littleexplorer -demoBook paris -demoPage 5 -demoLove -demoVoice listening`
+/// `xcrun simctl launch booted com.angilyu.littleexplorer -demoBook paris -demoPage 5 -demoVoice listening`
 /// `-demoVoice live` turns real voice mode on at launch (needs the server running).
 /// `-demoVoice nap` / `-demoVoice rest` shows Milo turning itself off (idle / daily limit).
 /// `-demoVoice star` turns Milo on and has him give a star for the opening page.
@@ -12,8 +12,8 @@ import Foundation
 /// `-demoCoins 2` seeds that many coins (made from 10 stars each, so they come off `-demoStars`).
 /// `-demoCalendar` opens the Passport at its star calendar (with 60 stars over the last few weeks
 /// unless `-demoStars` says otherwise).
-/// `-demoBadges` opens the Passport at its badges, with some earned and some still to go (40 stars,
-/// an early-morning star and 3 loved pages unless `-demoStars` says otherwise).
+/// `-demoBadges` opens the Passport at its badges, with some earned and some still to go (40 stars
+/// and an early-morning star unless `-demoStars` says otherwise).
 /// `-demoGate` opens the grown-ups gate; `-demoParent` opens the grown-ups corner without it.
 /// `-demoAccount welcome|email|code` shows the signed-out welcome screen (and sign-in's email or code step);
 /// `-demoAccount new` signs in as a new account with only the default books. Other demos run signed in to a
@@ -24,7 +24,6 @@ struct DemoLaunch: Equatable {
 
     var bookId: String?
     var pageIndex: Int = 0
-    var lovePage = false
     var voiceActivity: BuddyActivity?
     var voiceEnd: String?
     var liveVoice = false
@@ -68,7 +67,6 @@ struct DemoLaunch: Equatable {
         var found = false
         if let book = value(after: "-demoBook") { demo.bookId = book; found = true }
         if let page = value(after: "-demoPage").flatMap(Int.init) { demo.pageIndex = max(0, page - 1); found = true }
-        if arguments.contains("-demoLove") { demo.lovePage = true; found = true }
         if arguments.contains("-demoRead") { demo.readAloud = true; found = true }
         if let stars = value(after: "-demoStars").flatMap(Int.init) { demo.seedStars = max(0, stars); found = true }
         if arguments.contains("-demoPassport") { demo.openPassport = true; found = true }

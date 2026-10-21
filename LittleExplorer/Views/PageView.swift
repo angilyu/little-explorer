@@ -4,7 +4,6 @@ struct PageView: View {
     let book: Book
     let page: BookPage
     let pageNumber: Int
-    let hearts: HeartStore
     let readAloud: ReadAloudController
 
     @Environment(\.horizontalSizeClass) private var sizeClass
@@ -12,7 +11,7 @@ struct PageView: View {
 
     private var regular: Bool { sizeClass == .regular }
     private var tint: Color { Color(hex: book.coverColor) }
-    private var readingId: String { HeartStore.id(bookId: book.id, pageId: page.id) }
+    private var readingId: String { NarrationLibrary.key(bookId: book.id, pageId: page.id) }
 
     var body: some View {
         GeometryReader { geo in
@@ -65,7 +64,6 @@ struct PageView: View {
     }
 
     private var textBlock: some View {
-        let loved = hearts.isLoved(bookId: book.id, pageId: page.id)
         let reading = readAloud.isSpeaking(pageId: readingId)
         return VStack(spacing: 12) {
             Spacer(minLength: 0)
@@ -80,9 +78,6 @@ struct PageView: View {
                 .animation(.easeOut(duration: 0.12), value: readAloud.spokenRange)
             Spacer(minLength: 0)
             HStack {
-                HeartButton(isLoved: loved, size: regular ? 84 : 68) {
-                    hearts.toggle(bookId: book.id, pageId: page.id)
-                }
                 Spacer()
                 ReadAloudButton(isReading: reading, tint: tint, size: regular ? 84 : 68) {
                     readAloud.toggle(pageId: readingId, text: page.text)
@@ -124,29 +119,6 @@ struct ReadAloudButton: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel(isReading ? "Stop reading" : "Read this page to me")
-    }
-}
-
-struct HeartButton: View {
-    let isLoved: Bool
-    var size: CGFloat = 72
-    let action: () -> Void
-
-    var body: some View {
-        Button {
-            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-            action()
-        } label: {
-            Image(systemName: isLoved ? "heart.fill" : "heart")
-                .font(.system(size: size * 0.5, weight: .bold))
-                .foregroundStyle(isLoved ? Color.red : Color.gray)
-                .symbolEffect(.bounce, value: isLoved)
-                .frame(width: size, height: size)
-                .background(Circle().fill(.white).shadow(color: .black.opacity(0.15), radius: 6, x: 0, y: 3))
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel(isLoved ? "I love this page" : "Love this page")
-        .accessibilityAddTraits(isLoved ? .isSelected : [])
     }
 }
 

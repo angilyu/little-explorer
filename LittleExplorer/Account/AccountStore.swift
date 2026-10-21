@@ -34,7 +34,7 @@ enum AccountError: Error, Equatable {
 struct SignInResult: Decodable, Equatable {
     let token: String
     let account: Account
-    /// True when this device's stars, coins and hearts from before accounts now belong to this account,
+    /// True when this device's stars and coins from before accounts now belong to this account,
     /// so the app should send what it kept on the device (see ``AccountStore``).
     let claimedDevice: Bool
 
@@ -110,9 +110,9 @@ struct AccountService {
     }
 
     /// Hands what this device kept from before accounts to the account that claimed it. Safe to repeat.
-    func importDevice(token: String, stars: [StarAward], hearts: [String]) async throws {
+    func importDevice(token: String, stars: [StarAward]) async throws {
         let awards = (try? JSONSerialization.jsonObject(with: JSONEncoder().encode(stars))) ?? []
-        _ = try await send(request("account/import", method: "POST", token: token, body: ["stars": awards, "hearts": hearts]))
+        _ = try await send(request("account/import", method: "POST", token: token, body: ["stars": awards]))
     }
 
     private func send(_ request: URLRequest) async throws -> Data {
@@ -154,10 +154,8 @@ final class AccountStore {
     @ObservationIgnored var service: () -> AccountService
     /// Called just before the account shows, so the stores switch to the account's saved data first.
     @ObservationIgnored var willSignIn: ((SignInResult) -> Void)?
-    /// Called after a sign-in with the result, so the stores can load the account's stars, coins and hearts.
+    /// Called after a sign-in with the result, so the stores can load the account's stars and coins.
     @ObservationIgnored var onSignIn: ((SignInResult) async -> Void)?
-    /// Called before a grown-up signs out, while the sign-in still works (to send hearts not sent yet).
-    @ObservationIgnored var willSignOut: (() async -> Void)?
     /// Called with the account id after signing out or deleting the account, so the stores forget its data.
     @ObservationIgnored var onSignOut: ((String) -> Void)?
 
@@ -207,7 +205,6 @@ final class AccountStore {
 
     /// Signs out here; the account and everything in it stay on the server.
     func signOut() async {
-        await willSignOut?()
         if let token { try? await service().signOut(token: token) }
         forget()
     }
