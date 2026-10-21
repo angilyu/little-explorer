@@ -502,6 +502,12 @@ changed, runs the server tests, and deploys only the pieces that need it:
   `PIP_EMAIL_PROVIDER`, `PIP_EMAIL_FROM`, `GMAIL_*`), set in the Render dashboard, not in git. A free service sleeps after 15 idle minutes, so with `KEEPALIVE_SECONDS` set the
   server pings its own `/healthz` to stay awake (one always-on service fits in the free 750 hours a month). If it
   does fall asleep (e.g. after a redeploy fails), the first token takes about a minute.
+- **Keep-awake ping** (`.github/workflows/keep-awake.yml`) GETs the public `/healthz` every 10 minutes as a
+  backstop, so the app (and App Review) doesn't hit that ~50 s wake-up even if the self-ping stops. It needs no
+  secrets and never deploys or runs tests. GitHub may delay scheduled runs (often by several minutes, more at busy
+  times), and it disables scheduled workflows after 60 days without repo activity; re-enable it under
+  **Actions → Keep server awake**. To turn it off, use **Actions → Keep server awake → ⋯ → Disable workflow**
+  (or `gh workflow disable keep-awake.yml`), or delete the file.
 - **Agent:** `scripts/deploy_agent.sh` reads the env file, uploads `OPENAI_API_KEY` and the `PIP_*` settings as
   LiveKit secrets, and creates the agent (first run, region `$LK_AGENT_REGION`, default `us-east`) or deploys a
   new version. Set `PIP_CONTENT_URL=https://little-explorer-pip.onrender.com/content` so Milo reads the same
