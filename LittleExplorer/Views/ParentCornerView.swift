@@ -9,6 +9,9 @@ struct ParentCornerView: View {
     @Environment(CoinStore.self) private var coins
     @Environment(\.dismiss) private var dismiss
     @Environment(ContentStore.self) private var content
+    @Environment(AccountStore.self) private var account
+    @State private var confirmSignOut = false
+    @State private var showDelete = false
     @AppStorage(VoiceSettings.tokenServerKey) private var tokenServer = VoiceSettings.defaultTokenServer
     @State private var device: DeviceInfo?
     @State private var coinsLoading = false
@@ -21,6 +24,7 @@ struct ParentCornerView: View {
     var body: some View {
         NavigationStack {
             List {
+                accountSection
                 coinSection
 
                 Section("Loved pages") {
@@ -105,6 +109,38 @@ struct ParentCornerView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } }
+            }
+        }
+    }
+
+    // MARK: - Account
+
+    @ViewBuilder
+    private var accountSection: some View {
+        if let signedIn = account.account {
+            Section {
+                LabeledContent("Signed in as", value: signedIn.maskedEmail)
+                LabeledContent("Books", value: signedIn.books == nil ? "All books" : "\(signedIn.shelf(content.books).count) books")
+                Button("Sign out", role: .destructive) { confirmSignOut = true }
+                    .confirmationDialog("Sign out of this device?", isPresented: $confirmSignOut, titleVisibility: .visible) {
+                        Button("Sign out", role: .destructive) {
+                            Task {
+                                await account.signOut()
+                                dismiss()
+                            }
+                        }
+                    } message: {
+                        Text("Stars, coins and hearts stay in the account. Sign in again with the same email to get them back.")
+                    }
+                Button("Delete account…", role: .destructive) { showDelete = true }
+                    .foregroundStyle(.secondary)
+            } header: {
+                Text("Account")
+            } footer: {
+                Text("Every iPad and iPhone signed in with this email shares the same books, stars, coins and hearts. The owner can add more books to the account.")
+            }
+            .sheet(isPresented: $showDelete) {
+                DeleteAccountView().environment(account)
             }
         }
     }
@@ -228,7 +264,7 @@ struct ParentCornerView: View {
 
     private func loadCoins() async {
         coinsLoading = true
-        coinsReached = await coins.refresh(using: CoinStore.service())
+        coinsReached = await coins.refresh(using: CoinStore.service(token: account.token))
         coinsLoading = false
         if let state = coins.state { coinsToMake = state.canConvert }
     }
@@ -237,7 +273,7 @@ struct ParentCornerView: View {
         converting = true
         defer { converting = false }
         do {
-            let made = try await coins.convert(coins: amount, starsPerCoin: rate, using: CoinStore.service())
+            let made = try await coins.convert(coins: amount, starsPerCoin: rate, using: CoinStore.service(token: account.token))
             let count = made?.coins ?? amount
             coinMessage = "Done! \(count * rate) stars became \(count) \(count == 1 ? "coin" : "coins")."
         } catch let error as CoinError {

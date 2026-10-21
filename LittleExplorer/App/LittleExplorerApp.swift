@@ -8,11 +8,19 @@ struct LittleExplorerApp: App {
     @State private var content = ContentStore()
     @State private var stars = StarStore.live()
     @State private var coins = CoinStore.live()
+    @State private var account = AccountStore.live()
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some Scene {
         WindowGroup {
-            LibraryView(books: content.books)
+            Group {
+                if account.isSignedIn {
+                    LibraryView(books: account.shelf(content.books))
+                } else {
+                    WelcomeView(books: content.books)
+                }
+            }
+                .environment(account)
                 .environment(hearts)
                 .environment(voice)
                 .environment(readAloud)
@@ -23,17 +31,16 @@ struct LittleExplorerApp: App {
                     voice.onStar = { [stars] award in stars.receive(award) }
                     stars.onCelebrate = { StarChime.play() }
                     guard DemoLaunch.current == nil else { return }
+                    let sync = AccountSync(account: account, stars: stars, coins: coins, hearts: hearts)
+                    sync.start()
                     async let books: Void = content.refresh()
-                    async let saved: Void = stars.restore(
-                        from: StarBackup(baseURL: VoiceSettings.tokenServerURL(), deviceId: DeviceIdentity.current().id)
-                    )
-                    async let balance: Bool = coins.refresh(using: CoinStore.service())
-                    _ = await (books, saved, balance)
+                    async let saved: Void = sync.refresh()
+                    _ = await (books, saved)
                 }
                 .onChange(of: scenePhase) { _, phase in
                     guard phase == .active, DemoLaunch.current == nil else { return }
                     Task { await content.refresh() }
-                    Task { await coins.refresh(using: CoinStore.service()) }
+                    Task { await AccountSync(account: account, stars: stars, coins: coins, hearts: hearts).refresh() }
                 }
         }
     }

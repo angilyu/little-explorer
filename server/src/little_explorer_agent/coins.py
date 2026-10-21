@@ -25,6 +25,8 @@ from dataclasses import asdict, dataclass, fields, replace
 from datetime import datetime
 from typing import Any
 
+from .devices import Scope
+
 CONVERSION_ID = re.compile(r"^[A-Za-z0-9-]{8,64}$")
 SETTING_PREFIX = "coins."
 MAX_STARS_PER_COIN = 1000
@@ -234,19 +236,22 @@ class CoinLedger:
 
     # -- balances ---------------------------------------------------------------------------------
 
-    def _balance(self, cur: Any, device_id: str) -> Balance:
-        earned = self.store._exec(
-            cur, "SELECT COALESCE(SUM(stars), 0) FROM stars WHERE device_id = ?", (device_id,)
-        ).fetchone()[0]
+    def _balance(self, cur: Any, scope: Scope) -> Balance:
+        where, params = scope.where()
+        earned = self.store._exec(cur, f"SELECT COALESCE(SUM(stars), 0) FROM stars WHERE {where}", params).fetchone()[0]
         spent, coins = self.store._exec(
             cur,
-            "SELECT COALESCE(SUM(stars_spent), 0), COALESCE(SUM(coins), 0) FROM coin_conversions WHERE device_id = ?",
-            (device_id,),
+            f"SELECT COALESCE(SUM(stars_spent), 0), COALESCE(SUM(coins), 0) FROM coin_conversions WHERE {where}",
+            params,
         ).fetchone()
         return Balance(self._rules(cur), int(earned), int(spent), int(coins))
 
     def balance(self, device_id: str) -> Balance:
-        return self.store._run(lambda cur: self._balance(cur, device_id))
+        """A device's balance (its account's, if it's signed in to one)."""
+        return self.store._run(lambda cur: self._balance(cur, self.store._scope(cur, device_id)))
+
+    def balance_of(self, scope: Scope) -> Balance:
+        return self.store._run(lambda cur: self._balance(cur, scope))
 
     def convert(
         self,
@@ -255,37 +260,43 @@ class CoinLedger:
         coins: int | None = None,
         stars_per_coin: int | None = None,
         now: datetime | None = None,
+        *,
+        account_id: str | None = None,
     ) -> tuple[dict[str, Any], Balance, bool]:
         """Spend stars on coins. Returns ``(conversion, balance after, replayed)``.
 
-        The same ``conversion_id`` again returns the first result (``replayed``) and changes nothing.
-        The check and the insert run under the store's lock, so two taps can't both spend the same
-        stars (the token server is a single process)."""
+        The stars are the account's when ``account_id`` is given or the device is signed in to one,
+        otherwise the device's own. The same ``conversion_id`` again returns the first result
+        (``replayed``) and changes nothing. The check and the insert run under the store's lock, so
+        two taps can't both spend the same stars (the token server is a single process)."""
         if not isinstance(conversion_id, str) or not CONVERSION_ID.match(conversion_id):
             raise CoinError("bad_id", "a conversion id of 8-64 letters, digits or dashes is required", 400)
         stamp = (now or self.store.now()).isoformat(timespec="seconds")
 
         def run(cur: Any) -> tuple[dict[str, Any], Balance, bool]:
+            scope = Scope(account_id=account_id) if account_id else self.store._scope(cur, device_id)
             row = self.store._exec(
                 cur,
-                "SELECT id, device_id, converted_at, stars_spent, coins, stars_per_coin FROM coin_conversions WHERE id = ?",
+                """SELECT id, device_id, converted_at, stars_spent, coins, stars_per_coin, account_id
+                FROM coin_conversions WHERE id = ?""",
                 (conversion_id,),
             ).fetchone()
             if row:
-                if row[1] != device_id:
+                mine = row[6] == scope.account_id if scope.account_id else (row[1] == device_id and not row[6])
+                if not mine:
                     raise CoinError("bad_id", "that conversion id belongs to another device", 409)
-                return _conversion(row), self._balance(cur, device_id), True
-            before = self._balance(cur, device_id)
+                return _conversion(row[:6]), self._balance(cur, scope), True
+            before = self._balance(cur, scope)
             made = plan(before, coins, stars_per_coin)
             spent = made * before.rules.stars_per_coin
             values = (conversion_id, device_id, stamp, spent, made, before.rules.stars_per_coin)
             self.store._exec(
                 cur,
-                """INSERT INTO coin_conversions (id, device_id, converted_at, stars_spent, coins, stars_per_coin)
-                VALUES (?, ?, ?, ?, ?, ?)""",
-                values,
+                """INSERT INTO coin_conversions (id, device_id, converted_at, stars_spent, coins, stars_per_coin,
+                account_id) VALUES (?, ?, ?, ?, ?, ?, ?)""",
+                (*values, scope.account_id),
             )
-            return _conversion(values), self._balance(cur, device_id), False
+            return _conversion(values), self._balance(cur, scope), False
 
         return self.store._run(run)
 

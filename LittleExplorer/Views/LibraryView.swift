@@ -7,6 +7,7 @@ struct LibraryView: View {
     @Environment(VoiceModeController.self) private var voice
     @Environment(StarStore.self) private var stars
     @Environment(CoinStore.self) private var coins
+    @Environment(AccountStore.self) private var account
     @Environment(\.horizontalSizeClass) private var sizeClass
 
     @State private var openBook: OpenBook?
@@ -65,6 +66,7 @@ struct LibraryView: View {
         }
         .sheet(isPresented: $showParentCorner) {
             ParentCornerView(books: books)
+                .environment(account)
                 .environment(hearts)
                 .environment(coins)
         }

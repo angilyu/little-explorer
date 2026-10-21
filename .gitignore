@@ -25,5 +25,9 @@ __pycache__/
 server/KMS/
 server/content/
 
+# Admin backups (children's stars, parents' emails)
+server/backups/
+backups/
+
 # Local app config (Milo access key)
 Config/Local.xcconfig

@@ -1,0 +1,398 @@
+import XCTest
+@testable import LittleExplorer
+
+/// Answers `account.test` requests from a queue (or fails them like a dropped network) and keeps what it was sent.
+final class StubAccountServer: URLProtocol {
+    struct Sent {
+        let method: String
+        let path: String
+        let query: String?
+        let auth: String?
+        let session: String?
+        let body: [String: Any]
+    }
+
+    nonisolated(unsafe) static var replies: [(Int, String)?] = []
+    nonisolated(unsafe) static var sent: [Sent] = []
+
+    override class func canInit(with request: URLRequest) -> Bool { request.url?.host == "account.test" }
+    override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
+
+    override func startLoading() {
+        var data = Data()
+        if let stream = request.httpBodyStream {
+            stream.open()
+            var buffer = [UInt8](repeating: 0, count: 4096)
+            while stream.hasBytesAvailable {
+                let n = stream.read(&buffer, maxLength: buffer.count)
+                if n <= 0 { break }
+                data.append(buffer, count: n)
+            }
+            stream.close()
+        }
+        Self.sent.append(Sent(
+            method: request.httpMethod ?? "GET", path: request.url!.path, query: request.url!.query,
+            auth: request.value(forHTTPHeaderField: "Authorization"),
+            session: request.value(forHTTPHeaderField: AccountService.sessionHeader),
+            body: (try? JSONSerialization.jsonObject(with: data) as? [String: Any]) ?? [:]
+        ))
+        guard !Self.replies.isEmpty, let (status, json) = Self.replies.removeFirst() else {
+            client?.urlProtocol(self, didFailWithError: URLError(.networkConnectionLost))
+            return
+        }
+        let response = HTTPURLResponse(url: request.url!, statusCode: status, httpVersion: nil, headerFields: nil)!
+        client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+        client?.urlProtocol(self, didLoad: Data(json.utf8))
+        client?.urlProtocolDidFinishLoading(self)
+    }
+
+    override func stopLoading() {}
+}
+
+@MainActor
+final class AccountTests: XCTestCase {
+    private var suiteName = ""
+    private var defaults: UserDefaults!
+    private var tokens: MemorySessionTokenStore!
+    private let base = URL(string: "https://account.test")!
+    private var urlSession: URLSession!
+
+    private let family = #"{"id":"fam","email":"mom@example.com","all_books":true,"books":[]}"#
+    private let device = DeviceInfo(id: "IPAD-1", name: "iPad", model: "iPad13,1")
+
+    override func setUp() {
+        super.setUp()
+        suiteName = "AccountTests.\(UUID().uuidString)"
+        defaults = UserDefaults(suiteName: suiteName)
+        tokens = MemorySessionTokenStore()
+        StubAccountServer.replies = []
+        StubAccountServer.sent = []
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [StubAccountServer.self]
+        urlSession = URLSession(configuration: config)
+    }
+
+    override func tearDown() {
+        defaults.removePersistentDomain(forName: suiteName)
+        super.tearDown()
+    }
+
+    private func service() -> AccountService {
+        AccountService(baseURL: base, accessKey: "app-key", session: urlSession)
+    }
+
+    private func store() -> AccountStore {
+        let session = urlSession!
+        let base = base
+        return AccountStore(tokens: tokens, defaults: defaults, service: {
+            AccountService(baseURL: base, accessKey: "app-key", session: session)
+        })
+    }
+
+    private func award(_ id: String, book: String = "paris") -> StarAward {
+        StarAward(id: id, awardedAt: "2026-01-01T10:00:00", book: book, page: "p1", city: "Paris", stars: 1)
+    }
+
+    private func signInReply(claimed: Bool, account: String? = nil) -> String {
+        #"{"token":"tok-1","account":\#(account ?? family),"claimed_device":\#(claimed)}"#
+    }
+
+    // MARK: - Account
+
+    func testDecodesAllBooksAsEveryBookAndAShelfAsItsList() throws {
+        let all = try JSONDecoder().decode(Account.self, from: Data(family.utf8))
+        XCTAssertNil(all.books)
+        let some = try JSONDecoder().decode(
+            Account.self, from: Data(#"{"id":"a","email":"x@y.com","all_books":false,"books":["paris","london"]}"#.utf8)
+        )
+        XCTAssertEqual(some.books, ["paris", "london"])
+        let again = try JSONDecoder().decode(Account.self, from: JSONEncoder().encode(some))
+        XCTAssertEqual(again, some)
+        XCTAssertEqual(try JSONDecoder().decode(Account.self, from: JSONEncoder().encode(all)), all)
+    }
+
+    func testShelfKeepsLibraryOrderAndHidesOtherBooks() throws {
+        let books = try BookLibrary.loadBundled(ids: ["paris", "paris-food", "paris-fun"])
+        let account = Account(id: "a", email: "x@y.com", books: ["paris-fun", "paris"])
+        XCTAssertEqual(account.shelf(books).map(\.id), ["paris", "paris-fun"])
+        XCTAssertEqual(Account(id: "a", email: "x@y.com", books: nil).shelf(books).count, 3)
+    }
+
+    func testDefaultBooksAreFiveCities() {
+        XCTAssertEqual(Account.defaultBooks.count, 12)
+        XCTAssertEqual(Set(Account.defaultBooks.map { $0.split(separator: "-")[0] }),
+                       ["paris", "london", "barcelona", "beijing", "shanghai"])
+    }
+
+    func testEmailChecksAndMask() {
+        XCTAssertTrue(Account.looksLikeEmail(" mom@example.com "))
+        for bad in ["", "mom", "mom@", "@example.com", "mom@example", "mom@.com", "m om@example.com"] {
+            XCTAssertFalse(Account.looksLikeEmail(bad), bad)
+        }
+        XCTAssertEqual(Account.mask("wenjing@example.com"), "w•••@example.com")
+    }
+
+    func testServerErrorsMapToMessages() {
+        func error(_ status: Int, _ json: String) -> AccountError { AccountService.error(status: status, data: Data(json.utf8)) }
+        XCTAssertEqual(error(400, #"{"error":"bad_email"}"#), .badEmail)
+        XCTAssertEqual(error(400, #"{"error":"bad_code","tries_left":2}"#), .badCode(triesLeft: 2))
+        XCTAssertEqual(error(400, #"{"error":"expired"}"#), .expired)
+        XCTAssertEqual(error(429, #"{"error":"too_many","retry_after_s":42}"#), .tooMany(retryAfter: 42))
+        XCTAssertEqual(error(401, #"{"error":"signed_out"}"#), .signedOut)
+        XCTAssertEqual(error(500, "oops"), .server(status: 500))
+        XCTAssertTrue(AccountError.badCode(triesLeft: 1).message.contains("1 try left"))
+        XCTAssertTrue(AccountError.tooMany(retryAfter: 600).message.contains("10 min"))
+    }
+
+    // MARK: - AccountStore
+
+    func testSignInSendsEmailThenCodeAndRemembersTheAccount() async throws {
+        StubAccountServer.replies = [(200, #"{"ok":true,"resend_after_s":60}"#), (200, signInReply(claimed: false))]
+        let account = store()
+        XCTAssertFalse(account.isSignedIn)
+        let wait = try await account.sendCode(to: " Mom@Example.com ")
+        XCTAssertEqual(wait, 60)
+        try await account.verify(email: "mom@example.com", code: "123456", device: device)
+        XCTAssertTrue(account.isSignedIn)
+        XCTAssertEqual(account.token, "tok-1")
+
+        let (start, verify) = (StubAccountServer.sent[0], StubAccountServer.sent[1])
+        XCTAssertEqual(start.path, "/auth/start")
+        XCTAssertEqual(start.body["email"] as? String, "mom@example.com")
+        XCTAssertEqual(start.auth, "Bearer app-key")
+        XCTAssertEqual(verify.path, "/auth/verify")
+        XCTAssertEqual(verify.body["code"] as? String, "123456")
+        XCTAssertEqual((verify.body["device"] as? [String: Any])?["id"] as? String, "IPAD-1")
+
+        XCTAssertEqual(store().account?.id, "fam", "the sign-in survives a relaunch")
+    }
+
+    func testBadEmailNeverReachesTheServer() async {
+        do {
+            _ = try await store().sendCode(to: "nope")
+            XCTFail("expected badEmail")
+        } catch {
+            XCTAssertEqual(error as? AccountError, .badEmail)
+        }
+        XCTAssertTrue(StubAccountServer.sent.isEmpty)
+    }
+
+    func testWrongCodeKeepsYouSignedOut() async {
+        StubAccountServer.replies = [(400, #"{"error":"bad_code","tries_left":4}"#)]
+        let account = store()
+        do {
+            try await account.verify(email: "mom@example.com", code: "000000", device: device)
+            XCTFail("expected badCode")
+        } catch {
+            XCTAssertEqual(error as? AccountError, .badCode(triesLeft: 4))
+        }
+        XCTAssertFalse(account.isSignedIn)
+        XCTAssertNil(tokens.token)
+    }
+
+    func testRefreshPicksUpGrantedBooksAndForgetsAForgottenSession() async throws {
+        StubAccountServer.replies = [(200, signInReply(claimed: false))]
+        let account = store()
+        try await account.verify(email: "mom@example.com", code: "123456", device: device)
+        StubAccountServer.replies = [(200, #"{"account":{"id":"fam","email":"mom@example.com","all_books":false,"books":["paris"]}}"#)]
+        await account.refresh()
+        XCTAssertEqual(account.account?.books, ["paris"])
+        XCTAssertEqual(StubAccountServer.sent.last?.session, "tok-1")
+
+        StubAccountServer.replies = [nil]
+        await account.refresh()
+        XCTAssertTrue(account.isSignedIn, "offline keeps the sign-in")
+
+        var signedOut: String?
+        account.onSignOut = { signedOut = $0 }
+        StubAccountServer.replies = [(401, #"{"error":"signed_out"}"#)]
+        await account.refresh()
+        XCTAssertFalse(account.isSignedIn)
+        XCTAssertNil(tokens.token)
+        XCTAssertEqual(signedOut, "fam")
+    }
+
+    func testSignOutTellsTheServerEvenWhenOffline() async throws {
+        StubAccountServer.replies = [(200, signInReply(claimed: false))]
+        let account = store()
+        try await account.verify(email: "mom@example.com", code: "123456", device: device)
+        var order: [String] = []
+        account.willSignOut = { order.append("will") }
+        account.onSignOut = { _ in order.append("done") }
+        await account.signOut()
+        XCTAssertEqual(StubAccountServer.sent.last?.path, "/auth/signout")
+        XCTAssertEqual(StubAccountServer.sent.last?.session, "tok-1")
+        XCTAssertEqual(order, ["will", "done"])
+        XCTAssertFalse(account.isSignedIn)
+        XCTAssertNil(store().account)
+    }
+
+    func testDeleteAsksForACodeThenDeletes() async throws {
+        StubAccountServer.replies = [(200, signInReply(claimed: false))]
+        let account = store()
+        try await account.verify(email: "mom@example.com", code: "123456", device: device)
+        StubAccountServer.replies = [(200, #"{"ok":true,"resend_after_s":60}"#), (200, #"{"ok":true}"#)]
+        _ = try await account.sendDeleteCode()
+        XCTAssertEqual(StubAccountServer.sent.last?.body["purpose"] as? String, "delete")
+        XCTAssertEqual(StubAccountServer.sent.last?.session, "tok-1")
+        try await account.deleteAccount(code: "654321")
+        XCTAssertEqual(StubAccountServer.sent.last?.path, "/account/delete")
+        XCTAssertFalse(account.isSignedIn)
+    }
+
+    // MARK: - Account data requests
+
+    func testSignedInRequestsUseTheAccountEndpoints() {
+        let stars = StarBackup(baseURL: base, deviceId: "IPAD-1", accessKey: "k", token: "tok").request()
+        XCTAssertEqual(stars.url?.absoluteString, "https://account.test/account/stars")
+        XCTAssertEqual(stars.value(forHTTPHeaderField: AccountService.sessionHeader), "tok")
+        let oldStars = StarBackup(baseURL: base, deviceId: "IPAD-1", accessKey: "k").request()
+        XCTAssertEqual(oldStars.url?.absoluteString, "https://account.test/stars?device=IPAD-1")
+        XCTAssertNil(oldStars.value(forHTTPHeaderField: AccountService.sessionHeader))
+
+        let coins = CoinService(baseURL: base, deviceId: "IPAD-1", accessKey: "k", token: "tok")
+        XCTAssertEqual(coins.fetchRequest().url?.absoluteString, "https://account.test/account/coins")
+        XCTAssertEqual(coins.convertRequest(id: "x", coins: 1, starsPerCoin: 10).url?.path, "/account/coins/convert")
+        XCTAssertEqual(coins.fetchRequest().value(forHTTPHeaderField: AccountService.sessionHeader), "tok")
+        let oldCoins = CoinService(baseURL: base, deviceId: "IPAD-1", accessKey: "k")
+        XCTAssertEqual(oldCoins.fetchRequest().url?.absoluteString, "https://account.test/coins?device=IPAD-1")
+    }
+
+    // MARK: - Hearts
+
+    func testHeartsSyncSendsChangesAndShowsTheAccountsHearts() async {
+        let hearts = HeartStore(defaults: defaults)
+        hearts.switchAccount("fam")
+        var changes = 0
+        hearts.onChange = { changes += 1 }
+        hearts.setLoved(true, bookId: "paris", pageId: "eiffel")
+        hearts.setLoved(false, bookId: "london", pageId: "eye")
+        XCTAssertEqual(changes, 2)
+        XCTAssertTrue(hearts.hasPending)
+
+        let heartService = HeartService(baseURL: base, token: "tok", accessKey: "k", session: urlSession)
+        StubAccountServer.replies = [nil]
+        await heartService.updateIgnoringErrors(hearts)
+        XCTAssertTrue(hearts.hasPending, "offline keeps the changes for next time")
+
+        StubAccountServer.replies = [(200, #"{"hearts":["paris/eiffel","beijing/wall"]}"#)]
+        await hearts.sync(using: heartService)
+        let sent = StubAccountServer.sent.last!
+        XCTAssertEqual(sent.method, "POST")
+        XCTAssertEqual(sent.body["loved"] as? [String], ["paris/eiffel"])
+        XCTAssertEqual(sent.body["unloved"] as? [String], ["london/eye"])
+        XCTAssertFalse(hearts.hasPending)
+        XCTAssertEqual(hearts.loved, ["paris/eiffel", "beijing/wall"], "a heart from another device shows here")
+
+        let relaunched = HeartStore(defaults: defaults)
+        relaunched.switchAccount("fam")
+        XCTAssertEqual(relaunched.loved, ["paris/eiffel", "beijing/wall"])
+        XCTAssertFalse(relaunched.hasPending)
+    }
+
+    func testHeartsBeforeAccountsDoNotQueueForTheServer() {
+        let hearts = HeartStore(defaults: defaults)
+        var changes = 0
+        hearts.onChange = { changes += 1 }
+        hearts.setLoved(true, bookId: "paris", pageId: "eiffel")
+        XCTAssertEqual(changes, 0)
+        XCTAssertFalse(hearts.hasPending)
+        XCTAssertEqual(hearts.legacyLoved, ["paris/eiffel"])
+    }
+
+    // MARK: - AccountSync
+
+    private func sync(_ account: AccountStore, _ stars: StarStore, _ coins: CoinStore, _ hearts: HeartStore) -> AccountSync {
+        let base = base
+        return AccountSync(
+            account: account, stars: stars, coins: coins, hearts: hearts, defaults: defaults,
+            baseURL: { base }, deviceId: { "IPAD-1" }, session: urlSession
+        )
+    }
+
+    func testClaimingADeviceKeepsEverythingFromBeforeAccounts() async throws {
+        // His iPad before accounts: 2 stars, a seen badge, a heart and 3 coins, all under the old keys.
+        let stars = StarStore(defaults: defaults)
+        stars.merge([award("a"), award("b", book: "london")])
+        stars.markBadgesSeen(["first-star"])
+        let hearts = HeartStore(defaults: defaults)
+        hearts.setLoved(true, bookId: "paris", pageId: "eiffel")
+        let coins = CoinStore(defaults: defaults)
+        coins.apply(CoinState(starsEarned: 30, starsSpent: 30, coins: 3))
+
+        let account = store()
+        let sync = sync(account, stars, coins, hearts)
+        sync.start()
+        XCTAssertEqual(stars.total, 2, "signed out, the old stars stay where they were")
+
+        // Sign in; the account claims the iPad. Then: import, stars, coins, hearts.
+        StubAccountServer.replies = [
+            (200, signInReply(claimed: true)),
+            (200, #"{"account":\#(family)}"#),
+            (200, #"{"ok":true,"stars_added":0,"hearts_added":1}"#),
+        ]
+        try await account.verify(email: "mom@example.com", code: "123456", device: device)
+
+        XCTAssertEqual(stars.total, 2)
+        XCTAssertTrue(stars.seenBadges.contains("first-star"), "badges he saw don't come back as NEW")
+        XCTAssertTrue(hearts.isLoved(bookId: "paris", pageId: "eiffel"))
+        let paths = StubAccountServer.sent.map(\.path)
+        XCTAssertTrue(paths.contains("/account/import"), "\(paths)")
+        let imported = StubAccountServer.sent.first { $0.path == "/account/import" }!
+        XCTAssertEqual((imported.body["stars"] as? [[String: Any]])?.compactMap { $0["id"] as? String }, ["a", "b"])
+        XCTAssertEqual(imported.body["hearts"] as? [String], ["paris/eiffel"])
+        XCTAssertEqual(imported.session, "tok-1")
+        XCTAssertFalse(defaults.bool(forKey: "account.fam.importPending"))
+
+        // The old keys are never touched.
+        XCTAssertEqual(StarStore(defaults: defaults).total, 2)
+        XCTAssertEqual(HeartStore(defaults: defaults).legacyLoved, ["paris/eiffel"])
+        XCTAssertEqual(CoinStore(defaults: defaults).coins, 3)
+    }
+
+    func testImportIsRetriedUntilTheServerHasIt() async throws {
+        let stars = StarStore(defaults: defaults)
+        stars.merge([award("a")])
+        let account = store()
+        let sync = sync(account, stars, CoinStore(defaults: defaults), HeartStore(defaults: defaults))
+        sync.start()
+        StubAccountServer.replies = [(200, signInReply(claimed: true))]  // then offline
+        try await account.verify(email: "mom@example.com", code: "123456", device: device)
+        XCTAssertTrue(defaults.bool(forKey: "account.fam.importPending"))
+
+        StubAccountServer.replies = [(200, #"{"account":\#(family)}"#), (200, #"{"ok":true}"#)]
+        await sync.refresh()
+        XCTAssertFalse(defaults.bool(forKey: "account.fam.importPending"))
+    }
+
+    func testAnotherAccountOnTheDeviceStartsEmptyAndSignOutForgetsIt() async throws {
+        let stars = StarStore(defaults: defaults)
+        stars.merge([award("a")])
+        let hearts = HeartStore(defaults: defaults)
+        hearts.setLoved(true, bookId: "paris", pageId: "eiffel")
+        let coins = CoinStore(defaults: defaults)
+        let account = store()
+        let sync = sync(account, stars, coins, hearts)
+        sync.start()
+
+        let other = #"{"id":"other","email":"aunt@example.com","all_books":false,"books":["paris"]}"#
+        StubAccountServer.replies = [(200, signInReply(claimed: false, account: other))]
+        try await account.verify(email: "aunt@example.com", code: "123456", device: device)
+        XCTAssertEqual(stars.total, 0, "his stars are not hers")
+        XCTAssertTrue(hearts.loved.isEmpty)
+        XCTAssertFalse(StubAccountServer.sent.contains { $0.path == "/account/import" })
+
+        stars.receive(award("z"))
+        XCTAssertEqual(stars.total, 1)
+        XCTAssertNotNil(defaults.data(forKey: "account.other.starAwards.v1"))
+        await account.signOut()
+        XCTAssertNil(defaults.data(forKey: "account.other.starAwards.v1"), "signing out forgets her copy here")
+        XCTAssertEqual(stars.total, 1, "signed out, the device's own stars show again")
+        XCTAssertEqual(stars.awards.map(\.id), ["a"])
+    }
+}
+
+private extension HeartService {
+    /// Like ``HeartStore/sync(using:)`` for a dropped network: nothing changes.
+    @MainActor func updateIgnoringErrors(_ hearts: HeartStore) async { await hearts.sync(using: self) }
+}
