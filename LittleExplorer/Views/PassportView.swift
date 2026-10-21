@@ -7,11 +7,19 @@ struct PassportView: View {
 
     @Environment(StarStore.self) private var stars
     @Environment(CoinStore.self) private var coins
+    @Environment(HeartStore.self) private var hearts
     @Environment(\.dismiss) private var dismiss
     @Environment(\.horizontalSizeClass) private var sizeClass
 
+    /// Badges earned since he last looked, worked out once when the Passport opens so they stay NEW
+    /// while he looks; they count as seen when he closes it.
+    @State private var newBadges: Set<String> = []
+    @State private var didCheckNew = false
+
     private var regular: Bool { sizeClass == .regular }
+    private var badges: [StarBadge] { stars.badges(shelves: shelves, lovedPages: hearts.loved.count) }
     private static let calendarAnchor = "star-calendar"
+    private static let badgesAnchor = "badges"
 
     var body: some View {
         NavigationStack {
@@ -23,10 +31,8 @@ struct PassportView: View {
                         LazyVGrid(columns: [GridItem(.adaptive(minimum: regular ? 200 : 150), spacing: 14)], spacing: 14) {
                             ForEach(stars.stamps(shelves: shelves)) { StampView(stamp: $0, regular: regular) }
                         }
-                        sectionTitle("Badges")
-                        VStack(spacing: 12) {
-                            ForEach(stars.badges(shelves: shelves)) { BadgeRow(badge: $0, regular: regular) }
-                        }
+                        badgesSection
+                            .id(Self.badgesAnchor)
                         sectionTitle("My star calendar")
                             .id(Self.calendarAnchor)
                         StarCalendarView(days: stars.days(), regular: regular)
@@ -34,11 +40,18 @@ struct PassportView: View {
                     .padding(regular ? 32 : 18)
                 }
                 .task {
-                    guard DemoLaunch.current?.showCalendar == true else { return }
+                    guard let demo = DemoLaunch.current, demo.showCalendar || demo.showBadges else { return }
                     try? await Task.sleep(for: .milliseconds(700))
-                    proxy.scrollTo(Self.calendarAnchor, anchor: .top)
+                    proxy.scrollTo(demo.showCalendar ? Self.calendarAnchor : Self.badgesAnchor, anchor: .top)
                 }
             }
+            .onAppear {
+                guard !didCheckNew else { return }
+                didCheckNew = true
+                newBadges = stars.newBadgeIds(in: badges)
+                if !newBadges.isEmpty { StarChime.play() }
+            }
+            .onDisappear { stars.markBadgesSeen(badges.filter(\.earned).map(\.id)) }
             .background(
                 LinearGradient(colors: [Theme.sky, Theme.paper], startPoint: .top, endPoint: .bottom)
                     .ignoresSafeArea()
@@ -78,6 +91,26 @@ struct PassportView: View {
         .padding(regular ? 24 : 16)
         .background(RoundedRectangle(cornerRadius: 24, style: .continuous).fill(.white))
         .accessibilityElement(children: .combine)
+    }
+
+    private var badgesSection: some View {
+        let all = badges
+        let earned = all.filter(\.earned).count
+        let fresh = all.filter { newBadges.contains($0.id) }
+        return VStack(alignment: .leading, spacing: regular ? 16 : 12) {
+            HStack(alignment: .firstTextBaseline) {
+                sectionTitle("Badges")
+                Spacer(minLength: 8)
+                Text("\(earned) of \(all.count)")
+                    .font(.system(size: regular ? 20 : 16, weight: .heavy, design: .rounded))
+                    .foregroundStyle(Theme.ink.opacity(0.7))
+                    .accessibilityLabel("\(earned) of \(all.count) badges earned")
+            }
+            if !fresh.isEmpty { NewBadgeBanner(badges: fresh, regular: regular) }
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: regular ? 190 : 150), spacing: 14)], spacing: 14) {
+                ForEach(all) { BadgeTile(badge: $0, isNew: newBadges.contains($0.id), regular: regular) }
+            }
+        }
     }
 
     private func sectionTitle(_ text: String) -> some View {
@@ -125,35 +158,143 @@ private struct StampView: View {
     }
 }
 
-private struct BadgeRow: View {
-    let badge: StarBadge
+/// "You got a new badge!" at the top of the badges, when he earned some since he last looked.
+private struct NewBadgeBanner: View {
+    let badges: [StarBadge]
     let regular: Bool
 
+    private var message: String {
+        badges.count == 1 ? "New badge: \(badges[0].title)!" : "\(badges.count) new badges!"
+    }
+
     var body: some View {
-        HStack(spacing: 14) {
-            Image(systemName: badge.systemImage)
-                .font(.system(size: regular ? 32 : 26, weight: .bold))
-                .foregroundStyle(badge.earned ? Color.white : Color.gray)
-                .frame(width: regular ? 64 : 54, height: regular ? 64 : 54)
-                .background(Circle().fill(badge.earned ? Color.orange : Color.gray.opacity(0.2)))
-            VStack(alignment: .leading, spacing: 6) {
-                Text(badge.title)
-                    .font(.system(size: regular ? 24 : 19, weight: .heavy, design: .rounded))
-                Text(badge.earned ? "You did it!" : badge.detail)
-                    .font(.system(size: regular ? 17 : 14, weight: .semibold, design: .rounded))
-                    .opacity(0.75)
-                ProgressView(value: Double(badge.progress), total: Double(badge.goal))
-                    .tint(badge.earned ? .orange : Theme.ink.opacity(0.6))
-            }
-            .foregroundStyle(Theme.ink)
-            Text("\(badge.progress)/\(badge.goal)")
-                .font(.system(size: regular ? 20 : 16, weight: .bold, design: .rounded))
-                .foregroundStyle(Theme.ink.opacity(0.7))
+        HStack(spacing: 12) {
+            Image(systemName: "party.popper.fill")
+                .font(.system(size: regular ? 40 : 30, weight: .bold))
+                .foregroundStyle(.white)
+                .accessibilityHidden(true)
+            Text(message)
+                .font(.system(size: regular ? 26 : 20, weight: .heavy, design: .rounded))
+                .foregroundStyle(.white)
+                .lineLimit(2)
+                .minimumScaleFactor(0.7)
+            Spacer(minLength: 0)
         }
         .padding(regular ? 18 : 14)
-        .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(.white))
+        .background(
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .fill(LinearGradient(colors: [Color(hex: "#FF6FA5"), Color(hex: "#FF9F1C")], startPoint: .leading, endPoint: .trailing))
+        )
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(badge.title). \(badge.earned ? "Earned" : "\(badge.progress) of \(badge.goal)")")
+        .accessibilityLabel(badges.count == 1 ? "New badge: \(badges[0].title)" : "\(badges.count) new badges")
+    }
+}
+
+/// One badge: a big round medal, its name, and either what he did to earn it or a hint and how close he is.
+private struct BadgeTile: View {
+    let badge: StarBadge
+    let isNew: Bool
+    let regular: Bool
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    private var tint: Color { Color(hex: badge.tint) }
+    private var medal: CGFloat { regular ? 104 : 84 }
+
+    var body: some View {
+        VStack(spacing: 8) {
+            medalView
+                .padding(.top, 4)
+            Text(badge.title)
+                .font(.system(size: regular ? 21 : 17, weight: .heavy, design: .rounded))
+                .multilineTextAlignment(.center)
+                .lineLimit(2)
+                .minimumScaleFactor(0.75)
+            Text(badge.earned ? badge.doneText : badge.detail)
+                .font(.system(size: regular ? 15 : 13, weight: .semibold, design: .rounded))
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+                .opacity(0.75)
+            Spacer(minLength: 0)
+            if !badge.earned && badge.goal > 1 {
+                HStack(spacing: 6) {
+                    ProgressView(value: Double(badge.progress), total: Double(badge.goal))
+                        .tint(tint)
+                    Text("\(badge.progress)/\(badge.goal)")
+                        .font(.system(size: regular ? 15 : 13, weight: .bold, design: .rounded))
+                        .monospacedDigit()
+                        .opacity(0.7)
+                }
+            }
+        }
+        .foregroundStyle(Theme.ink)
+        .frame(maxWidth: .infinity)
+        .padding(regular ? 16 : 12)
+        .background(
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .fill(.white.opacity(badge.earned ? 1 : 0.7))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .strokeBorder(badge.earned ? tint.opacity(0.85) : .clear, lineWidth: 3)
+        )
+        .overlay(alignment: .topTrailing) {
+            if isNew { newRibbon }
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(badge.accessibilityLabel(isNew: isNew))
+    }
+
+    private var medalView: some View {
+        ZStack {
+            Circle()
+                .fill(badge.earned ? tint : Color.gray.opacity(0.15))
+            Circle()
+                .strokeBorder(.white.opacity(badge.earned ? 0.7 : 0), lineWidth: 4)
+                .padding(5)
+            Image(systemName: badge.systemImage)
+                .font(.system(size: medal * 0.42, weight: .bold))
+                .foregroundStyle(badge.earned ? Color.white : Color.gray.opacity(0.45))
+            if let flag = badge.flagBook {
+                FlagBadge(book: flag, height: medal * 0.24)
+                    .saturation(badge.earned ? 1 : 0)
+                    .opacity(badge.earned ? 1 : 0.5)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+                    .accessibilityHidden(true)
+            }
+        }
+        .frame(width: medal, height: medal)
+        .shadow(color: badge.earned ? tint.opacity(0.45) : .clear, radius: 8, y: 3)
+        .modifier(Wiggle(active: isNew && !reduceMotion))
+    }
+
+    private var newRibbon: some View {
+        Text("NEW!")
+            .font(.system(size: regular ? 15 : 13, weight: .black, design: .rounded))
+            .foregroundStyle(.white)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 5)
+            .background(Capsule().fill(Color(hex: "#FF3B6B")))
+            .rotationEffect(.degrees(12))
+            .offset(x: 6, y: -8)
+            .accessibilityHidden(true)
+    }
+}
+
+/// A happy little wiggle for a badge he just earned.
+private struct Wiggle: ViewModifier {
+    let active: Bool
+
+    func body(content: Content) -> some View {
+        if active {
+            content.phaseAnimator([0.0, 1.0, -1.0, 0.0]) { view, phase in
+                view
+                    .rotationEffect(.degrees(phase * 10))
+                    .scaleEffect(1 + abs(phase) * 0.08)
+            } animation: { _ in .easeInOut(duration: 0.25) }
+        } else {
+            content
+        }
     }
 }
 

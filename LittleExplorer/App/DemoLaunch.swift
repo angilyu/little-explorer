@@ -12,6 +12,8 @@ import Foundation
 /// `-demoCoins 2` seeds that many coins (made from 10 stars each, so they come off `-demoStars`).
 /// `-demoCalendar` opens the Passport at its star calendar (with 60 stars over the last few weeks
 /// unless `-demoStars` says otherwise).
+/// `-demoBadges` opens the Passport at its badges, with some earned and some still to go (40 stars,
+/// an early-morning star and 3 loved pages unless `-demoStars` says otherwise).
 /// `-demoGate` opens the grown-ups gate; `-demoParent` opens the grown-ups corner without it.
 struct DemoLaunch: Equatable {
     var bookId: String?
@@ -29,6 +31,7 @@ struct DemoLaunch: Equatable {
     var openGate = false
     var openParent = false
     var showCalendar = false
+    var showBadges = false
 
     var startsWithVoice: Bool { voiceActivity != nil || liveVoice }
 
@@ -61,6 +64,12 @@ struct DemoLaunch: Equatable {
             demo.showCalendar = true
             demo.openPassport = true
             if demo.seedStars == 0 { demo.seedStars = 60 }
+            found = true
+        }
+        if arguments.contains("-demoBadges") {
+            demo.showBadges = true
+            demo.openPassport = true
+            if demo.seedStars == 0 { demo.seedStars = 40 }
             found = true
         }
         if let voice = value(after: "-demoVoice") {
