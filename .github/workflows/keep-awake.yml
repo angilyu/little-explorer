@@ -1,0 +1,30 @@
+# Keeps the Render free-plan server awake so the app (and App Review) never waits ~50 s for a cold start.
+# Render sleeps a free service after 15 idle minutes; this GETs the public /healthz every 10 minutes. It's a
+# backstop for the server's own KEEPALIVE_SECONDS self-ping, which can't wake the server once it has slept.
+# No secrets, no checkout, no deploys. Turn it off under Actions → Keep server awake → ⋯ → Disable workflow.
+name: Keep server awake
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: keep-awake
+  cancel-in-progress: false
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: GET /healthz
+        env:
+          HEALTHZ_URL: https://little-explorer-pip.onrender.com/healthz
+        run: |
+          curl --fail --silent --show-error --max-time 90 --retry 4 --retry-delay 15 --retry-all-errors \
+            "$HEALTHZ_URL"
+          echo
