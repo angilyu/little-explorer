@@ -16,6 +16,7 @@ Run from server/ (it reads ``PIP_SERVER_URL`` and ``PIP_ADMIN_KEY`` from the usu
     uv run python tools/devices.py account mom@example.com            # devices, stars, coins, books
     uv run python tools/devices.py create-account mom@example.com --all-books
     uv run python tools/devices.py link mom@example.com 3F2A...       # the device's stars join the account
+    uv run python tools/devices.py link mom@example.com 3F2A... --no-claim   # ...or are left out
     uv run python tools/devices.py unlink mom@example.com 3F2A...
     uv run python tools/devices.py grant mom@example.com hawaii lake-tahoe   # show more books
     uv run python tools/devices.py revoke mom@example.com hawaii
@@ -147,7 +148,7 @@ class Admin:
             accounts = self._accounts()
             try:
                 if action == "link":
-                    accounts.link(ref, body["device"])
+                    accounts.link(ref, body["device"], body.get("claim", True))
                 elif action == "unlink":
                     accounts.unlink(body["device"])
                 else:
@@ -355,6 +356,10 @@ def main(argv: list[str] | None = None) -> int:
         p = sub.add_parser(name, help=help_text)
         p.add_argument("account", help="email or account id")
         p.add_argument("device", help="device id")
+        if name == "link":
+            p.add_argument(
+                "--no-claim", action="store_true", help="leave the device's earlier stars and coins out of the account"
+            )
     for name, help_text in (("grant", "show more books on an account"), ("revoke", "hide books again")):
         p = sub.add_parser(name, help=help_text)
         p.add_argument("account", help="email or account id")
@@ -399,8 +404,10 @@ def main(argv: list[str] | None = None) -> int:
             data = admin.account(args.account)
         elif command == "create-account":
             data = admin.create_account(args.email, args.all_books)
-        elif command in ("link", "unlink"):
-            data = admin.account_action(args.account, command, {"device": args.device})
+        elif command == "link":
+            data = admin.account_action(args.account, "link", {"device": args.device, "claim": not args.no_claim})
+        elif command == "unlink":
+            data = admin.account_action(args.account, "unlink", {"device": args.device})
         elif command == "all-books":
             data = admin.account_action(args.account, "books", {"all_books": args.state == "on"})
         else:

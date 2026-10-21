@@ -208,6 +208,30 @@ def test_the_family_account_claims_both_devices(store, accounts):
     assert ledger.balance_of(Scope(account_id=account.id)) == total
 
 
+def test_the_owner_can_leave_a_devices_earlier_stars_out(store, accounts, clock):
+    ledger = CoinLedger(store)
+    give_stars(store, IPAD, 23, "i")
+    give_stars(store, IPHONE, 12, "p")
+    ledger.convert(IPHONE, "conv-iphone-001", 1, 10)
+    account, _ = accounts.create(EMAIL, all_books=True)
+    assert accounts.link(EMAIL, IPAD)[1] is True
+    assert accounts.link(EMAIL, IPHONE, claim=False)[1] is False
+
+    total = ledger.balance_of(Scope(account_id=account.id))
+    assert (total.stars_earned, total.coins) == (23, 0)
+    assert ledger.balance(IPHONE) == total
+    # Kept on the server under the device, but counted for no one.
+    assert len(store.stars_of(Scope(device_id=IPHONE))) == 12
+    assert ledger.balance_of(Scope(device_id=IPHONE)).coins == 1
+    # Signing in on the iPhone later doesn't claim them, and the app may not import its local stars.
+    token, _, claimed = sign_in(accounts, clock, device=IPHONE)
+    assert claimed is False
+    with pytest.raises(AuthError) as err:
+        accounts.import_device(accounts.session(token), stars=[], hearts=[])
+    assert err.value.code == "not_claimed"
+    assert ledger.balance_of(Scope(account_id=account.id)).stars_earned == 23
+
+
 def test_new_stars_on_a_linked_device_are_the_accounts(store, accounts, clock):
     _, account, _ = sign_in(accounts, clock, device=IPAD)
     sign_in(accounts, clock, device=IPHONE)

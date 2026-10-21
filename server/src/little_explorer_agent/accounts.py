@@ -55,6 +55,8 @@ PER_EMAIL_PER_HOUR = 5
 PER_IP_PER_HOUR = 20
 DAILY_CAP = 100
 MAX_IMPORT = 5000
+# legacy_account_id of a device whose earlier stars and coins the owner left out of every account.
+UNCLAIMED = "-"
 EMAIL = re.compile(r"^[^@\s]{1,64}@[A-Za-z0-9](?:[A-Za-z0-9-]{0,62}[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,62}[A-Za-z0-9])?)+$")
 BOOK_ID = re.compile(r"^[a-z0-9][a-z0-9-]{0,63}$")
 PAGE_KEY = re.compile(r"^[a-z0-9][a-z0-9-]{0,63}/[A-Za-z0-9_-]{1,64}$")
@@ -244,16 +246,23 @@ class Accounts:
 
     # -- devices ---------------------------------------------------------------------------------
 
-    def _link(self, cur: Any, account: Account, device_id: str, name: str = "", model: str = "") -> bool:
+    def _link(
+        self, cur: Any, account: Account, device_id: str, name: str = "", model: str = "", claim: bool = True
+    ) -> bool:
         """Sign ``device_id`` in to ``account``. True if the account owns what the device earned
-        before it was ever linked (the app then uploads the hearts and stars it kept locally)."""
+        before it was ever linked (the app then uploads the hearts and stars it kept locally).
+        ``claim=False`` (owner only) leaves a never-linked device's earlier stars and coins out of
+        every account: they stay on the server under the device but count for no one."""
         self.store._touch(cur, device_id, name, model, self.store.now())
         row = self.store._exec(cur, "SELECT legacy_account_id FROM devices WHERE id = ?", (device_id,)).fetchone()
         legacy = row[0] if row and row[0] else None
         if legacy is None:
-            legacy = account.id
+            legacy = account.id if claim else UNCLAIMED
             self.store._exec(cur, "UPDATE devices SET legacy_account_id = ? WHERE id = ?", (legacy, device_id))
-            log.info("account %s claims device %s's earlier stars and coins", account.id, device_id)
+            if claim:
+                log.info("account %s claims device %s's earlier stars and coins", account.id, device_id)
+            else:
+                log.info("device %s's earlier stars and coins are left out of account %s", device_id, account.id)
         self.store._exec(cur, "UPDATE devices SET account_id = ? WHERE id = ?", (account.id, device_id))
         if legacy == account.id:
             # Anything the device earned while not linked (before accounts, or while signed out).
@@ -265,8 +274,9 @@ class Accounts:
                 )
         return legacy == account.id
 
-    def link(self, ref: str, device_id: str) -> tuple[Account, bool]:
-        """Owner tool: link a device to an account as if it had signed in there."""
+    def link(self, ref: str, device_id: str, claim: bool = True) -> tuple[Account, bool]:
+        """Owner tool: link a device to an account as if it had signed in there. ``claim=False``
+        leaves out what the device earned before (only if it was never linked)."""
         if not valid_device_id(device_id):
             raise ValueError("bad device id")
 
@@ -274,7 +284,7 @@ class Accounts:
             account = self._by_ref(cur, ref)
             if not account:
                 raise LookupError(ref)
-            return account, self._link(cur, account, device_id)
+            return account, self._link(cur, account, device_id, claim=claim)
 
         return self.store.transaction(run)
 

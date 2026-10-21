@@ -592,7 +592,8 @@ async def handle_admin_account_action(request: web.Request) -> web.Response:
     accounts = request.app[ACCOUNTS]
     try:
         if action == "link":
-            account, claimed = await asyncio.to_thread(accounts.link, ref, body.get("device") or "")
+            claim = body.get("claim", True) is not False
+            account, claimed = await asyncio.to_thread(accounts.link, ref, body.get("device") or "", claim)
             log.info("owner linked device %s to account %s (claimed: %s)", body.get("device"), account.id, claimed)
         elif action == "unlink":
             device = body.get("device") or ""
