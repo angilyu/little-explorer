@@ -3,7 +3,6 @@ import SwiftUI
 struct LibraryView: View {
     let books: [Book]
 
-    @Environment(HeartStore.self) private var hearts
     @Environment(VoiceModeController.self) private var voice
     @Environment(StarStore.self) private var stars
     @Environment(CoinStore.self) private var coins
@@ -46,7 +45,6 @@ struct LibraryView: View {
         }
         .fullScreenCover(item: $openBook) { open in
             BookReaderView(book: open.book, startPage: open.startPage)
-                .environment(hearts)
                 .environment(voice)
                 .environment(stars)
                 .environment(coins)
@@ -55,7 +53,6 @@ struct LibraryView: View {
             PassportView(shelves: BookLibrary.shelves(books))
                 .environment(stars)
                 .environment(coins)
-                .environment(hearts)
                 .passportSizing()
         }
         .sheet(isPresented: $showGate) {
@@ -67,7 +64,6 @@ struct LibraryView: View {
         .sheet(isPresented: $showParentCorner) {
             ParentCornerView(books: books)
                 .environment(account)
-                .environment(hearts)
                 .environment(coins)
         }
         .onAppear(perform: applyDemoLaunch)
@@ -104,16 +100,11 @@ struct LibraryView: View {
         Button {
             openBook = OpenBook(book: book)
         } label: {
-            BookCoverView(
-                book: book, lovedCount: hearts.lovedCount(bookId: book.id), starCount: stars.stars(inBook: book.id),
-                regular: regular
-            )
+            BookCoverView(book: book, starCount: stars.stars(inBook: book.id), regular: regular)
         }
         .buttonStyle(.plain)
         .accessibilityLabel(book.openLabel)
-        .accessibilityValue(
-            BookCoverView.accessibilityValue(starCount: stars.stars(inBook: book.id), lovedCount: hearts.lovedCount(bookId: book.id))
-        )
+        .accessibilityValue(BookCoverView.accessibilityValue(starCount: stars.stars(inBook: book.id)))
         .id(book.id)
     }
 
@@ -180,7 +171,6 @@ struct LibraryView: View {
         }
         if demo.showBadges {
             stars.merge(StarStore.demoBadgeExtras(shelves: BookLibrary.shelves(books)))
-            for book in books.prefix(3) { hearts.setLoved(true, bookId: book.id, pageId: book.pages[0].id) }
         }
         if demo.seedCoins > 0 { coins.seedDemo(coins: demo.seedCoins) }
         if demo.openPassport { showPassport = true }
@@ -188,9 +178,6 @@ struct LibraryView: View {
         if demo.openParent { showParentCorner = true }
         guard let id = demo.bookId, let book = books.first(where: { $0.id == id }) else { return }
         let index = min(demo.pageIndex, book.pages.count - 1)
-        if demo.lovePage {
-            hearts.setLoved(true, bookId: book.id, pageId: book.pages[index].id)
-        }
         openBook = OpenBook(book: book, startPage: index)
     }
 }
@@ -222,17 +209,17 @@ struct CityHeader: View {
 
 struct BookCoverView: View {
     let book: Book
-    let lovedCount: Int
     /// Every star he has earned in this book (coins don't take them away). Hidden at 0.
     var starCount = 0
     var regular = true
 
-    /// What VoiceOver adds after "Open the Paris book", e.g. "7 stars, 2 loved pages".
-    static func accessibilityValue(starCount: Int, lovedCount: Int) -> String {
-        var parts: [String] = []
-        if starCount > 0 { parts.append(starCount == 1 ? "1 star" : "\(starCount) stars") }
-        if lovedCount > 0 { parts.append(lovedCount == 1 ? "1 loved page" : "\(lovedCount) loved pages") }
-        return parts.joined(separator: ", ")
+    /// What VoiceOver adds after "Open the Paris book", e.g. "7 stars".
+    static func accessibilityValue(starCount: Int) -> String {
+        switch starCount {
+        case ..<1: ""
+        case 1: "1 star"
+        default: "\(starCount) stars"
+        }
     }
 
     var body: some View {
@@ -255,14 +242,6 @@ struct BookCoverView: View {
                             .padding(.vertical, regular ? 6 : 4)
                             .background(Capsule().fill(.white))
                             .shadow(color: .black.opacity(0.15), radius: 3, x: 0, y: 1)
-                        }
-                        if lovedCount > 0 {
-                            Label("\(lovedCount)", systemImage: "heart.fill")
-                                .font(.system(size: regular ? 20 : 15, weight: .bold, design: .rounded))
-                                .foregroundStyle(.white)
-                                .padding(.horizontal, regular ? 12 : 8)
-                                .padding(.vertical, regular ? 6 : 4)
-                                .background(Capsule().fill(Color.red))
                         }
                     }
                     .lineLimit(1)

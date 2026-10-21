@@ -166,7 +166,7 @@ struct SignInView: View {
             }
             .buttonStyle(.borderedProminent)
             .disabled(busy || !Account.looksLikeEmail(email))
-            Text("We only use this email to sign you in and to keep the books, stars, coins and hearts the same on all your devices. No ads, no newsletters.")
+            Text("We only use this email to sign you in and to keep the books, stars and coins the same on all your devices. No ads, no newsletters.")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -322,7 +322,7 @@ struct DeleteAccountView: View {
         NavigationStack {
             Form {
                 Section {
-                    Text("Deleting the account removes its email, books list, stars, coins and hearts from Milo's server for good. Every iPad and iPhone signed in to it is signed out. This can't be undone.")
+                    Text("Deleting the account removes its email, books list, stars and coins from Milo's server for good. Every iPad and iPhone signed in to it is signed out. This can't be undone.")
                 } header: {
                     Text("Delete \(account.account?.email ?? "account")")
                 }

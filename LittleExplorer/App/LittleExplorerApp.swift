@@ -2,7 +2,6 @@ import SwiftUI
 
 @main
 struct LittleExplorerApp: App {
-    @State private var hearts = HeartStore.live()
     @State private var voice = VoiceModeController.live()
     @State private var readAloud = ReadAloudController()
     @State private var content = ContentStore()
@@ -21,7 +20,6 @@ struct LittleExplorerApp: App {
                 }
             }
                 .environment(account)
-                .environment(hearts)
                 .environment(voice)
                 .environment(readAloud)
                 .environment(content)
@@ -31,7 +29,7 @@ struct LittleExplorerApp: App {
                     voice.onStar = { [stars] award in stars.receive(award) }
                     stars.onCelebrate = { StarChime.play() }
                     guard DemoLaunch.current == nil else { return }
-                    let sync = AccountSync(account: account, stars: stars, coins: coins, hearts: hearts)
+                    let sync = AccountSync(account: account, stars: stars, coins: coins)
                     sync.start()
                     async let books: Void = content.refresh()
                     async let saved: Void = sync.refresh()
@@ -40,7 +38,7 @@ struct LittleExplorerApp: App {
                 .onChange(of: scenePhase) { _, phase in
                     guard phase == .active, DemoLaunch.current == nil else { return }
                     Task { await content.refresh() }
-                    Task { await AccountSync(account: account, stars: stars, coins: coins, hearts: hearts).refresh() }
+                    Task { await AccountSync(account: account, stars: stars, coins: coins).refresh() }
                 }
         }
     }

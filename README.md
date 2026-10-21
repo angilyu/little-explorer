@@ -1,13 +1,13 @@
 # Little Explorer
 
 A picture-book app for iPhone and iPad that helps a 6-year-old discover cities and get excited about travel.
-Each page has a real photo, a short sentence he can read by himself, a heart button for pages he loves,
-and a speaker button that reads the sentence aloud. An optional voice buddy, **Milo**, listens patiently
+Each page has a real photo, a short sentence he can read by himself, and a speaker button that reads the
+sentence aloud. An optional voice buddy, **Milo**, listens patiently
 while he reads and answers his questions about the book.
 
-| Shelf | Yummy Paris + heart | Read aloud | Voice mode |
+| Shelf | Yummy Paris | Read aloud | Voice mode |
 |---|---|---|---|
-| ![](docs/screenshots/iphone-shelf.jpg) | ![](docs/screenshots/iphone-yummy-paris-heart.jpg) | ![](docs/screenshots/iphone-read-aloud.jpg) | ![](docs/screenshots/iphone-fun-art-voice.jpg) |
+| ![](docs/screenshots/iphone-shelf.jpg) | ![](docs/screenshots/iphone-yummy-paris.jpg) | ![](docs/screenshots/iphone-read-aloud.jpg) | ![](docs/screenshots/iphone-fun-art-voice.jpg) |
 
 iPad versions are in [`docs/screenshots`](docs/screenshots).
 
@@ -44,10 +44,7 @@ Travel books have `"city": "Travel"` and `"kind": "travel"`: they share one Trav
 badge (`travel-flag.png`), Milo is told they are general travel books rather than about one city, and they
 don't give a Passport stamp.
 
-Hearts are stored as `<book id>/<page id>`, so each themed book keeps its own hearts. They are saved on the
-device and, when signed in, on the account so every device shows the same ones.
-Grown-ups can see the loved pages for every book behind the parent gate (the "Grown-ups" button after the last
-shelf of the library). The gate writes a random number from 101 to 999 in words, like "three hundred forty-eight", and the
+The Grown-ups corner is behind the parent gate (the "Grown-ups" button after the last shelf of the library). The gate writes a random number from 101 to 999 in words, like "three hundred forty-eight", and the
 grown-up types its digits on the gate's number pad (no multiple choice, no digits in the prompt). Round hundreds
 are skipped. Three wrong answers lock it for 30 seconds, and each miss shows a new number.
 
@@ -67,7 +64,7 @@ Pin a specific file by setting the page's `photo.commonsTitle`.
 ## Accounts
 
 A grown-up signs in with an email and a 6-digit code sent to it; there are no passwords, and signing up is the
-same as signing in. Each account has its own books, stars, coins and hearts, shared by every iPad and iPhone
+same as signing in. Each account has its own books, stars and coins, shared by every iPad and iPhone
 signed in with that email. The only personal data is the grown-up's email: nothing about the child is asked for. See [PRIVACY.md](PRIVACY.md).
 
 - **Signed out**, the app shows a welcome screen for grown-ups. Tapping **Sign in or sign up** opens the parent
@@ -76,15 +73,15 @@ signed in with that email. The only personal data is the grown-up's email: nothi
   100, a day in all). The sign-in token is kept in the Keychain on this device only.
 - **Signed in**, the shelf shows the account's books. **Sign out** and **Delete account…** are in the Grown-ups
   corner (behind the gate). Signing out keeps everything on the server. Deleting asks for a new code sent to
-  the account's email, then removes the email, books list, stars, coins and hearts from the server and signs
-  out every device (Apple requires apps with accounts to offer this).
-- Each account's copy of the stars, coins and hearts is saved on the device per account, so they show offline,
+  the account's email, then removes the email, books list, stars and coins (and any hearts from older builds)
+  from the server and signs out every device (Apple requires apps with accounts to offer this).
+- Each account's copy of the stars and coins is saved on the device per account, so they show offline,
   and is removed on sign-out. What the device saved before accounts stays under its old keys and is never deleted.
 - Milo's daily time limits stay per device (see [Naps and daily limits](#naps-and-daily-limits-per-device)).
 
 **Devices from before accounts.** Stars and coins used to belong to a device id. The first account a device
 signs in to claims them (`legacy_account_id`), and the app sends that account what it kept only on the device:
-its hearts, and any stars the server is missing (`POST /account/import`, safe to repeat). A different account
+any stars the server is missing (`POST /account/import`, safe to repeat). A different account
 signing in on that device later starts with its own things. Stars Milo gives while a device is signed in go to
 the account. Older app builds keep working: `GET /stars?device=`, `GET /coins?device=` and `POST /coins/convert`
 answer with the account's stars and coins when the device is linked to one, and the agent didn't change.
@@ -129,8 +126,10 @@ Without an email provider, `POST /auth/start` answers `503 email_off`.
 **Endpoints** (all with the app's access key; signed-in ones also with `X-Pip-Session: <token>`):
 `POST /auth/start {email, purpose?}`, `POST /auth/verify {email, code, device}` (returns `token`, `account`,
 `claimed_device`), `POST /auth/signout`, `GET /account`, `POST /account/delete {code}`, `GET /account/stars`,
-`GET /account/coins`, `POST /account/coins/convert`, `GET`/`POST /account/hearts {loved, unloved}` and
-`POST /account/import {stars, hearts}`. Errors: `bad_email`, `bad_code` (with `tries_left`), `expired`,
+`GET /account/coins`, `POST /account/coins/convert` and `POST /account/import {stars}`. The app used to have
+a heart button for pages he loved; it's gone, but the server still answers `GET`/`POST /account/hearts
+{loved, unloved}` and takes `hearts` in `/account/import` so older builds keep working, and keeps the hearts
+already saved (deleting the account removes them). Errors: `bad_email`, `bad_code` (with `tries_left`), `expired`,
 `too_many` (with `retry_after_s`), `signed_out`.
 
 **Owner tools.** Grant books, link devices and back up the data with `tools/devices.py` (from `server/`):
@@ -374,11 +373,10 @@ earned a star (not the Travel shelf), then a grid of badges. Stars earned before
 | Night Owl | a star at 7 pm or later |
 | Bookworm | stars in 10 different books |
 | Globe Trotter | stamps from 3 cities |
-| Big Heart | 5 loved pages |
 | Super Star | 50 stars |
 | *City* Expert | a star in every book of a city with several books, e.g. Paris Expert (the medal shows the city's flag) |
 
-Badges are worked out from the saved stars, the shelves and his hearts (`Stores/Badges.swift`), so a new city or
+Badges are worked out from the saved stars and the shelves (`Stores/Badges.swift`), so a new city or
 book just works, and every goal counts things he has done, so no badge can be lost. Days and times are in the
 device's time zone, as in the calendar. A badge he hasn't earned yet is gray with a short hint ("Earn a star at
 bedtime") and how close he is (9/10); an earned one is a colored medal that says what he did ("Stars on 5 different
@@ -387,7 +385,7 @@ Motion), a "New badge!" banner and the star chime; they count as seen when he cl
 device only). VoiceOver reads e.g. "Why Wizard badge, earned. You answered with “because” 3 times!" or "Bookworm
 badge, not yet. Earn stars in 10 different books. 9 of 10." The last page of each book shows the
 stars from that book, and each book's cover in the library shows a gold star with the number earned in that
-book (hidden until it has one; VoiceOver reads e.g. "Famous Places, 7 stars, 1 loved page"). `tools/devices.py` lists stars per device. Pipeline mode gives stars too, but Milo doesn't announce them.
+book (hidden until it has one; VoiceOver reads e.g. "Famous Places, 7 stars"). `tools/devices.py` lists stars per device. Pipeline mode gives stars too, but Milo doesn't announce them.
 
 The Passport ends with **My star calendar**: a month grid with a gold star and the count on each day he earned
 stars, today outlined, and the month's total ("33 stars in October"). The arrows or a sideways swipe go back to
@@ -512,10 +510,10 @@ xcodebuild -project LittleExplorer.xcodeproj -scheme LittleExplorer \
 scripts/screenshots.sh <iphone-udid> <ipad-udid>   # regenerates docs/screenshots
 ```
 
-DEBUG builds accept launch arguments for screenshots: `-demoBook paris-food -demoPage 4 -demoLove`,
+DEBUG builds accept launch arguments for screenshots: `-demoBook paris-food -demoPage 4`,
 `-demoVoice listening|live|nap|rest|star`, `-demoRead`, `-demoStars 23`, `-demoPassport`, `-demoCalendar`
 (the Passport's star calendar, with stars spread over the last few weeks), `-demoBadges` (the Passport's badges,
-some earned and some not, from 40 stars, an early-morning star and 3 loved pages), `-demoCoins 2`,
+some earned and some not, from 40 stars and an early-morning star), `-demoCoins 2`,
 `-demoGate` (the parent gate) and `-demoParent` (the Grown-ups corner). `-demoShelf grown-ups` scrolls to the
 Grown-ups button.
 

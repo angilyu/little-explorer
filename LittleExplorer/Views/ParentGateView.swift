@@ -91,7 +91,7 @@ struct ParentGateLock {
     }
 }
 
-/// Keeps grown-up screens (converting stars to coins, loved pages, settings, external links) away
+/// Keeps grown-up screens (the account, converting stars to coins, settings, external links) away
 /// from little fingers.
 struct ParentGateView: View {
     let onPass: () -> Void

@@ -1,11 +1,10 @@
 import SwiftUI
 
-/// Parent-only screen: turning his stars into coins, what he loved, voice server settings, and
-/// photo credits with links.
+/// Parent-only screen: the account, turning his stars into coins, voice server settings, and photo
+/// credits with links.
 struct ParentCornerView: View {
     let books: [Book]
 
-    @Environment(HeartStore.self) private var hearts
     @Environment(CoinStore.self) private var coins
     @Environment(\.dismiss) private var dismiss
     @Environment(ContentStore.self) private var content
@@ -26,30 +25,6 @@ struct ParentCornerView: View {
             List {
                 accountSection
                 coinSection
-
-                Section("Loved pages") {
-                    let total = books.reduce(0) { $0 + hearts.lovedCount(bookId: $1.id) }
-                    if total == 0 {
-                        Text("No hearts yet. When he taps the heart on a page, it shows up here.")
-                            .foregroundStyle(.secondary)
-                    }
-                    ForEach(books) { book in
-                        let loved = hearts.lovedPages(in: book)
-                        if !loved.isEmpty {
-                            DisclosureGroup("\(book.shelfTitle) · \(loved.count)") {
-                                ForEach(loved) { page in
-                                    HStack(alignment: .top, spacing: 12) {
-                                        PhotoView(photo: page.photo, tint: Color(hex: book.coverColor))
-                                            .frame(width: 56, height: 56)
-                                            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-                                        Text(page.text)
-                                    }
-                                    .padding(.vertical, 4)
-                                }
-                            }
-                        }
-                    }
-                }
 
                 Section {
                     TextField("Token server URL", text: $tokenServer)
@@ -130,14 +105,14 @@ struct ParentCornerView: View {
                             }
                         }
                     } message: {
-                        Text("Stars, coins and hearts stay in the account. Sign in again with the same email to get them back.")
+                        Text("Stars and coins stay in the account. Sign in again with the same email to get them back.")
                     }
                 Button("Delete account…", role: .destructive) { showDelete = true }
                     .foregroundStyle(.secondary)
             } header: {
                 Text("Account")
             } footer: {
-                Text("Every iPad and iPhone signed in with this email shares the same books, stars, coins and hearts. The owner can add more books to the account.")
+                Text("Every iPad and iPhone signed in with this email shares the same books, stars and coins. The owner can add more books to the account.")
             }
             .sheet(isPresented: $showDelete) {
                 DeleteAccountView().environment(account)

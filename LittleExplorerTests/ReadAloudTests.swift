@@ -236,7 +236,7 @@ final class NarrationClipTests: XCTestCase {
         var checked = 0
         for book in books {
             for page in book.pages {
-                let id = HeartStore.id(bookId: book.id, pageId: page.id)
+                let id = NarrationLibrary.key(bookId: book.id, pageId: page.id)
                 let clip = try XCTUnwrap(library.narration(for: id, text: page.text), "no clip for \(id): run scripts/generate_narration.py")
                 let text = page.text as NSString
                 XCTAssertFalse(clip.words.isEmpty, id)

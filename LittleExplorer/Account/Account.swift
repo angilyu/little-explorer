@@ -2,7 +2,7 @@ import Foundation
 import Security
 
 /// A family's Little Explorer account: a grown-up's email and the books on the child's shelf.
-/// Stars, coins and hearts belong to the account on Milo's server, so every signed-in device shares them.
+/// Stars and coins belong to the account on Milo's server, so every signed-in device shares them.
 struct Account: Codable, Equatable, Sendable {
     let id: String
     let email: String

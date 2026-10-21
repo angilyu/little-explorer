@@ -7,7 +7,6 @@ struct PassportView: View {
 
     @Environment(StarStore.self) private var stars
     @Environment(CoinStore.self) private var coins
-    @Environment(HeartStore.self) private var hearts
     @Environment(\.dismiss) private var dismiss
     @Environment(\.horizontalSizeClass) private var sizeClass
 
@@ -17,7 +16,7 @@ struct PassportView: View {
     @State private var didCheckNew = false
 
     private var regular: Bool { sizeClass == .regular }
-    private var badges: [StarBadge] { stars.badges(shelves: shelves, lovedPages: hearts.loved.count) }
+    private var badges: [StarBadge] { stars.badges(shelves: shelves) }
     private static let calendarAnchor = "star-calendar"
     private static let badgesAnchor = "badges"
 
