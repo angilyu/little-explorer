@@ -13007,6 +13007,2560 @@
    "lufs": -16.0,
    "style": "d3c59aef49"
   },
+  "israel-dead-sea/ein-gedi": {
+   "file": "read-israel-dead-sea-ein-gedi",
+   "text": "At Ein Gedi, waterfalls splash in the middle of the desert.",
+   "duration": 5.25,
+   "match": 1.0,
+   "heard": "At Ein Gedi, waterfalls splash in the middle of the desert.",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.0,
+     "end": 0.34
+    },
+    {
+     "location": 3,
+     "length": 3,
+     "start": 0.6,
+     "end": 1.3
+    },
+    {
+     "location": 7,
+     "length": 4,
+     "start": 1.92,
+     "end": 2.0
+    },
+    {
+     "location": 13,
+     "length": 10,
+     "start": 2.42,
+     "end": 2.86
+    },
+    {
+     "location": 24,
+     "length": 6,
+     "start": 2.92,
+     "end": 3.3
+    },
+    {
+     "location": 31,
+     "length": 2,
+     "start": 3.3,
+     "end": 3.6
+    },
+    {
+     "location": 34,
+     "length": 3,
+     "start": 3.6,
+     "end": 3.9
+    },
+    {
+     "location": 38,
+     "length": 6,
+     "start": 3.9,
+     "end": 3.98
+    },
+    {
+     "location": 45,
+     "length": 2,
+     "start": 3.98,
+     "end": 4.12
+    },
+    {
+     "location": 48,
+     "length": 3,
+     "start": 4.12,
+     "end": 4.56
+    },
+    {
+     "location": 52,
+     "length": 6,
+     "start": 4.56,
+     "end": 4.64
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a9bae929f2"
+  },
+  "israel-dead-sea/float": {
+   "file": "read-israel-dead-sea-float",
+   "text": "You float like a cork! You can even read a newspaper.",
+   "duration": 4.6,
+   "match": 1.0,
+   "heard": "You float like a cork! You can even read a newspaper.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.08,
+     "end": 0.46
+    },
+    {
+     "location": 4,
+     "length": 5,
+     "start": 0.46,
+     "end": 0.9
+    },
+    {
+     "location": 10,
+     "length": 4,
+     "start": 0.9,
+     "end": 1.23
+    },
+    {
+     "location": 15,
+     "length": 1,
+     "start": 1.29,
+     "end": 1.6
+    },
+    {
+     "location": 17,
+     "length": 4,
+     "start": 1.6,
+     "end": 1.68
+    },
+    {
+     "location": 23,
+     "length": 3,
+     "start": 2.13,
+     "end": 2.29
+    },
+    {
+     "location": 27,
+     "length": 3,
+     "start": 2.35,
+     "end": 2.52
+    },
+    {
+     "location": 31,
+     "length": 4,
+     "start": 2.52,
+     "end": 2.88
+    },
+    {
+     "location": 36,
+     "length": 4,
+     "start": 2.88,
+     "end": 3.1
+    },
+    {
+     "location": 41,
+     "length": 1,
+     "start": 3.1,
+     "end": 3.28
+    },
+    {
+     "location": 43,
+     "length": 9,
+     "start": 3.28,
+     "end": 3.68
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a9bae929f2"
+  },
+  "israel-dead-sea/goodbye": {
+   "file": "read-israel-dead-sea-goodbye",
+   "text": "Goodbye, Dead Sea! The sun rises over the mountains.",
+   "duration": 5.71,
+   "match": 1.0,
+   "heard": "Goodbye, Dead Sea! The sun rises over the mountains.",
+   "words": [
+    {
+     "location": 0,
+     "length": 7,
+     "start": 0.17,
+     "end": 1.17
+    },
+    {
+     "location": 9,
+     "length": 4,
+     "start": 1.33,
+     "end": 1.76
+    },
+    {
+     "location": 14,
+     "length": 3,
+     "start": 1.76,
+     "end": 2.05
+    },
+    {
+     "location": 19,
+     "length": 3,
+     "start": 2.69,
+     "end": 2.98
+    },
+    {
+     "location": 23,
+     "length": 3,
+     "start": 2.98,
+     "end": 3.42
+    },
+    {
+     "location": 27,
+     "length": 5,
+     "start": 3.42,
+     "end": 4.04
+    },
+    {
+     "location": 33,
+     "length": 4,
+     "start": 4.04,
+     "end": 4.42
+    },
+    {
+     "location": 38,
+     "length": 3,
+     "start": 4.42,
+     "end": 5.16
+    },
+    {
+     "location": 42,
+     "length": 9,
+     "start": 5.16,
+     "end": 5.24
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a9bae929f2"
+  },
+  "israel-dead-sea/hyrax": {
+   "file": "read-israel-dead-sea-hyrax",
+   "text": "This furry rock hyrax is a cousin of the elephant!",
+   "duration": 5.06,
+   "match": 1.0,
+   "heard": "This furry rock hyrax is a cousin of the elephant!",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.14,
+     "end": 0.42
+    },
+    {
+     "location": 5,
+     "length": 5,
+     "start": 0.57,
+     "end": 1.12
+    },
+    {
+     "location": 11,
+     "length": 4,
+     "start": 1.44,
+     "end": 1.74
+    },
+    {
+     "location": 16,
+     "length": 5,
+     "start": 2.13,
+     "end": 2.74
+    },
+    {
+     "location": 22,
+     "length": 2,
+     "start": 3.16,
+     "end": 3.34
+    },
+    {
+     "location": 25,
+     "length": 1,
+     "start": 3.42,
+     "end": 3.72
+    },
+    {
+     "location": 27,
+     "length": 6,
+     "start": 3.72,
+     "end": 3.8
+    },
+    {
+     "location": 34,
+     "length": 2,
+     "start": 3.8,
+     "end": 4.08
+    },
+    {
+     "location": 37,
+     "length": 3,
+     "start": 4.08,
+     "end": 4.35
+    },
+    {
+     "location": 41,
+     "length": 8,
+     "start": 4.42,
+     "end": 4.5
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a9bae929f2"
+  },
+  "israel-dead-sea/ibex": {
+   "file": "read-israel-dead-sea-ibex",
+   "text": "Ibex goats climb the steep rocks at Ein Gedi.",
+   "duration": 4.51,
+   "match": 1.0,
+   "heard": "Ibex goats climb the steep rocks at Ein Gedi.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.5,
+     "end": 1.04
+    },
+    {
+     "location": 5,
+     "length": 5,
+     "start": 1.04,
+     "end": 1.44
+    },
+    {
+     "location": 11,
+     "length": 5,
+     "start": 1.6,
+     "end": 1.96
+    },
+    {
+     "location": 17,
+     "length": 3,
+     "start": 1.96,
+     "end": 2.36
+    },
+    {
+     "location": 21,
+     "length": 5,
+     "start": 2.36,
+     "end": 2.49
+    },
+    {
+     "location": 27,
+     "length": 5,
+     "start": 2.55,
+     "end": 3.06
+    },
+    {
+     "location": 33,
+     "length": 2,
+     "start": 3.32,
+     "end": 3.45
+    },
+    {
+     "location": 36,
+     "length": 3,
+     "start": 3.58,
+     "end": 3.96
+    },
+    {
+     "location": 40,
+     "length": 4,
+     "start": 3.96,
+     "end": 4.14
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a9bae929f2"
+  },
+  "israel-dead-sea/masada": {
+   "file": "read-israel-dead-sea-masada",
+   "text": "A cable car rides up to Masada, a palace on a mountain.",
+   "duration": 5.76,
+   "match": 1.0,
+   "heard": "A cable car rides up to Masada, a palace on a mountain.",
+   "words": [
+    {
+     "location": 0,
+     "length": 1,
+     "start": 0.36,
+     "end": 0.46
+    },
+    {
+     "location": 2,
+     "length": 5,
+     "start": 0.55,
+     "end": 0.96
+    },
+    {
+     "location": 8,
+     "length": 3,
+     "start": 0.96,
+     "end": 1.38
+    },
+    {
+     "location": 12,
+     "length": 5,
+     "start": 1.38,
+     "end": 1.74
+    },
+    {
+     "location": 18,
+     "length": 2,
+     "start": 1.74,
+     "end": 1.9
+    },
+    {
+     "location": 21,
+     "length": 2,
+     "start": 2.04,
+     "end": 2.68
+    },
+    {
+     "location": 24,
+     "length": 6,
+     "start": 3.31,
+     "end": 3.4
+    },
+    {
+     "location": 32,
+     "length": 1,
+     "start": 3.48,
+     "end": 3.62
+    },
+    {
+     "location": 34,
+     "length": 6,
+     "start": 3.62,
+     "end": 4.08
+    },
+    {
+     "location": 41,
+     "length": 2,
+     "start": 4.39,
+     "end": 4.58
+    },
+    {
+     "location": 44,
+     "length": 1,
+     "start": 4.58,
+     "end": 5.06
+    },
+    {
+     "location": 46,
+     "length": 8,
+     "start": 5.06,
+     "end": 5.14
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a9bae929f2"
+  },
+  "israel-dead-sea/mount-sodom": {
+   "file": "read-israel-dead-sea-mount-sodom",
+   "text": "Mount Sodom is a mountain of salt with caves inside!",
+   "duration": 4.92,
+   "match": 1.0,
+   "heard": "Mount Sodom is a mountain of salt with caves inside!",
+   "words": [
+    {
+     "location": 0,
+     "length": 5,
+     "start": 0.0,
+     "end": 0.64
+    },
+    {
+     "location": 6,
+     "length": 5,
+     "start": 0.64,
+     "end": 1.17
+    },
+    {
+     "location": 12,
+     "length": 2,
+     "start": 1.45,
+     "end": 1.62
+    },
+    {
+     "location": 15,
+     "length": 1,
+     "start": 1.62,
+     "end": 2.12
+    },
+    {
+     "location": 17,
+     "length": 8,
+     "start": 2.12,
+     "end": 2.2
+    },
+    {
+     "location": 26,
+     "length": 2,
+     "start": 2.2,
+     "end": 2.79
+    },
+    {
+     "location": 29,
+     "length": 4,
+     "start": 3.28,
+     "end": 3.36
+    },
+    {
+     "location": 34,
+     "length": 4,
+     "start": 3.36,
+     "end": 3.45
+    },
+    {
+     "location": 39,
+     "length": 5,
+     "start": 3.52,
+     "end": 4.02
+    },
+    {
+     "location": 45,
+     "length": 6,
+     "start": 4.02,
+     "end": 4.6
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a9bae929f2"
+  },
+  "israel-dead-sea/mud": {
+   "file": "read-israel-dead-sea-mud",
+   "text": "People cover themselves in black mud, then wash it off.",
+   "duration": 4.8,
+   "match": 1.0,
+   "heard": "People cover themselves in black mud, then wash it off.",
+   "words": [
+    {
+     "location": 0,
+     "length": 6,
+     "start": 0.16,
+     "end": 0.61
+    },
+    {
+     "location": 7,
+     "length": 5,
+     "start": 0.71,
+     "end": 1.02
+    },
+    {
+     "location": 13,
+     "length": 10,
+     "start": 1.02,
+     "end": 1.54
+    },
+    {
+     "location": 24,
+     "length": 2,
+     "start": 1.54,
+     "end": 1.92
+    },
+    {
+     "location": 27,
+     "length": 5,
+     "start": 1.92,
+     "end": 2.3
+    },
+    {
+     "location": 33,
+     "length": 3,
+     "start": 2.3,
+     "end": 2.6
+    },
+    {
+     "location": 38,
+     "length": 4,
+     "start": 3.21,
+     "end": 3.61
+    },
+    {
+     "location": 43,
+     "length": 4,
+     "start": 3.81,
+     "end": 4.14
+    },
+    {
+     "location": 48,
+     "length": 2,
+     "start": 4.14,
+     "end": 4.32
+    },
+    {
+     "location": 51,
+     "length": 3,
+     "start": 4.32,
+     "end": 4.45
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a9bae929f2"
+  },
+  "israel-dead-sea/no-fish": {
+   "file": "read-israel-dead-sea-no-fish",
+   "text": "No fish can live here. It is too salty!",
+   "duration": 4.75,
+   "match": 1.0,
+   "heard": "No fish can live here. It is too salty!",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.07,
+     "end": 0.64
+    },
+    {
+     "location": 3,
+     "length": 4,
+     "start": 0.71,
+     "end": 1.04
+    },
+    {
+     "location": 8,
+     "length": 3,
+     "start": 1.04,
+     "end": 1.42
+    },
+    {
+     "location": 12,
+     "length": 4,
+     "start": 1.42,
+     "end": 1.66
+    },
+    {
+     "location": 17,
+     "length": 4,
+     "start": 1.66,
+     "end": 1.89
+    },
+    {
+     "location": 23,
+     "length": 2,
+     "start": 2.73,
+     "end": 2.92
+    },
+    {
+     "location": 26,
+     "length": 2,
+     "start": 2.92,
+     "end": 3.09
+    },
+    {
+     "location": 29,
+     "length": 3,
+     "start": 3.19,
+     "end": 3.72
+    },
+    {
+     "location": 33,
+     "length": 5,
+     "start": 3.72,
+     "end": 4.0
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a9bae929f2"
+  },
+  "israel-dead-sea/salt-crystals": {
+   "file": "read-israel-dead-sea-salt-crystals",
+   "text": "Salt crystals grow on rocks, like white frosting.",
+   "duration": 4.7,
+   "match": 1.0,
+   "heard": "Salt crystals grow on rocks, like white frosting.",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.0,
+     "end": 0.62
+    },
+    {
+     "location": 5,
+     "length": 8,
+     "start": 0.7,
+     "end": 1.28
+    },
+    {
+     "location": 14,
+     "length": 4,
+     "start": 1.28,
+     "end": 1.66
+    },
+    {
+     "location": 19,
+     "length": 2,
+     "start": 1.66,
+     "end": 2.19
+    },
+    {
+     "location": 22,
+     "length": 5,
+     "start": 2.27,
+     "end": 2.46
+    },
+    {
+     "location": 29,
+     "length": 4,
+     "start": 2.81,
+     "end": 3.12
+    },
+    {
+     "location": 34,
+     "length": 5,
+     "start": 3.12,
+     "end": 3.54
+    },
+    {
+     "location": 40,
+     "length": 8,
+     "start": 3.54,
+     "end": 4.04
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a9bae929f2"
+  },
+  "israel-dead-sea/salty": {
+   "file": "read-israel-dead-sea-salty",
+   "text": "The water is ten times saltier than the ocean.",
+   "duration": 4.41,
+   "match": 1.0,
+   "heard": "The water is ten times saltier than the ocean.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.2,
+     "end": 0.44
+    },
+    {
+     "location": 4,
+     "length": 5,
+     "start": 0.44,
+     "end": 0.89
+    },
+    {
+     "location": 10,
+     "length": 2,
+     "start": 0.97,
+     "end": 1.18
+    },
+    {
+     "location": 13,
+     "length": 3,
+     "start": 1.26,
+     "end": 1.64
+    },
+    {
+     "location": 17,
+     "length": 5,
+     "start": 1.64,
+     "end": 2.08
+    },
+    {
+     "location": 23,
+     "length": 7,
+     "start": 2.08,
+     "end": 2.65
+    },
+    {
+     "location": 31,
+     "length": 4,
+     "start": 2.88,
+     "end": 3.1
+    },
+    {
+     "location": 36,
+     "length": 3,
+     "start": 3.1,
+     "end": 3.48
+    },
+    {
+     "location": 40,
+     "length": 5,
+     "start": 3.48,
+     "end": 3.56
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a9bae929f2"
+  },
+  "israel-dead-sea/sea-level": {
+   "file": "read-israel-dead-sea-sea-level",
+   "text": "This sign shows sea level. The Dead Sea is lower!",
+   "duration": 5.56,
+   "match": 1.0,
+   "heard": "This sign shows sea level. The Dead Sea is lower!",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.06,
+     "end": 0.14
+    },
+    {
+     "location": 5,
+     "length": 4,
+     "start": 0.19,
+     "end": 1.0
+    },
+    {
+     "location": 10,
+     "length": 5,
+     "start": 1.22,
+     "end": 1.79
+    },
+    {
+     "location": 16,
+     "length": 3,
+     "start": 1.98,
+     "end": 2.46
+    },
+    {
+     "location": 20,
+     "length": 5,
+     "start": 2.46,
+     "end": 2.73
+    },
+    {
+     "location": 27,
+     "length": 3,
+     "start": 3.37,
+     "end": 3.7
+    },
+    {
+     "location": 31,
+     "length": 4,
+     "start": 3.7,
+     "end": 4.06
+    },
+    {
+     "location": 36,
+     "length": 3,
+     "start": 4.06,
+     "end": 4.4
+    },
+    {
+     "location": 40,
+     "length": 2,
+     "start": 4.66,
+     "end": 4.92
+    },
+    {
+     "location": 43,
+     "length": 5,
+     "start": 4.92,
+     "end": 5.32
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a9bae929f2"
+  },
+  "israel-dead-sea/welcome": {
+   "file": "read-israel-dead-sea-welcome",
+   "text": "Welcome to the Dead Sea, a lake full of salt!",
+   "duration": 4.41,
+   "match": 1.0,
+   "heard": "Welcome to the Dead Sea, a lake full of salt!",
+   "words": [
+    {
+     "location": 0,
+     "length": 7,
+     "start": 0.07,
+     "end": 0.56
+    },
+    {
+     "location": 8,
+     "length": 2,
+     "start": 0.56,
+     "end": 0.82
+    },
+    {
+     "location": 11,
+     "length": 3,
+     "start": 0.82,
+     "end": 0.92
+    },
+    {
+     "location": 15,
+     "length": 4,
+     "start": 1.03,
+     "end": 1.44
+    },
+    {
+     "location": 20,
+     "length": 3,
+     "start": 1.44,
+     "end": 1.75
+    },
+    {
+     "location": 25,
+     "length": 1,
+     "start": 2.23,
+     "end": 2.66
+    },
+    {
+     "location": 27,
+     "length": 4,
+     "start": 2.66,
+     "end": 2.74
+    },
+    {
+     "location": 32,
+     "length": 4,
+     "start": 2.97,
+     "end": 3.44
+    },
+    {
+     "location": 37,
+     "length": 2,
+     "start": 3.44,
+     "end": 3.88
+    },
+    {
+     "location": 40,
+     "length": 4,
+     "start": 4.0,
+     "end": 4.08
+    }
+   ],
+   "lufs": -16.0,
+   "style": "a9bae929f2"
+  },
+  "israel-hebrew/boker-tov": {
+   "file": "read-israel-hebrew-boker-tov",
+   "text": "בוקר טוב\nBoker tov means good morning!",
+   "duration": 3.75,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.15,
+     "end": 0.693
+    },
+    {
+     "location": 5,
+     "length": 3,
+     "start": 0.693,
+     "end": 1.1
+    },
+    {
+     "location": 9,
+     "length": 5,
+     "start": 1.45,
+     "end": 1.867
+    },
+    {
+     "location": 15,
+     "length": 3,
+     "start": 1.867,
+     "end": 2.117
+    },
+    {
+     "location": 19,
+     "length": 5,
+     "start": 2.117,
+     "end": 2.533
+    },
+    {
+     "location": 25,
+     "length": 4,
+     "start": 2.533,
+     "end": 2.867
+    },
+    {
+     "location": 30,
+     "length": 7,
+     "start": 2.867,
+     "end": 3.45
+    }
+   ],
+   "lufs": -16.0,
+   "style": "4eabbb2f9f"
+  },
+  "israel-hebrew/counting": {
+   "file": "read-israel-hebrew-counting",
+   "text": "אחת שתיים שלוש\nAchat, shtayim, shalosh: one, two, three!",
+   "duration": 9.13,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.15,
+     "end": 0.835
+    },
+    {
+     "location": 4,
+     "length": 5,
+     "start": 0.835,
+     "end": 1.977
+    },
+    {
+     "location": 10,
+     "length": 4,
+     "start": 1.977,
+     "end": 2.89
+    },
+    {
+     "location": 15,
+     "length": 5,
+     "start": 3.24,
+     "end": 3.8
+    },
+    {
+     "location": 22,
+     "length": 7,
+     "start": 4.15,
+     "end": 4.84
+    },
+    {
+     "location": 31,
+     "length": 7,
+     "start": 5.19,
+     "end": 6.36
+    },
+    {
+     "location": 40,
+     "length": 3,
+     "start": 6.71,
+     "end": 7.15
+    },
+    {
+     "location": 45,
+     "length": 3,
+     "start": 7.5,
+     "end": 7.98
+    },
+    {
+     "location": 50,
+     "length": 5,
+     "start": 8.33,
+     "end": 8.83
+    }
+   ],
+   "lufs": -16.0,
+   "style": "4eabbb2f9f"
+  },
+  "israel-hebrew/gamal": {
+   "file": "read-israel-hebrew-gamal",
+   "text": "גמל\nGamal means camel. It sounds almost the same!",
+   "duration": 5.35,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.15,
+     "end": 0.78
+    },
+    {
+     "location": 4,
+     "length": 5,
+     "start": 1.13,
+     "end": 1.663
+    },
+    {
+     "location": 10,
+     "length": 5,
+     "start": 1.663,
+     "end": 2.197
+    },
+    {
+     "location": 16,
+     "length": 5,
+     "start": 2.197,
+     "end": 2.73
+    },
+    {
+     "location": 23,
+     "length": 2,
+     "start": 3.23,
+     "end": 3.403
+    },
+    {
+     "location": 26,
+     "length": 6,
+     "start": 3.403,
+     "end": 3.923
+    },
+    {
+     "location": 33,
+     "length": 6,
+     "start": 3.923,
+     "end": 4.443
+    },
+    {
+     "location": 40,
+     "length": 3,
+     "start": 4.443,
+     "end": 4.703
+    },
+    {
+     "location": 44,
+     "length": 4,
+     "start": 4.703,
+     "end": 5.05
+    }
+   ],
+   "lufs": -16.0,
+   "style": "4eabbb2f9f"
+  },
+  "israel-hebrew/glida": {
+   "file": "read-israel-hebrew-glida",
+   "text": "גלידה\nGlida means ice cream. Yum, what flavor?",
+   "duration": 5.98,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 5,
+     "start": 0.15,
+     "end": 0.74
+    },
+    {
+     "location": 6,
+     "length": 5,
+     "start": 1.09,
+     "end": 1.665
+    },
+    {
+     "location": 12,
+     "length": 5,
+     "start": 1.665,
+     "end": 2.24
+    },
+    {
+     "location": 18,
+     "length": 3,
+     "start": 2.24,
+     "end": 2.585
+    },
+    {
+     "location": 22,
+     "length": 5,
+     "start": 2.585,
+     "end": 3.16
+    },
+    {
+     "location": 29,
+     "length": 3,
+     "start": 3.66,
+     "end": 4.28
+    },
+    {
+     "location": 34,
+     "length": 4,
+     "start": 4.63,
+     "end": 5.05
+    },
+    {
+     "location": 39,
+     "length": 6,
+     "start": 5.05,
+     "end": 5.68
+    }
+   ],
+   "lufs": -16.0,
+   "style": "4eabbb2f9f"
+  },
+  "israel-hebrew/goodbye": {
+   "file": "read-israel-hebrew-goodbye",
+   "text": "להתראות\nLehitraot means see you later! Bye, Israel!",
+   "duration": 6.0,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 7,
+     "start": 0.15,
+     "end": 1.1
+    },
+    {
+     "location": 8,
+     "length": 9,
+     "start": 1.45,
+     "end": 2.336
+    },
+    {
+     "location": 18,
+     "length": 5,
+     "start": 2.336,
+     "end": 2.828
+    },
+    {
+     "location": 24,
+     "length": 3,
+     "start": 2.828,
+     "end": 3.123
+    },
+    {
+     "location": 28,
+     "length": 3,
+     "start": 3.123,
+     "end": 3.418
+    },
+    {
+     "location": 32,
+     "length": 5,
+     "start": 3.418,
+     "end": 3.91
+    },
+    {
+     "location": 39,
+     "length": 3,
+     "start": 4.41,
+     "end": 4.87
+    },
+    {
+     "location": 44,
+     "length": 6,
+     "start": 5.22,
+     "end": 5.7
+    }
+   ],
+   "lufs": -16.0,
+   "style": "4eabbb2f9f"
+  },
+  "israel-hebrew/kelev": {
+   "file": "read-israel-hebrew-kelev",
+   "text": "כלב\nKelev means dog. Woof woof on the beach!",
+   "duration": 4.96,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.15,
+     "end": 0.59
+    },
+    {
+     "location": 4,
+     "length": 5,
+     "start": 0.94,
+     "end": 1.578
+    },
+    {
+     "location": 10,
+     "length": 5,
+     "start": 1.578,
+     "end": 2.217
+    },
+    {
+     "location": 16,
+     "length": 3,
+     "start": 2.217,
+     "end": 2.6
+    },
+    {
+     "location": 21,
+     "length": 4,
+     "start": 3.1,
+     "end": 3.447
+    },
+    {
+     "location": 26,
+     "length": 4,
+     "start": 3.447,
+     "end": 3.793
+    },
+    {
+     "location": 31,
+     "length": 2,
+     "start": 3.793,
+     "end": 3.967
+    },
+    {
+     "location": 34,
+     "length": 3,
+     "start": 3.967,
+     "end": 4.227
+    },
+    {
+     "location": 38,
+     "length": 5,
+     "start": 4.227,
+     "end": 4.66
+    }
+   ],
+   "lufs": -16.0,
+   "style": "4eabbb2f9f"
+  },
+  "israel-hebrew/mayim": {
+   "file": "read-israel-hebrew-mayim",
+   "text": "מים\nMayim means water. Even cats get thirsty!",
+   "duration": 5.93,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.15,
+     "end": 0.82
+    },
+    {
+     "location": 4,
+     "length": 5,
+     "start": 1.17,
+     "end": 1.9
+    },
+    {
+     "location": 10,
+     "length": 5,
+     "start": 1.9,
+     "end": 2.63
+    },
+    {
+     "location": 16,
+     "length": 5,
+     "start": 2.63,
+     "end": 3.36
+    },
+    {
+     "location": 23,
+     "length": 4,
+     "start": 3.86,
+     "end": 4.253
+    },
+    {
+     "location": 28,
+     "length": 4,
+     "start": 4.253,
+     "end": 4.647
+    },
+    {
+     "location": 33,
+     "length": 3,
+     "start": 4.647,
+     "end": 4.942
+    },
+    {
+     "location": 37,
+     "length": 7,
+     "start": 4.942,
+     "end": 5.63
+    }
+   ],
+   "lufs": -16.0,
+   "style": "4eabbb2f9f"
+  },
+  "israel-hebrew/shalom": {
+   "file": "read-israel-hebrew-shalom",
+   "text": "שלום\nShalom means hello! It means goodbye too.",
+   "duration": 5.9,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.15,
+     "end": 0.89
+    },
+    {
+     "location": 5,
+     "length": 6,
+     "start": 1.24,
+     "end": 2.013
+    },
+    {
+     "location": 12,
+     "length": 5,
+     "start": 2.013,
+     "end": 2.656
+    },
+    {
+     "location": 18,
+     "length": 5,
+     "start": 2.656,
+     "end": 3.3
+    },
+    {
+     "location": 25,
+     "length": 2,
+     "start": 3.8,
+     "end": 4.012
+    },
+    {
+     "location": 28,
+     "length": 5,
+     "start": 4.012,
+     "end": 4.541
+    },
+    {
+     "location": 34,
+     "length": 7,
+     "start": 4.541,
+     "end": 5.282
+    },
+    {
+     "location": 42,
+     "length": 3,
+     "start": 5.282,
+     "end": 5.6
+    }
+   ],
+   "lufs": -16.0,
+   "style": "4eabbb2f9f"
+  },
+  "israel-hebrew/tapuz": {
+   "file": "read-israel-hebrew-tapuz",
+   "text": "תפוז\nTapuz means orange. It grows on a tree!",
+   "duration": 5.58,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.15,
+     "end": 0.72
+    },
+    {
+     "location": 5,
+     "length": 5,
+     "start": 1.07,
+     "end": 1.657
+    },
+    {
+     "location": 11,
+     "length": 5,
+     "start": 1.657,
+     "end": 2.245
+    },
+    {
+     "location": 17,
+     "length": 6,
+     "start": 2.245,
+     "end": 2.95
+    },
+    {
+     "location": 25,
+     "length": 2,
+     "start": 3.45,
+     "end": 3.694
+    },
+    {
+     "location": 28,
+     "length": 5,
+     "start": 3.694,
+     "end": 4.304
+    },
+    {
+     "location": 34,
+     "length": 2,
+     "start": 4.304,
+     "end": 4.548
+    },
+    {
+     "location": 37,
+     "length": 1,
+     "start": 4.548,
+     "end": 4.792
+    },
+    {
+     "location": 39,
+     "length": 4,
+     "start": 4.792,
+     "end": 5.28
+    }
+   ],
+   "lufs": -16.0,
+   "style": "4eabbb2f9f"
+  },
+  "israel-hebrew/toda": {
+   "file": "read-israel-hebrew-toda",
+   "text": "תודה\nToda means thank you. Say it with a smile!",
+   "duration": 4.81,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 4,
+     "start": 0.15,
+     "end": 0.55
+    },
+    {
+     "location": 5,
+     "length": 4,
+     "start": 0.9,
+     "end": 1.255
+    },
+    {
+     "location": 10,
+     "length": 5,
+     "start": 1.255,
+     "end": 1.699
+    },
+    {
+     "location": 16,
+     "length": 5,
+     "start": 1.699,
+     "end": 2.144
+    },
+    {
+     "location": 22,
+     "length": 3,
+     "start": 2.144,
+     "end": 2.41
+    },
+    {
+     "location": 27,
+     "length": 3,
+     "start": 2.91,
+     "end": 3.21
+    },
+    {
+     "location": 31,
+     "length": 2,
+     "start": 3.21,
+     "end": 3.41
+    },
+    {
+     "location": 34,
+     "length": 4,
+     "start": 3.41,
+     "end": 3.81
+    },
+    {
+     "location": 39,
+     "length": 1,
+     "start": 3.81,
+     "end": 4.01
+    },
+    {
+     "location": 41,
+     "length": 5,
+     "start": 4.01,
+     "end": 4.51
+    }
+   ],
+   "lufs": -16.0,
+   "style": "4eabbb2f9f"
+  },
+  "israel-hebrew/welcome": {
+   "file": "read-israel-hebrew-welcome",
+   "text": "עברית\nIvrit means Hebrew. It reads from right to left!",
+   "duration": 5.78,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 5,
+     "start": 0.15,
+     "end": 0.79
+    },
+    {
+     "location": 6,
+     "length": 5,
+     "start": 1.14,
+     "end": 1.771
+    },
+    {
+     "location": 12,
+     "length": 5,
+     "start": 1.771,
+     "end": 2.402
+    },
+    {
+     "location": 18,
+     "length": 6,
+     "start": 2.402,
+     "end": 3.16
+    },
+    {
+     "location": 26,
+     "length": 2,
+     "start": 3.66,
+     "end": 3.825
+    },
+    {
+     "location": 29,
+     "length": 5,
+     "start": 3.825,
+     "end": 4.239
+    },
+    {
+     "location": 35,
+     "length": 4,
+     "start": 4.239,
+     "end": 4.57
+    },
+    {
+     "location": 40,
+     "length": 5,
+     "start": 4.57,
+     "end": 4.984
+    },
+    {
+     "location": 46,
+     "length": 2,
+     "start": 4.984,
+     "end": 5.149
+    },
+    {
+     "location": 49,
+     "length": 4,
+     "start": 5.149,
+     "end": 5.48
+    }
+   ],
+   "lufs": -16.0,
+   "style": "4eabbb2f9f"
+  },
+  "israel-hebrew/yam": {
+   "file": "read-israel-hebrew-yam",
+   "text": "ים\nYam means sea. A dolphin swims in it!",
+   "duration": 5.75,
+   "match": 1.0,
+   "heard": "(phrase by phrase)",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.15,
+     "end": 0.67
+    },
+    {
+     "location": 3,
+     "length": 3,
+     "start": 1.02,
+     "end": 1.579
+    },
+    {
+     "location": 7,
+     "length": 5,
+     "start": 1.579,
+     "end": 2.511
+    },
+    {
+     "location": 13,
+     "length": 3,
+     "start": 2.511,
+     "end": 3.07
+    },
+    {
+     "location": 18,
+     "length": 1,
+     "start": 3.57,
+     "end": 3.779
+    },
+    {
+     "location": 20,
+     "length": 7,
+     "start": 3.779,
+     "end": 4.51
+    },
+    {
+     "location": 28,
+     "length": 5,
+     "start": 4.51,
+     "end": 5.032
+    },
+    {
+     "location": 34,
+     "length": 2,
+     "start": 5.032,
+     "end": 5.241
+    },
+    {
+     "location": 37,
+     "length": 2,
+     "start": 5.241,
+     "end": 5.45
+    }
+   ],
+   "lufs": -16.0,
+   "style": "4eabbb2f9f"
+  },
+  "israel-tel-aviv/beach": {
+   "file": "read-israel-tel-aviv-beach",
+   "text": "Tel Aviv has long sandy beaches with lifeguard huts.",
+   "duration": 5.16,
+   "match": 1.0,
+   "heard": "Tel Aviv has long sandy beaches with lifeguard huts.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.64,
+     "end": 1.1
+    },
+    {
+     "location": 4,
+     "length": 4,
+     "start": 1.1,
+     "end": 1.38
+    },
+    {
+     "location": 9,
+     "length": 3,
+     "start": 1.38,
+     "end": 1.68
+    },
+    {
+     "location": 13,
+     "length": 4,
+     "start": 1.68,
+     "end": 2.32
+    },
+    {
+     "location": 18,
+     "length": 5,
+     "start": 2.32,
+     "end": 2.64
+    },
+    {
+     "location": 24,
+     "length": 7,
+     "start": 2.64,
+     "end": 2.96
+    },
+    {
+     "location": 32,
+     "length": 4,
+     "start": 2.96,
+     "end": 3.46
+    },
+    {
+     "location": 37,
+     "length": 9,
+     "start": 3.46,
+     "end": 4.11
+    },
+    {
+     "location": 47,
+     "length": 4,
+     "start": 4.18,
+     "end": 4.28
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d8d50d4ac1"
+  },
+  "israel-tel-aviv/bikes": {
+   "file": "read-israel-tel-aviv-bikes",
+   "text": "Green rental bikes wait for riders all over town.",
+   "duration": 3.86,
+   "match": 1.0,
+   "heard": "Green rental bikes wait for riders all over town.",
+   "words": [
+    {
+     "location": 0,
+     "length": 5,
+     "start": 0.06,
+     "end": 0.64
+    },
+    {
+     "location": 6,
+     "length": 6,
+     "start": 0.64,
+     "end": 1.02
+    },
+    {
+     "location": 13,
+     "length": 5,
+     "start": 1.02,
+     "end": 1.21
+    },
+    {
+     "location": 19,
+     "length": 4,
+     "start": 1.27,
+     "end": 1.8
+    },
+    {
+     "location": 24,
+     "length": 3,
+     "start": 1.8,
+     "end": 2.1
+    },
+    {
+     "location": 28,
+     "length": 6,
+     "start": 2.1,
+     "end": 2.53
+    },
+    {
+     "location": 35,
+     "length": 3,
+     "start": 2.6,
+     "end": 2.86
+    },
+    {
+     "location": 39,
+     "length": 4,
+     "start": 2.86,
+     "end": 3.16
+    },
+    {
+     "location": 44,
+     "length": 4,
+     "start": 3.16,
+     "end": 3.42
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d8d50d4ac1"
+  },
+  "israel-tel-aviv/clock-tower": {
+   "file": "read-israel-tel-aviv-clock-tower",
+   "text": "Jaffa's clock tower is made of golden stone.",
+   "duration": 4.1,
+   "match": 1.0,
+   "heard": "Jaffa's clock tower is made of golden stone.",
+   "words": [
+    {
+     "location": 0,
+     "length": 7,
+     "start": 0.16,
+     "end": 0.77
+    },
+    {
+     "location": 8,
+     "length": 5,
+     "start": 0.83,
+     "end": 1.18
+    },
+    {
+     "location": 14,
+     "length": 5,
+     "start": 1.18,
+     "end": 1.5
+    },
+    {
+     "location": 20,
+     "length": 2,
+     "start": 1.5,
+     "end": 1.86
+    },
+    {
+     "location": 23,
+     "length": 4,
+     "start": 1.86,
+     "end": 2.02
+    },
+    {
+     "location": 28,
+     "length": 2,
+     "start": 2.02,
+     "end": 2.3
+    },
+    {
+     "location": 31,
+     "length": 6,
+     "start": 2.3,
+     "end": 2.76
+    },
+    {
+     "location": 38,
+     "length": 5,
+     "start": 2.76,
+     "end": 3.2
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d8d50d4ac1"
+  },
+  "israel-tel-aviv/falafel": {
+   "file": "read-israel-tel-aviv-falafel",
+   "text": "Falafel are crunchy chickpea balls tucked in a pita.",
+   "duration": 4.8,
+   "match": 1.0,
+   "heard": "Falafel are crunchy chickpea balls tucked in a pita.",
+   "words": [
+    {
+     "location": 0,
+     "length": 7,
+     "start": 0.09,
+     "end": 0.9
+    },
+    {
+     "location": 8,
+     "length": 3,
+     "start": 1.24,
+     "end": 1.38
+    },
+    {
+     "location": 12,
+     "length": 7,
+     "start": 1.46,
+     "end": 2.02
+    },
+    {
+     "location": 20,
+     "length": 8,
+     "start": 2.02,
+     "end": 2.68
+    },
+    {
+     "location": 29,
+     "length": 5,
+     "start": 2.68,
+     "end": 3.09
+    },
+    {
+     "location": 35,
+     "length": 6,
+     "start": 3.44,
+     "end": 3.65
+    },
+    {
+     "location": 42,
+     "length": 2,
+     "start": 3.72,
+     "end": 4.11
+    },
+    {
+     "location": 45,
+     "length": 1,
+     "start": 4.17,
+     "end": 4.4
+    },
+    {
+     "location": 47,
+     "length": 4,
+     "start": 4.4,
+     "end": 4.48
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d8d50d4ac1"
+  },
+  "israel-tel-aviv/goodbye": {
+   "file": "read-israel-tel-aviv-goodbye",
+   "text": "Shalom, Tel Aviv! Goodbye, golden sunset over the sea.",
+   "duration": 5.9,
+   "match": 1.0,
+   "heard": "Shalom, Tel Aviv! Goodbye, golden sunset over the sea.",
+   "words": [
+    {
+     "location": 0,
+     "length": 6,
+     "start": 0.07,
+     "end": 0.88
+    },
+    {
+     "location": 8,
+     "length": 3,
+     "start": 1.08,
+     "end": 1.5
+    },
+    {
+     "location": 12,
+     "length": 4,
+     "start": 1.5,
+     "end": 1.76
+    },
+    {
+     "location": 18,
+     "length": 7,
+     "start": 2.52,
+     "end": 3.17
+    },
+    {
+     "location": 27,
+     "length": 6,
+     "start": 3.57,
+     "end": 4.12
+    },
+    {
+     "location": 34,
+     "length": 6,
+     "start": 4.12,
+     "end": 4.66
+    },
+    {
+     "location": 41,
+     "length": 4,
+     "start": 4.78,
+     "end": 5.1
+    },
+    {
+     "location": 46,
+     "length": 3,
+     "start": 5.1,
+     "end": 5.46
+    },
+    {
+     "location": 50,
+     "length": 3,
+     "start": 5.46,
+     "end": 5.54
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d8d50d4ac1"
+  },
+  "israel-tel-aviv/jaffa-port": {
+   "file": "read-israel-tel-aviv-jaffa-port",
+   "text": "Old Jaffa has a tiny port with colorful fishing boats.",
+   "duration": 5.16,
+   "match": 1.0,
+   "heard": "Old Jaffa has a tiny port with colorful fishing boats.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.0,
+     "end": 0.48
+    },
+    {
+     "location": 4,
+     "length": 5,
+     "start": 0.57,
+     "end": 1.19
+    },
+    {
+     "location": 10,
+     "length": 3,
+     "start": 1.49,
+     "end": 1.68
+    },
+    {
+     "location": 14,
+     "length": 1,
+     "start": 1.68,
+     "end": 1.76
+    },
+    {
+     "location": 16,
+     "length": 4,
+     "start": 1.84,
+     "end": 2.29
+    },
+    {
+     "location": 21,
+     "length": 4,
+     "start": 2.35,
+     "end": 2.6
+    },
+    {
+     "location": 26,
+     "length": 4,
+     "start": 3.1,
+     "end": 3.2
+    },
+    {
+     "location": 31,
+     "length": 8,
+     "start": 3.36,
+     "end": 4.03
+    },
+    {
+     "location": 40,
+     "length": 7,
+     "start": 4.14,
+     "end": 4.63
+    },
+    {
+     "location": 48,
+     "length": 5,
+     "start": 4.72,
+     "end": 4.8
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d8d50d4ac1"
+  },
+  "israel-tel-aviv/market": {
+   "file": "read-israel-tel-aviv-market",
+   "text": "Carmel Market is full of fruit, vegetables and noise!",
+   "duration": 5.61,
+   "match": 1.0,
+   "heard": "Carmel Market is full of fruit, vegetables and noise!",
+   "words": [
+    {
+     "location": 0,
+     "length": 6,
+     "start": 0.29,
+     "end": 1.11
+    },
+    {
+     "location": 7,
+     "length": 6,
+     "start": 1.17,
+     "end": 1.3
+    },
+    {
+     "location": 14,
+     "length": 2,
+     "start": 1.43,
+     "end": 1.65
+    },
+    {
+     "location": 17,
+     "length": 4,
+     "start": 1.79,
+     "end": 2.04
+    },
+    {
+     "location": 22,
+     "length": 2,
+     "start": 2.04,
+     "end": 2.71
+    },
+    {
+     "location": 25,
+     "length": 5,
+     "start": 3.16,
+     "end": 3.88
+    },
+    {
+     "location": 32,
+     "length": 10,
+     "start": 4.18,
+     "end": 4.26
+    },
+    {
+     "location": 43,
+     "length": 3,
+     "start": 4.26,
+     "end": 4.4
+    },
+    {
+     "location": 47,
+     "length": 5,
+     "start": 4.4,
+     "end": 4.82
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d8d50d4ac1"
+  },
+  "israel-tel-aviv/matkot": {
+   "file": "read-israel-tel-aviv-matkot",
+   "text": "On the beach, people play matkot with wooden paddles.",
+   "duration": 4.36,
+   "match": 1.0,
+   "heard": "On the beach, people play matkot with wooden paddles.",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.0,
+     "end": 0.3
+    },
+    {
+     "location": 3,
+     "length": 3,
+     "start": 0.3,
+     "end": 0.61
+    },
+    {
+     "location": 7,
+     "length": 5,
+     "start": 0.7,
+     "end": 0.82
+    },
+    {
+     "location": 14,
+     "length": 6,
+     "start": 1.32,
+     "end": 1.68
+    },
+    {
+     "location": 21,
+     "length": 4,
+     "start": 1.68,
+     "end": 2.06
+    },
+    {
+     "location": 26,
+     "length": 6,
+     "start": 2.06,
+     "end": 2.65
+    },
+    {
+     "location": 33,
+     "length": 4,
+     "start": 2.87,
+     "end": 3.16
+    },
+    {
+     "location": 38,
+     "length": 6,
+     "start": 3.16,
+     "end": 3.44
+    },
+    {
+     "location": 45,
+     "length": 7,
+     "start": 3.44,
+     "end": 4.02
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d8d50d4ac1"
+  },
+  "israel-tel-aviv/promenade": {
+   "file": "read-israel-tel-aviv-promenade",
+   "text": "A long path by the sea is great for bikes.",
+   "duration": 5.25,
+   "match": 1.0,
+   "heard": "A long path by the sea is great for bikes.",
+   "words": [
+    {
+     "location": 0,
+     "length": 1,
+     "start": 0.15,
+     "end": 0.46
+    },
+    {
+     "location": 2,
+     "length": 4,
+     "start": 0.46,
+     "end": 0.94
+    },
+    {
+     "location": 7,
+     "length": 4,
+     "start": 0.94,
+     "end": 1.36
+    },
+    {
+     "location": 12,
+     "length": 2,
+     "start": 1.42,
+     "end": 1.68
+    },
+    {
+     "location": 15,
+     "length": 3,
+     "start": 1.68,
+     "end": 2.06
+    },
+    {
+     "location": 19,
+     "length": 3,
+     "start": 2.06,
+     "end": 2.25
+    },
+    {
+     "location": 23,
+     "length": 2,
+     "start": 2.63,
+     "end": 2.91
+    },
+    {
+     "location": 26,
+     "length": 5,
+     "start": 2.99,
+     "end": 3.35
+    },
+    {
+     "location": 32,
+     "length": 3,
+     "start": 3.86,
+     "end": 4.26
+    },
+    {
+     "location": 36,
+     "length": 5,
+     "start": 4.37,
+     "end": 4.45
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d8d50d4ac1"
+  },
+  "israel-tel-aviv/safari": {
+   "file": "read-israel-tel-aviv-safari",
+   "text": "At the safari near Tel Aviv, giraffes walk past your car!",
+   "duration": 5.2,
+   "match": 1.0,
+   "heard": "At the safari near Tel Aviv, giraffes walk past your car!",
+   "words": [
+    {
+     "location": 0,
+     "length": 2,
+     "start": 0.0,
+     "end": 0.18
+    },
+    {
+     "location": 3,
+     "length": 3,
+     "start": 0.29,
+     "end": 0.6
+    },
+    {
+     "location": 7,
+     "length": 6,
+     "start": 0.66,
+     "end": 1.06
+    },
+    {
+     "location": 14,
+     "length": 4,
+     "start": 1.21,
+     "end": 1.49
+    },
+    {
+     "location": 19,
+     "length": 3,
+     "start": 1.58,
+     "end": 2.0
+    },
+    {
+     "location": 23,
+     "length": 4,
+     "start": 2.0,
+     "end": 2.22
+    },
+    {
+     "location": 29,
+     "length": 8,
+     "start": 2.74,
+     "end": 3.42
+    },
+    {
+     "location": 38,
+     "length": 4,
+     "start": 3.58,
+     "end": 3.94
+    },
+    {
+     "location": 43,
+     "length": 4,
+     "start": 3.94,
+     "end": 4.3
+    },
+    {
+     "location": 48,
+     "length": 4,
+     "start": 4.3,
+     "end": 4.58
+    },
+    {
+     "location": 53,
+     "length": 3,
+     "start": 4.58,
+     "end": 4.82
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d8d50d4ac1"
+  },
+  "israel-tel-aviv/welcome": {
+   "file": "read-israel-tel-aviv-welcome",
+   "text": "Shalom! Welcome to Tel Aviv, a sunny city by the sea.",
+   "duration": 5.52,
+   "match": 1.0,
+   "heard": "Shalom! Welcome to Tel Aviv, a sunny city by the sea.",
+   "words": [
+    {
+     "location": 0,
+     "length": 6,
+     "start": 0.07,
+     "end": 0.8
+    },
+    {
+     "location": 8,
+     "length": 7,
+     "start": 1.32,
+     "end": 1.78
+    },
+    {
+     "location": 16,
+     "length": 2,
+     "start": 1.78,
+     "end": 1.96
+    },
+    {
+     "location": 19,
+     "length": 3,
+     "start": 2.03,
+     "end": 2.38
+    },
+    {
+     "location": 23,
+     "length": 4,
+     "start": 2.38,
+     "end": 2.6
+    },
+    {
+     "location": 29,
+     "length": 1,
+     "start": 3.08,
+     "end": 3.42
+    },
+    {
+     "location": 31,
+     "length": 5,
+     "start": 3.42,
+     "end": 3.74
+    },
+    {
+     "location": 37,
+     "length": 4,
+     "start": 3.74,
+     "end": 4.02
+    },
+    {
+     "location": 42,
+     "length": 2,
+     "start": 4.02,
+     "end": 4.32
+    },
+    {
+     "location": 45,
+     "length": 3,
+     "start": 4.32,
+     "end": 4.64
+    },
+    {
+     "location": 49,
+     "length": 3,
+     "start": 4.64,
+     "end": 4.72
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d8d50d4ac1"
+  },
+  "israel-tel-aviv/white-city": {
+   "file": "read-israel-tel-aviv-white-city",
+   "text": "Tel Aviv has thousands of white buildings with long balconies.",
+   "duration": 5.44,
+   "match": 1.0,
+   "heard": "Tel Aviv has thousands of white buildings with long balconies.",
+   "words": [
+    {
+     "location": 0,
+     "length": 3,
+     "start": 0.0,
+     "end": 0.44
+    },
+    {
+     "location": 4,
+     "length": 4,
+     "start": 0.44,
+     "end": 0.72
+    },
+    {
+     "location": 9,
+     "length": 3,
+     "start": 0.72,
+     "end": 1.01
+    },
+    {
+     "location": 13,
+     "length": 9,
+     "start": 1.13,
+     "end": 1.6
+    },
+    {
+     "location": 23,
+     "length": 2,
+     "start": 1.6,
+     "end": 1.96
+    },
+    {
+     "location": 26,
+     "length": 5,
+     "start": 1.96,
+     "end": 2.04
+    },
+    {
+     "location": 32,
+     "length": 9,
+     "start": 2.13,
+     "end": 2.65
+    },
+    {
+     "location": 42,
+     "length": 4,
+     "start": 2.9,
+     "end": 3.18
+    },
+    {
+     "location": 47,
+     "length": 4,
+     "start": 3.18,
+     "end": 3.58
+    },
+    {
+     "location": 52,
+     "length": 9,
+     "start": 3.58,
+     "end": 4.14
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d8d50d4ac1"
+  },
+  "israel-tel-aviv/yarkon": {
+   "file": "read-israel-tel-aviv-yarkon",
+   "text": "Yarkon Park is a giant green park along a river.",
+   "duration": 4.41,
+   "match": 1.0,
+   "heard": "Yarkon Park is a giant green park along a river.",
+   "words": [
+    {
+     "location": 0,
+     "length": 6,
+     "start": 0.0,
+     "end": 0.66
+    },
+    {
+     "location": 7,
+     "length": 4,
+     "start": 0.66,
+     "end": 0.94
+    },
+    {
+     "location": 12,
+     "length": 2,
+     "start": 1.39,
+     "end": 1.56
+    },
+    {
+     "location": 15,
+     "length": 1,
+     "start": 1.56,
+     "end": 2.12
+    },
+    {
+     "location": 17,
+     "length": 5,
+     "start": 2.12,
+     "end": 2.2
+    },
+    {
+     "location": 23,
+     "length": 5,
+     "start": 2.2,
+     "end": 2.6
+    },
+    {
+     "location": 29,
+     "length": 4,
+     "start": 2.6,
+     "end": 2.92
+    },
+    {
+     "location": 34,
+     "length": 5,
+     "start": 3.18,
+     "end": 3.42
+    },
+    {
+     "location": 40,
+     "length": 1,
+     "start": 3.42,
+     "end": 3.92
+    },
+    {
+     "location": 42,
+     "length": 5,
+     "start": 3.92,
+     "end": 4.0
+    }
+   ],
+   "lufs": -16.0,
+   "style": "d8d50d4ac1"
+  },
   "london-big-ben/bell": {
    "file": "read-london-big-ben-bell",
    "text": "Big Ben is the name of the giant bell inside.",

@@ -1,0 +1,223 @@
+{
+  "id": "israel-dead-sea",
+  "city": "Israel",
+  "country": "Israel",
+  "flagImage": "israel-flag.png",
+  "flag": "🇮🇱",
+  "theme": "Dead Sea",
+  "coverColor": "#00897B",
+  "tagline": "Float, squish in mud and climb a salt mountain",
+  "narration": {
+    "instructions": "This book is about the Dead Sea in Israel. Say every name the way a native Israeli says it, warmly and naturally, never spelled out: Sodom (SOH-dum), Ein Gedi (ayn GEH-dee), Masada (mah-SAH-dah), ibex (EYE-beks), hyrax (HY-raks). A short hint like ayn GEH-dee is how to sound out the word."
+  },
+  "pages": [
+    {
+      "id": "welcome",
+      "text": "Welcome to the Dead Sea, a lake full of salt!",
+      "about": "The Dead Sea is a big salty lake in a desert valley, with Israel on one side and Jordan on the other. In Hebrew it is called Yam HaMelach (yahm hah-MEH-lakh), the Sea of Salt. Even though it is a lake, people call it a sea. The water looks bright blue and the mountains around it are golden and pink. Ask Francis: Why do you think it is called a sea of salt?",
+      "emoji": "🧂",
+      "photo": {
+        "commonsTitle": "File:Ein Bokek beach 20180706-2.jpg",
+        "query": "",
+        "file": "israel-dead-sea-welcome.jpg",
+        "author": "Suicasmo",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ein_Bokek_beach_20180706-2.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "sea-level",
+      "text": "This sign shows sea level. The Dead Sea is lower!",
+      "about": "Sea level is how high the ocean is. Driving down to the Dead Sea, you pass this sign, but you keep going down and down. The shore of the Dead Sea is about 430 metres below sea level, the lowest place on land in the whole world! That is deeper than the tallest tower is high. Some people feel their ears pop on the drive. Ask Francis: Can you crouch down as low as you can, like the Dead Sea?",
+      "emoji": "⬇️",
+      "photo": {
+        "commonsTitle": "File:Israel Sea Level BW 1.JPG",
+        "query": "",
+        "file": "israel-dead-sea-sea-level.jpg",
+        "author": "Berthold Werner",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Israel_Sea_Level_BW_1.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "salty",
+      "text": "The water is ten times saltier than the ocean.",
+      "about": "Ocean water tastes salty, but the Dead Sea is about ten times saltier. It feels oily and slippery on your skin. That much salt really stings in your eyes or in a little cut, so nobody splashes here, and there are fresh-water showers on the beach to rinse off. Ask Francis: What do you think a sip would taste like? (Answer: super bitter and salty, so never drink it!)",
+      "emoji": "💧",
+      "photo": {
+        "commonsTitle": "File:PikiWiki Israel 16110 Dead sea - Northern shore.JPG",
+        "query": "",
+        "file": "israel-dead-sea-salty.jpg",
+        "author": "רז אייזקס",
+        "license": "CC BY 2.5",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.5",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:PikiWiki_Israel_16110_Dead_sea_-_Northern_shore.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "float",
+      "text": "You float like a cork! You can even read a newspaper.",
+      "about": "All that salt makes the water so heavy that people pop up and float, even if they cannot swim. You lie back like in an armchair, and some people read a newspaper while they float! The safe way: walk in slowly, sit back gently, keep your face out of the water, hold a grown-up's hand, and float for just a few minutes. Ask Francis: What would you read or hold while floating?",
+      "emoji": "📰",
+      "photo": {
+        "commonsTitle": "File:Dead sea newspaper.jpg",
+        "query": "",
+        "file": "israel-dead-sea-float.jpg",
+        "author": "Pete",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Dead_sea_newspaper.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "no-fish",
+      "text": "No fish can live here. It is too salty!",
+      "about": "It is called the Dead Sea because it is so salty that no fish, frogs or seaweed can live in it. Only tiny living things too small to see, called microbes, can survive. As the water dries in the hot sun, the salt it leaves behind makes funny shapes on the shore, like white mushrooms and little islands. Ask Francis: What do these salty shapes look like to you?",
+      "emoji": "🐟",
+      "photo": {
+        "commonsTitle": "File:Salt, Dead Sea, Jordan.jpg",
+        "query": "",
+        "file": "israel-dead-sea-no-fish.jpg",
+        "author": "Gerda Arendt",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Salt,_Dead_Sea,_Jordan.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "salt-crystals",
+      "text": "Salt crystals grow on rocks, like white frosting.",
+      "about": "When the hot sun dries the water, the salt stays behind and grows into crystals. If you look closely, salt crystals are shaped like tiny cubes! They cover rocks and sticks like frosting on a cake, but they are hard and sharp, so people wear water shoes here. Ask Francis: Next time we use salt at home, shall we look at the grains with a magnifying glass to find tiny cubes?",
+      "emoji": "❄️",
+      "photo": {
+        "commonsTitle": "File:Dead Sea salt crystals.jpg",
+        "query": "",
+        "file": "israel-dead-sea-salt-crystals.jpg",
+        "author": "Petar Milošević",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Dead_Sea_salt_crystals.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "mud",
+      "text": "People cover themselves in black mud, then wash it off.",
+      "about": "The mud at the Dead Sea is black, soft and full of minerals, and people say it makes skin feel smooth. Visitors smear it all over, from toes to shoulders, and wait in the sun until it dries and cracks, so they look like statues. Then they wash it all off in the salty water and the showers. Mud stays away from the eyes and face. Ask Francis: How would you look covered in mud from head to toe? Would it tickle?",
+      "emoji": "🟫",
+      "photo": {
+        "commonsTitle": "File:Stefan covered w- Dead Sea mud 1509 (509725163).jpg",
+        "query": "",
+        "file": "israel-dead-sea-mud.jpg",
+        "author": "James Emery from Douglasville, United States",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Stefan_covered_w-_Dead_Sea_mud_1509_(509725163).jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "mount-sodom",
+      "text": "Mount Sodom is a mountain of salt with caves inside!",
+      "about": "Mount Sodom (SOH-dum) is a long mountain by the Dead Sea made almost all of salt, covered with a thin layer of rock and clay. Over a very long time, rainwater dripped in and carved winding caves through the salt. One of them is among the longest salt caves in the world. Inside, the walls sparkle and you can see salt icicles. Ask Francis: If you licked the cave wall, what would it taste like? (Salty, but we only look!)",
+      "emoji": "⛰️",
+      "photo": {
+        "commonsTitle": "File:Sodom Salt Cave 031712.JPG",
+        "query": "",
+        "file": "israel-dead-sea-mount-sodom.jpg",
+        "author": "Wilson44691",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sodom_Salt_Cave_031712.JPG",
+        "verified": true
+      }
+    },
+    {
+      "id": "ein-gedi",
+      "text": "At Ein Gedi, waterfalls splash in the middle of the desert.",
+      "about": "Ein Gedi (ayn GEH-dee) is a green oasis in the dry desert next to the Dead Sea. Fresh water from springs tumbles down rocky canyons into pools and waterfalls, and families hike the trails and splash in the cool water. Its name means 'spring of the young goat'. The biggest waterfall is called David's Waterfall. Ask Francis: After a hot desert walk, would you jump under the waterfall?",
+      "emoji": "💦",
+      "photo": {
+        "commonsTitle": "File:Waterfall at Ein Gedi.jpg",
+        "query": "",
+        "file": "israel-dead-sea-ein-gedi.jpg",
+        "author": "The Turtle Ninja",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Waterfall_at_Ein_Gedi.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "ibex",
+      "text": "Ibex goats climb the steep rocks at Ein Gedi.",
+      "about": "Nubian ibex are wild mountain goats with curved horns, and the males' horns grow really huge. Their hooves are soft underneath, like grippy shoes, so they can climb steep cliffs. The horns grow a new ring every year, so you can count them to guess the ibex's age! At Ein Gedi they often walk right by the paths, but visitors must not feed them. Ask Francis: Can you curl your arms like big ibex horns?",
+      "emoji": "🐐",
+      "photo": {
+        "commonsTitle": "File:Nubian ibex in Ein Gedi reserve.jpg",
+        "query": "",
+        "file": "israel-dead-sea-ibex.jpg",
+        "author": "Olga1969",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Nubian_ibex_in_Ein_Gedi_reserve.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "hyrax",
+      "text": "This furry rock hyrax is a cousin of the elephant!",
+      "about": "The rock hyrax looks like a big guinea pig, but its closest animal cousins are elephants and sea cows! Hyraxes live in groups among the rocks, can climb trees like this one, and love to lie in the morning sun to warm up. One hyrax keeps watch and whistles a warning when an eagle flies over, and everyone hides. Ask Francis: Can you whistle a warning like the lookout hyrax?",
+      "emoji": "🐹",
+      "photo": {
+        "commonsTitle": "File:Rock hyrax israel.jpg",
+        "query": "",
+        "file": "israel-dead-sea-hyrax.jpg",
+        "author": "Yael & Amihay",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Rock_hyrax_israel.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "masada",
+      "text": "A cable car rides up to Masada, a palace on a mountain.",
+      "about": "Masada (mah-SAH-dah) is a flat-topped mountain by the Dead Sea. About 2,000 years ago King Herod built palaces up on top, with bathhouses and huge stone tanks that saved rainwater. Today a cable car glides up in about three minutes, or you can walk the zigzag Snake Path. Some families climb before dawn to watch the sunrise. Ask Francis: Would you ride the cable car or climb the Snake Path?",
+      "emoji": "🚡",
+      "photo": {
+        "commonsTitle": "File:Israel Aerial Ropeway Masada BW 1.jpg",
+        "query": "",
+        "file": "israel-dead-sea-masada.jpg",
+        "author": "Berthold Werner",
+        "license": "Public domain",
+        "licenseUrl": null,
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Israel_Aerial_Ropeway_Masada_BW_1.jpg",
+        "verified": true
+      }
+    },
+    {
+      "id": "goodbye",
+      "text": "Goodbye, Dead Sea! The sun rises over the mountains.",
+      "about": "In the morning the sun rises over the mountains of Jordan, on the other side of the water, and the salty sea turns gold and pink. What an amazing place: the lowest land on Earth, a lake you cannot sink in, and a mountain made of salt. Ask Francis: What was your favorite part: floating, the mud, the salt cave, the ibex or the cable car? Next, let's learn some Hebrew words!",
+      "emoji": "🌄",
+      "photo": {
+        "commonsTitle": "File:94725 dead sea sunrise PikiWiki Israel.jpg",
+        "query": "",
+        "file": "israel-dead-sea-goodbye.jpg",
+        "author": "Davidi Vardi Pikiwiki Israel",
+        "license": "CC BY 2.5",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.5",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:94725_dead_sea_sunrise_PikiWiki_Israel.jpg",
+        "verified": true
+      }
+    }
+  ]
+}
