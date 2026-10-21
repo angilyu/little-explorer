@@ -118,13 +118,14 @@ uv run python tools/devices.py create-account mom@example.com --all-books
 uv run python tools/devices.py grant mom@example.com hawaii tahoe     # show more books; revoke hides them again
 uv run python tools/devices.py all-books mom@example.com on           # every book, including future ones
 uv run python tools/devices.py link mom@example.com <device id>       # as if it signed in there; it claims the device
+uv run python tools/devices.py link mom@example.com <device id> --no-claim   # ...but its earlier stars and coins count for no one
 uv run python tools/devices.py unlink mom@example.com <device id>
 uv run python tools/devices.py backup                                 # every table to backups/<time>.json (git-ignored)
 uv run python tools/devices.py restore backups/<time>.json            # replaces ALL data, asks first
 ```
 
 The same as HTTP: `GET`/`POST /admin/accounts`, `GET /admin/accounts/<email or id>`,
-`POST /admin/accounts/<ref>/link|unlink {device}`, `POST /admin/accounts/<ref>/books {grant, revoke, all_books}`,
+`POST /admin/accounts/<ref>/link|unlink {device, claim?}`, `POST /admin/accounts/<ref>/books {grant, revoke, all_books}`,
 `GET /admin/backup` and `POST /admin/restore {"confirm": "restore", "backup": ...}`, all with
 `Authorization: Bearer $PIP_ADMIN_KEY`. The device list shows each device's account.
 
