@@ -11,7 +11,7 @@ def _isolated(monkeypatch, tmp_path):
         monkeypatch.delenv(name, raising=False)
     for name in ("PIP_COINS", "PIP_STARS_PER_COIN", "PIP_COINS_MIN", "PIP_COINS_MAX"):
         monkeypatch.delenv(name, raising=False)
-    for name in ("PIP_EMAIL_PROVIDER", "SMTP_HOST", "SMTP_USER", "SMTP_PASSWORD", "RESEND_API_KEY", "PIP_EMAIL_FROM",
+    for name in ("PIP_EMAIL_PROVIDER", "SMTP_HOST", "SMTP_USER", "SMTP_PASSWORD", "RESEND_API_KEY", "GMAIL_CLIENT_ID", "GMAIL_CLIENT_SECRET", "GMAIL_REFRESH_TOKEN", "PIP_EMAIL_FROM",
                  "PIP_AUTH_SECRET", "PIP_DEFAULT_BOOKS", "PIP_REVIEW_EMAIL", "PIP_REVIEW_CODE", "PIP_EMAIL_DAILY_CAP"):
         monkeypatch.delenv(name, raising=False)
     monkeypatch.setenv("PIP_DEVICES_DB", str(tmp_path / "devices.sqlite3"))

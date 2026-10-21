@@ -87,14 +87,36 @@ signing in on that device later starts with its own things. Stars Milo gives whi
 the account. Older app builds keep working: `GET /stars?device=`, `GET /coins?device=` and `POST /coins/convert`
 answer with the account's stars and coins when the device is linked to one, and the agent didn't change.
 
-**Email.** The server sends the codes with SMTP (Gmail with an App Password) or [Resend](https://resend.com):
+**Email.** Production sends the codes from the family's Gmail with the **Gmail API** over HTTPS
+(`PIP_EMAIL_PROVIDER=gmail`), because Render's free plan blocks outgoing SMTP. SMTP (e.g. Gmail with an App
+Password) works on a paid plan or locally, and [Resend](https://resend.com) needs a domain you own.
+
+To set up the Gmail API once:
+
+1. In [Google Cloud console](https://console.cloud.google.com), make a project, enable the **Gmail API**, and
+   set up the OAuth consent screen (External, app name "Little Explorer", your email). Add the
+   `.../auth/gmail.send` scope, then **Publish app** so it is "In production": while it's in "Testing", Google
+   expires the token after 7 days. It doesn't need Google's verification for your own account; the consent page
+   just says the app isn't verified (Advanced → Go to Little Explorer).
+2. Credentials → Create credentials → OAuth client ID → **Desktop app**.
+3. From `server/`, run `uv run python tools/gmail_token.py --test-to you@gmail.com`. It asks for the client ID
+   and secret, opens Google's page (sign in as the sender, allow "Send email on your behalf"), saves
+   `GMAIL_CLIENT_ID`, `GMAIL_CLIENT_SECRET` and `GMAIL_REFRESH_TOKEN` to the env file without printing them,
+   and sends a test email.
+4. On Render set those three and `PIP_EMAIL_PROVIDER=gmail`, and redeploy.
+
+If the codes stop arriving with `gmail token refresh failed: 400 invalid_grant` in the server log, the access was
+removed (or the app went back to Testing); run step 3 again and update `GMAIL_REFRESH_TOKEN`.
+
+
 
 | Env var | What it is |
 |---|---|
 | `PIP_AUTH_SECRET` | Long random string; codes and sign-in tokens are stored as HMACs with it. Required. |
-| `PIP_EMAIL_PROVIDER` | `smtp`, `resend`, or `console` (local development: logs the code instead of sending it) |
+| `PIP_EMAIL_PROVIDER` | `gmail`, `smtp`, `resend`, or `console` (local development: logs the code instead of sending it) |
 | `PIP_EMAIL_FROM` | Sender, e.g. `Little Explorer <you@gmail.com>` |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD` | e.g. `smtp.gmail.com`, `587` (STARTTLS; `465` uses SSL), the Gmail address and a Gmail App Password |
+| `GMAIL_CLIENT_ID`, `GMAIL_CLIENT_SECRET`, `GMAIL_REFRESH_TOKEN` | For `gmail` (from `tools/gmail_token.py`) |
 | `RESEND_API_KEY` | For `resend` |
 | `PIP_DEFAULT_BOOKS` | Comma-separated book ids for new accounts (default: the 12 books above) |
 | `PIP_EMAIL_DAILY_CAP` | Most codes sent a day, for all emails together (default 100) |
@@ -454,7 +476,7 @@ changed, runs the server tests, and deploys only the pieces that need it:
 - **Render** builds `server/Dockerfile.web` from the repo root. Its env vars are
   `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET`, `PIP_ACCESS_KEY`, `KEEPALIVE_SECONDS`, `DATABASE_URL`,
   `PIP_ADMIN_KEY`, `PIP_REPORT_KEY` and the [account email settings](#accounts) (`PIP_AUTH_SECRET`,
-  `PIP_EMAIL_PROVIDER`, `PIP_EMAIL_FROM`, `SMTP_*`), set in the Render dashboard, not in git. A free service sleeps after 15 idle minutes, so with `KEEPALIVE_SECONDS` set the
+  `PIP_EMAIL_PROVIDER`, `PIP_EMAIL_FROM`, `GMAIL_*`), set in the Render dashboard, not in git. A free service sleeps after 15 idle minutes, so with `KEEPALIVE_SECONDS` set the
   server pings its own `/healthz` to stay awake (one always-on service fits in the free 750 hours a month). If it
   does fall asleep (e.g. after a redeploy fails), the first token takes about a minute.
 - **Agent:** `scripts/deploy_agent.sh` reads the env file, uploads `OPENAI_API_KEY` and the `PIP_*` settings as

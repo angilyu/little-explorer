@@ -92,6 +92,54 @@ def test_mailer_from_env():
     assert not Mailer.from_env({"PIP_EMAIL_PROVIDER": "pigeon"}).ready
 
 
+def test_gmail_api_sends_with_a_refreshed_token(monkeypatch):
+    import base64
+    import email
+    import io
+    import json as jsonlib
+    import urllib.request
+
+    from little_explorer_agent import mail
+
+    env = {
+        "PIP_EMAIL_PROVIDER": "gmail",
+        "PIP_EMAIL_FROM": "Little Explorer <family@gmail.com>",
+        "GMAIL_CLIENT_ID": "cid",
+        "GMAIL_CLIENT_SECRET": "csecret",
+        "GMAIL_REFRESH_TOKEN": "rtoken",
+    }
+    assert not Mailer.from_env({**env, "GMAIL_REFRESH_TOKEN": ""}).ready
+    gmail = Mailer.from_env(env)
+    assert gmail.ready and "rtoken" not in repr(gmail) and "csecret" not in repr(gmail)
+    calls = []
+
+    class Reply(io.BytesIO):
+        status = 200
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *exc):
+            return False
+
+    def fake_urlopen(request, timeout):
+        calls.append(request)
+        if request.full_url == mail.GOOGLE_TOKEN_URL:
+            return Reply(jsonlib.dumps({"access_token": "at-1", "expires_in": 3599}).encode())
+        return Reply(b"{}")
+
+    monkeypatch.setattr(urllib.request, "urlopen", fake_urlopen)
+    gmail.send("mom@example.com", "Your code: 123456", "Here it is: 123456")
+    gmail.send("mom@example.com", "Your code: 654321", "Here it is: 654321")
+    assert [c.full_url for c in calls] == [mail.GOOGLE_TOKEN_URL, mail.GMAIL_SEND_URL, mail.GMAIL_SEND_URL]
+    assert b"grant_type=refresh_token" in calls[0].data and b"refresh_token=rtoken" in calls[0].data
+    assert calls[1].get_header("Authorization").endswith(" at-1")
+    raw = jsonlib.loads(calls[2].data)["raw"]
+    sent = email.message_from_bytes(base64.urlsafe_b64decode(raw + "=" * (-len(raw) % 4)))
+    assert sent["To"] == "mom@example.com" and sent["From"] == "Little Explorer <family@gmail.com>"
+    assert "654321" in sent.get_payload()
+
+
 def test_a_code_signs_in_once_and_makes_the_account(accounts, store):
     code, wait = accounts.start(EMAIL)
     assert len(code) == 6 and code.isdigit() and wait == RESEND_AFTER_S
