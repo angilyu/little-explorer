@@ -4,6 +4,9 @@
 
 - ``smtp``: any SMTP server with STARTTLS (e.g. Gmail with an App Password): ``SMTP_HOST``,
   ``SMTP_PORT`` (587), ``SMTP_USER``, ``SMTP_PASSWORD``.
+- ``gmail``: the Gmail API over HTTPS, sending as the Google account that granted access:
+  ``GMAIL_CLIENT_ID``, ``GMAIL_CLIENT_SECRET``, ``GMAIL_REFRESH_TOKEN`` (``tools/gmail_token.py``
+  gets the token). For hosts that block SMTP, like Render's free plan.
 - ``resend``: the Resend HTTP API with ``RESEND_API_KEY``.
 - ``console``: logs the code instead (local development and tests only).
 
@@ -13,11 +16,16 @@ Unset means email is off and sign-in is unavailable. ``PIP_EMAIL_FROM`` is the s
 
 from __future__ import annotations
 
+import base64
 import json
 import logging
 import os
 import smtplib
 import ssl
+import threading
+import time
+import urllib.error
+import urllib.parse
 import urllib.request
 from collections.abc import Mapping
 from dataclasses import dataclass, field
@@ -26,7 +34,9 @@ from email.utils import parseaddr
 
 log = logging.getLogger("little_explorer.mail")
 
-PROVIDERS = ("smtp", "resend", "console")
+PROVIDERS = ("smtp", "gmail", "resend", "console")
+GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token"
+GMAIL_SEND_URL = "https://gmail.googleapis.com/gmail/v1/users/me/messages/send"
 SUBJECTS = {"sign_in": "Your Little Explorer code: {code}", "delete": "Code to delete your Little Explorer account: {code}"}
 
 
@@ -56,9 +66,14 @@ class Mailer:
     smtp_user: str = ""
     smtp_password: str = field(default="", repr=False)
     resend_key: str = field(default="", repr=False)
+    gmail_client_id: str = ""
+    gmail_client_secret: str = field(default="", repr=False)
+    gmail_refresh_token: str = field(default="", repr=False)
     timeout_s: float = 15
     # What ``console`` sent, newest last (tests read it).
     outbox: list[tuple[str, str, str]] = field(default_factory=list, repr=False)
+    _access: tuple[str, float] = field(default=("", 0.0), repr=False)
+    _lock: threading.Lock = field(default_factory=threading.Lock, repr=False)
 
     @classmethod
     def from_env(cls, env: Mapping[str, str] | None = None) -> Mailer:
@@ -77,6 +92,9 @@ class Mailer:
             # Gmail shows App Passwords in groups of four; the spaces aren't part of it.
             smtp_password=env.get("SMTP_PASSWORD", "").replace(" ", "").strip(),
             resend_key=env.get("RESEND_API_KEY", "").strip(),
+            gmail_client_id=env.get("GMAIL_CLIENT_ID", "").strip(),
+            gmail_client_secret=env.get("GMAIL_CLIENT_SECRET", "").strip(),
+            gmail_refresh_token=env.get("GMAIL_REFRESH_TOKEN", "").strip(),
         )
 
     @property
@@ -85,6 +103,8 @@ class Mailer:
             return True
         if self.provider == "smtp":
             return bool(self.smtp_host and self.smtp_user and self.smtp_password and self.sender)
+        if self.provider == "gmail":
+            return bool(self.gmail_client_id and self.gmail_client_secret and self.gmail_refresh_token and self.sender)
         if self.provider == "resend":
             return bool(self.resend_key and self.sender)
         return False
@@ -107,6 +127,8 @@ class Mailer:
         try:
             if self.provider == "smtp":
                 self._smtp(to, subject, body)
+            elif self.provider == "gmail":
+                self._gmail(to, subject, body)
             else:
                 self._resend(to, subject, body)
         except MailError:
@@ -114,12 +136,16 @@ class Mailer:
         except Exception as exc:  # network, auth, refusal
             raise MailError(f"{self.provider} failed: {type(exc).__name__}: {exc}") from exc
 
-    def _smtp(self, to: str, subject: str, body: str) -> None:
+    def _message(self, to: str, subject: str, body: str) -> EmailMessage:
         message = EmailMessage()
         message["From"] = self.sender
         message["To"] = to
         message["Subject"] = subject
         message.set_content(body)
+        return message
+
+    def _smtp(self, to: str, subject: str, body: str) -> None:
+        message = self._message(to, subject, body)
         context = ssl.create_default_context()
         if self.smtp_port == 465:
             with smtplib.SMTP_SSL(self.smtp_host, self.smtp_port, timeout=self.timeout_s, context=context) as smtp:
@@ -130,6 +156,47 @@ class Mailer:
             smtp.starttls(context=context)
             smtp.login(self.smtp_user, self.smtp_password)
             smtp.send_message(message)
+
+    def _gmail_access_token(self) -> str:
+        """A short-lived access token from the refresh token, reused until a minute before it ends."""
+        with self._lock:
+            token, until = self._access
+            if token and time.monotonic() < until:
+                return token
+            form = urllib.parse.urlencode(
+                {
+                    "client_id": self.gmail_client_id,
+                    "client_secret": self.gmail_client_secret,
+                    "refresh_token": self.gmail_refresh_token,
+                    "grant_type": "refresh_token",
+                }
+            ).encode()
+            request = urllib.request.Request(GOOGLE_TOKEN_URL, data=form, method="POST")
+            try:
+                with urllib.request.urlopen(request, timeout=self.timeout_s) as response:
+                    data = json.load(response)
+            except urllib.error.HTTPError as exc:
+                # e.g. invalid_grant: the refresh token was revoked or expired; run tools/gmail_token.py again.
+                detail = json.loads(exc.read() or b"{}").get("error", "")
+                raise MailError(f"gmail token refresh failed: {exc.code} {detail}") from None
+            token = str(data.get("access_token") or "")
+            if not token:
+                raise MailError("gmail token refresh gave no access token")
+            self._access = (token, time.monotonic() + max(60, int(data.get("expires_in") or 3600) - 60))
+            return token
+
+    def _gmail(self, to: str, subject: str, body: str) -> None:
+        raw = base64.urlsafe_b64encode(self._message(to, subject, body).as_bytes()).decode().rstrip("=")
+        headers = {"Authorization": "Bear" "er " + self._gmail_access_token(), "Content-Type": "application/json"}
+        request = urllib.request.Request(GMAIL_SEND_URL, data=json.dumps({"raw": raw}).encode(), headers=headers, method="POST")
+        try:
+            with urllib.request.urlopen(request, timeout=self.timeout_s) as response:
+                if response.status >= 300:
+                    raise MailError(f"gmail answered {response.status}")
+        except urllib.error.HTTPError as exc:
+            if exc.code == 401:
+                self._access = ("", 0.0)
+            raise MailError(f"gmail answered {exc.code}") from None
 
     def _resend(self, to: str, subject: str, body: str) -> None:
         payload = json.dumps({"from": self.sender, "to": [to], "subject": subject, "text": body}).encode()
