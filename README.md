@@ -11,6 +11,8 @@ while he reads and answers his questions about the book.
 
 iPad versions are in [`docs/screenshots`](docs/screenshots).
 
+[Privacy and terms of use](PRIVACY.md).
+
 ## Books
 
 The first screen is a shelf of the books on the family's account, grouped by city. Tap a cover to open it.
@@ -66,7 +68,7 @@ Pin a specific file by setting the page's `photo.commonsTitle`.
 
 A grown-up signs in with an email and a 6-digit code sent to it; there are no passwords, and signing up is the
 same as signing in. Each account has its own books, stars, coins and hearts, shared by every iPad and iPhone
-signed in with that email. The only personal data is the grown-up's email: nothing about the child is asked for.
+signed in with that email. The only personal data is the grown-up's email: nothing about the child is asked for. See [PRIVACY.md](PRIVACY.md).
 
 - **Signed out**, the app shows a welcome screen for grown-ups. Tapping **Sign in or sign up** opens the parent
   gate first, then asks for the email and the code. The code works for 10 minutes and 5 tries; a new one can be
