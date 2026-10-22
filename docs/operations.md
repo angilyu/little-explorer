@@ -30,10 +30,18 @@ and iPhone signed in with that email. The only personal data is the grown-up's e
   it off (accounts that never answered, i.e. older builds, still work).
 - **Signed in**, the shelf shows the account's books. **Sign out** and **Delete account…** are in the Grown-ups
   corner (behind the gate). Signing out keeps everything on the server. Deleting asks for a new code sent to
-  the account's email, then removes the email, books list, stars and coins (and any hearts from older builds)
-  from the server and signs out every device (Apple requires apps with accounts to offer this).
+  the account's email, then removes the email, books list, stars, coins, reading activity (and any hearts from
+  older builds) from the server and signs out every device (Apple requires apps with accounts to offer this).
 - Each account's copy of the stars and coins is saved on the device per account, so they show offline,
   and is removed on sign-out. What the device saved before accounts stays under its old keys and is never deleted.
+- **Reading activity** (signed in only, never in demo launches): the app records each page view (book, page,
+  seconds on the page up to 10 minutes, whether Milo was on), each read-aloud start, finish or early stop (and
+  whether the bundled natural-voice clip or the system voice read it) and one app open a day per device. Ids and
+  timings only: no audio, no text. Events wait in a queue on the device (at most 500, oldest dropped) and go to
+  `POST /account/reading` in batches of up to 100 when the app comes to the foreground or goes to the
+  background, every minute while it's open, and once 50 are waiting. A failed send keeps them for later and
+  never affects reading; signing out drops that account's unsent events. See
+  [Reading activity](#reading-activity).
 - Milo's daily time is the account's too: every device signed in to it shares the minutes (see
   [Milo time limits per account](#milo-time-limits-per-account)).
 
@@ -86,11 +94,13 @@ Without an email provider, `POST /auth/start` answers `503 email_off`.
 `POST /token` takes as well):
 `POST /auth/start {email, purpose?}`, `POST /auth/verify {email, code, device}` (returns `token`, `account`,
 `claimed_device`), `POST /auth/signout`, `GET /account`, `POST /account/delete {code}`, `GET /account/stars`,
-`GET /account/coins`, `POST /account/coins/convert` and `POST /account/import {stars}`. The app used to have
+`GET /account/coins`, `POST /account/coins/convert`, `POST /account/import {stars}` and
+`POST /account/reading {events}` (returns `stored`, `duplicates`, `rejected`). The app used to have
 a heart button for pages the child loved; it's gone, but the server still answers `GET`/`POST /account/hearts
 {loved, unloved}` and takes `hearts` in `/account/import` so older builds keep working, and keeps the hearts
 already saved (deleting the account removes them). Errors: `bad_email`, `bad_code` (with `tries_left`), `expired`,
-`too_many` (with `retry_after_s`), `signed_out`.
+`too_many` (with `retry_after_s`), `signed_out`, and for reading activity `bad_events` and `too_many_events`
+(with `max`).
 
 **Owner tools.** Approve accounts, grant books, link devices and back up the data with `tools/devices.py` (from `server/`):
 
@@ -104,6 +114,7 @@ uv run python tools/devices.py all-books mom@example.com on           # every bo
 uv run python tools/devices.py link mom@example.com <device id>       # as if it signed in there; it claims the device
 uv run python tools/devices.py link mom@example.com <device id> --no-claim   # ...but its earlier stars and coins count for no one
 uv run python tools/devices.py unlink mom@example.com <device id>
+uv run python tools/devices.py reading --days 7                      # reading activity: per day, account and book
 uv run python tools/devices.py backup                                 # every table to backups/<time>.json (git-ignored)
 uv run python tools/devices.py restore backups/<time>.json            # replaces ALL data, asks first
 ```
@@ -183,6 +194,7 @@ uv run python tools/devices.py approve mom@example.com   # also: block, unblock,
 uv run python tools/devices.py                      # devices: account, status, today, total minutes and $
 uv run python tools/devices.py usage --days 14      # minutes and $ per day, account and device
 uv run python tools/devices.py approve <id> --label "Leo's iPad"   # old builds on an unlinked device: by id or name
+uv run python tools/devices.py reading --days 14    # reading activity per day, account and book (--json for raw)
 ```
 
 Approve your family's account once; every device signed in to it shares its 60 minutes.
@@ -194,6 +206,23 @@ builds use `Config/Info-Debug.plist`, which adds the local-network permission (`
 `NSAllowsLocalNetworking`) this needs; Release builds use `Config/Info.plist` without it. Keep the two plists in
 step otherwise. `LittleExplorer/PrivacyInfo.xcprivacy` is the app's privacy manifest: keep it matching the App
 Store privacy label.
+
+## Reading activity
+
+Signed-in devices send what was read to `POST /account/reading` (see [Accounts](#accounts) for what the app
+records). The server keeps it in `reading_events`, one row per event with the account and device from the
+session: `kind` (`app_open`, `page_view`, `read_aloud`), `at` (the device's time with its UTC offset), `day`
+(the device's own date), `book`, `page`, `page_index`, `seconds`, `milo`, `outcome` (`started`, `finished`,
+`stopped`) and `mode` (`clip`, `system`). It checks every event: book ids must be in the catalog, a batch holds
+at most 100 events, ids and page ids are short and plain, times on a page are capped at 10 minutes, and events
+older than 30 days or more than a day ahead are dropped (counted as `rejected`). An event id already stored
+counts as a duplicate, so resending a batch is safe. Each account may store 1,000 events an hour and 5,000 a
+day (`too_many` with `retry_after_s`; the app keeps them and tries later).
+
+`GET /admin/reading?days=N` (1 to 366, default 7) and `tools/devices.py reading --days N` report, per day, per
+account and per book: active accounts and devices, app opens, books opened (distinct account and book pairs),
+pages viewed, reading minutes (time on pages) and read-aloud starts, finishes and early stops. Days are the
+devices' own dates. The events are in `/admin/backup` and restore, and deleting an account deletes them.
 
 ## Coins
 

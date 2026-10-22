@@ -16,6 +16,11 @@ child reads, listens and, if the grown-up turns it on, talks with Milo, a voice 
 - **Milo time:** how many minutes each iPad or iPhone talked with Milo each day, and which account it was
   signed in to, so we can apply the account's daily time limit (shared by its devices) and see what the voice
   service costs. Each device is known by a random id, its name and model.
+- **Reading activity**, while signed in: which pages of which books were shown and for how long (up to 10
+  minutes a page), whether Milo was on, when read-aloud was started, finished or stopped early on a page (and
+  whether the recorded voice or the device's voice read it), and the first time each day the app was opened on
+  each device. Each event is stored with the account and the device's random id. It doesn't include the page's
+  text, anything the child said, or any audio. Nothing is recorded while signed out.
 - **Sign-in codes.** A code works for 10 minutes. We keep only a scrambled (hashed) form of it and clear it
   within two days. To stop abuse we also keep a scrambled form of the network address that asked for a code.
 
@@ -23,6 +28,9 @@ child reads, listens and, if the grown-up turns it on, talks with Milo, a voice 
 
 - The email is used only to send 6-digit sign-in codes and to keep the books, stars and coins the same
   on all of the family's devices.
+- Reading activity is used only by the app's owner, to see how the books and read-aloud are used (for example
+  how many families read each day, which books and pages they open, and how often read-aloud is finished) and
+  to make the books better. It stays on our own server.
 - No ads, no tracking, no analytics companies, and we never sell or share your information for marketing.
   The app's privacy manifest (`PrivacyInfo.xcprivacy`) lists the same data and declares no tracking.
 - Sign-in emails are sent from the app owner's Gmail account through the Gmail API. The app has permission
@@ -54,9 +62,9 @@ On the device, and on our server (hosted by [Render](https://render.com), with t
 ## Deleting your account
 
 In the app, open the **Grown-ups** corner (behind the grown-up check) and tap **Delete account…**. After you
-type a new code we email you, the account is deleted for good: its email, books list, stars, coins, hearts and
-sign-ins are removed from the server right away, and every device signed in to it is signed out. Backups made
-before that are overwritten over time. The minutes each device used are unlinked from the account and kept
+type a new code we email you, the account is deleted for good: its email, books list, stars, coins, hearts,
+reading activity and sign-ins are removed from the server right away, and every device signed in to it is
+signed out. Backups made before that are overwritten over time. The minutes each device used are unlinked from the account and kept
 only with the device's random id; email us to remove them too.
 
 ## Children

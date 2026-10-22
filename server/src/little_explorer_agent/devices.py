@@ -25,6 +25,7 @@ database, because Render's free disk is wiped on every deploy and restart), othe
 ``PIP_DEVICES_DB`` (``~/.config/little-explorer/devices.sqlite3``) for local runs and tests.
 Star awards (see :mod:`.stars`) are kept here too, so a reinstall can restore them, and so are the
 coin ledger and the owner's coin rules (see :mod:`.coins`).
+So are a signed-in family's reading events (see :mod:`.reading`).
 Only ids, names, models, timings, book ids, costs and star and coin counts are stored; never transcripts or audio.
 
 Accounts (see :mod:`.accounts`) add a grown-up's email. A device signed in to an account is *linked*
@@ -160,6 +161,26 @@ SCHEMA = (
         loved_at TEXT NOT NULL,
         PRIMARY KEY (account_id, page_key)
     )""",
+    # What a signed-in family reads (see :mod:`.reading`): page views, read-aloud use and a daily
+    # app open, so the owner can count active accounts and devices. Ids and timings only, no text.
+    """CREATE TABLE IF NOT EXISTS reading_events (
+        id TEXT PRIMARY KEY,
+        account_id TEXT NOT NULL,
+        device_id TEXT NOT NULL,
+        kind TEXT NOT NULL,
+        at TEXT NOT NULL,
+        day TEXT NOT NULL,
+        book TEXT,
+        page TEXT,
+        page_index INTEGER,
+        seconds REAL,
+        milo INTEGER,
+        outcome TEXT,
+        mode TEXT,
+        received_s INTEGER NOT NULL
+    )""",
+    "CREATE INDEX IF NOT EXISTS reading_events_account ON reading_events (account_id, received_s)",
+    "CREATE INDEX IF NOT EXISTS reading_events_day ON reading_events (day)",
 )
 
 # Columns added after the first release, as (table, column, type). Added on startup if missing.
@@ -186,7 +207,7 @@ MILO_PER_ACCOUNT = "migration.milo_per_account"
 # Every table, for /admin/backup and restore (in an order that restores cleanly).
 TABLES = (
     "devices", "sessions", "stars", "coin_conversions", "settings",
-    "accounts", "account_books", "email_codes", "auth_sessions", "hearts",
+    "accounts", "account_books", "email_codes", "auth_sessions", "hearts", "reading_events",
 )
 
 STAR_ID = re.compile(r"^[A-Za-z0-9-]{8,64}$")

@@ -8,6 +8,7 @@ struct LittleExplorerApp: App {
     @State private var stars = StarStore.live()
     @State private var coins = CoinStore.live()
     @State private var account: AccountStore
+    @State private var reading: ReadingActivity
     @Environment(\.scenePhase) private var scenePhase
 
     init() {
@@ -17,6 +18,7 @@ struct LittleExplorerApp: App {
         voice.mayTalk = { account.miloAllowed }
         voice.onMiloOff = { Task { await account.refresh() } }
         _account = State(initialValue: account)
+        _reading = State(initialValue: ReadingActivity.live(account: account))
         _voice = State(initialValue: voice)
     }
 
@@ -43,21 +45,54 @@ struct LittleExplorerApp: App {
                 .environment(content)
                 .environment(stars)
                 .environment(coins)
+                .environment(reading)
                 .task {
                     voice.onStar = { [stars] award in stars.receive(award) }
                     stars.onCelebrate = { StarChime.play() }
                     guard DemoLaunch.current == nil else { return }
-                    let sync = AccountSync(account: account, stars: stars, coins: coins)
+                    let sync = AccountSync(account: account, stars: stars, coins: coins, reading: reading)
                     sync.start()
+                    reading.appOpened()
                     async let books: Void = content.refresh()
                     async let saved: Void = sync.refresh()
                     _ = await (books, saved)
                 }
+                .task {
+                    // Reading activity goes out every minute while the app is open (and on the scene changes below).
+                    guard DemoLaunch.current == nil else { return }
+                    while !Task.isCancelled {
+                        try? await Task.sleep(for: .seconds(60))
+                        await reading.flush()
+                    }
+                }
+                .onChange(of: account.account?.id) { _, id in
+                    if id != nil { reading.appOpened() }
+                }
                 .onChange(of: scenePhase) { _, phase in
+                    if phase == .background { flushInBackground() }
                     guard phase == .active, DemoLaunch.current == nil else { return }
+                    reading.appOpened()
+                    Task { await reading.flush() }
                     Task { await content.refresh() }
                     Task { await AccountSync(account: account, stars: stars, coins: coins).refresh() }
                 }
+        }
+    }
+
+    /// Sends the waiting reading activity while iOS gives the app a few seconds in the background.
+    private func flushInBackground() {
+        guard DemoLaunch.current == nil else { return }
+        reading.pageHidden()
+        let app = UIApplication.shared
+        var task = UIBackgroundTaskIdentifier.invalid
+        task = app.beginBackgroundTask(withName: "reading-activity") {
+            app.endBackgroundTask(task)
+            task = .invalid
+        }
+        Task {
+            await reading.flush()
+            if task != .invalid { app.endBackgroundTask(task) }
+            task = .invalid
         }
     }
 }
