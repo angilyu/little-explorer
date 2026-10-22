@@ -14,10 +14,12 @@ A grown-up signs in with an email and a 6-digit code sent to it; there are no pa
 same as signing in. Each account has its own books, stars, coins and daily Milo time, shared by every iPad
 and iPhone signed in with that email. The only personal data is the grown-up's email: nothing about the child is asked for. See [PRIVACY.md](../PRIVACY.md).
 
-- **Signed out**, the app shows a welcome screen for grown-ups. Tapping **Sign in or sign up** opens the parent
-  gate first, then asks for the email and the code. The code works for 10 minutes and 5 tries; a new one can be
-  sent after 60 seconds (at most 5 an hour per email, 20 an hour per network, and `PIP_EMAIL_DAILY_CAP`, default
-  100, a day in all). The sign-in token is kept in the Keychain on this device only.
+- **Signed out**, the app shows a welcome screen: a fan of photos from the books, what's inside, and a card for
+  grown-ups. Tapping **Sign in or sign up** asks for the email and the code right away: there is no parent gate
+  before sign-in, since it only asks for an email (the gate still guards the Grown-ups corner, coin trades and
+  Milo's consent on devices that are already signed in). The code works for 10 minutes and 5 tries; a new one can
+  be sent after 60 seconds (at most 5 an hour per email, 20 an hour per network, and `PIP_EMAIL_DAILY_CAP`,
+  default 100, a day in all). The sign-in token is kept in the Keychain on this device only.
 - **Milo consent.** Right after the code is verified, the app shows what Milo sends (the child's voice and the
   page, to OpenAI through LiveKit) and keeps, and asks **Allow Milo** or **Not now**. The choice is saved on the
   account (`accounts.milo_consent`, set by `POST /account/milo-consent`), so it counts on every device; a second
@@ -307,7 +309,8 @@ DEBUG builds accept launch arguments for screenshots: `-demoBook paris-food -dem
 `-demoVoice listening|live|nap|rest|star`, `-demoRead`, `-demoStars 23`, `-demoPassport`, `-demoCalendar`
 (the Passport's star calendar, with stars spread over the last few weeks), `-demoBadges` (the Passport's badges,
 some earned and some not, from 40 stars and an early-morning star), `-demoCoins 2`,
-`-demoGate` (the parent gate), `-demoParent` (the Grown-ups corner) and `-demoMilo
+`-demoGate` (the parent gate on the shelf), `-demoAccount welcome|email|code` (the signed-out welcome screen and
+sign-in's email or code step), `-demoParent` (the Grown-ups corner) and `-demoMilo
 signin|confirm|talk|talk-consent|off` (the Milo consent screen after sign-in, its "already on" version, the gate
 and consent on the first Talk to Milo, and the corner with Milo off). `-demoShelf grown-ups` scrolls to the
 Grown-ups button.

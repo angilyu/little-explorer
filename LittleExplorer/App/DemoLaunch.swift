@@ -14,7 +14,7 @@ import Foundation
 /// unless `-demoStars` says otherwise).
 /// `-demoBadges` opens the Passport at its badges, with some earned and some still to go (40 stars
 /// and an early-morning star unless `-demoStars` says otherwise).
-/// `-demoGate` opens the grown-ups gate; `-demoParent` opens the grown-ups corner without it.
+/// `-demoGate` opens the grown-ups gate on the shelf; `-demoParent` opens the grown-ups corner without it.
 /// `-demoAccount welcome|email|code` shows the signed-out welcome screen (and sign-in's email or code step);
 /// `-demoAccount new` signs in as a new account with only the default books. Other demos run signed in to a
 /// family account with every book.
