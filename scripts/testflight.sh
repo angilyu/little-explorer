@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
-# Build Little Explorer and upload it to TestFlight: `scripts/testflight.sh`.
+# Build Little Explorer and upload it to TestFlight: `scripts/testflight.sh [--app-store]`.
 # Devices with TestFlight (and its Automatic Updates on) get each new build without a cable.
+# By default the build is for internal testers only and can't be submitted for App Review;
+# `--app-store` uploads a build that can also be attached to an App Store version.
 #
 # Needs an App Store Connect API key (Users and Access -> Integrations -> Team Keys, role Admin):
 #   ASC_KEY_ID, ASC_ISSUER_ID, and the key file at ASC_KEY_PATH
@@ -8,6 +10,13 @@
 # They can live in ~/.config/little-explorer/asc.env. The build number is the current date and time.
 set -euo pipefail
 cd "$(dirname "$0")/.."
+
+internal_only=true
+case "${1:-}" in
+  "") ;;
+  --app-store) internal_only=false ;;
+  *) echo "usage: $0 [--app-store]" >&2; exit 2 ;;
+esac
 
 asc_env="$HOME/.config/little-explorer/asc.env"
 [[ -f "$asc_env" ]] && { set -a; source "$asc_env"; set +a; }
@@ -41,7 +50,7 @@ cat > "$work/export.plist" <<EOF
   <key>teamID</key><string>$TEAM</string>
   <key>signingStyle</key><string>automatic</string>
   <key>uploadSymbols</key><true/>
-  <key>testFlightInternalTestingOnly</key><true/>
+  <key>testFlightInternalTestingOnly</key><$internal_only/>
 </dict></plist>
 EOF
 

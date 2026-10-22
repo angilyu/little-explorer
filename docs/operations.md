@@ -317,13 +317,17 @@ Grown-ups button.
 
 ### Install on an iPhone or iPad (TestFlight)
 
-The app is "Little Explorer Kids" in App Store Connect, and every build goes to the internal TestFlight group
+The app is "Little Explorer: City Books" in App Store Connect, and every build goes to the internal TestFlight group
 "Family". Install **TestFlight** from the App Store on the device, sign in with the developer Apple ID, accept the
 invite, and turn on Automatic Updates for the app. New builds then install themselves; no cable is needed.
 
 ```sh
-scripts/testflight.sh   # archive, sign for App Store distribution, upload, and wait for Apple's processing
+scripts/testflight.sh               # archive, sign for App Store distribution, upload, and wait for Apple's processing
+scripts/testflight.sh --app-store   # the same, but the build can also be submitted for App Review
 ```
+
+By default the build is for internal testing only, and App Store Connect won't attach it to an App Store version. Use
+`--app-store` for a build you plan to submit for review; it still goes to "Family" as usual.
 
 It needs an App Store Connect API key (Admin role): the `.p8` in `~/.appstoreconnect/private_keys/`, and
 `ASC_KEY_ID` and `ASC_ISSUER_ID` in the environment or `~/.config/little-explorer/asc.env`. The build number is
