@@ -53,9 +53,9 @@ struct Account: Codable, Equatable, Sendable {
     /// The books a new account starts with. The server's list (`PIP_DEFAULT_BOOKS`) is the one that counts;
     /// the app uses this for the welcome screen and demos.
     static let defaultBooks = [
-        "paris", "paris-eiffel", "paris-food", "london", "london-big-ben",
-        "barcelona", "barcelona-sagrada", "barcelona-park-guell",
-        "beijing", "beijing-great-wall", "beijing-forbidden-city", "shanghai",
+        "paris", "paris-food", "paris-eiffel", "paris-louvre", "london", "london-big-ben",
+        "barcelona", "barcelona-sagrada",
+        "beijing", "beijing-great-wall", "beijing-forbidden-city", "beijing-temple-of-heaven", "shanghai",
     ]
 
     /// The books this account may read, in shelf order.

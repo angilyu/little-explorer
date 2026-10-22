@@ -118,10 +118,11 @@ final class AccountTests: XCTestCase {
         XCTAssertEqual(Account(id: "a", email: "x@y.com", books: nil).shelf(books).count, 3)
     }
 
-    func testDefaultBooksAreFiveCities() {
-        XCTAssertEqual(Account.defaultBooks.count, 12)
-        XCTAssertEqual(Set(Account.defaultBooks.map { $0.split(separator: "-")[0] }),
-                       ["paris", "london", "barcelona", "beijing", "shanghai"])
+    func testDefaultBooksAreFiveCities() throws {
+        XCTAssertEqual(Account.defaultBooks.count, 13)
+        XCTAssertEqual(Set(Account.defaultBooks).count, 13)
+        let perCity = Dictionary(grouping: try BookLibrary.loadBundled(ids: Account.defaultBooks), by: \.city).mapValues(\.count)
+        XCTAssertEqual(perCity, ["Paris": 4, "London": 2, "Barcelona": 2, "Beijing": 4, "Shanghai": 1])
     }
 
     func testEmailChecksAndMask() {

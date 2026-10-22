@@ -41,16 +41,17 @@ log = logging.getLogger("little_explorer.accounts")
 
 DEFAULT_BOOKS = (
     "paris",
-    "paris-eiffel",
     "paris-food",
+    "paris-eiffel",
+    "paris-louvre",
     "london",
     "london-big-ben",
     "barcelona",
     "barcelona-sagrada",
-    "barcelona-park-guell",
     "beijing",
     "beijing-great-wall",
     "beijing-forbidden-city",
+    "beijing-temple-of-heaven",
     "shanghai",
 )
 PURPOSES = ("sign_in", "delete")

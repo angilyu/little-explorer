@@ -6,7 +6,7 @@ How the library is built: the book format, where the photos come from, how the r
 
 The first screen is a shelf of the books on the family's account, grouped by city. Tap a cover to open it.
 
-A new account starts with these 12 books, the best ones for five famous travel cities (`PIP_DEFAULT_BOOKS` on
+A new account starts with these 13 books, the best ones for five famous travel cities (`PIP_DEFAULT_BOOKS` on
 the server; `Account.defaultBooks` in the app). The rest of the library (more Paris, Barcelona and Beijing
 books, Lake Tahoe, Hawaii, Chengdu, Longyan, Israel and the Travel shelf) stays hidden until the owner grants
 it to an account (see [Accounts](operations.md#accounts)).
@@ -16,14 +16,15 @@ it to an account (see [Accounts](operations.md#accounts)).
 | Paris | Famous Places (`paris`) | The Seine, Eiffel Tower (repainting, sparkles), Louvre and Mona Lisa, Notre-Dame, Arc de Triomphe, toy sailboats |
 | Paris | Yummy Paris (`paris-food`) | Baguettes, pain au chocolat, macarons, crêpes, cheese, a market, a café, ice cream, snails, a picnic |
 | Paris | Eiffel Tower (`paris-eiffel`) | The Iron Lady, building it in two years, rivets, Gustave Eiffel's name, repainting by hand every seven years, growing in summer heat, 674 steps, the lifts, fireworks, Eiffel's secret apartment, the hourly sparkle |
+| Paris | Louvre Museum (`paris-louvre`) | The glass pyramid and the upside-down one, a palace where kings lived, the very long hall, artists copying paintings, the small Mona Lisa, the winged Victory with no head, Venus de Milo, the giant sphinx, painted Egyptian coffins, touch tables for kids |
 | London | London (`london`) | The Thames, Big Ben, Tower Bridge, buses, ravens, guards, London Eye, the Tube, the museum whale, fish and chips |
 | London | Big Ben (`london-big-ben`) | Big Ben the bell vs the Elizabeth Tower, who it's named after, the giant clock faces and minute hands, the bongs, the radio chimes, pennies on the pendulum, the Ayrton Light, 334 steps, Westminster Bridge |
 | Barcelona | Barcelona (`barcelona`) | Beach, Sagrada Família, Casa Batlló, Park Güell's dragon, churros, human towers, football, the magic fountain |
-| Barcelona | Park Güell (`barcelona-park-guell`) | A garden town where only two houses were built, gingerbread gatehouses, the mosaic dragon (or salamander) on the stairs, trencadís broken-tile mosaics, the hall of 86 columns and its ceiling suns, rainwater saved under the square, the long wavy bench, the leaning laundry portico, Gaudí's pink house, the hill with three crosses |
 | Barcelona | Sagrada Família (`barcelona-sagrada`) | A church still being built after 140+ years, cranes, Gaudí's 43 years on it, towers like sand castles, fruit on the pinnacles, a turtle and a tortoise holding up columns, a forest of columns with colored light, the magic square that adds up to 33, the wavy-roofed school, the upside-down chain model, Mary's glowing star, the tallest church tower |
 | Beijing | Beijing (`beijing`) | China's capital, the sunrise flag raising at Tiananmen, hutong alleys and courtyard homes, pedal rickshaws, crispy Peking duck in pancakes, tanghulu candied fruit, swallow and dragon kites, pandas at Beijing Zoo, the long subway, the Bird's Nest and both Olympics, painted opera faces, the Drum Tower's time-telling drums |
 | Beijing | Great Wall (`beijing-great-wall`) | Mutianyu's walkway, about 21,000 km of walls, 2,000 years of builders and old rammed-earth walls, battlements, watchtowers, smoke-by-day fire-by-night beacons, sticky-rice mortar, the Mutianyu cable car and toboggan, steep steps, the seen-from-space myth, snow at Badaling, Old Dragon Head at the sea |
 | Beijing | Forbidden City (`beijing-forbidden-city`) | The Meridian Gate, why it was forbidden, the moat and corner towers, the 9,999½ rooms legend, the emperor's yellow roofs, the little roof animals, the lion and cub, the Hall of Supreme Harmony and dragon throne, the Nine Dragon Wall, fire vats kept warm in winter, palace cats, the Imperial Garden |
+| Beijing | Temple of Heaven (`beijing-temple-of-heaven`) | The round hall with three blue roofs, built without nails, pillars for seasons, months and hours, round heaven and square earth, the loud center stone, the whispering Echo Wall, the raised stone road, old cypress trees, morning tai chi, kicking a feathered jianzi, painting words with water |
 | Shanghai | Shanghai (`shanghai`) | A huge port city, the Huangpu River, the old Bund, the Oriental Pearl Tower's glass floor, twisty Shanghai Tower, the bottle opener, the floating maglev train, xiaolongbao soup dumplings, Yu Garden, the zigzag bridge, the Disneyland castle, the lights at night, a ferry goodbye |
 
 Books are JSON files in [`LittleExplorer/Resources/Books`](../LittleExplorer/Resources/Books) with 10–14 pages each.

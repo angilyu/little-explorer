@@ -212,7 +212,7 @@ struct WelcomeCard: Identifiable, Equatable {
     static let picks: [(book: String, page: String, title: String)] = [
         ("paris", "croissant", "Croissants"),
         ("london-big-ben", "welcome", "Big Ben"),
-        ("barcelona-park-guell", "dragon", "Mosaic dragon"),
+        ("barcelona", "park-guell", "Mosaic dragon"),
         ("paris-eiffel", "welcome", "Eiffel Tower"),
         ("beijing", "panda", "Giant panda"),
         ("beijing-great-wall", "welcome", "Great Wall"),
