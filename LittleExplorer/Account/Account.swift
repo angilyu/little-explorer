@@ -8,16 +8,28 @@ struct Account: Codable, Equatable, Sendable {
     let email: String
     /// Book ids on this account's shelf; nil means every book (the server's `all_books`).
     let books: [String]?
+    /// A grown-up's choice about Milo for the whole account: true once they allowed Milo, false if they
+    /// turned Milo off, nil if never asked (accounts from before the consent screen).
+    let miloConsent: Bool?
 
     enum CodingKeys: String, CodingKey {
         case id, email, books
         case allBooks = "all_books"
+        case miloConsent = "milo_consent"
     }
 
-    init(id: String, email: String, books: [String]?) {
+    init(id: String, email: String, books: [String]?, miloConsent: Bool? = nil) {
         self.id = id
         self.email = email
         self.books = books
+        self.miloConsent = miloConsent
+    }
+
+    /// Milo may connect only after a grown-up allowed it.
+    var miloAllowed: Bool { miloConsent == true }
+
+    func with(miloConsent: Bool?) -> Account {
+        Account(id: id, email: email, books: books, miloConsent: miloConsent)
     }
 
     init(from decoder: Decoder) throws {
@@ -26,6 +38,7 @@ struct Account: Codable, Equatable, Sendable {
         email = try c.decode(String.self, forKey: .email)
         let all = try c.decodeIfPresent(Bool.self, forKey: .allBooks) ?? false
         books = all ? nil : (try c.decodeIfPresent([String].self, forKey: .books) ?? [])
+        miloConsent = try c.decodeIfPresent(Bool.self, forKey: .miloConsent)
     }
 
     func encode(to encoder: Encoder) throws {
@@ -34,6 +47,7 @@ struct Account: Codable, Equatable, Sendable {
         try c.encode(email, forKey: .email)
         try c.encode(books == nil, forKey: .allBooks)
         try c.encode(books ?? [], forKey: .books)
+        try c.encodeIfPresent(miloConsent, forKey: .miloConsent)
     }
 
     /// The books a new account starts with. The server's list (`PIP_DEFAULT_BOOKS`) is the one that counts;

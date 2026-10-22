@@ -24,8 +24,9 @@ iPad versions are in [`docs/screenshots`](docs/screenshots).
   star calendar fills up. A grown-up can trade stars for coins.
 - **Safe by design.** No ads, no in-app purchases, no tracking. The only personal information is a grown-up's email:
   nothing about your child is asked for. Milo is told to keep things kind and kid-appropriate and never to ask for
-  personal details. The mic stays off until someone taps **Talk to Milo**, the app doesn't record or keep the audio, and Milo has a
-  daily time limit. See [privacy and terms](PRIVACY.md).
+  personal details. Milo stays off until a grown-up allows it (asked once at sign-in, and can be turned off any time in
+  the Grown-ups corner); even then the mic stays off until someone taps **Talk to Milo**, the app doesn't record or
+  keep the audio, and Milo has a daily time limit. See [privacy and terms](PRIVACY.md).
 
 ## How it works
 

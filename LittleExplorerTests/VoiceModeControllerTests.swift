@@ -89,6 +89,45 @@ final class VoiceModeControllerTests: XCTestCase {
         PageContext(bookId: "paris", pageId: "p\(n)", pageNumber: n, city: "Paris", text: "Page \(n)")
     }
 
+    // MARK: - A grown-up's permission
+
+    func testWithoutAGrownUpsOKNothingConnectsAndTheReaderAsks() async {
+        let intro = FakeIntroPlayer()
+        let voice = makeController(intro: intro)
+        var allowed = false
+        voice.mayTalk = { allowed }
+        await voice.pageDidChange(page(1))
+        await voice.toggle()
+        XCTAssertTrue(transports.isEmpty, "no LiveKit connection, so no voice or page leaves the device")
+        XCTAssertEqual(intro.playCount, 0, "Milo doesn't say hello before he's allowed")
+        XCTAssertEqual(voice.state, .off)
+        XCTAssertTrue(voice.needsConsent)
+
+        await voice.consentHandled()  // "Not now"
+        XCTAssertFalse(voice.needsConsent)
+        XCTAssertTrue(transports.isEmpty)
+
+        await voice.toggle()
+        XCTAssertTrue(voice.needsConsent, "asks again until a grown-up allows Milo")
+        allowed = true
+        await voice.consentHandled()  // "Allow Milo"
+        XCTAssertFalse(voice.needsConsent)
+        XCTAssertEqual(transports.count, 1, "Milo wakes up straight after the grown-up allows it")
+        XCTAssertEqual(transports[0].openingPage, page(1))
+        XCTAssertEqual(intro.playCount, 1)
+    }
+
+    func testWhenAGrownUpTurnedMiloOffElsewhereMiloStopsAndTheAccountRefreshes() async {
+        let voice = makeController { $0.connectError = VoiceError.miloOff }
+        var refreshed = 0
+        voice.onMiloOff = { refreshed += 1 }
+        await voice.turnOn()
+        XCTAssertEqual(voice.state, .off)
+        XCTAssertEqual(voice.notice, VoiceModeController.offNotice)
+        XCTAssertEqual(transports.first?.disconnectCount, 1)
+        XCTAssertEqual(refreshed, 1)
+    }
+
     func testStartsOff() {
         let voice = makeController()
         XCTAssertEqual(voice.state, .off)
@@ -582,6 +621,18 @@ final class TokenServiceRefusalTests: XCTestCase {
             } catch {
                 XCTFail("\(status): \(error)")
             }
+        }
+    }
+
+    func testMiloTurnedOffByAGrownUpIsNotResting() async {
+        StubProtocol.status = 403
+        StubProtocol.reply = #"{"error":"milo_off","message":"A grown-up turned Milo off."}"#
+        do {
+            _ = try await service(token: "session-abc").fetchCredentials(context: nil)
+            XCTFail("expected milo off")
+        } catch VoiceError.miloOff {
+        } catch {
+            XCTFail("\(error)")
         }
     }
 

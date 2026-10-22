@@ -136,7 +136,7 @@ final class ContentTests: XCTestCase {
         XCTAssertEqual(context.attributes["page_text"], paris.pages[4].text)
     }
 
-    func testDemoLaunchParsing() {
+    func testDemoLaunchParsing() throws {
         XCTAssertNil(DemoLaunch.parse(["app"]))
         let demo = DemoLaunch.parse(["app", "-demoBook", "london", "-demoPage", "4", "-demoVoice", "speaking"])
         XCTAssertEqual(demo, DemoLaunch(bookId: "london", pageIndex: 3, voiceActivity: .speaking))
@@ -153,6 +153,12 @@ final class ContentTests: XCTestCase {
         XCTAssertEqual(star?.voiceActivity, .listening)
         let badges = DemoLaunch.parse(["app", "-demoBadges"])
         XCTAssertEqual(badges, DemoLaunch(seedStars: 40, openPassport: true, showBadges: true))
+        let signIn = try XCTUnwrap(DemoLaunch.parse(["app", "-demoMilo", "signin"]))
+        XCTAssertEqual(signIn.accountScreen, .new)
+        XCTAssertNil(signIn.account?.miloConsent)
+        XCTAssertEqual(DemoLaunch.parse(["app", "-demoMilo", "talk-consent"])?.milo, .talkConsent)
+        XCTAssertEqual(DemoLaunch.parse(["app", "-demoMilo", "off"])?.account?.miloConsent, false)
+        XCTAssertEqual(DemoLaunch.parse(["app", "-demoGate"])?.account?.miloAllowed, true)
         XCTAssertEqual(DemoLaunch.parse(["app", "-demoStars", "12", "-demoBadges"])?.seedStars, 12)
     }
 }

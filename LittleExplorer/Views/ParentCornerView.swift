@@ -9,6 +9,9 @@ struct ParentCornerView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(ContentStore.self) private var content
     @Environment(AccountStore.self) private var account
+    @Environment(VoiceModeController.self) private var voice
+    @State private var showMiloConsent = false
+    @State private var miloMessage: String?
     @State private var confirmSignOut = false
     @State private var showDelete = false
     @State private var coinsLoading = false
@@ -22,6 +25,7 @@ struct ParentCornerView: View {
         NavigationStack {
             List {
                 accountSection
+                miloSection
                 coinSection
 
                 Section {
@@ -93,6 +97,51 @@ struct ParentCornerView: View {
             }
             .sheet(isPresented: $showDelete) {
                 DeleteAccountView().environment(account)
+            }
+        }
+    }
+
+    // MARK: - Milo
+
+    @ViewBuilder
+    private var miloSection: some View {
+        if account.isSignedIn {
+            Section {
+                Toggle("Milo, the AI voice buddy", isOn: Binding(
+                    get: { account.miloAllowed },
+                    set: { on in
+                        if on { showMiloConsent = true } else { turnMiloOff() }
+                    }
+                ))
+                if let miloMessage {
+                    Text(miloMessage).foregroundStyle(.red)
+                }
+                Button("What Milo sends and keeps") { showMiloConsent = true }
+                Link("Privacy policy", destination: MiloConsentView.privacyURL)
+            } header: {
+                Text("Milo")
+            } footer: {
+                Text(account.miloAllowed
+                     ? "On: while Milo is on, your child's voice and the page being read go to OpenAI through LiveKit. Turning Milo off counts on every device signed in with this email."
+                     : "Off: Milo can't talk, and nothing is sent. Reading and read-aloud still work. Turn Milo on to read what Milo sends and allow it.")
+            }
+            .sheet(isPresented: $showMiloConsent) {
+                MiloConsentView(confirming: account.miloAllowed) { _ in showMiloConsent = false }
+                    .environment(account)
+                    .presentationDetents([.large])
+                    .passportSizing()
+            }
+        }
+    }
+
+    private func turnMiloOff() {
+        miloMessage = nil
+        Task {
+            await voice.turnOff()
+            do {
+                try await account.setMiloConsent(false)
+            } catch {
+                miloMessage = (error as? AccountError)?.message ?? AccountError.offline.message
             }
         }
     }

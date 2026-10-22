@@ -12,6 +12,11 @@ The first account a device links to also claims what the device earned before ac
 Milo's daily minutes are the account's too: a new account gets ``PIP_LIMIT_UNKNOWN_MIN`` (10) a
 day until the owner approves it (``PIP_LIMIT_APPROVED_MIN``, 60), blocks it or sets its own limit.
 
+Milo needs a grown-up's permission: the app shows what Milo shares (the child's voice and the open page
+go to OpenAI through LiveKit) after sign-in, or behind the grown-up check before Milo's first talk, and
+records the choice for the whole account with :meth:`Accounts.set_milo_consent` (``milo_consent``:
+``yes``, ``no``, or NULL if never asked). ``/token`` refuses an account whose grown-up turned Milo off.
+
 A new account's shelf is ``PIP_DEFAULT_BOOKS`` (comma-separated ids); the owner can grant more, or
 every book (``all_books``), with ``tools/devices.py``.
 """
@@ -98,9 +103,17 @@ class Account:
     all_books: bool
     books: tuple[str, ...]
     created_at: str
+    # Whether a grown-up allowed Milo for the account (True), turned it off (False) or was never asked (None).
+    milo_consent: bool | None = None
 
     def as_json(self) -> dict[str, Any]:
-        return {"id": self.id, "email": self.email, "all_books": self.all_books, "books": list(self.books)}
+        return {
+            "id": self.id,
+            "email": self.email,
+            "all_books": self.all_books,
+            "books": list(self.books),
+            "milo_consent": self.milo_consent,
+        }
 
     def may_read(self, book_id: str) -> bool:
         return self.all_books or book_id in self.books
@@ -164,14 +177,15 @@ class Accounts:
 
     def _account(self, cur: Any, column: str, value: str) -> Account | None:
         row = self.store._exec(
-            cur, f"SELECT id, email, all_books, created_at FROM accounts WHERE {column} = ?", (value,)
+            cur, f"SELECT id, email, all_books, created_at, milo_consent FROM accounts WHERE {column} = ?", (value,)
         ).fetchone()
         if not row:
             return None
         books = self.store._exec(
             cur, "SELECT book_id FROM account_books WHERE account_id = ? ORDER BY book_id", (row[0],)
         ).fetchall()
-        return Account(row[0], row[1], bool(row[2]), tuple(b[0] for b in books), row[3])
+        consent = {"yes": True, "no": False}.get(row[4])
+        return Account(row[0], row[1], bool(row[2]), tuple(b[0] for b in books), row[3], consent)
 
     def _by_ref(self, cur: Any, ref: str) -> Account | None:
         email = normalize_email(ref)
@@ -590,6 +604,24 @@ class Accounts:
 
         return self.store.transaction(run)
 
+    def set_milo_consent(self, account_id: str, allow: bool) -> Account:
+        """A grown-up allowed Milo for the account, or turned Milo off (see :mod:`.token_server`)."""
+
+        def run(cur: Any) -> Account:
+            self.store._exec(
+                cur,
+                "UPDATE accounts SET milo_consent = ?, milo_consent_at = ? WHERE id = ?",
+                ("yes" if allow else "no", self._stamp(), account_id),
+            )
+            account = self._account(cur, "id", account_id)
+            if not account:
+                raise LookupError(account_id)
+            return account
+
+        account = self.store.transaction(run)
+        log.info("account %s Milo consent -> %s", account_id, "yes" if allow else "no")
+        return account
+
     # -- owner -----------------------------------------------------------------------------------
 
     def milo(self, account_id: str) -> dict[str, Any]:
@@ -631,7 +663,8 @@ class Accounts:
                     (SELECT COALESCE(SUM(c.coins), 0) FROM coin_conversions c WHERE c.account_id = a.id),
                     (SELECT COUNT(*) FROM hearts h WHERE h.account_id = a.id),
                     a.milo_status, a.daily_limit_min,
-                    (SELECT COALESCE(SUM(m.duration_s), 0) FROM sessions m WHERE m.account_id = a.id AND m.day = ?)
+                    (SELECT COALESCE(SUM(m.duration_s), 0) FROM sessions m WHERE m.account_id = a.id AND m.day = ?),
+                    a.milo_consent
                 FROM accounts a ORDER BY a.created_at""",
                 (day,),
             ).fetchall()
@@ -653,6 +686,7 @@ class Accounts:
                 "daily_limit_min": r[12],
                 "limit_min": 0.0 if r[11] == "blocked" else limit_min(r[11], r[12], limits),
                 "today_min": round(float(r[13] or 0) / 60, 1),
+                "milo_consent": {"yes": True, "no": False}.get(r[14]),
             }
             for r in self.store._run(run)
         ]

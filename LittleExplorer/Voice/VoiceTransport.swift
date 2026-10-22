@@ -43,6 +43,8 @@ enum VoiceError: LocalizedError {
     case resting
     /// The account sign-in on this device is no longer valid.
     case signedOut
+    /// A grown-up turned Milo off for the account (Milo's server checks the account's consent too).
+    case miloOff
 
     var errorDescription: String? {
         switch self {
@@ -51,6 +53,7 @@ enum VoiceError: LocalizedError {
         case .microphoneDenied: "Milo needs the microphone. Ask a grown-up to turn it on in Settings."
         case .resting: VoiceModeController.restNotice
         case .signedOut: "Ask a grown-up to sign in again so Milo can talk."
+        case .miloOff: VoiceModeController.offNotice
         }
     }
 }

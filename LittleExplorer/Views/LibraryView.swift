@@ -48,6 +48,7 @@ struct LibraryView: View {
                 .environment(voice)
                 .environment(stars)
                 .environment(coins)
+                .environment(account)
         }
         .sheet(isPresented: $showPassport) {
             PassportView(shelves: BookLibrary.shelves(books))
@@ -64,6 +65,7 @@ struct LibraryView: View {
         .sheet(isPresented: $showParentCorner) {
             ParentCornerView(books: books)
                 .environment(account)
+                .environment(voice)
                 .environment(coins)
         }
         .onAppear(perform: applyDemoLaunch)

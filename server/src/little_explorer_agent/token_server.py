@@ -16,7 +16,12 @@ A blocked account or device gets ``403 {"error": "blocked"}``, one that has used
 ``429 {"error": "limit"}``, both with a kid-friendly ``message``; a session that is no longer valid
 gets ``401 {"error": "signed_out"}``. Otherwise the participant identity is ``device-<id>`` and the
 agent learns the device, the account and the remaining seconds through the dispatch metadata.
-Requests without a device count as the shared ``anonymous`` device. The app also sends ``"tz"``
+Before any of that, a grown-up's choice about Milo counts: if the account (the session's, or for old
+builds the device's linked account) has Milo turned off (``POST /account/milo-consent {"allow": false}``),
+``/token`` answers ``403 {"error": "milo_off"}`` and no agent is dispatched. Accounts never asked
+(``milo_consent`` null, e.g. families on builds older than the consent screen) keep working; current
+builds don't ask for a token until a grown-up allowed Milo. Requests without a device count as the
+shared ``anonymous`` device. The app also sends ``"tz"``
 (its IANA time zone), which the agent uses to count stars per local day.
 
 Stars (see :mod:`.stars`): the agent backs each award up with ``POST /stars`` (report key), stamped
@@ -37,7 +42,8 @@ Accounts (see :mod:`.accounts`): a grown-up signs in with ``POST /auth/start {"e
 ``{"token", "account", "claimed_device"}``. The app sends the token as ``X-Pip-Session`` (with the
 access key) to ``GET /account``, ``POST /auth/signout``, ``POST /account/delete {"code"}`` and the
 account's ``/account/stars``, ``/account/coins``, ``/account/coins/convert``, ``/account/hearts`` and
-``/account/import``. Errors are ``{"error": "bad_email" | "bad_code" | "expired" | "too_many" |
+``/account/import``, and ``POST /account/milo-consent {"allow": true | false}`` records a grown-up's
+choice about Milo for the account (the account JSON carries it as ``milo_consent``). Errors are ``{"error": "bad_email" | "bad_code" | "expired" | "too_many" |
 "signed_out" | "email_off" | "email_failed", ...}``. The owner manages accounts with
 ``/admin/accounts...`` and saves everything with ``GET /admin/backup``.
 
@@ -74,6 +80,7 @@ from .modes import PipMode, job_metadata, parse_intro, parse_mode, parse_tz
 log = logging.getLogger("little_explorer.tokens")
 
 TOKEN_TTL = timedelta(minutes=15)
+MILO_OFF_MESSAGE = "A grown-up turned Milo off. Ask a grown-up to turn Milo on in the Grown-ups corner."
 CONTEXT_KEYS = (BOOK_KEY, PAGE_KEY, PAGE_NUMBER_KEY, CITY_KEY, PAGE_TEXT_KEY)
 MAX_CONTEXT_VALUE = 400
 
@@ -143,6 +150,7 @@ async def handle_token(request: web.Request) -> web.Response:
         return web.json_response({"error": "bad device"}, status=400)
     device_id, name, model = device
     account_id = None
+    consent: bool | None = None
     if token := request.headers.get(SESSION_HEADER, "").strip():
         try:
             session = await asyncio.to_thread(request.app[ACCOUNTS].session, token)
@@ -152,11 +160,23 @@ async def handle_token(request: web.Request) -> web.Response:
             if session is None:
                 return _signed_out()
             account_id = session.account.id
+            consent = session.account.milo_consent
+    if consent is False:
+        return _milo_off(device_id, account_id)
     decision = await check_device(request.app[STORE], device_id, name, model, account_id)
     if not decision.allowed:
         log.info("refused device %s (account %s): %s", device_id, decision.account_id, decision.reason)
         status = 403 if decision.reason == "blocked" else 429
         return web.json_response({"error": decision.reason, "message": REST_MESSAGE}, status=status)
+    if account_id is None and decision.account_id:
+        # An old build without a session talks on its device's account, so that account's choice counts too.
+        try:
+            linked = await asyncio.to_thread(request.app[ACCOUNTS].get, decision.account_id)
+        except Exception:
+            log.exception("consent check failed for account %s", decision.account_id)
+        else:
+            if linked is not None and linked.milo_consent is False:
+                return _milo_off(device_id, decision.account_id)
     if device_id != ANONYMOUS or identity is None:
         identity = f"device-{device_id}"
     try:
@@ -180,6 +200,11 @@ async def handle_token(request: web.Request) -> web.Response:
         payload["roomName"], device_id, decision.account_id, decision.remaining_s,
     )
     return web.json_response(payload)
+
+
+def _milo_off(device_id: str, account_id: str | None) -> web.Response:
+    log.info("refused device %s: a grown-up turned Milo off for account %s", device_id, account_id)
+    return web.json_response({"error": "milo_off", "message": MILO_OFF_MESSAGE}, status=403)
 
 
 def parse_device(raw: object) -> tuple[str, str, str] | None:
@@ -496,6 +521,20 @@ async def handle_account_delete(request: web.Request) -> web.Response:
     return web.json_response({"ok": True, "deleted": counts})
 
 
+async def handle_account_milo_consent(request: web.Request) -> web.Response:
+    session = await _session(request)
+    if isinstance(session, web.Response):
+        return session
+    body = await _json_body(request)
+    if body is None or not isinstance(body.get("allow"), bool):
+        return web.json_response({"error": "bad body", "message": 'send {"allow": true or false}'}, status=400)
+    try:
+        account = await asyncio.to_thread(request.app[ACCOUNTS].set_milo_consent, session.account.id, body["allow"])
+    except LookupError:
+        return _signed_out()
+    return web.json_response({"account": account.as_json()})
+
+
 async def handle_account_stars(request: web.Request) -> web.Response:
     session = await _session(request)
     if isinstance(session, web.Response):
@@ -787,6 +826,7 @@ def create_app(
     app.router.add_post("/auth/signout", handle_sign_out)
     app.router.add_get("/account", handle_account)
     app.router.add_post("/account/delete", handle_account_delete)
+    app.router.add_post("/account/milo-consent", handle_account_milo_consent)
     app.router.add_get("/account/stars", handle_account_stars)
     app.router.add_get("/account/coins", handle_account_coins)
     app.router.add_post("/account/coins/convert", handle_account_convert)
