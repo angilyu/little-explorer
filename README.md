@@ -7,6 +7,12 @@ real photo with one short sentence your child can read on their own, and one tap
 voice, highlighting each word as it's spoken. When your child has something to say, **Milo**, a curious and
 encouraging voice buddy, is ready to listen, cheer them on and talk about the book together.
 
+| Shelf | Yummy Paris | Read aloud | Voice mode |
+|---|---|---|---|
+| ![](docs/screenshots/iphone-shelf.jpg) | ![](docs/screenshots/iphone-yummy-paris.jpg) | ![](docs/screenshots/iphone-read-aloud.jpg) | ![](docs/screenshots/iphone-fun-art-voice.jpg) |
+
+iPad versions are in [`docs/screenshots`](docs/screenshots).
+
 ## Why parents love it
 
 - **Sparks curiosity about the world.** Real photos of famous places, foods and everyday life (the Eiffel Tower's
@@ -27,12 +33,6 @@ encouraging voice buddy, is ready to listen, cheer them on and talk about the bo
   stars for coins sit behind a parent gate. Milo has a daily time limit and takes a nap after a quiet spell.
 - **Read-aloud works offline.** The narration is built into the app, so stories keep reading on planes and road
   trips without Wi-Fi (talking with Milo needs a connection).
-
-| Shelf | Yummy Paris | Read aloud | Voice mode |
-|---|---|---|---|
-| ![](docs/screenshots/iphone-shelf.jpg) | ![](docs/screenshots/iphone-yummy-paris.jpg) | ![](docs/screenshots/iphone-read-aloud.jpg) | ![](docs/screenshots/iphone-fun-art-voice.jpg) |
-
-iPad versions are in [`docs/screenshots`](docs/screenshots).
 
 [Privacy and terms of use](PRIVACY.md).
 
