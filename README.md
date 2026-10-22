@@ -1,9 +1,32 @@
 # Little Explorer
 
-A picture-book app for iPhone and iPad that helps a 6-year-old discover cities and get excited about travel.
-Each page has a real photo, a short sentence he can read by himself, and a speaker button that reads the
-sentence aloud. An optional voice buddy, **Milo**, listens patiently
-while he reads and answers his questions about the book.
+**Big world, little readers.** A picture-book app for iPhone and iPad that turns screen time into a trip around the world.
+
+Little Explorer takes young readers to Paris, London, Barcelona, Beijing, Shanghai and beyond. Every page pairs a
+real photo with one short sentence your child can read on their own, and one tap reads it aloud in a warm, natural
+voice, highlighting each word as it's spoken. When your child has something to say, **Milo**, a curious and
+encouraging voice buddy, is ready to listen, cheer them on and talk about the book together.
+
+## Why parents love it
+
+- **Sparks curiosity about the world.** Real photos of famous places, foods and everyday life (the Eiffel Tower's
+  sparkle, London's red buses, Beijing's kites, Shanghai's soup dumplings) get kids asking "Can we go there?"
+- **Builds reading confidence and independence.** Short sentences of 4 to 12 words are made for early readers to
+  tackle on their own, with read-aloud help one tap away. Local names are spoken the local way, so kids hear
+  "Gaudí" and "xiaolongbao" said right.
+- **Gets kids talking, not just tapping.** Milo asks open, curious questions and gently helps your child turn a few
+  words into a full sentence, so they practice speaking up and explaining their ideas.
+- **A buddy who listens.** Milo stays quiet while your child reads aloud, then cheers them on. It answers their
+  questions about the book, tunes out the TV and grown-up conversations, and steers the chat back to the book.
+- **Rewards that motivate.** Thoughtful answers earn stars, cities earn Passport stamps, milestones earn badges, and
+  a star calendar fills up day by day. A grown-up can turn stars into coins as a family reward.
+- **Safe and private by design.** No ads, no in-app purchases, no tracking. The only personal information is a
+  grown-up's email: nothing about your child is asked for. Milo is told to keep chats kind and kid-appropriate and
+  never to ask for personal details, and the app doesn't record or keep the audio.
+- **Grown-ups stay in charge.** Voice stays off until someone taps **Talk to Milo**. Account settings and trading
+  stars for coins sit behind a parent gate. Milo has a daily time limit and takes a nap after a quiet spell.
+- **Read-aloud works offline.** The narration is built into the app, so stories keep reading on planes and road
+  trips without Wi-Fi (talking with Milo needs a connection).
 
 | Shelf | Yummy Paris | Read aloud | Voice mode |
 |---|---|---|---|
@@ -130,7 +153,7 @@ Without an email provider, `POST /auth/start` answers `503 email_off`.
 `POST /auth/start {email, purpose?}`, `POST /auth/verify {email, code, device}` (returns `token`, `account`,
 `claimed_device`), `POST /auth/signout`, `GET /account`, `POST /account/delete {code}`, `GET /account/stars`,
 `GET /account/coins`, `POST /account/coins/convert` and `POST /account/import {stars}`. The app used to have
-a heart button for pages he loved; it's gone, but the server still answers `GET`/`POST /account/hearts
+a heart button for pages the child loved; it's gone, but the server still answers `GET`/`POST /account/hearts
 {loved, unloved}` and takes `hearts` in `/account/import` so older builds keep working, and keeps the hearts
 already saved (deleting the account removes them). Errors: `bad_email`, `bad_code` (with `tries_left`), `expired`,
 `too_many` (with `retry_after_s`), `signed_out`.
@@ -160,7 +183,7 @@ The same as HTTP: `GET`/`POST /admin/accounts`, `GET /admin/accounts/<email or i
 ## Read aloud
 
 The speaker button (bottom-right of every page) reads the sentence in a natural voice, the same OpenAI voice as Milo
-(`gpt-4o-mini-tts`, "coral"), styled like a grown-up reading a picture book to a 6-year-old: warm, clear and a little slow.
+(`gpt-4o-mini-tts`, "coral"), styled like a grown-up reading a picture book to a young child: warm, clear and a little slow.
 The clips are made ahead of time and bundled (about 17 MB of AAC for all 502 pages), so reading aloud works offline
 and the app never holds an API key. Each word is highlighted as it's spoken. Tap again to stop. Speech also stops when
 the page turns or the book closes. When voice mode is on, the microphone is muted while the app reads, so Milo doesn't
@@ -193,60 +216,66 @@ If a page has no clip for its current sentence, the app falls back to the best o
 
 ## Voice buddy (Milo)
 
+Milo is a curious, encouraging reading buddy who talks with your child about the book on the screen. Milo listens
+quietly while your child reads the page aloud, then cheers them on. Milo answers questions about the page, the city
+and travel, and asks easy, open follow-up questions so your child talks more and tries longer sentences. Milo stays
+on topic, ignoring background noise, the TV and grown-up conversations, gently brings off-topic chat back to the
+book, keeps everything kind and kid-appropriate, and never asks for personal details.
+
 Tap **Talk to Milo** in a book to start voice mode. It stays on across page turns until it's turned off.
 On every page turn the app sends the current page (book, page, sentence) to the agent.
 
 **Instant hello:** the app plays Milo's recorded intro ("Hi, I'm Milo. You can read the page to me, or ask me
-anything you wonder about.", `Resources/Narration/milo-intro.m4a`, also served from `/content`) the moment he is
+anything you wonder about.", `Resources/Narration/milo-intro.m4a`, also served from `/content`) the moment the button is
 tapped, and connects in the background. The token request sends `"intro": "app"`, so the agent doesn't greet again;
 older builds leave it out and the agent still says the greeting. The mic stays off while the 5 s intro plays (so
 Milo doesn't hear himself), and the button shows "Waking Milo up…" until the intro is over and Milo is listening. After
-the intro, what he says before the agent has joined (a cold start) is kept with LiveKit pre-connect audio and handed
+the intro, what the child says before the agent has joined (a cold start) is kept with LiveKit pre-connect audio and handed
 to Milo when he arrives. Each step is timed from the tap in the device log (category `voice-timing`, e.g.
 `Milo timing: tap→listening 6.10s (intro 0.10, token 0.52, connected 1.20, agent joined 2.40, mic on 5.25)`), no words.
 `scripts/generate_intro.py` regenerates the clip in Milo's realtime voice (one short Realtime call, levelled like
 the narration and checked with Whisper).
 The agent lives in [`server/`](server) (LiveKit Agents + LangGraph; its voice stack is in `server/src/little_explorer_agent/voice/`):
 
-- **Reading:** while he reads the page aloud, Milo stays quiet (the reading gate → LISTEN), even if he reads slowly or softly, then praises him.
+- **Reading:** while the child reads the page aloud, Milo stays quiet (the reading gate → LISTEN), even if they read slowly or softly, then praises them.
 - **Noise:** background voices are cancelled, and an LLM relevance gate ignores noise, other people's conversations and off-topic talk.
-- **Patience:** Milo waits through his pauses and answers briefly and warmly, ending with an open question that invites a longer reply.
+- **Patience:** Milo waits through the child's pauses and answers briefly and warmly, ending with an open question that invites a longer reply.
 
 Milo's settings start with `PIP_`. Milo has two voice engines. Pick one with `PIP_MODE` in the env file and restart the agent; the app doesn't change.
 
 - `PIP_MODE=pipeline` (default): streaming transcription (`gpt-realtime-whisper`) → reply (LangGraph) → `gpt-4o-mini-tts`.
-  A local end-of-turn model decides when he has finished (0.5 s when his words sound done, up to 4 s mid-sentence).
-  Local Silero VAD stops Milo after 0.3 s of his speech and resumes if it was only a noise. The reading and noise
+  A local end-of-turn model decides when the child has finished (0.5 s when their words sound done, up to 4 s mid-sentence).
+  Local Silero VAD stops Milo after 0.3 s of the child's speech and resumes if it was only a noise. The reading and noise
   checks are instant; the LLM topic check runs alongside the reply instead of before it.
-- `PIP_MODE=realtime`: one OpenAI Realtime speech-to-speech model (`gpt-realtime`, voice `coral`) hears him and talks
+- `PIP_MODE=realtime`: one OpenAI Realtime speech-to-speech model (`gpt-realtime`, voice `coral`) hears the child and talks
   back. It uses `semantic_vad` with low eagerness, so slow reading isn't cut off. The page is in its instructions
-  and is updated on every page turn. The instructions tell it to stay quiet (a `stay_quiet` tool) while he reads and
+  and is updated on every page turn. The instructions tell it to stay quiet (a `stay_quiet` tool) while the child reads and
   when grown-ups talk. A guard checks each transcript afterwards and cuts off a reply to reading or adult talk (but
   never a short answer to Milo's own question). It never delays a reply. Realtime costs much more per minute than the pipeline.
   Barge-in is "soft": OpenAI's own speech detection no longer cancels Milo. Instead local Silero VAD stops him only
   after 0.6 s of real speech, so claps, knocks, echo and a quick "um" don't cut him off or lose a pending answer.
   Low eagerness sometimes judges a finished question unfinished ("OK, any other food?") and waits for its ~8 s cap.
-  So if Silero has heard 2.5 s of silence after his speech, OpenAI is still waiting and Milo is idle, the agent
-  commits the turn itself and asks for a reply. While he has been reading aloud in the last 30 s it waits 5 s instead;
+  So if Silero has heard 2.5 s of silence after the child's speech, OpenAI is still waiting and Milo is idle, the agent
+  commits the turn itself and asks for a reply. While the child has been reading aloud in the last 30 s it waits 5 s instead;
   a reading pause that still gets committed is handled by `stay_quiet` and the guard. If OpenAI later commits the
   same turn's leftover silence, that second reply is cancelled.
   Tuning knobs (env): `PIP_REALTIME_EAGERNESS` (low|medium|high|auto), `PIP_REALTIME_BARGE_IN` (vad|model),
   `PIP_REALTIME_MIN_INTERRUPTION_DURATION` (seconds), `PIP_REALTIME_COMMIT_AFTER` (seconds, 0 = off),
   `PIP_REALTIME_READING_COMMIT_AFTER` (seconds), `PIP_REALTIME_TURNS` (server|client, client is experimental).
   Each turn logs its timing (`turn N: wait … answer … total …`, no transcripts) and each session logs a median/p90 summary.
-  `wait` is Silero hearing him stop → his turn committed, `answer` is the commit → Milo's first audio; a turn the
+  `wait` is Silero hearing the child stop → their turn committed, `answer` is the commit → Milo's first audio; a turn the
   agent committed itself ends with `forced commit`, after a `forced commit after …s of silence` line.
   An `interrupted by …` line says what stopped a reply (`barge_in`, `guard`, or `programmatic` for the session
-  closing) and how long he had been talking; `he talked over Milo for …` gives the full length once he stops.
-  The transcriber sometimes repeats his last words on a noise or on Milo's echo, or turns a noise into another
+  closing) and how long the child had been talking; `he talked over Milo for …` gives the full length once they stop.
+  The transcriber sometimes repeats the child's last words on a noise or on Milo's echo, or turns a noise into another
   script (e.g. Chinese characters); the guard skips repeated transcripts and ignores ones with no English letters.
-  If his app never joins the room (a tap cancelled while Milo was waking up), the agent leaves after 20 s without
+  If the child's app never joins the room (a tap cancelled while Milo was waking up), the agent leaves after 20 s without
   greeting anyone.
 
 The e2e harness can try either engine without restarting the agent: `tools/e2e_smoke.py --mode realtime`.
 It reports the reply latency (median/p90), how fast Milo stops when talked over, and checks slow word-by-word
-reading, adult chatter, claps while he is quiet, a clap or "hmm" while he is about to answer, and a clap or
-"mm-hmm" while he talks. `--json FILE` saves the numbers. To A/B a change locally without touching production, run the
+reading, adult chatter, claps while the child is quiet, a clap or "hmm" while they are about to answer, and a clap or
+"mm-hmm" while they talk. `--json FILE` saves the numbers. To A/B a change locally without touching production, run the
 worker and token server with a different `LIVEKIT_AGENT_NAME` (e.g. `little-explorer-dev`).
 
 No audio is stored. The app never holds LiveKit secrets. A small token server mints room tokens that dispatch the agent automatically.
@@ -269,7 +298,7 @@ by the server, so they can't be logged or passed on.
 
 ### What a session costs
 
-When a Milo session ends (he closes the book, the app drops off, or the worker stops), the agent appends one row to
+When a Milo session ends (the child closes the book, the app drops off, or the worker stops), the agent appends one row to
 `~/.config/little-explorer/usage.csv` (mode 600; `PIP_USAGE_FILE` moves it): start time, length, engine, model,
 book, pages visited, number of model responses, input/output tokens split into text and audio, cached tokens,
 input-transcription tokens, and an estimated price. It never holds transcripts or audio. Prices are OpenAI's list
@@ -282,7 +311,7 @@ uv run python tools/usage_report.py   # total minutes, $, $/minute, $/session, p
 
 ### Naps and daily limits per account
 
-**Naps.** When neither he nor Milo has said anything for 20 seconds (`PIP_IDLE_TIMEOUT_S`, `0` = never), Milo ends
+**Naps.** When neither the child nor Milo has said anything for 20 seconds (`PIP_IDLE_TIMEOUT_S`, `0` = never), Milo ends
 the session. The app switches the mic off and shows "Milo is taking a nap — tap to talk again". Reading aloud
 counts as talking. Tapping **Talk to Milo** starts a fresh session.
 
@@ -343,24 +372,24 @@ local token server with a launch argument, e.g. `-voice.tokenServerURL http://12
 
 ### Stars and the Passport
 
-He earns stars for answering Milo, not for talking a lot: up to 5 stars on each page each day. Milo ends his
+The child earns stars for answering Milo, not for talking a lot: up to 5 stars on each page each day. Milo ends its
 replies with one easy, open question, and each answer of 5 words or more earns a star until the page has 5
 for the day. Asking Milo a question doesn't earn a star (Milo still answers it). The first star on a page starts Milo's reply with
 "Great answer, that's a star!"; later ones get a short, varied cheer ("Another star!", "Ooh, star!") and the
 rest follows right away. Milo never counts stars or says how many are left, and once a page has all 5 for
-the day he doesn't mention stars there. When he answers Milo's question in fewer than 5 words ("the boat"), Milo
-(realtime mode) gently asks for more and gives him a sentence start to finish from his own words ("Ooh, the boat! Can
-you tell me more? You could say, I would ride the boat because..."), never mentioning words or stars. He does this at
+the day Milo doesn't mention stars there. When the child answers Milo's question in fewer than 5 words ("the boat"), Milo
+(realtime mode) gently asks for more and gives them a sentence start to finish from their own words ("Ooh, the boat! Can
+you tell me more? You could say, I would ride the boat because..."), never mentioning words or stars. Milo does this at
 most once per question (a second short answer is taken warmly and the talk moves on), even when the page's stars
-are all taken, and never for reading the page aloud, small talk, noise or a question of his own. Finishing the
+are all taken, and never for reading the page aloud, small talk, noise or the child's own question. Finishing the
 sentence earns the star as usual. The agent (`stars.py`) checks every award before it counts, using the input
 transcription and what Milo said last; nothing the model says can hand out a star:
 
 - 1 star per real answer: Milo's last reply asked a question, and the answer has at least 5 words
-  (`PIP_STAR_MIN_WORDS`). Reading the page aloud, a question of his own, "hi Milo" or other small talk,
+  (`PIP_STAR_MIN_WORDS`). Reading the page aloud, the child's own question, "hi Milo" or other small talk,
   grown-ups or noise earn nothing. Each star needs a new question from Milo and a new answer.
 - The 5 per page count across every session on that account (or unlinked device) that day, so reconnecting doesn't start a page
-  over, but his favorite books earn again tomorrow. The day is his local day: the app sends its time zone
+  over, but favorite books earn again tomorrow. The day is the child's local day: the app sends its time zone
   (`"tz"`) with `/token`, the agent stamps each award's `awarded_at` in it (older apps fall back to
   `PIP_TIMEZONE`), and a star's day is the date in its own `awarded_at`, the same day the star calendar
   shows. When a session starts, the agent loads the account's earlier stars per page and day from
@@ -379,9 +408,9 @@ Checked awards go to the app on the `milo.star` data topic (a star flies into th
 with a soft chime) and to the token server (`POST /stars`, report key), which keeps them in the database for
 the session's account (an old build's for its device's account, or the unlinked device). The app saves them
 locally and, on launch, merges back the server's copy (`GET /account/stars`; `GET /stars?device=<id>` for old
-builds), so stars survive a reinstall. Only counts, kinds, book, page and time are stored, never what he said.
+builds), so stars survive a reinstall. Only counts, kinds, book, page and time are stored, never what the child said.
 
-The library's top corner shows his total; tapping it opens the Passport: a stamp for each city where he has
+The library's top corner shows the child's total; tapping it opens the Passport: a stamp for each city where they have
 earned a star (not the Travel shelf), then a grid of badges. Stars earned before the answer rule were for questions
 (`kind` `question`); new ones are `answer`, and the badges count both.
 
@@ -400,34 +429,34 @@ earned a star (not the Travel shelf), then a grid of badges. Stars earned before
 | *City* Expert | a star in every book of a city with several books, e.g. Paris Expert (the medal shows the city's flag) |
 
 Badges are worked out from the saved stars and the shelves (`Stores/Badges.swift`), so a new city or
-book just works, and every goal counts things he has done, so no badge can be lost. Days and times are in the
-device's time zone, as in the calendar. A badge he hasn't earned yet is gray with a short hint ("Earn a star at
-bedtime") and how close he is (9/10); an earned one is a colored medal that says what he did ("Stars on 5 different
-days!"). Badges earned since he last opened the Passport get a NEW! ribbon and a little wiggle (none with Reduce
-Motion), a "New badge!" banner and the star chime; they count as seen when he closes the Passport (kept on the
+book just works, and every goal counts things the child has done, so no badge can be lost. Days and times are in the
+device's time zone, as in the calendar. A badge not earned yet is gray with a short hint ("Earn a star at
+bedtime") and how close the child is (9/10); an earned one is a colored medal that says what they did ("Stars on 5 different
+days!"). Badges earned since the Passport was last opened get a NEW! ribbon and a little wiggle (none with Reduce
+Motion), a "New badge!" banner and the star chime; they count as seen when the Passport is closed (kept on the
 device only). VoiceOver reads e.g. "Why Wizard badge, earned. You answered with “because” 3 times!" or "Bookworm
 badge, not yet. Earn stars in 10 different books. 9 of 10." The last page of each book shows the
 stars from that book, and each book's cover in the library shows a gold star with the number earned in that
 book (hidden until it has one; VoiceOver reads e.g. "Famous Places, 7 stars"). `tools/devices.py` lists stars per account (and per device). Pipeline mode gives stars too, but Milo doesn't announce them.
 
-The Passport ends with **My star calendar**: a month grid with a gold star and the count on each day he earned
+The Passport ends with **My star calendar**: a month grid with a gold star and the count on each day the child earned
 stars, today outlined, and the month's total ("33 stars in October"). The arrows or a sideways swipe go back to
-earlier months (as far as his first star). Days use each award's `awarded_at` in the device's time zone, so a
+earlier months (as far as the first star). Days use each award's `awarded_at` in the device's time zone, so a
 reinstall restores them from the server, and turning stars into coins never changes a day. An award without a
 readable time is left off the calendar with a short note. VoiceOver reads each day, e.g. "October 18, today, 3 stars".
 
 ### Coins
 
 A grown-up can turn stars into coins (10 stars = 1 coin by default) in the Grown-ups corner, behind the parent
-gate. It shows the stars he can spend, the coins they make and the stars left over, and asks for confirmation.
+gate. It shows the stars the child can spend, the coins they make and the stars left over, and asks for confirmation.
 The grown-up can convert as many coins as the stars cover (stepper, or quick picks like 5 and "All N"), unless
-the server sets a maximum. The kid can't convert. His coins (a gold dollar coin) always show next to the stars
+the server sets a maximum. The kid can't convert. The child's coins (a gold dollar coin) always show next to the stars
 on the library badge and in the Passport, even at 0.
 
 The token server owns the rules and the balance. It keeps a ledger per account (per device for a device that
 isn't signed in; `coin_conversions`), so coins survive a reinstall and an app can't convert more stars than the server has stored. Spending stars lowers the
-number on the badge and in the book, but badges and Passport progress keep counting every star he ever earned,
-so converting never takes a badge away. Older app builds ignore coins and keep showing all his stars.
+number on the badge and in the book, but badges and Passport progress keep counting every star the child ever earned,
+so converting never takes a badge away. Older app builds ignore coins and keep showing all the child's stars.
 
 - `GET /coins?device=<id>` (access key) returns the rules (`enabled`, `stars_per_coin`, `min_coins`, `max_coins`)
   and the balance (`stars_earned`, `stars_spent`, `stars` to spend, `coins`, `can_convert`, `leftover_stars`).
