@@ -1,6 +1,6 @@
 # Little Explorer
 
-**Big world, little readers.** A picture-book app for iPhone and iPad that turns screen time into a trip around the world.
+**Big world, little readers.** A picture-book app for iPhone and iPad, made for kids ages 4–8, that turns screen time into a trip around the world.
 
 Little Explorer takes young readers to Paris, London, Barcelona, Beijing, Shanghai and beyond. Every page pairs a
 real photo with one short sentence your child can read on their own, and one tap reads it aloud in a warm, natural
@@ -12,7 +12,7 @@ encouraging voice buddy, is ready to listen, cheer them on and talk about the bo
 - **Sparks curiosity about the world.** Real photos of famous places, foods and everyday life (the Eiffel Tower's
   sparkle, London's red buses, Beijing's kites, Shanghai's soup dumplings) get kids asking "Can we go there?"
 - **Builds reading confidence and independence.** Short sentences of 4 to 12 words are made for early readers to
-  tackle on their own, with read-aloud help one tap away. Local names are spoken the local way, so kids hear
+  tackle on their own, with read-aloud help one tap away for kids who aren't reading yet. Local names are spoken the local way, so kids hear
   "Gaudí" and "xiaolongbao" said right.
 - **Gets kids talking, not just tapping.** Milo asks open, curious questions and gently helps your child turn a few
   words into a full sentence, so they practice speaking up and explaining their ideas.
