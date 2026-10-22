@@ -1,6 +1,6 @@
 # Little Explorer: Privacy and Terms
 
-Last updated: October 21, 2026
+Last updated: October 22, 2026
 
 Little Explorer is a picture-book app about cities and travel for young children. A grown-up signs in, and the
 child reads, listens and, if the grown-up turns it on, talks with Milo, a voice buddy.
@@ -24,17 +24,27 @@ child reads, listens and, if the grown-up turns it on, talks with Milo, a voice 
 - The email is used only to send 6-digit sign-in codes and to keep the books, stars and coins the same
   on all of the family's devices.
 - No ads, no tracking, no analytics companies, and we never sell or share your information for marketing.
+  The app's privacy manifest (`PrivacyInfo.xcprivacy`) lists the same data and declares no tracking.
 - Sign-in emails are sent from the app owner's Gmail account through the Gmail API. The app has permission
   only to send email; it cannot read your mail or anyone else's.
 
 ## Talking with Milo
 
-Voice is off until a grown-up or the child taps **Talk to Milo**. While it is on, the child's speech is
-streamed through [LiveKit](https://livekit.io) to [OpenAI](https://openai.com) so Milo can understand and
-answer. The app doesn't record or keep the audio, and it doesn't save conversations. The voice service may
-keep short text of what was said in its logs for a limited time to fix problems. OpenAI handles the audio
-under its own API terms, which say API data isn't used to train its models by default. When voice is off,
-nothing is streamed.
+Milo is an AI voice buddy, and it is **off until a grown-up allows it**. Right after a grown-up signs in, the app
+explains what Milo sends and keeps and asks **Allow Milo** or **Not now**. On devices that were already signed in
+before this step existed, the same explanation appears behind the grown-up check the first time **Talk to Milo**
+is tapped. "Not now" keeps Milo off; reading and read-aloud work the same either way.
+
+While Milo is on and the child has tapped **Talk to Milo**, the child's speech and the page being read are
+streamed through [LiveKit](https://livekit.io) (the voice connection) to [OpenAI](https://openai.com) (the AI)
+so Milo can understand and answer. The app doesn't record or keep the audio, and it doesn't save conversations.
+The voice service may keep short text of what was said in its logs for a limited time to fix problems. OpenAI
+handles the audio under its own API terms, which say API data isn't used to train its models by default. When
+Milo is off, nothing is streamed.
+
+The grown-up's choice is saved with the account, so it counts on every iPad and iPhone signed in with that email.
+To turn Milo off, open the **Grown-ups** corner (behind the grown-up check) and switch off **Milo, the AI voice
+buddy**. Our server then refuses to start Milo for that account until a grown-up turns it back on.
 
 ## Where it is stored
 
@@ -52,7 +62,7 @@ only with the device's random id; email us to remove them too.
 ## Children
 
 The app is made to be used by a child together with a grown-up. Only the grown-up signs in and gives an email,
-and sign-in, sign-out and account deletion sit behind a grown-up check.
+and sign-in, sign-out, account deletion and turning Milo on or off sit behind a grown-up check.
 
 ## Terms of use
 

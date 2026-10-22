@@ -109,6 +109,13 @@ struct AccountService {
         _ = try await send(request("account/delete", method: "POST", token: token, body: ["code": code]))
     }
 
+    /// Records a grown-up's choice about Milo for the whole account; returns the account with it.
+    func setMiloConsent(token: String, allow: Bool) async throws -> Account {
+        struct Reply: Decodable { let account: Account }
+        let data = try await send(request("account/milo-consent", method: "POST", token: token, body: ["allow": allow]))
+        return try JSONDecoder().decode(Reply.self, from: data).account
+    }
+
     /// Hands what this device kept from before accounts to the account that claimed it. Safe to repeat.
     func importDevice(token: String, stars: [StarAward]) async throws {
         let awards = (try? JSONSerialization.jsonObject(with: JSONEncoder().encode(stars))) ?? []
@@ -147,6 +154,9 @@ struct AccountService {
 @Observable
 final class AccountStore {
     private(set) var account: Account?
+    /// Set by a sign-in on this device: the app shows the grown-up what Milo shares (``MiloConsentView``)
+    /// before the shelf, while the grown-up who typed the code is still holding the device.
+    private(set) var asksMiloConsent = false
 
     @ObservationIgnored private let tokens: SessionTokenStore
     @ObservationIgnored private let defaults: UserDefaults
@@ -174,6 +184,8 @@ final class AccountStore {
     nonisolated static func liveService() -> AccountService { AccountService(baseURL: VoiceSettings.tokenServerURL()) }
 
     var isSignedIn: Bool { account != nil }
+    /// A grown-up allowed Milo for this account (on any of its devices).
+    var miloAllowed: Bool { account?.miloAllowed == true }
     var token: String? { account == nil ? nil : tokens.read() }
 
     func shelf(_ all: [Book]) -> [Book] { account?.shelf(all) ?? [] }
@@ -189,6 +201,7 @@ final class AccountStore {
         let result = try await service().verify(email: email, code: code, device: device)
         tokens.write(result.token)
         willSignIn?(result)
+        asksMiloConsent = true
         save(result.account)
         await onSignIn?(result)
     }
@@ -201,6 +214,25 @@ final class AccountStore {
         } catch AccountError.signedOut {
             forget()
         } catch {}
+    }
+
+    /// A grown-up allowed Milo or turned it off, for every device on the account. Turning Milo off
+    /// counts here even if the server can't be reached; allowing needs the server, which Milo needs anyway.
+    func setMiloConsent(_ allow: Bool) async throws {
+        guard let account, let token else { throw AccountError.signedOut }
+        do {
+            save(try await service().setMiloConsent(token: token, allow: allow))
+        } catch AccountError.signedOut {
+            forget()
+            throw AccountError.signedOut
+        } catch where !allow {
+            save(account.with(miloConsent: false))
+        }
+    }
+
+    /// The grown-up made their choice about Milo after signing in (or chose "Not now").
+    func finishMiloConsent() {
+        asksMiloConsent = false
     }
 
     /// Signs out here; the account and everything in it stay on the server.
@@ -230,6 +262,7 @@ final class AccountStore {
         let id = account?.id
         tokens.write(nil)
         defaults.removeObject(forKey: key)
+        asksMiloConsent = false
         account = nil
         if let id { onSignOut?(id) }
     }
@@ -244,6 +277,7 @@ extension AccountStore {
             defaults.removePersistentDomain(forName: suite)
             let store = AccountStore(tokens: MemorySessionTokenStore(), defaults: defaults)
             if let account = demo.account { store.signInForDemo(account) }
+            if demo.milo?.afterSignIn == true { store.asksMiloConsent = true }
             return store
         }
         #endif

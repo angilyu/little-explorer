@@ -405,3 +405,45 @@ def test_cli_approves_blocks_and_limits_accounts_by_email(monkeypatch, capsys):
     assert EMAIL in capsys.readouterr().out
     assert cli.main(["--direct"]) == 0
     assert EMAIL in capsys.readouterr().out
+
+
+# --- a grown-up's permission for Milo -----------------------------------------------------------
+
+
+def test_milo_consent_is_unasked_until_a_grown_up_chooses_and_belongs_to_the_account(accounts, clock):
+    _, account, _ = sign_in(accounts, clock)
+    assert account.milo_consent is None and account.as_json()["milo_consent"] is None
+    assert accounts.set_milo_consent(account.id, True).milo_consent is True
+    _, again, _ = sign_in(accounts, clock, device=IPHONE)  # a second device sees the account's choice
+    assert again.milo_consent is True
+    assert accounts.set_milo_consent(account.id, False).as_json()["milo_consent"] is False
+    assert accounts.summary()[0]["milo_consent"] is False
+    with pytest.raises(LookupError):
+        accounts.set_milo_consent("missing", True)
+
+
+async def test_the_app_records_milo_consent_for_the_account(client, accounts, clock):
+    token, account, _ = sign_in(accounts, clock)
+    session = {**APP, "X-Pip-Session": token}
+    assert (await client.post("/account/milo-consent", json={"allow": True}, headers=APP)).status == 401
+    assert (await client.post("/account/milo-consent", json={"allow": "yes"}, headers=session)).status == 400
+    resp = await client.post("/account/milo-consent", json={"allow": True}, headers=session)
+    assert resp.status == 200 and (await resp.json())["account"]["milo_consent"] is True
+    body = await (await client.get("/account", headers=session)).json()
+    assert body["account"]["milo_consent"] is True
+
+
+async def test_token_refuses_an_account_whose_grown_up_turned_milo_off(client, accounts, clock):
+    token, account, _ = sign_in(accounts, clock, device=IPAD)
+    session = {**APP, "X-Pip-Session": token}
+    # Never asked (families on builds before the consent screen) keeps working.
+    assert (await client.post("/token", json={"device": {"id": IPAD}}, headers=session)).status == 200
+    accounts.set_milo_consent(account.id, False)
+    resp = await client.post("/token", json={"device": {"id": IPAD}}, headers=session)
+    assert resp.status == 403 and (await resp.json())["error"] == "milo_off"
+    old_build = await client.post("/token", json={"device": {"id": IPAD}}, headers=APP)  # linked device, no session
+    assert old_build.status == 403 and (await old_build.json())["error"] == "milo_off"
+    unlinked = await client.post("/token", json={"device": {"id": OLD}}, headers=APP)
+    assert unlinked.status == 200
+    accounts.set_milo_consent(account.id, True)
+    assert (await client.post("/token", json={"device": {"id": IPAD}}, headers=session)).status == 200

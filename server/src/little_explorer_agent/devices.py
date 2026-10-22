@@ -170,6 +170,9 @@ COLUMNS = (
     ("coin_conversions", "account_id", "TEXT"),
     ("accounts", "milo_status", "TEXT NOT NULL DEFAULT 'unknown'"),
     ("accounts", "daily_limit_min", "REAL"),
+    # A grown-up's choice about Milo for the account: 'yes', 'no', or NULL if never asked (old builds).
+    ("accounts", "milo_consent", "TEXT"),
+    ("accounts", "milo_consent_at", "TEXT"),
     ("sessions", "account_id", "TEXT"),
 )
 INDEXES = (

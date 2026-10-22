@@ -73,10 +73,16 @@ struct TokenService {
         ))
         let (data, response) = try await session.data(for: request)
         let status = (response as? HTTPURLResponse)?.statusCode ?? 0
-        // 403 = blocked account, 429 = used up today's minutes, 401 = the sign-in expired.
+        // 403 milo_off = a grown-up turned Milo off; other 403 = blocked account, 429 = used up today's
+        // minutes, 401 = the sign-in expired.
+        if status == 403, Self.errorCode(data) == "milo_off" { throw VoiceError.miloOff }
         if status == 403 || status == 429 { throw VoiceError.resting }
         if status == 401, AccountService.error(status: status, data: data) == .signedOut { throw VoiceError.signedOut }
         guard (200..<300).contains(status) else { throw VoiceError.tokenServer(status: status) }
         return try JSONDecoder().decode(VoiceCredentials.self, from: data)
+    }
+
+    static func errorCode(_ data: Data) -> String? {
+        ((try? JSONSerialization.jsonObject(with: data)) as? [String: Any])?["error"] as? String
     }
 }

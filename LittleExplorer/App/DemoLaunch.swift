@@ -18,8 +18,31 @@ import Foundation
 /// `-demoAccount welcome|email|code` shows the signed-out welcome screen (and sign-in's email or code step);
 /// `-demoAccount new` signs in as a new account with only the default books. Other demos run signed in to a
 /// family account with every book.
+/// `-demoMilo signin` shows Milo's consent screen right after a new account signs in; `-demoMilo confirm` shows
+/// it for an account that already allowed Milo on another device; `-demoMilo talk` (with `-demoBook`) taps
+/// "Talk to Milo" on a device signed in before the consent screen existed, which opens the grown-up check;
+/// `-demoMilo talk-consent` shows the consent screen after it; `-demoMilo off` is an account whose grown-up
+/// turned Milo off (with `-demoParent`, the Grown-ups corner's Milo switch is off). Other demos have Milo allowed.
 struct DemoLaunch: Equatable {
     enum AccountScreen: String { case welcome, email, code, new }
+    enum Milo: String {
+        case signin, confirm, talk, off
+        case talkConsent = "talk-consent"
+
+        /// The account's consent in this demo.
+        var consent: Bool? {
+            switch self {
+            case .signin, .talk, .talkConsent: nil
+            case .confirm: true
+            case .off: false
+            }
+        }
+
+        /// Shows the consent screen that follows a sign-in.
+        var afterSignIn: Bool { self == .signin || self == .confirm }
+        /// Taps "Talk to Milo" when the book opens.
+        var talks: Bool { self == .talk || self == .talkConsent }
+    }
 
 
     var bookId: String?
@@ -38,15 +61,18 @@ struct DemoLaunch: Equatable {
     var showCalendar = false
     var showBadges = false
     var accountScreen: AccountScreen?
+    var milo: Milo?
 
     /// Who the demo is signed in as: nobody on the welcome and sign-in screens.
     var account: Account? {
         switch accountScreen {
         case .welcome, .email, .code: nil
-        case .new: Account(id: "demo-new", email: "parent@example.com", books: Account.defaultBooks)
-        case nil: Account(id: "demo-family", email: "family@example.com", books: nil)
+        case .new: Account(id: "demo-new", email: "parent@example.com", books: Account.defaultBooks, miloConsent: miloConsent)
+        case nil: Account(id: "demo-family", email: "family@example.com", books: nil, miloConsent: miloConsent)
         }
     }
+
+    private var miloConsent: Bool? { milo.map(\.consent) ?? true }
 
     var startsWithVoice: Bool { voiceActivity != nil || liveVoice }
 
@@ -76,6 +102,11 @@ struct DemoLaunch: Equatable {
         if arguments.contains("-demoParent") { demo.openParent = true; found = true }
         if let screen = value(after: "-demoAccount").flatMap(AccountScreen.init(rawValue:)) {
             demo.accountScreen = screen; found = true
+        }
+        if let milo = value(after: "-demoMilo").flatMap(Milo.init(rawValue:)) {
+            demo.milo = milo
+            if milo == .signin, demo.accountScreen == nil { demo.accountScreen = .new }
+            found = true
         }
         if arguments.contains("-demoCalendar") {
             demo.showCalendar = true

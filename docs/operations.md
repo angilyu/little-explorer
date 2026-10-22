@@ -18,6 +18,14 @@ and iPhone signed in with that email. The only personal data is the grown-up's e
   gate first, then asks for the email and the code. The code works for 10 minutes and 5 tries; a new one can be
   sent after 60 seconds (at most 5 an hour per email, 20 an hour per network, and `PIP_EMAIL_DAILY_CAP`, default
   100, a day in all). The sign-in token is kept in the Keychain on this device only.
+- **Milo consent.** Right after the code is verified, the app shows what Milo sends (the child's voice and the
+  page, to OpenAI through LiveKit) and keeps, and asks **Allow Milo** or **Not now**. The choice is saved on the
+  account (`accounts.milo_consent`, set by `POST /account/milo-consent`), so it counts on every device; a second
+  device signing in to an account that already allowed Milo sees the same text with **Keep Milo on** / **Turn Milo
+  off**. Devices signed in before this step see it behind the parent gate on their first **Talk to Milo**.
+  The Grown-ups corner has a **Milo, the AI voice buddy** switch to turn Milo on or off later. The app only asks
+  for a Milo token once the account allows Milo, and `/token` answers 403 `milo_off` for an account that turned
+  it off (accounts that never answered, i.e. older builds, still work).
 - **Signed in**, the shelf shows the account's books. **Sign out** and **Delete account…** are in the Grown-ups
   corner (behind the gate). Signing out keeps everything on the server. Deleting asks for a new code sent to
   the account's email, then removes the email, books list, stars and coins (and any hearts from older builds)
@@ -179,7 +187,11 @@ Approve your family's account once; every device signed in to it shares its 60 m
 
 The app always uses the deployed server (`PIP_SERVER_URL` in `Config/Milo.xcconfig`). Debug builds can use a
 local token server with a launch argument, e.g. `-voice.tokenServerURL http://127.0.0.1:8787` (simulator) or
-`http://<your-mac>.local:8787` (a device), in the Xcode scheme's Arguments; release builds ignore it.
+`http://<your-mac>.local:8787` (a device), in the Xcode scheme's Arguments; release builds ignore it. Only Debug
+builds use `Config/Info-Debug.plist`, which adds the local-network permission (`NSLocalNetworkUsageDescription`,
+`NSAllowsLocalNetworking`) this needs; Release builds use `Config/Info.plist` without it. Keep the two plists in
+step otherwise. `LittleExplorer/PrivacyInfo.xcprivacy` is the app's privacy manifest: keep it matching the App
+Store privacy label.
 
 ## Coins
 
@@ -295,7 +307,9 @@ DEBUG builds accept launch arguments for screenshots: `-demoBook paris-food -dem
 `-demoVoice listening|live|nap|rest|star`, `-demoRead`, `-demoStars 23`, `-demoPassport`, `-demoCalendar`
 (the Passport's star calendar, with stars spread over the last few weeks), `-demoBadges` (the Passport's badges,
 some earned and some not, from 40 stars and an early-morning star), `-demoCoins 2`,
-`-demoGate` (the parent gate) and `-demoParent` (the Grown-ups corner). `-demoShelf grown-ups` scrolls to the
+`-demoGate` (the parent gate), `-demoParent` (the Grown-ups corner) and `-demoMilo
+signin|confirm|talk|talk-consent|off` (the Milo consent screen after sign-in, its "already on" version, the gate
+and consent on the first Talk to Milo, and the corner with Milo off). `-demoShelf grown-ups` scrolls to the
 Grown-ups button.
 
 ### Install on an iPhone or iPad (TestFlight)

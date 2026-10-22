@@ -4,13 +4,6 @@
 <dict>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSAllowsLocalNetworking</key>
-		<true/>
-	</dict>
-	<key>NSLocalNetworkUsageDescription</key>
-	<string>Little Explorer connects to the voice buddy server on your home network.</string>
 	<key>PipAccessKey</key>
 	<string>$(PIP_ACCESS_KEY)</string>
 	<key>PipServerURL</key>

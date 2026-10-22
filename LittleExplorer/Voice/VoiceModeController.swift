@@ -25,9 +25,13 @@ final class VoiceModeController {
     /// True while Milo's recorded hello plays. The mic stays off meanwhile, so Milo doesn't hear
     /// (and answer) his own voice, and he only counts as listening once it's over.
     private(set) var isIntroPlaying = false
+    /// "Talk to Milo" was tapped before a grown-up allowed Milo, so nothing connected; the reader asks a
+    /// grown-up (the gate, then ``MiloConsentView``) and calls ``consentHandled()``.
+    private(set) var needsConsent = false
 
     nonisolated static let napNotice = "Milo is taking a nap — tap to talk again"
     nonisolated static let restNotice = "Milo needs a rest today. Let's talk again tomorrow!"
+    nonisolated static let offNotice = "A grown-up turned Milo off. Ask a grown-up to turn Milo on."
 
     @ObservationIgnored private let makeTransport: @MainActor () -> VoiceTransport
     @ObservationIgnored private var transport: VoiceTransport?
@@ -48,6 +52,11 @@ final class VoiceModeController {
     nonisolated static let doubleTapWindow: TimeInterval = 1.0
     /// Called with every star Milo gives (the app saves it in ``StarStore``).
     @ObservationIgnored var onStar: ((StarAward) -> Void)?
+    /// Whether a grown-up allowed Milo (the account's consent). Until then Milo never connects, so no
+    /// voice or page leaves the device.
+    @ObservationIgnored var mayTalk: @MainActor () -> Bool = { true }
+    /// Milo's server said a grown-up turned Milo off on another device, so the account should refresh.
+    @ObservationIgnored var onMiloOff: (@MainActor () -> Void)?
 
     init(
         makeTransport: @escaping @MainActor () -> VoiceTransport,
@@ -94,6 +103,11 @@ final class VoiceModeController {
     func turnOn() async {
         guard state == .off else { return }
         notice = nil
+        guard mayTalk() else {
+            needsConsent = true
+            return
+        }
+        needsConsent = false
         generation += 1
         let gen = generation
         let tap = now()
@@ -135,6 +149,10 @@ final class VoiceModeController {
             if case VoiceError.resting = error {
                 state = .off
                 notice = Self.restNotice
+            } else if case VoiceError.miloOff = error {
+                state = .off
+                notice = Self.offNotice
+                onMiloOff?()
             } else {
                 state = .failed(Self.message(for: error))
             }
@@ -240,6 +258,12 @@ final class VoiceModeController {
         case .star(let award):
             onStar?(award)
         }
+    }
+
+    /// The grown-up answered (or cancelled); with permission, Milo wakes up straight away.
+    func consentHandled() async {
+        needsConsent = false
+        if mayTalk() { await turnOn() }
     }
 
     func dismissNotice() {

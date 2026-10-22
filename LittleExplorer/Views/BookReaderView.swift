@@ -10,6 +10,7 @@ struct BookReaderView: View {
     @Environment(ReadAloudController.self) private var readAloud
     @Environment(StarStore.self) private var stars
     @Environment(CoinStore.self) private var coins
+    @Environment(AccountStore.self) private var account
 
     @State private var pageIndex: Int
     @State private var counterFrame: CGRect = .zero
@@ -72,12 +73,21 @@ struct BookReaderView: View {
                 Task { await voice.turnOff() }
             }
         }
+        .sheet(isPresented: Binding(
+            get: { voice.needsConsent },
+            set: { shown in if !shown { Task { await voice.consentHandled() } } }
+        )) {
+            MiloPermissionSheet(passedGate: DemoLaunch.current?.milo == .talkConsent)
+                .environment(account)
+        }
         .onDisappear { readAloud.stop() }
         .onAppear {
             readAloud.onSpeakingChanged = { [voice] reading in
                 Task { await voice.appReadAloudDidChange(reading) }
             }
-            if DemoLaunch.current?.startsWithVoice == true { Task { await voice.turnOn() } }
+            if DemoLaunch.current?.startsWithVoice == true || DemoLaunch.current?.milo?.talks == true {
+                Task { await voice.turnOn() }
+            }
             if DemoLaunch.current?.readAloud == true {
                 let page = book.pages[pageIndex]
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {

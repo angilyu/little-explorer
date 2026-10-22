@@ -96,6 +96,8 @@ struct ParentGateLock {
 struct ParentGateView: View {
     let onPass: () -> Void
     var lock = ParentGateLock()
+    /// Why a grown-up is needed, when the child got here by tapping something else (like "Talk to Milo").
+    var note: String?
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.horizontalSizeClass) private var sizeClass
@@ -116,6 +118,11 @@ struct ParentGateView: View {
                         .foregroundStyle(.tint)
                     Text("Grown-ups only")
                         .font(.title.bold())
+                    if let note {
+                        Text(note)
+                            .font(.headline)
+                            .multilineTextAlignment(.center)
+                    }
                     if wait > 0 {
                         locked(wait)
                     } else {

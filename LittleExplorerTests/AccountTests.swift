@@ -167,6 +167,66 @@ final class AccountTests: XCTestCase {
         XCTAssertEqual(store().account?.id, "fam", "the sign-in survives a relaunch")
     }
 
+    // MARK: - Milo consent
+
+    func testMiloConsentDecodesAndSurvivesARelaunch() throws {
+        let decode = { (json: String) in try JSONDecoder().decode(Account.self, from: Data(json.utf8)) }
+        XCTAssertNil(try decode(family).miloConsent, "accounts from before the consent screen were never asked")
+        XCTAssertFalse(try decode(family).miloAllowed)
+        let allowed = try decode(#"{"id":"fam","email":"mom@example.com","all_books":true,"milo_consent":true}"#)
+        XCTAssertTrue(allowed.miloAllowed)
+        XCTAssertEqual(try JSONDecoder().decode(Account.self, from: JSONEncoder().encode(allowed)), allowed)
+        XCTAssertFalse(try decode(#"{"id":"fam","email":"mom@example.com","milo_consent":false}"#).miloAllowed)
+    }
+
+    func testSigningInAsksAboutMiloBeforeTheShelf() async throws {
+        let account = store()
+        XCTAssertFalse(account.asksMiloConsent)
+        StubAccountServer.replies = [(200, signInReply(claimed: false))]
+        try await account.verify(email: "mom@example.com", code: "123456", device: device)
+        XCTAssertTrue(account.asksMiloConsent)
+        XCTAssertFalse(account.miloAllowed)
+        account.finishMiloConsent()
+        XCTAssertFalse(account.asksMiloConsent)
+        XCTAssertFalse(store().asksMiloConsent, "a relaunch doesn't ask again")
+    }
+
+    func testAllowingMiloSavesItOnTheAccount() async throws {
+        StubAccountServer.replies = [(200, signInReply(claimed: false))]
+        let account = store()
+        try await account.verify(email: "mom@example.com", code: "123456", device: device)
+        StubAccountServer.replies = [(200, #"{"account":{"id":"fam","email":"mom@example.com","all_books":true,"milo_consent":true}}"#)]
+        try await account.setMiloConsent(true)
+        let sent = try XCTUnwrap(StubAccountServer.sent.last)
+        XCTAssertEqual(sent.method, "POST")
+        XCTAssertEqual(sent.path, "/account/milo-consent")
+        XCTAssertEqual(sent.session, "tok-1")
+        XCTAssertEqual(sent.body["allow"] as? Bool, true)
+        XCTAssertTrue(account.miloAllowed)
+        XCTAssertTrue(store().miloAllowed, "remembered across launches")
+    }
+
+    func testAllowingMiloOfflineKeepsMiloOffButTurningItOffAlwaysCounts() async throws {
+        StubAccountServer.replies = [(200, signInReply(claimed: false, account: #"{"id":"fam","email":"mom@example.com","all_books":true,"milo_consent":true}"#))]
+        let account = store()
+        try await account.verify(email: "mom@example.com", code: "123456", device: device)
+        XCTAssertTrue(account.miloAllowed, "a second device sees the account's choice")
+
+        StubAccountServer.replies = [nil]
+        try await account.setMiloConsent(false)
+        XCTAssertFalse(account.miloAllowed, "turning Milo off works even offline")
+        XCTAssertEqual(StubAccountServer.sent.last?.body["allow"] as? Bool, false)
+
+        StubAccountServer.replies = [nil]
+        do {
+            try await account.setMiloConsent(true)
+            XCTFail("expected offline")
+        } catch {
+            XCTAssertEqual(error as? AccountError, .offline)
+        }
+        XCTAssertFalse(account.miloAllowed)
+    }
+
     func testBadEmailNeverReachesTheServer() async {
         do {
             _ = try await store().sendCode(to: "nope")
