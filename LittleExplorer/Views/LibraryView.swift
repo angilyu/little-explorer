@@ -7,6 +7,7 @@ struct LibraryView: View {
     @Environment(StarStore.self) private var stars
     @Environment(CoinStore.self) private var coins
     @Environment(AccountStore.self) private var account
+    @Environment(ReadingActivity.self) private var reading
     @Environment(\.horizontalSizeClass) private var sizeClass
 
     @State private var openBook: OpenBook?
@@ -49,6 +50,7 @@ struct LibraryView: View {
                 .environment(stars)
                 .environment(coins)
                 .environment(account)
+                .environment(reading)
         }
         .sheet(isPresented: $showPassport) {
             PassportView(shelves: BookLibrary.shelves(books))

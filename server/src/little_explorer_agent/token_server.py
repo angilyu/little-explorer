@@ -33,7 +33,7 @@ only, never transcripts.
 
 ``POST /usage`` (``Authorization: Bearer $PIP_REPORT_KEY``) is how the agent reports each finished
 session. ``/admin/...`` (``Authorization: Bearer $PIP_ADMIN_KEY``) is for the owner, usually via
-``tools/devices.py``: ``GET /admin/devices``, ``GET /admin/usage?days=7``,
+``tools/devices.py``: ``GET /admin/devices``, ``GET /admin/usage?days=7``, ``GET /admin/reading?days=7``,
 ``POST /admin/accounts/<email or id>/milo`` with ``{"status", "daily_limit_min"}`` and, for old
 builds on unlinked devices, ``POST /admin/devices/<id or name>`` with ``{"status", "label", "daily_limit_min"}``.
 
@@ -43,7 +43,10 @@ Accounts (see :mod:`.accounts`): a grown-up signs in with ``POST /auth/start {"e
 access key) to ``GET /account``, ``POST /auth/signout``, ``POST /account/delete {"code"}`` and the
 account's ``/account/stars``, ``/account/coins``, ``/account/coins/convert``, ``/account/hearts`` and
 ``/account/import``, and ``POST /account/milo-consent {"allow": true | false}`` records a grown-up's
-choice about Milo for the account (the account JSON carries it as ``milo_consent``). Errors are ``{"error": "bad_email" | "bad_code" | "expired" | "too_many" |
+choice about Milo for the account (the account JSON carries it as ``milo_consent``).
+``POST /account/reading {"events": [...]}`` stores a batch of the app's reading events (page views,
+read-aloud use, a daily app open; see :mod:`.reading`) for the session's account and device.
+Errors are ``{"error": "bad_email" | "bad_code" | "expired" | "too_many" |
 "signed_out" | "email_off" | "email_failed", ...}``. The owner manages accounts with
 ``/admin/accounts...`` and saves everything with ``GET /admin/backup``.
 
@@ -76,6 +79,7 @@ from .content import BOOK_KEY, CITY_KEY, PAGE_KEY, PAGE_NUMBER_KEY, PAGE_TEXT_KE
 from .devices import ANONYMOUS, REST_MESSAGE, STATUSES, Decision, DeviceStore, Scope, valid_device_id
 from .mail import Mailer, MailError, compose
 from .modes import PipMode, job_metadata, parse_intro, parse_mode, parse_tz
+from .reading import ReadingError, ReadingLog
 
 log = logging.getLogger("little_explorer.tokens")
 
@@ -355,6 +359,16 @@ async def handle_admin_usage(request: web.Request) -> web.Response:
     return web.json_response({"days": await asyncio.to_thread(request.app[STORE].usage_by_day, days)})
 
 
+async def handle_admin_reading(request: web.Request) -> web.Response:
+    if denied := _admin(request):
+        return denied
+    try:
+        days = min(max(int(request.query.get("days", "7")), 1), 366)
+    except ValueError:
+        return web.json_response({"error": "days must be a number"}, status=400)
+    return web.json_response(await asyncio.to_thread(request.app[READING].report, days))
+
+
 async def handle_admin_update(request: web.Request) -> web.Response:
     if denied := _admin(request):
         return denied
@@ -609,6 +623,23 @@ async def handle_account_import(request: web.Request) -> web.Response:
     return web.json_response({"ok": True, **added})
 
 
+async def handle_account_reading(request: web.Request) -> web.Response:
+    session = await _session(request)
+    if isinstance(session, web.Response):
+        return session
+    body = await _json_body(request)
+    if body is None:
+        return web.json_response({"error": "bad body"}, status=400)
+    known = request.app[MANIFEST].get("order", [])
+    try:
+        counts = await asyncio.to_thread(
+            request.app[READING].record, session.account.id, session.device_id, body.get("events"), set(known)
+        )
+    except ReadingError as exc:
+        return web.json_response(exc.as_json(), status=exc.status)
+    return web.json_response({"ok": True, **counts})
+
+
 # -- owner: accounts ---------------------------------------------------------------------------------
 
 
@@ -783,6 +814,7 @@ MANIFEST = web.AppKey("manifest", dict)
 FILES = web.AppKey("files", dict)
 ACCOUNTS = web.AppKey("accounts", Accounts)
 MAILER = web.AppKey("mailer", Mailer)
+READING = web.AppKey("reading_log", ReadingLog)
 
 
 def create_app(
@@ -795,6 +827,7 @@ def create_app(
     coins: CoinLedger | None = None,
     accounts: Accounts | None = None,
     mailer: Mailer | None = None,
+    reading: ReadingLog | None = None,
 ) -> web.Application:
     app = web.Application()
     app[ACCESS_KEY] = (os.environ.get("PIP_ACCESS_KEY", "") if access_key is None else access_key).strip()
@@ -804,6 +837,7 @@ def create_app(
     app[COINS] = coins or CoinLedger.from_env(app[STORE])
     app[ACCOUNTS] = accounts or Accounts.from_env(app[STORE])
     app[MAILER] = mailer or Mailer.from_env()
+    app[READING] = reading or ReadingLog(app[STORE])
     root = content_root or resources_dir()
     app[MANIFEST] = build_manifest(root)
     app[FILES] = content_files(root)
@@ -818,6 +852,7 @@ def create_app(
     app.router.add_post("/coins/convert", handle_convert)
     app.router.add_get("/admin/devices", handle_admin_devices)
     app.router.add_get("/admin/usage", handle_admin_usage)
+    app.router.add_get("/admin/reading", handle_admin_reading)
     app.router.add_post("/admin/devices/{ref}", handle_admin_update)
     app.router.add_get("/admin/coins", handle_admin_coins)
     app.router.add_post("/admin/coins", handle_admin_coins)
@@ -833,6 +868,7 @@ def create_app(
     app.router.add_get("/account/hearts", handle_account_hearts)
     app.router.add_post("/account/hearts", handle_account_hearts)
     app.router.add_post("/account/import", handle_account_import)
+    app.router.add_post("/account/reading", handle_account_reading)
     app.router.add_get("/admin/accounts", handle_admin_accounts)
     app.router.add_post("/admin/accounts", handle_admin_accounts)
     app.router.add_get("/admin/accounts/{ref}", handle_admin_account)

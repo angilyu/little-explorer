@@ -527,6 +527,7 @@ class Accounts:
             ("hearts", "account_id"),
             ("account_books", "account_id"),
             ("auth_sessions", "account_id"),
+            ("reading_events", "account_id"),
         ):
             counts[table] = ex(cur, f"DELETE FROM {table} WHERE {column} = ?", (account_id,)).rowcount
         ex(cur, "DELETE FROM email_codes WHERE email = ?", (email,))

@@ -11,6 +11,7 @@ struct BookReaderView: View {
     @Environment(StarStore.self) private var stars
     @Environment(CoinStore.self) private var coins
     @Environment(AccountStore.self) private var account
+    @Environment(ReadingActivity.self) private var reading
 
     @State private var pageIndex: Int
     @State private var counterFrame: CGRect = .zero
@@ -65,12 +66,16 @@ struct BookReaderView: View {
         .task { await voice.pageDidChange(PageContext(book: book, index: pageIndex)) }
         .onChange(of: pageIndex) { _, newIndex in
             readAloud.pageDidChange(to: NarrationLibrary.key(bookId: book.id, pageId: book.pages[newIndex].id))
+            showPage(newIndex)
             Task { await voice.pageDidChange(PageContext(book: book, index: newIndex)) }
         }
         .onChange(of: scenePhase) { _, phase in
             if phase == .background {
                 readAloud.stop()
+                reading.pageHidden()
                 Task { await voice.turnOff() }
+            } else if phase == .active {
+                showPage(pageIndex)
             }
         }
         .sheet(isPresented: Binding(
@@ -80,11 +85,19 @@ struct BookReaderView: View {
             MiloPermissionSheet(passedGate: DemoLaunch.current?.milo == .talkConsent)
                 .environment(account)
         }
-        .onDisappear { readAloud.stop() }
+        .onDisappear {
+            readAloud.stop()
+            reading.pageHidden()
+        }
         .onAppear {
             readAloud.onSpeakingChanged = { [voice] reading in
                 Task { await voice.appReadAloudDidChange(reading) }
             }
+            readAloud.onUse = { [book, reading] use in
+                let index = book.pages.firstIndex { NarrationLibrary.key(bookId: book.id, pageId: $0.id) == use.pageId }
+                reading.readAloud(use, index: index)
+            }
+            showPage(pageIndex)
             if DemoLaunch.current?.startsWithVoice == true || DemoLaunch.current?.milo?.talks == true {
                 Task { await voice.turnOn() }
             }
@@ -139,6 +152,10 @@ struct BookReaderView: View {
         }
         .padding(.horizontal, regular ? 24 : 12)
         .padding(.vertical, 10)
+    }
+
+    private func showPage(_ index: Int) {
+        reading.pageShown(book: book.id, page: book.pages[index].id, index: index, milo: voice.isEnabled)
     }
 
     /// A big star pops up over the page, then shrinks into the counter.

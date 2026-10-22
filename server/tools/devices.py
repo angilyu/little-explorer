@@ -4,6 +4,8 @@ Run from server/ (it reads ``PIP_SERVER_URL`` and ``PIP_ADMIN_KEY`` from the usu
 
     uv run python tools/devices.py                     # every device: today, totals, $
     uv run python tools/devices.py usage --days 7      # minutes and $ per day, device and account
+    uv run python tools/devices.py reading --days 7    # who read what: active accounts and devices, pages,
+                                                       # reading minutes, read-aloud, per day, account and book
     uv run python tools/devices.py approve mom@example.com          # Milo's time is the account's:
     uv run python tools/devices.py block mom@example.com            # an email means the account
     uv run python tools/devices.py unblock mom@example.com
@@ -96,6 +98,13 @@ class Admin:
         if self.direct:
             return self.store.usage_by_day(days)
         return self._call("GET", f"/admin/usage?days={days}")["days"]
+
+    def reading(self, days: int) -> dict[str, Any]:
+        if self.direct:
+            from little_explorer_agent.reading import ReadingLog
+
+            return ReadingLog(self.store).report(days)
+        return self._call("GET", f"/admin/reading?days={days}")
 
     def update(self, ref: str, **changes: Any) -> dict[str, Any]:
         if self.direct:
@@ -265,6 +274,43 @@ def show_usage(days: list[dict[str, Any]]) -> str:
     return _table(rows)
 
 
+def _reading_cells(r: dict[str, Any]) -> list[str]:
+    return [
+        str(r["books"]), str(r["pages"]), f"{r['minutes']:g}",
+        str(r["read_aloud_started"]), str(r["read_aloud_finished"]), str(r["read_aloud_stopped"]),
+    ]
+
+
+READING_HEAD = ["BOOKS", "PAGES", "MINUTES", "READ-ALOUD", "FINISHED", "STOPPED"]
+
+
+def show_reading(data: dict[str, Any]) -> str:
+    """The reading report: per day, per account and per book."""
+    if not data["days"]:
+        return f"No reading since {data['since']}."
+    total = data["total"]
+    out = [
+        f"Since {data['since']}: {total['accounts']} accounts and {total['devices']} devices read "
+        f"{total['pages']} pages for {total['minutes']:g} minutes; read-aloud started {total['read_aloud_started']} "
+        f"times, finished {total['read_aloud_finished']}.",
+        "",
+        "PER DAY (books = different books each account read)",
+    ]
+    rows = [["DAY", "ACCOUNTS", "DEVICES", "OPENS", *READING_HEAD]]
+    rows += [[d["day"], str(d["accounts"]), str(d["devices"]), str(d["opens"]), *_reading_cells(d)] for d in data["days"]]
+    out += [_table(rows), "", "PER ACCOUNT"]
+    rows = [["ACCOUNT", "DEVICES", "DAYS", *READING_HEAD]]
+    rows += [
+        [a["account"] or a["account_id"], str(a["devices"]), str(a["active_days"]), *_reading_cells(a)]
+        for a in data["accounts"]
+    ]
+    out += [_table(rows), "", "PER BOOK"]
+    rows = [["BOOK", "ACCOUNTS", "DEVICES", *READING_HEAD[1:]]]
+    rows += [[b["book"], str(b["accounts"]), str(b["devices"]), *_reading_cells(b)[1:]] for b in data["books"]]
+    out.append(_table(rows) if data["books"] else "No books opened.")
+    return "\n".join(out)
+
+
 COIN_KEYS = {"enabled": "enabled", "on": "enabled", "rate": "stars_per_coin", "stars_per_coin": "stars_per_coin",
              "min": "min_coins", "min_coins": "min_coins", "max": "max_coins", "max_coins": "max_coins"}
 
@@ -361,6 +407,8 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("list", help="every device with today's and total minutes and $")
     usage = sub.add_parser("usage", help="minutes and $ per day and device")
     usage.add_argument("--days", type=int, default=7)
+    reading = sub.add_parser("reading", help="reading activity per day, account and book")
+    reading.add_argument("--days", type=int, default=7)
     for name, help_text in (
         ("approve", "allow the approved daily limit"),
         ("block", "refuse all sessions"),
@@ -423,6 +471,10 @@ def main(argv: list[str] | None = None) -> int:
     if command == "usage":
         days = admin.usage(args.days)
         print(json.dumps(days, indent=2) if args.json else show_usage(days))
+        return 0
+    if command == "reading":
+        report = admin.reading(args.days)
+        print(json.dumps(report, indent=2) if args.json else show_reading(report))
         return 0
     if command == "coins":
         reset = "reset" in args.changes

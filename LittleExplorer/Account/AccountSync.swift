@@ -19,6 +19,7 @@ struct AccountSync {
     let account: AccountStore
     let stars: StarStore
     let coins: CoinStore
+    var reading: ReadingActivity?
     var defaults: UserDefaults = .standard
     var baseURL: () -> URL = { VoiceSettings.tokenServerURL() }
     var deviceId: () -> String = { DeviceIdentity.current().id }
@@ -63,6 +64,7 @@ struct AccountSync {
         show(nil)
         stars.forgetAccount(accountId)
         coins.forgetAccount(accountId)
+        reading?.forgetAccount(accountId)
         defaults.removeObject(forKey: importKey(accountId))
     }
 
