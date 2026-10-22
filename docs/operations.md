@@ -76,7 +76,7 @@ removed (or the app went back to Testing); run step 3 again and update `GMAIL_RE
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD` | e.g. `smtp.gmail.com`, `587` (STARTTLS; `465` uses SSL), the Gmail address and a Gmail App Password |
 | `GMAIL_CLIENT_ID`, `GMAIL_CLIENT_SECRET`, `GMAIL_REFRESH_TOKEN` | For `gmail` (from `tools/gmail_token.py`) |
 | `RESEND_API_KEY` | For `resend` |
-| `PIP_DEFAULT_BOOKS` | Comma-separated book ids for new accounts (default: the 12 books above) |
+| `PIP_DEFAULT_BOOKS` | Comma-separated book ids for new accounts (default: the 13 books above) |
 | `PIP_EMAIL_DAILY_CAP` | Most codes sent a day, for all emails together (default 100) |
 | `PIP_REVIEW_EMAIL`, `PIP_REVIEW_CODE` | Optional: an email that signs in with a fixed code and no email, for App Store review |
 
