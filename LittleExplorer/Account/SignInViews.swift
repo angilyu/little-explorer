@@ -1,94 +1,5 @@
 import SwiftUI
 
-/// What a signed-out device shows: a friendly screen whose only button is for grown-ups, behind the
-/// number gate, that leads to signing in (or signing up: it's the same).
-struct WelcomeView: View {
-    let books: [Book]
-
-    @Environment(AccountStore.self) private var account
-    @Environment(\.horizontalSizeClass) private var sizeClass
-    @State private var showGate = false
-    @State private var showSignIn = false
-
-    private var regular: Bool { sizeClass == .regular }
-
-    /// One flag per place a new account starts with, so the screen hints at what's inside.
-    private var flags: [Book] {
-        let starters = Set(Account.defaultBooks)
-        var countries = Set<String>()
-        return BookLibrary.shelves(books.filter { starters.contains($0.id) }).map(\.flagBook)
-            .filter { countries.insert($0.country).inserted }
-    }
-
-    var body: some View {
-        ScrollView {
-            VStack(spacing: regular ? 28 : 20) {
-                Text("Little Explorer")
-                    .font(Theme.titleFont(regular: regular))
-                    .foregroundStyle(Theme.ink)
-                    .padding(.top, regular ? 80 : 40)
-                Image(systemName: "globe.europe.africa.fill")
-                    .font(.system(size: regular ? 120 : 88))
-                    .symbolRenderingMode(.multicolor)
-                    .foregroundStyle(.blue, .green)
-                    .accessibilityHidden(true)
-                HStack(spacing: regular ? 14 : 10) {
-                    ForEach(flags) { FlagBadge(book: $0, height: regular ? 40 : 30) }
-                }
-                Text("Books about the world, and Milo to talk with.")
-                    .font(.system(size: regular ? 26 : 20, weight: .semibold, design: .rounded))
-                    .foregroundStyle(Theme.ink.opacity(0.75))
-                    .multilineTextAlignment(.center)
-
-                VStack(spacing: 14) {
-                    Text("Hello, grown-ups!")
-                        .font(.title2.bold())
-                    Text("Sign in with your email to open the bookshelf. New here? The same steps make your free account.")
-                        .multilineTextAlignment(.center)
-                        .foregroundStyle(.secondary)
-                    Button {
-                        showGate = true
-                    } label: {
-                        Label("Grown-ups: sign in", systemImage: "lock.fill")
-                            .font(.headline)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 6)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .accessibilityHint("For parents only")
-                    Text("Just an email and a 6-digit code. No passwords.")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                }
-                .padding(regular ? 28 : 20)
-                .frame(maxWidth: 460)
-                .background(RoundedRectangle(cornerRadius: 24, style: .continuous).fill(.background.opacity(0.85)))
-            }
-            .padding(.horizontal, 20)
-            .padding(.bottom, 40)
-            .frame(maxWidth: .infinity)
-        }
-        .background(
-            LinearGradient(colors: [Theme.sky, Theme.paper], startPoint: .top, endPoint: .bottom).ignoresSafeArea()
-        )
-        .sheet(isPresented: $showGate) {
-            ParentGateView {
-                showGate = false
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { showSignIn = true }
-            }
-        }
-        .sheet(isPresented: $showSignIn) {
-            SignInView()
-                .environment(account)
-        }
-        .task {
-            guard let demo = DemoLaunch.current else { return }
-            if demo.openGate { showGate = true }
-            if demo.accountScreen == .email || demo.accountScreen == .code { showSignIn = true }
-        }
-    }
-}
-
 /// Email, then the 6-digit code from the email. Signing up and signing in are the same steps.
 struct SignInView: View {
     @Environment(AccountStore.self) private var account
@@ -122,12 +33,17 @@ struct SignInView: View {
                 .frame(maxWidth: 440)
                 .frame(maxWidth: .infinity)
             }
+            .background(
+                LinearGradient(colors: [Theme.paper, Theme.sky.opacity(0.5)], startPoint: .top, endPoint: .bottom)
+                    .ignoresSafeArea()
+            )
             .navigationTitle(codeSentTo == nil ? "Sign in" : "Enter code")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
             }
         }
+        .preferredColorScheme(.light)
         .interactiveDismissDisabled(busy)
         .task { applyDemo() }
     }
@@ -138,7 +54,9 @@ struct SignInView: View {
                 .font(.system(size: 60))
                 .foregroundStyle(.tint)
             Text("Sign in or sign up")
-                .font(.title.bold())
+                .font(.system(.title, design: .rounded).weight(.heavy))
+                .foregroundStyle(Theme.ink)
+                .multilineTextAlignment(.center)
             Text("Type a grown-up's email. We'll email you a 6-digit code — no password needed.")
                 .multilineTextAlignment(.center)
                 .foregroundStyle(.secondary)
@@ -152,7 +70,8 @@ struct SignInView: View {
                 .onSubmit { Task { await sendCode() } }
                 .font(.title3)
                 .padding(14)
-                .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(Color(.secondarySystemBackground)))
+                .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(.white))
+                .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(Color(.separator)))
                 .accessibilityLabel("Email")
             Button {
                 Task { await sendCode() }
@@ -179,7 +98,9 @@ struct SignInView: View {
                 .font(.system(size: 56))
                 .foregroundStyle(.tint)
             Text("Check your email")
-                .font(.title.bold())
+                .font(.system(.title, design: .rounded).weight(.heavy))
+                .foregroundStyle(Theme.ink)
+                .multilineTextAlignment(.center)
             Text("We sent a 6-digit code to \(sentTo). It works for 10 minutes.")
                 .multilineTextAlignment(.center)
                 .foregroundStyle(.secondary)
