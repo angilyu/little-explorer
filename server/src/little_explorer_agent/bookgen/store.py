@@ -278,6 +278,21 @@ class BookStore:
 
         return self.store.transaction(run)
 
+    def next_due(self) -> float | None:
+        """Seconds until :meth:`claim` may find work (a retry's backoff or another worker's lease running out),
+        or None when no job is queued or running, so an idle runner can sleep without touching the database."""
+        now_s = self._now_s()
+        rows = self.store._run(lambda cur: self._ex(
+            cur, "SELECT status, lease_until, run_after FROM generation_jobs WHERE status IN (?, ?)", ACTIVE
+        ).fetchall())
+        if not rows:
+            return None
+        live = [int(lease) for status, lease, _ in rows if status == "running" and int(lease) >= now_s]
+        if live:
+            return float(min(live) - now_s + 1)
+        due = min(int(after) if status == "queued" else now_s for status, _, after in rows)
+        return float(max(1, due - now_s))
+
     def renew(self, job: Job, *, step: str | None = None, costs: list[dict[str, Any]] | None = None) -> bool:
         """Extend the lease (and save the step and costs). False if another worker owns the job now."""
         lease = self._now_s() + int(self.config.lease_s)

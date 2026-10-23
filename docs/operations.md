@@ -438,6 +438,17 @@ service is already kept awake (`KEEPALIVE_SECONDS` and the keep-awake workflow).
 - If the service restarts or redeploys mid-book, the lease runs out and the next start resumes the job from its
   last finished step.
 - Other errors retry with backoff (1, 2, 4… minutes, up to an hour) for up to 4 attempts.
+- **No database access while idle**, so the free Neon database can still scale to zero (it suspends after 5 idle
+  minutes and the plan has 100 compute-hours a month; a query every 30 s would use about 180):
+  - The runner checks for work once at startup (resuming an expired lease), then sleeps until woken: a book is
+    queued or a backup restored. After a job it checks again until nothing is left.
+  - It sets a timer only while a job is waiting: a retry's backoff, a lease held by the other instance during a
+    deploy, or the daily spending cap (until midnight). `GET /admin/bookgen` shows it as `runner.next_check_s`
+    (`null` = asleep until woken).
+  - Made books are loaded at startup and whenever this instance publishes, unpublishes or deletes one. A
+    `/content/manifest.json` request reloads them in the background when the last load is over 10 minutes old
+    (that's user traffic, which wakes the database anyway). There's no timer.
+  - `/healthz` and the keep-awake pings never touch the database.
 - Memory stays low (512 MB, 0.1 CPU): one photo is processed at a time and ffmpeg runs as a subprocess.
 - The image installs `ffmpeg` and `pillow`.
 
@@ -475,7 +486,8 @@ that spend.
 - Optional:
   - `BOOKGEN_TEXT_MODEL` (default `gpt-5.4-mini`)
   - the limits above
-  - `BOOKGEN_POLL_SECONDS` (default 30)
+  - `BOOKGEN_POLL_SECONDS` (default 30): the first retry after the runner itself hits an error (doubling, up to an
+    hour); it doesn't poll when idle
   - `BOOKGEN_RUNNER=0`, which serves made books but doesn't make new ones
   - `BOOKGEN_EVERYONE`
 

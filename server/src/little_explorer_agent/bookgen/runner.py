@@ -16,6 +16,7 @@ import hashlib
 import logging
 import math
 from collections.abc import Awaitable, Callable
+from datetime import timedelta
 from typing import Any
 
 from . import moderation, narration, writer
@@ -51,7 +52,8 @@ class Runner:
         self.commons = commons or Commons()
         self.on_publish = on_publish
         self._wake = asyncio.Event()
-        self.state: dict[str, Any] = {"running": False, "job": None, "step": None, "last_error": None, "paused": False}
+        self.state: dict[str, Any] = {"running": False, "job": None, "step": None, "last_error": None, "paused": False,
+                                      "next_check_s": None}
 
     def wake(self) -> None:
         self._wake.set()
@@ -65,34 +67,52 @@ class Runner:
     # -- the loop ----------------------------------------------------------------------------------
 
     async def run_forever(self) -> None:
+        """Make books one at a time. Idle, it touches no database (Neon's free plan scales to zero): it checks
+        for work at startup and when woken (a book was queued or an owner acted), and only arms a timer while a
+        job is waiting (a retry's backoff, another worker's lease, or the daily spending cap)."""
         self.state["running"] = True
+        errors = 0
         try:
             while True:
+                self._wake.clear()
                 try:
                     worked = await self.run_once()
+                    errors = 0
                 except asyncio.CancelledError:
                     raise
                 except Exception as exc:  # noqa: BLE001 - the loop must keep going
                     log.exception("book runner")
                     self.state["last_error"] = f"{type(exc).__name__}: {exc}"[:300]
                     worked = False
-                if not worked:
-                    try:
-                        await asyncio.wait_for(self._wake.wait(), timeout=self.config.poll_s)
-                    except asyncio.TimeoutError:
-                        pass
-                    self._wake.clear()
+                    self.state["next_check_s"] = min(3600.0, self.config.poll_s * 2 ** errors)
+                    errors += 1
+                if worked:
+                    continue
+                delay = self.state.get("next_check_s")
+                if delay is None:
+                    await self._wake.wait()
+                    continue
+                try:
+                    await asyncio.wait_for(self._wake.wait(), timeout=delay)
+                except asyncio.TimeoutError:
+                    pass
         finally:
             self.state["running"] = False
 
     async def run_once(self) -> bool:
-        """Claim and run one job. False when there was nothing to do (or spending is paused)."""
+        """Claim and run one job. False when there was nothing to do (or spending is paused); then
+        ``state["next_check_s"]`` says when to look again (None: not until woken)."""
+        self.state["next_check_s"] = None
         spent = await asyncio.to_thread(self.books.spent_today)
         self.state["paused"] = spent >= self.config.daily_usd_cap
         if self.state["paused"]:
+            due = await asyncio.to_thread(self.books.next_due)
+            if due is not None:
+                self.state["next_check_s"] = max(due, self._until_tomorrow())
             return False
         job = await asyncio.to_thread(self.books.claim)
         if job is None:
+            self.state["next_check_s"] = await asyncio.to_thread(self.books.next_due)
             return False
         self.state.update(job=job.id, step=job.step)
         try:
@@ -100,6 +120,11 @@ class Runner:
         finally:
             self.state.update(job=None, step=None)
         return True
+
+    def _until_tomorrow(self) -> float:
+        now = self.books.store.now()
+        tomorrow = (now + timedelta(days=1)).replace(hour=0, minute=0, second=1, microsecond=0)
+        return max(1.0, (tomorrow - now).total_seconds())
 
     # -- one job -----------------------------------------------------------------------------------
 

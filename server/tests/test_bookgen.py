@@ -612,6 +612,63 @@ async def test_runner_pauses_at_the_daily_cap(store, clock, fake_narrate):
     assert await runner.run_once() is False and runner.state["paused"] is True
 
 
+async def test_runner_looks_again_only_while_a_job_waits(store, clock, fake_narrate):
+    books = make_books(store, clock)
+    runner = make_runner(books)
+    assert await runner.run_once() is False and runner.state["next_check_s"] is None  # idle: sleep until woken
+    job, _ = books.queue("acct", REQUEST)
+    claimed = books.claim()  # another instance (the other side of a deploy) is making it
+    assert await runner.run_once() is False
+    assert runner.state["next_check_s"] == books.config.lease_s + 1  # when its lease would run out
+    books.release(claimed, delay_s=120, error="try later")
+    assert await runner.run_once() is False and runner.state["next_check_s"] == 120  # the retry's backoff
+    clock.t += 120
+    assert await runner.run_once() is True and books.job(job.id).status == "done"
+    assert await runner.run_once() is False and runner.state["next_check_s"] is None
+
+
+async def test_paused_runner_waits_for_tomorrow_only_with_work(store, clock, fake_narrate):
+    books = make_books(store, clock, daily_usd_cap=0.1)
+    books.publish(_queued_claim(books, "a"), [{"usd": 0.2}])
+    runner = make_runner(books)
+    assert await runner.run_once() is False and runner.state["paused"] and runner.state["next_check_s"] is None
+    books.config = BookgenConfig(**{**books.config.__dict__, "daily_usd_cap": 10.0})
+    books.queue("b", REQUEST)
+    books.config = BookgenConfig(**{**books.config.__dict__, "daily_usd_cap": 0.1})
+    assert await runner.run_once() is False
+    assert 1 <= runner.state["next_check_s"] <= 86_401
+
+
+async def test_idle_service_never_touches_the_database(server, store, monkeypatch):
+    # Neon's free plan scales to zero when idle; a poll every few seconds would keep it awake all month.
+    c, service = server
+    for _ in range(20):
+        await asyncio.sleep(0)
+    assert service.runner.state["running"] and service.runner.state["next_check_s"] is None
+    calls: list[str] = []
+    run = store._run
+    monkeypatch.setattr(store, "_run", lambda fn: (calls.append("db"), run(fn))[1])
+    now = [service.clock()]
+    service.clock = lambda: now[0]
+
+    for _ in range(3):  # a week of idle time, with the keep-awake pings
+        now[0] += 2 * 86_400
+        assert (await c.get("/healthz")).status == 200
+        await asyncio.sleep(0.1)  # any timer (poll_s is 0.05 in these tests) would fire
+    assert calls == [] and service.runner.state["next_check_s"] is None
+
+    # A manifest request (user traffic) reloads made books in the background when they're 10+ minutes old.
+    assert (await c.get("/content/manifest.json", headers=APP)).status == 200
+    await service._refreshing
+    assert calls
+    calls.clear()
+    now[0] += 60
+    assert (await c.get("/content/manifest.json", headers=APP)).status == 200
+    for _ in range(20):
+        await asyncio.sleep(0)
+    assert calls == []
+
+
 async def test_cancelled_job_stops_at_the_next_step(store, clock, fake_narrate):
     books = make_books(store, clock)
     storage = MemoryStorage()

@@ -789,6 +789,7 @@ async def handle_admin_restore(request: web.Request) -> web.Response:
         return web.json_response({"error": str(exc)}, status=400)
     log.warning("owner restored a backup: %s", counts)
     await request.app[BOOKGEN].refresh()
+    request.app[BOOKGEN].wake()  # the backup may hold unfinished jobs
     return web.json_response({"ok": True, "restored": counts})
 
 
@@ -927,6 +928,8 @@ async def handle_health(request: web.Request) -> web.Response:
 
 
 async def handle_manifest(request: web.Request) -> web.Response:
+    # The app asks on launch and when it comes back to the front: user traffic, which may wake the database.
+    request.app[BOOKGEN].maybe_refresh()
     manifest = request.app[MANIFEST]
     headers = {"Cache-Control": "no-cache", "ETag": f'"{manifest["version"]}"'}
     if request.headers.get("If-None-Match") == headers["ETag"]:

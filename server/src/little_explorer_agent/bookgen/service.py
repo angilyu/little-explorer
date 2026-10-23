@@ -7,6 +7,8 @@ import asyncio
 import contextlib
 import copy
 import logging
+import math
+import time
 from pathlib import Path
 from typing import Any
 
@@ -19,7 +21,10 @@ from .store import Asset, BookStore, Job
 
 log = logging.getLogger(__name__)
 
-REFRESH_SECONDS = 300.0
+# Made books are reloaded at startup and whenever this instance changes them. Another instance (the other side
+# of a deploy) may publish too, so a manifest request older than this reloads them in the background. There is no
+# timer: an idle service never touches the database (Neon's free plan scales to zero).
+REFRESH_SECONDS = 600.0
 
 
 class BookgenService:
@@ -47,6 +52,9 @@ class BookgenService:
             self.runner = Runner(self.books, self.config, client=client, storage=self.storage, commons=commons,
                                  on_publish=self.refresh)
         self._tasks: list[asyncio.Task[Any]] = []
+        self.clock = time.monotonic
+        self._refreshed_at = -math.inf
+        self._refreshing: asyncio.Task[None] | None = None
 
     @property
     def ready(self) -> bool:
@@ -56,6 +64,7 @@ class BookgenService:
     # -- the manifest ------------------------------------------------------------------------------
 
     async def refresh(self) -> None:
+        self._refreshed_at = self.clock()
         published = await asyncio.to_thread(self.books.published) if self.storage is not None else []
         merged, extra = manifest_merge.merge(self.static, self.static_files, published)
         if merged.get("version") != self.manifest.get("version"):
@@ -65,6 +74,20 @@ class BookgenService:
         self.manifest.update(fresh)
         self.extra.clear()
         self.extra.update(extra)
+
+    def maybe_refresh(self) -> None:
+        """On a manifest request: reload made books in the background if the last load is stale."""
+        if self.storage is None or self.clock() - self._refreshed_at < REFRESH_SECONDS:
+            return
+        if self._refreshing is not None and not self._refreshing.done():
+            return
+        self._refreshing = asyncio.create_task(self._refresh_quietly())
+
+    async def _refresh_quietly(self) -> None:
+        try:
+            await self.refresh()
+        except Exception as exc:  # noqa: BLE001 - keep serving what we have
+            log.warning("could not refresh made books: %s", exc)
 
     def url_for(self, asset: Asset) -> str:
         return self.storage.presign(asset.r2_key, self.config.asset_url_ttl_s)
@@ -121,27 +144,18 @@ class BookgenService:
 
     # -- lifecycle ---------------------------------------------------------------------------------
 
-    async def _refresh_loop(self) -> None:
-        # Another instance (e.g. the other side of a deploy) may publish; catch up now and then.
-        while True:
-            await asyncio.sleep(REFRESH_SECONDS)
-            try:
-                await self.refresh()
-            except Exception as exc:  # noqa: BLE001 - keep serving what we have
-                log.warning("could not refresh made books: %s", exc)
-
     async def start(self) -> None:
         try:
             await self.refresh()
         except Exception as exc:  # noqa: BLE001 - serve the hand-made books anyway
             log.warning("could not load made books: %s", exc)
-        if self.storage is not None:
-            self._tasks.append(asyncio.create_task(self._refresh_loop()))
         if self.runner is not None:
             self._tasks.append(asyncio.create_task(self.runner.run_forever()))
             log.info("book runner started (one book at a time, limits %s)", self.config.limits_json())
 
     async def stop(self) -> None:
+        if self._refreshing is not None:
+            self._tasks.append(self._refreshing)
         for task in self._tasks:
             task.cancel()
         for task in self._tasks:
