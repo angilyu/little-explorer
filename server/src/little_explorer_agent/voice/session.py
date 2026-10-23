@@ -269,7 +269,8 @@ async def start_graph_session(
         context_message=context_message,
         on_decision=on_decision,
     )
-    await session.start(agent=agent, room=ctx.room, room_options=_room_options(preset))
+    # record=False: upload no audio, transcript, traces or logs to LiveKit Cloud, whatever the project setting.
+    await session.start(agent=agent, room=ctx.room, room_options=_room_options(preset), record=False)
     if greeting:
         session.say(greeting)
     return session

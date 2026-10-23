@@ -514,7 +514,8 @@ async def start_realtime_session(
             if getattr(item, "role", None) == "assistant":
                 reply_guard.remember("assistant", getattr(item, "text_content", "") or "")
 
-    await session.start(agent=agent, room=ctx.room, room_options=_room_options(preset))
+    # record=False: upload no audio, transcript, traces or logs to LiveKit Cloud, whatever the project setting.
+    await session.start(agent=agent, room=ctx.room, room_options=_room_options(preset), record=False)
     if fallback is not None:
         rt = agent.realtime_llm_session
         rt_holder.append(rt)

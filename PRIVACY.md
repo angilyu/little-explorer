@@ -50,6 +50,7 @@ then the same explanation, so a child can't turn Milo on alone. Reading and read
 While Milo is on and the child has tapped **Talk to Milo**, the child's speech and the page being read are
 streamed through [LiveKit](https://livekit.io) (the voice connection) to [OpenAI](https://openai.com) (the AI)
 so Milo can understand and answer. The app doesn't record or keep the audio, and it doesn't save conversations.
+Milo also tells LiveKit not to record its sessions, so LiveKit keeps no audio, transcripts or session traces.
 The voice service may keep short text of what was said in its logs for a limited time to fix problems. OpenAI
 handles the audio under its own API terms, which say API data isn't used to train its models by default. When
 Milo is off, nothing is streamed.

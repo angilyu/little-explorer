@@ -130,7 +130,11 @@ The same as HTTP: `GET`/`POST /admin/accounts`, `GET /admin/accounts/<email or i
 
 ## Run the server
 
-No audio is stored. The app never holds LiveKit secrets. A small token server mints room tokens that dispatch the agent automatically.
+No audio is stored. Every Milo session starts with `AgentSession.start(record=False)` (pipeline and realtime), so
+LiveKit Cloud's Agent observability uploads no audio, transcripts, traces or logs for Milo, even with it on for the
+project. To check after a deploy, open a new session under Sessions in the LiveKit dashboard: **Agent insights** should
+have no audio or transcript. The worker's runtime logs (`lk agent logs`) still hold the short turn text that
+`_log_decision` writes. The app never holds LiveKit secrets. A small token server mints room tokens that dispatch the agent automatically.
 
 ```sh
 cd server
