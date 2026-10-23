@@ -586,8 +586,16 @@ class Accounts:
         counts["book_assets"] = ex(
             cur, "DELETE FROM book_assets WHERE book_id IN (SELECT id FROM books WHERE account_id = ?)", (account_id,)
         ).rowcount
-        for table in ("books", "generation_jobs"):
-            counts[table] = ex(cur, f"DELETE FROM {table} WHERE account_id = ?", (account_id,)).rowcount
+        counts["books"] = ex(cur, "DELETE FROM books WHERE account_id = ?", (account_id,)).rowcount
+        # Its jobs lose everything about the account but keep their day and cost, so the global daily spend
+        # cap still counts money already spent; a job still going stops at its next step.
+        counts["generation_jobs"] = ex(
+            cur,
+            """UPDATE generation_jobs SET account_id = '', input = '{}', error = '',
+                status = CASE WHEN status IN ('queued', 'running') THEN 'failed' ELSE status END, lease_until = 0
+               WHERE account_id = ?""",
+            (account_id,),
+        ).rowcount
         ex(cur, "DELETE FROM email_codes WHERE email = ?", (email,))
         # Session minutes stay as the device's (they're how much Milo was used, not the account's).
         ex(cur, "UPDATE sessions SET account_id = NULL WHERE account_id = ?", (account_id,))

@@ -35,8 +35,10 @@ class LeaseLost(Exception):
     """Another worker owns the job now (or the owner cancelled it): stop without writing."""
 
 
-def r2_key(book_id: str, file: str) -> str:
-    return f"books/{book_id}/{file}"
+def r2_key(book_id: str, file: str, attempt: int) -> str:
+    # Each attempt writes its own objects, so a worker that lost its lease can't overwrite (or delete) the files
+    # of the worker that took over; the manifest path is the same either way (see Asset.r2_key).
+    return f"books/{book_id}/a{attempt}/{file}"
 
 
 class Runner:
@@ -205,8 +207,15 @@ class Runner:
                 if not await moderation.image_ok(self.client, self.config, small):
                     log.info("job %s: photo %s flagged; trying the next one", job.id, candidate.get("title"))
                     continue
+                credits = photo.credits(file, queries[0] if queries else "")
+                try:
+                    # The credit line is shown under the photo, and Commons authors write their own.
+                    await moderation.check_texts(self.client, self.config, writer.credit_texts(credits), "photo credit")
+                except Rejected:
+                    log.info("job %s: photo %s credit flagged; trying the next one", job.id, candidate.get("title"))
+                    continue
                 used.add(photo.title)
-                page["photo"] = photo.credits(file, queries[0] if queries else "")
+                page["photo"] = credits
                 await self._upload(job, f"Photos/{file}", photo.data, "image/jpeg", book=book)
                 break
             await self._renew(job, costs)
@@ -216,7 +225,7 @@ class Runner:
 
     async def _upload(self, job: Job, path: str, data: bytes, content_type: str, *,
                       book: dict[str, Any] | None = None, narration: dict[str, Any] | None = None) -> None:
-        key = r2_key(job.book_id, path.rsplit("/", 1)[-1])
+        key = r2_key(job.book_id, path.rsplit("/", 1)[-1], job.attempts)
         await self.storage.put(key, data, content_type)
         asset = Asset(job.book_id, path, key, hashlib.sha256(data).hexdigest(), len(data))
         if not await asyncio.to_thread(self.books.add_asset, job, asset, book=book, narration=narration):

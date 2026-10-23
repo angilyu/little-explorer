@@ -268,4 +268,10 @@ def assemble(book_id: str, request: dict[str, Any], draft: dict[str, Any]) -> di
 
 
 def all_texts(book: dict[str, Any]) -> list[str]:
-    return [book["theme"], book["city"], book["tagline"]] + [t for p in book["pages"] for t in (p["text"], p["about"])]
+    """Every piece of the book's own text that the app or Milo shows (photo credits: see credit_texts)."""
+    head = [book["theme"], book["city"], book["tagline"], book.get("country", ""), book.get("flag", "")]
+    return head + [t for p in book["pages"] for t in (p["text"], p["about"], p.get("emoji", ""))]
+
+
+def credit_texts(credits: dict[str, Any]) -> list[str]:
+    return [str(credits.get(k) or "") for k in ("author", "commonsTitle", "license")]

@@ -408,7 +408,8 @@ curl -X POST -H "Authorization: Bearer $PIP_ADMIN_KEY" -H "Content-Type: applica
 2. **Photos:**
    - Commons is searched with the page's query and alternates. Only free licenses are used, checked through the
      Commons API like `scripts/fetch_photos.py`, and no photo is used twice.
-   - The first candidate that passes moderation (an image check at 512 px) is resized to a JPEG and stored in R2.
+   - The first candidate whose image (checked at 512 px) and credit line both pass moderation is resized to a
+     JPEG and stored in R2.
    - At least 75% of the pages need a photo, or the job fails.
 3. **Narration:** `gpt-4o-mini-tts` (voice `coral`) at the level's pace, then `whisper-1` word timings and an ffmpeg
    level/encode to m4a, the same as `scripts/generate_narration.py`.
@@ -431,7 +432,8 @@ service is already kept awake (`KEEPALIVE_SECONDS` and the keep-awake workflow).
 - The image installs `ffmpeg` and `pillow`.
 
 **Files.** Photos and narration are stored in the private Cloudflare R2 bucket `little-explorer-books` under
-`books/<book id>/`. The manifest serves a made book's JSON and the merged `library.json`/`narration.json` from
+`books/<book id>/a<attempt>/` (each attempt writes its own objects, so a worker that lost its lease can't
+overwrite the new owner's files). The manifest serves a made book's JSON and the merged `library.json`/`narration.json` from
 memory; photos and m4a files are `302` redirects to presigned R2 links that last an hour. The app still checks every
 file's SHA-256. The bundled books don't change, and with no made books the manifest is exactly the bundled one.
 `/healthz` reports both `content` (the live manifest) and `bundled` (this commit's books); the deploy workflow checks
@@ -451,7 +453,9 @@ The limits are:
 - for the whole server, a $2 daily spend cap (`BOOKGEN_DAILY_USD_CAP`), after which new requests get 503 and the
   runner starts no new job until the next day
 
-Each job's `costs` log lists every call with its model, tokens or seconds, and dollars.
+Each job's `costs` log lists every call with its model, tokens or seconds, and dollars. Deleting an account deletes its
+books and files, but keeps its jobs' day and cost (with the account and request blanked) so the daily cap still counts
+that spend.
 
 **Settings** (Render env vars; they're already set on the service):
 

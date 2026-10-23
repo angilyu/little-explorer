@@ -18,7 +18,7 @@ from little_explorer_agent.bookgen.cost import CostLog
 from little_explorer_agent.bookgen.manifest import merge
 from little_explorer_agent.bookgen.oai import Moderation, OpenAIError, TextResult
 from little_explorer_agent.bookgen.photos import Photo, acceptable, license_of, to_jpeg
-from little_explorer_agent.bookgen.runner import Runner, r2_key
+from little_explorer_agent.bookgen.runner import LeaseLost, Runner, r2_key
 from little_explorer_agent.bookgen.service import BookgenService
 from little_explorer_agent.bookgen.storage import MemoryStorage, R2Storage
 from little_explorer_agent.bookgen.store import BookStore, LimitError, new_book_id
@@ -115,9 +115,10 @@ def tiny_jpeg(color=(200, 120, 40)):
 
 
 class FakeCommons:
-    def __init__(self, missing=0):
+    def __init__(self, missing=0, authors=None):
         self.missing = missing
         self.downloads = 0
+        self.authors = authors or {}
 
     async def candidates(self, queries, used):
         if self.missing > 0:
@@ -127,7 +128,7 @@ class FakeCommons:
 
     async def download(self, page):
         self.downloads += 1
-        return Photo(tiny_jpeg(), page["title"], "A. Photographer", "CC BY-SA 4.0",
+        return Photo(tiny_jpeg(), page["title"], self.authors.get(page["title"], "A. Photographer"), "CC BY-SA 4.0",
                      "https://creativecommons.org/licenses/by-sa/4.0", "https://commons.wikimedia.org/wiki/" + page["title"])
 
     async def close(self):
@@ -476,7 +477,7 @@ async def test_runner_makes_and_publishes_a_book(store, clock, fake_narrate):
     assert set(book.narration) == {f"{row.id}/{p['id']}" for p in pages}
     assets = books.assets(row.id)
     assert len(assets) == 20 and set(storage.objects) == {a.r2_key for a in assets.values()}
-    assert r2_key(row.id, f"{row.id}-p01.jpg") in storage.objects
+    assert r2_key(row.id, f"{row.id}-p01.jpg", 1) in storage.objects
     # The cost log: text, fact check (with web search) and narration, under the per-book cap.
     steps = {c["step"] for c in done.costs}
     assert steps == {"text", "narration"} and 0 < done.cost_usd < CONFIG.job_usd_cap
@@ -543,6 +544,33 @@ async def test_runner_skips_flagged_photos(store, clock, fake_narrate):
     book = books.published()[0][0]
     assert book.json["pages"][0]["photo"]["commonsTitle"].endswith(" 1.jpg")  # the second candidate
     assert commons.downloads == 11
+
+
+async def test_runner_skips_photos_with_flagged_credits(store, clock, fake_narrate):
+    books = make_books(store, clock)
+    first = f"File:{draft(2)['pages'][0]['photo_queries'][0]} 0.jpg"
+    commons = FakeCommons(authors={first: "Rude McRudeface"})
+    books.queue("acct", REQUEST)
+    await make_runner(books, client=FakeOpenAI(flag_word="Rude"), commons=commons).run_once()
+    page = books.published()[0][0].json["pages"][0]
+    assert page["photo"]["commonsTitle"].endswith(" 1.jpg") and page["photo"]["author"] == "A. Photographer"
+
+
+async def test_a_worker_that_lost_its_lease_cannot_touch_the_new_owners_files(store, clock):
+    books = make_books(store, clock, lease_s=300)
+    storage = MemoryStorage()
+    runner = make_runner(books, storage=storage)
+    books.queue("acct", REQUEST)
+    stale = books.claim()
+    clock.t += 301
+    fresh = books.claim()
+    assert fresh.attempts == stale.attempts + 1
+    path = f"Photos/{fresh.book_id}-p01.jpg"
+    await runner._upload(fresh, path, b"new", "image/jpeg")
+    with pytest.raises(LeaseLost):
+        await runner._upload(stale, path, b"old", "image/jpeg")
+    assert storage.objects == {r2_key(fresh.book_id, f"{fresh.book_id}-p01.jpg", fresh.attempts): (b"new", "image/jpeg")}
+    assert books.assets(fresh.book_id)[path].r2_key in storage.objects
 
 
 async def test_runner_fails_without_enough_photos(store, clock, fake_narrate):
@@ -806,7 +834,10 @@ async def test_account_delete_removes_made_books(server, accounts, clock):
     resp = await c.post("/account/delete", json={"code": code}, headers={**APP, "X-Pip-Session": token})
     assert resp.status == 200, await resp.text()
     assert service.storage.objects == {} and job.book_id not in service.manifest["order"]
-    assert service.books.books(account.id) == [] and service.books.job(job.id) is None
+    assert service.books.books(account.id) == []
+    kept = service.books.job(job.id)  # nothing about the account, but today's spend still counts
+    assert kept.account_id == "" and kept.input == {} and kept.cost_usd > 0
+    assert service.books.spent_today() == pytest.approx(kept.cost_usd)
 
 
 def test_backup_covers_bookgen_tables(store, clock):
