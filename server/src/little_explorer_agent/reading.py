@@ -23,6 +23,9 @@ a bad id, a time more than :data:`MAX_AGE_DAYS` days old) are skipped and counte
 a batch that would take an account over :data:`PER_ACCOUNT_PER_HOUR` or :data:`PER_ACCOUNT_PER_DAY`
 stored events is refused with ``429 too_many`` and ``retry_after_s``. Deleting the account deletes
 its events.
+
+``GET /account/reading`` gives the account's reading progress back for the Passport badges (see
+:meth:`ReadingLog.progress`), so every device signed in to it shows the same badges.
 """
 
 from __future__ import annotations
@@ -245,6 +248,34 @@ class ReadingLog:
             ),
             "total": {"accounts": int(totals[0][0]), "devices": int(totals[0][1]), "opens": int(totals[0][2] or 0), **_sums(totals[0][3:])},
         }
+
+    def progress(self, account_id: str) -> dict[str, list[str]]:
+        """What the account has read, from all of its devices, for the app's badges: the different
+        pages read (``"book/page"``), pages read with Milo on, pages read aloud to the end, and the days
+        with a page read. Sets, so the app can merge them with what it hasn't sent yet."""
+
+        def run(cur: Any) -> dict[str, list[str]]:
+            def keys(where: str) -> list[str]:
+                rows = self.store._exec(
+                    cur,
+                    f"SELECT DISTINCT book, page FROM reading_events WHERE account_id = ? AND {where}",
+                    (account_id,),
+                ).fetchall()
+                return sorted(f"{book}/{page}" for book, page in rows if book and page)
+
+            days = self.store._exec(
+                cur,
+                "SELECT DISTINCT day FROM reading_events WHERE account_id = ? AND kind = 'page_view'",
+                (account_id,),
+            ).fetchall()
+            return {
+                "pages": keys("kind = 'page_view'"),
+                "milo_pages": keys("kind = 'page_view' AND milo = 1"),
+                "listened": keys("kind = 'read_aloud' AND outcome = 'finished'"),
+                "days": sorted(str(d) for (d,) in days if d),
+            }
+
+        return self.store._run(run)
 
     def events_of(self, account_id: str) -> list[dict[str, Any]]:
         names = _COLUMNS.split(", ")

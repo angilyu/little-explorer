@@ -165,5 +165,14 @@ final class ContentTests: XCTestCase {
         XCTAssertNil(DemoLaunch.parse(["app", "-demoMilo", "confirm"]), "the already-on version is gone")
         XCTAssertEqual(DemoLaunch.parse(["app", "-demoGate"])?.account?.miloAllowed, true)
         XCTAssertEqual(DemoLaunch.parse(["app", "-demoStars", "12", "-demoBadges"])?.seedStars, 12)
+        let seen = try XCTUnwrap(DemoLaunch.parse(["app", "-demoBadges", "seen"]))
+        XCTAssertTrue(seen.badgesSeen)
+        XCTAssertNil(seen.badgeCategory)
+        let places = try XCTUnwrap(DemoLaunch.parse(["app", "-demoBadges", "places"]))
+        XCTAssertTrue(places.badgesSeen)
+        XCTAssertEqual(places.badgeCategory, "places")
+        let followed = try XCTUnwrap(DemoLaunch.parse(["app", "-demoBadges", "-demoStars", "12"]))
+        XCTAssertFalse(followed.badgesSeen, "the next flag is not a badge option")
+        XCTAssertEqual(followed.seedStars, 12)
     }
 }

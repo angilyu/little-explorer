@@ -46,13 +46,16 @@ account's ``/account/stars``, ``/account/coins``, ``/account/coins/convert``, ``
 ``/account/import``, and ``POST /account/milo-consent {"allow": true | false}`` records a grown-up's
 choice about Milo for the account (the account JSON carries it as ``milo_consent``).
 ``POST /account/reading {"events": [...]}`` stores a batch of the app's reading events (page views,
-read-aloud use, a daily app open; see :mod:`.reading`) for the session's account and device.
+read-aloud use, a daily app open; see :mod:`.reading`) for the session's account and device, and
+``GET /account/reading`` returns the account's reading progress for the badges (``{"progress": {"pages",
+"milo_pages", "listened", "days"}}``).
 Errors are ``{"error": "bad_email" | "bad_code" | "expired" | "too_many" |
 "signed_out" | "email_off" | "email_failed", ...}``. The owner manages accounts with
 ``/admin/accounts...`` and saves everything with ``GET /admin/backup``.
 
 It also serves the book content (see :mod:`.catalog`): ``GET /content/manifest.json`` and
-``GET /content/<path>`` for each file in it, so books can change without an app update.
+``GET /content/<path>`` for each file in it, so books and the Passport badges (``badges.json``, see
+:mod:`.badges`) can change without an app update.
 
 Run: ``uv run python -m little_explorer_agent.token_server``.
 """
@@ -628,6 +631,9 @@ async def handle_account_reading(request: web.Request) -> web.Response:
     session = await _session(request)
     if isinstance(session, web.Response):
         return session
+    if request.method == "GET":
+        progress = await asyncio.to_thread(request.app[READING].progress, session.account.id)
+        return web.json_response({"progress": progress})
     body = await _json_body(request)
     if body is None:
         return web.json_response({"error": "bad body"}, status=400)
@@ -869,6 +875,7 @@ def create_app(
     app.router.add_get("/account/hearts", handle_account_hearts)
     app.router.add_post("/account/hearts", handle_account_hearts)
     app.router.add_post("/account/import", handle_account_import)
+    app.router.add_get("/account/reading", handle_account_reading)
     app.router.add_post("/account/reading", handle_account_reading)
     app.router.add_get("/admin/accounts", handle_admin_accounts)
     app.router.add_post("/admin/accounts", handle_admin_accounts)

@@ -93,3 +93,6 @@ books bundled in the app are the last fallback. Milo re-reads the books from the
 2. Merge to `main`. The Deploy workflow rebuilds Render; the next app launch picks the changes up.
 
 A new book must still use the existing page format; a format change needs an app update.
+
+The manifest also carries `badges.json`, the Passport badges, so they can change the same way (see
+[Badges](operations.md#badges)).

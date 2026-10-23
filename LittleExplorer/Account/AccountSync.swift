@@ -8,8 +8,8 @@ enum AccountKeys {
     }
 }
 
-/// Keeps the stars and coins on screen in step with who is signed in. The server keeps the account's
-/// stars and coins; this device keeps a copy per account so they show offline.
+/// Keeps the stars, coins and reading progress (for the badges) on screen in step with who is signed in.
+/// The server keeps the account's; this device keeps a copy per account so they show offline.
 ///
 /// When an account claims this device (its first account, e.g. Francis's family account on his iPad),
 /// what the device saved before accounts joins the account here and is sent with `POST /account/import`
@@ -44,7 +44,7 @@ struct AccountSync {
         if !legacyStars.isEmpty { defaults.set(true, forKey: importKey(id)) }
     }
 
-    /// Checks the sign-in and fetches the account's books, stars and coins.
+    /// Checks the sign-in and fetches the account's books, stars, coins and reading progress.
     func refresh() async {
         await account.refresh()
         guard let id = account.account?.id, let token = account.token else { return }
@@ -58,6 +58,7 @@ struct AccountSync {
         async let saved: Void = stars.restore(from: StarBackup(baseURL: baseURL(), deviceId: deviceId(), session: session, token: token))
         async let balance: Bool = coins.refresh(using: CoinService(baseURL: baseURL(), deviceId: deviceId(), session: session, token: token))
         _ = await (saved, balance)
+        await reading?.restore(using: ReadingService(baseURL: baseURL(), session: session), token: token)
     }
 
     func signedOut(_ accountId: String) {
@@ -71,6 +72,7 @@ struct AccountSync {
     private func show(_ accountId: String?) {
         stars.switchAccount(accountId)
         coins.switchAccount(accountId)
+        reading?.switchAccount(accountId)
     }
 
     private func importKey(_ accountId: String) -> String { "account.\(accountId).importPending" }

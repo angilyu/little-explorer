@@ -19,7 +19,7 @@ def test_bundled_content_makes_a_valid_manifest():
     manifest = build_manifest(RESOURCES_DIR)
     files = manifest["files"]
     assert manifest["order"] == ["paris", "paris-food", "paris-fun", "paris-notre-dame", "paris-eiffel", "paris-jardin", "paris-louvre", "paris-versailles", "paris-seine", "paris-french", "london", "london-big-ben", "barcelona", "barcelona-park-guell", "barcelona-sagrada", "barcelona-casa-batllo", "barcelona-tibidabo", "barcelona-montjuic", "tahoe", "tahoe-heavenly", "tahoe-northstar", "hawaii", "hawaii-honolulu", "chengdu", "longyan", "beijing", "beijing-great-wall", "beijing-forbidden-city", "beijing-summer-palace", "beijing-temple-of-heaven", "shanghai", "israel-tel-aviv", "israel-dead-sea", "israel-hebrew", "travel-flight", "travel-packing", "travel-passport", "travel-hotel", "travel-jetlag"]
-    assert "library.json" in files and "Narration/narration.json" in files
+    assert "library.json" in files and "badges.json" in files and "Narration/narration.json" in files
     assert any(p.startswith("Photos/") for p in files) and any(p.endswith(".m4a") for p in files)
     assert all(len(e["sha256"]) == 64 and e["size"] > 0 for e in files.values())
 
@@ -46,6 +46,8 @@ def test_ignores_hidden_and_unknown_files(tmp_path):
         (lambda r: (r / "library.json").write_text('{"order": []}'), "non-empty"),
         (lambda r: (r / "library.json").write_text('{"order": ["paris", "rome"]}'), "rome"),
         (lambda r: (r / "Photos" / "paris.json").write_text("{}"), "unique"),
+        (lambda r: (r / "badges.json").write_text("{nope"), "badges.json"),
+        (lambda r: (r / "badges.json").write_text('{"format": 2}'), "format"),
     ],
 )
 def test_rejects_content_the_app_could_not_use(tmp_path, setup, message):
@@ -53,3 +55,12 @@ def test_rejects_content_the_app_could_not_use(tmp_path, setup, message):
     setup(root)
     with pytest.raises(CatalogError, match=message):
         build_manifest(root)
+
+
+def test_web_image_ships_every_top_level_content_file():
+    repo = RESOURCES_DIR.parents[1]
+    dockerfile = (repo / "server" / "Dockerfile.web").read_text(encoding="utf-8")
+    ignore = (repo / ".dockerignore").read_text(encoding="utf-8").splitlines()
+    for name in ("library.json", "badges.json"):
+        assert f"COPY LittleExplorer/Resources/{name} ./content/{name}" in dockerfile
+        assert f"!LittleExplorer/Resources/{name}" in ignore

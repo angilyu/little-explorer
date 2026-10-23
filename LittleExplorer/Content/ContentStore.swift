@@ -90,8 +90,9 @@ struct ContentUpdater {
     }
 }
 
-/// The books on the shelf. Starts with what's on the device and quietly swaps in new books from the
-/// Milo server when there are any, so content changes don't need an app update.
+/// The books on the shelf and the Passport badges (`badges.json`). Starts with what's on the device and
+/// quietly swaps in new ones from the Milo server when there are any, so content changes don't need an
+/// app update.
 @MainActor
 @Observable
 final class ContentStore {
@@ -104,6 +105,7 @@ final class ContentStore {
     }
 
     private(set) var books: [Book]
+    private(set) var badges: BadgeCatalog
     private(set) var version: String?
     private(set) var status: Status = .idle
     private(set) var lastChecked: Date?
@@ -139,6 +141,7 @@ final class ContentStore {
         }
         version = defaults.string(forKey: Self.versionKey)
         books = Self.load(files)
+        badges = BadgeCatalog.load(files)
     }
 
     nonisolated static var currentBuild: String {
@@ -169,6 +172,7 @@ final class ContentStore {
                 version = newVersion
                 defaults.set(newVersion, forKey: Self.versionKey)
                 books = Self.load(files)
+                badges = BadgeCatalog.load(files)
                 NarrationLibrary.reload()
                 status = downloaded == 0 ? .upToDate : .updated(downloaded: downloaded)
             }

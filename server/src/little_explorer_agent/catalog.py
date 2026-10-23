@@ -1,7 +1,7 @@
 """The book content the app can download without an app update.
 
-Everything under ``LittleExplorer/Resources`` (books, photos, narration clips and ``library.json``,
-the shelf order) is listed in a manifest of SHA-256 hashes. The app compares the manifest with what
+Everything under ``LittleExplorer/Resources`` (books, photos, narration clips, ``library.json``,
+the shelf order, and ``badges.json``, the Passport badges; see :mod:`.badges`) is listed in a manifest of SHA-256 hashes. The app compares the manifest with what
 it has and downloads only changed files; the agent fetches the book JSON from the same place.
 File names must be unique across folders, because the app bundle (and the app's cache) is flat.
 """
@@ -13,6 +13,8 @@ import json
 import os
 from pathlib import Path
 from typing import Any
+
+from . import badges
 
 RESOURCES_DIR = Path(__file__).resolve().parents[3] / "LittleExplorer" / "Resources"
 LIBRARY_FILE = "library.json"
@@ -44,6 +46,9 @@ def content_files(root: Path) -> dict[str, Path]:
     library = root / LIBRARY_FILE
     if library.is_file():
         files[LIBRARY_FILE] = library
+    badge_file = root / badges.FILE
+    if badge_file.is_file():
+        files[badges.FILE] = badge_file
     for folder in FOLDERS:
         base = root / folder
         if not base.is_dir():
@@ -70,6 +75,11 @@ def build_manifest(root: Path | None = None) -> dict[str, Any]:
     missing = [b for b in order if f"Books/{b}.json" not in files]
     if missing:
         raise CatalogError(f"books in {LIBRARY_FILE} without Books/<id>.json: {missing}")
+    if badges.FILE in files:
+        try:
+            badges.validate(json.loads(files[badges.FILE].read_text(encoding="utf-8")))
+        except (ValueError, badges.BadgeError) as exc:
+            raise CatalogError(f"{badges.FILE}: {exc}") from exc
     entries = {rel: {"sha256": _sha256(path), "size": path.stat().st_size} for rel, path in files.items()}
     version = hashlib.sha256(
         json.dumps({rel: e["sha256"] for rel, e in entries.items()}, sort_keys=True).encode()

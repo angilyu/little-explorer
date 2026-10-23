@@ -74,7 +74,7 @@ struct LittleExplorerApp: App {
                     reading.appOpened()
                     Task { await reading.flush() }
                     Task { await content.refresh() }
-                    Task { await AccountSync(account: account, stars: stars, coins: coins).refresh() }
+                    Task { await AccountSync(account: account, stars: stars, coins: coins, reading: reading).refresh() }
                 }
         }
     }

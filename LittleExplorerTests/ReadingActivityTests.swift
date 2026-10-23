@@ -191,6 +191,72 @@ final class ReadingActivityTests: XCTestCase {
         XCTAssertEqual(makeActivity().queue.map(\.page), ["bonjour"])
     }
 
+    func testProgressKeepsPagesListensMiloPagesAndDaysPerAccount() {
+        let activity = makeActivity()
+        readPage(activity, page: "welcome", index: 0, seconds: 3, milo: true)
+        readPage(activity, page: "welcome", index: 0, seconds: 3)
+        readPage(activity, page: "bonjour", index: 1, seconds: 0.5)  // too short: not read
+        activity.readAloud(.init(pageId: "paris/welcome", outcome: .finished, mode: .clip, seconds: 9), index: 0)
+        activity.readAloud(.init(pageId: "paris/eiffel", outcome: .stopped, mode: .clip, seconds: 2), index: 2)
+
+        XCTAssertEqual(activity.progress.pages, ["paris/welcome"])
+        XCTAssertEqual(activity.progress.miloPages, ["paris/welcome"])
+        XCTAssertEqual(activity.progress.listened, ["paris/welcome"], "only read-aloud he listened to the end")
+        XCTAssertEqual(activity.progress.days, ["2027-01-15"])
+
+        // Another account on the device starts empty; switching back shows the first one's again.
+        accountId = "acct-2"
+        activity.switchAccount("acct-2")
+        XCTAssertTrue(activity.progress.isEmpty)
+        activity.switchAccount("acct-1")
+        XCTAssertEqual(activity.progress.pages, ["paris/welcome"])
+
+        let relaunched = makeActivity()
+        relaunched.switchAccount("acct-1")
+        XCTAssertEqual(relaunched.progress.pages, ["paris/welcome"])
+
+        relaunched.forgetAccount("acct-1")
+        XCTAssertTrue(relaunched.progress.isEmpty)
+        let afterSignOut = makeActivity()
+        afterSignOut.switchAccount("acct-1")
+        XCTAssertTrue(afterSignOut.progress.isEmpty, "signing out forgets it on this device")
+    }
+
+    func testMergeAddsOtherDevicesReadingAndNeverTakesAway() {
+        let activity = makeActivity()
+        readPage(activity, page: "welcome", index: 0, seconds: 3)
+        activity.merge(ReadingProgress(pages: ["london/hello"], days: ["2027-01-10"]), accountId: "acct-1")
+        XCTAssertEqual(activity.progress.pages, ["paris/welcome", "london/hello"])
+        XCTAssertEqual(activity.progress.days, ["2027-01-10", "2027-01-15"])
+        activity.merge(ReadingProgress(), accountId: "acct-1")
+        XCTAssertEqual(activity.progress.pages.count, 2)
+        activity.merge(ReadingProgress(pages: ["rome/ciao"]), accountId: "someone-else")
+        XCTAssertFalse(activity.progress.pages.contains("rome/ciao"), "only the account on screen")
+    }
+
+    func testNoProgressSignedOutOrInDemo() {
+        accountId = nil
+        let signedOut = makeActivity()
+        readPage(signedOut, page: "welcome", index: 0, seconds: 3)
+        XCTAssertTrue(signedOut.progress.isEmpty)
+
+        accountId = "acct-1"
+        let demo = makeActivity(enabled: false)
+        readPage(demo, page: "welcome", index: 0, seconds: 3)
+        demo.switchAccount("acct-1")
+        demo.merge(ReadingProgress(pages: ["paris/welcome"]), accountId: "acct-1")
+        XCTAssertTrue(demo.progress.isEmpty)
+        demo.seedDemo(ReadingProgress(pages: ["paris/eiffel"]))
+        XCTAssertEqual(demo.progress.pages, ["paris/eiffel"], "screenshots only, never saved")
+        XCTAssertTrue(defaults.dictionaryRepresentation().keys.allSatisfy { !$0.contains(ReadingActivity.progressKey) })
+    }
+
+    func testProgressDecodesTheServerReplyLeniently() throws {
+        let json = #"{"progress":{"pages":["paris/welcome"],"milo_pages":["paris/welcome"],"days":["2027-01-15"]}}"#
+        let reply = try JSONDecoder().decode(ReadingService.ProgressReply.self, from: Data(json.utf8))
+        XCTAssertEqual(reply.progress, ReadingProgress(pages: ["paris/welcome"], miloPages: ["paris/welcome"], days: ["2027-01-15"]))
+    }
+
     func testPayloadUsesServerKeysAndLeavesOutTheAccount() throws {
         let activity = makeActivity()
         readPage(activity, page: "welcome", index: 3, seconds: 2, milo: true)

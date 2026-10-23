@@ -30,7 +30,10 @@ child reads, listens and, if the grown-up turns it on, talks with Milo, a voice 
   on all of the family's devices.
 - Reading activity is used only by the app's owner, to see how the books and read-aloud are used (for example
   how many families read each day, which books and pages they open, and how often read-aloud is finished) and
-  to make the books better. It stays on our own server.
+  to make the books better, and to show the child's reading badges in the Passport (for example "Read 25 pages"
+  or "Read 3 days in a row") the same on every iPad and iPhone signed in to the account. For the badges the
+  device keeps a short list of which pages were read, listened to or read with Milo, and on which days; signing
+  out removes it from the device. It stays on our own server.
 - No ads, no tracking, no analytics companies, and we never sell or share your information for marketing.
   The app's privacy manifest (`PrivacyInfo.xcprivacy`) lists the same data and declares no tracking.
 - Sign-in emails are sent from the app owner's Gmail account through the Gmail API. The app has permission

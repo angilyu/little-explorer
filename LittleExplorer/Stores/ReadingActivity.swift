@@ -40,7 +40,101 @@ struct ReadingEvent: Codable, Equatable {
     }
 }
 
-/// Sends a batch of reading events (`POST /account/reading`, with the session like stars and hearts).
+/// What a signed-in account has read, for the Passport badges: the different pages read
+/// (`"book/page"`), read with Milo on and read aloud to the end, and the days with a page read
+/// (`YYYY-MM-DD`, the device's date). Kept per account on the device and on the server
+/// (`GET /account/reading` gives every device the same), so the badges match on all of them.
+struct ReadingProgress: Codable, Equatable {
+    var pages: Set<String> = []
+    var listened: Set<String> = []
+    var miloPages: Set<String> = []
+    var days: Set<String> = []
+
+    enum CodingKeys: String, CodingKey {
+        case pages, listened, days
+        case miloPages = "milo_pages"
+    }
+
+    init(pages: Set<String> = [], listened: Set<String> = [], miloPages: Set<String> = [], days: Set<String> = []) {
+        self.pages = pages
+        self.listened = listened
+        self.miloPages = miloPages
+        self.days = days
+    }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        pages = try c.decodeIfPresent(Set<String>.self, forKey: .pages) ?? []
+        listened = try c.decodeIfPresent(Set<String>.self, forKey: .listened) ?? []
+        miloPages = try c.decodeIfPresent(Set<String>.self, forKey: .miloPages) ?? []
+        days = try c.decodeIfPresent(Set<String>.self, forKey: .days) ?? []
+    }
+
+    var isEmpty: Bool { pages.isEmpty && listened.isEmpty && miloPages.isEmpty && days.isEmpty }
+
+    /// Everything in both (nothing read is ever taken away).
+    func merging(_ other: ReadingProgress) -> ReadingProgress {
+        ReadingProgress(
+            pages: pages.union(other.pages), listened: listened.union(other.listened),
+            miloPages: miloPages.union(other.miloPages), days: days.union(other.days)
+        )
+    }
+
+    /// Books with at least one page read.
+    var booksRead: Set<String> {
+        Set(pages.compactMap { $0.split(separator: "/", maxSplits: 1).first.map(String.init) })
+    }
+
+    func finished(_ book: Book) -> Bool {
+        !book.pages.isEmpty && book.pages.allSatisfy { pages.contains("\(book.id)/\($0.id)") }
+    }
+
+    /// The most days read in a row.
+    var longestStreak: Int {
+        var utc = Calendar(identifier: .gregorian)
+        utc.timeZone = TimeZone(identifier: "UTC")!
+        let dayNumbers = Set(days.compactMap { day -> Int? in
+            let parts = day.split(separator: "-").compactMap { Int($0) }
+            guard parts.count == 3,
+                  let date = utc.date(from: DateComponents(year: parts[0], month: parts[1], day: parts[2])) else { return nil }
+            return Int((date.timeIntervalSince1970 / 86_400).rounded())
+        })
+        var best = 0
+        for day in dayNumbers where !dayNumbers.contains(day - 1) {
+            var length = 1
+            while dayNumbers.contains(day + length) { length += 1 }
+            best = max(best, length)
+        }
+        return best
+    }
+
+    /// Screenshot demo: a few books read through (some aloud, some with Milo) over the last weeks,
+    /// with a 4-day run up to today.
+    static func demo(shelves: [CityShelf], now: Date = Date(), calendar: Calendar = .current) -> ReadingProgress {
+        var progress = ReadingProgress()
+        let places = shelves.filter { !$0.isTravel }
+        let books = places.prefix(3).flatMap { $0.books.prefix(2) }
+        for (i, book) in books.enumerated() {
+            let pages = i < 3 ? book.pages : Array(book.pages.prefix(3))
+            for (j, page) in pages.enumerated() {
+                let key = "\(book.id)/\(page.id)"
+                progress.pages.insert(key)
+                if j % 2 == 0 { progress.listened.insert(key) }
+                if i % 2 == 0 { progress.miloPages.insert(key) }
+            }
+        }
+        let today = calendar.startOfDay(for: now)
+        for back in [0, 1, 2, 3, 6, 8, 9, 13, 15, 20] {
+            guard let date = calendar.date(byAdding: .day, value: -back, to: today) else { continue }
+            let parts = calendar.dateComponents([.year, .month, .day], from: date)
+            progress.days.insert(String(format: "%04d-%02d-%02d", parts.year ?? 0, parts.month ?? 0, parts.day ?? 0))
+        }
+        return progress
+    }
+}
+
+/// Sends a batch of reading events (`POST /account/reading`, with the session like stars and hearts),
+/// and reads the account's reading progress back (`GET /account/reading`).
 struct ReadingService {
     var baseURL: URL
     var session: URLSession = .shared
@@ -60,6 +154,17 @@ struct ReadingService {
         if (200..<300).contains(status) { return }
         throw [400, 413].contains(status) ? Failure.refused : Failure.later
     }
+
+    struct ProgressReply: Decodable {
+        let progress: ReadingProgress
+    }
+
+    func progress(token: String) async throws -> ReadingProgress {
+        let request = AccountService(baseURL: baseURL, session: session).request("account/reading", method: "GET", token: token)
+        guard let (data, response) = try? await session.data(for: request),
+              (response as? HTTPURLResponse)?.statusCode == 200 else { throw Failure.later }
+        return try JSONDecoder().decode(ProgressReply.self, from: data).progress
+    }
 }
 
 /// Records what a signed-in family reads (page views, read-aloud use and one app open a day per device)
@@ -67,6 +172,9 @@ struct ReadingService {
 /// queue saved on the device (capped, oldest dropped first) until they're sent: when the app comes to
 /// the foreground or goes to the background, every minute while it's open, and once a batch fills up.
 /// Nothing is recorded while signed out or in a demo launch, and a failure never touches reading.
+///
+/// It also keeps the signed-in account's ``ReadingProgress`` for the badges: what this device read, plus
+/// what the server says the account read anywhere (``restore(using:token:)``). Forgotten at sign-out.
 @MainActor
 @Observable
 final class ReadingActivity {
@@ -88,6 +196,9 @@ final class ReadingActivity {
     }
 
     @ObservationIgnored private(set) var queue: [ReadingEvent]
+    /// The signed-in account's reading progress (empty when signed out).
+    private(set) var progress = ReadingProgress()
+    @ObservationIgnored private var progressAccount: String?
     @ObservationIgnored private let enabled: Bool
     @ObservationIgnored private let defaults: UserDefaults
     @ObservationIgnored private let key: String
@@ -121,6 +232,46 @@ final class ReadingActivity {
     }
 
     private var lastOpenKey: String { key + ".lastOpen" }
+    static let progressKey = "readingProgress.v1"
+
+    private func progressKey(_ accountId: String) -> String { AccountKeys.key(Self.progressKey, accountId) }
+
+    // -- progress ---------------------------------------------------------------------------------
+
+    /// Shows the reading progress saved for this account (nothing when signed out).
+    func switchAccount(_ accountId: String?) {
+        guard enabled, accountId != progressAccount else { return }
+        progressAccount = accountId
+        progress = accountId.flatMap { defaults.data(forKey: progressKey($0)) }
+            .flatMap { try? JSONDecoder().decode(ReadingProgress.self, from: $0) } ?? ReadingProgress()
+    }
+
+    /// Adds what the server says the account read (on any device). Never takes anything away.
+    func merge(_ incoming: ReadingProgress, accountId: String) {
+        guard enabled, accountId == progressAccount else { return }
+        let next = progress.merging(incoming)
+        guard next != progress else { return }
+        progress = next
+        if let data = try? JSONEncoder().encode(next) { defaults.set(data, forKey: progressKey(accountId)) }
+    }
+
+    /// Fetches the account's reading progress from the server and keeps what this device lacks.
+    func restore(using service: ReadingService, token: String) async {
+        guard enabled, let account = signedIn(), let saved = try? await service.progress(token: token) else { return }
+        merge(saved, accountId: account)
+    }
+
+    /// Screenshot demo: progress shown for the demo account, never saved.
+    func seedDemo(_ demo: ReadingProgress) {
+        progress = progress.merging(demo)
+    }
+
+    private func noteProgress(_ account: String, _ change: (inout ReadingProgress) -> Void) {
+        switchAccount(account)
+        var next = progress
+        change(&next)
+        merge(next, accountId: account)
+    }
 
     // -- recording --------------------------------------------------------------------------------
 
@@ -152,6 +303,12 @@ final class ReadingActivity {
             book: open.book, page: open.page, pageIndex: open.index,
             seconds: (min(seconds, Self.maxPageSeconds) * 10).rounded() / 10, milo: open.milo
         ))
+        noteProgress(account) {
+            let page = "\(open.book)/\(open.page)"
+            $0.pages.insert(page)
+            if open.milo { $0.miloPages.insert(page) }
+            $0.days.insert(day(open.since))
+        }
     }
 
     /// Read-aloud started, finished or was stopped early on a page (`index` is its place in the book).
@@ -165,6 +322,7 @@ final class ReadingActivity {
             seconds: use.seconds.map { (min($0, Self.maxPageSeconds) * 10).rounded() / 10 },
             outcome: use.outcome.rawValue, mode: use.mode.rawValue
         ))
+        if use.outcome == .finished { noteProgress(account) { $0.listened.insert(use.pageId) } }
     }
 
     /// The account signed out or was deleted: its unsent events are dropped.
@@ -172,6 +330,12 @@ final class ReadingActivity {
         openPage = nil
         queue.removeAll { $0.accountId == accountId }
         save()
+        guard enabled else { return }
+        defaults.removeObject(forKey: progressKey(accountId))
+        if progressAccount == accountId {
+            progressAccount = nil
+            progress = ReadingProgress()
+        }
     }
 
     // -- sending ----------------------------------------------------------------------------------

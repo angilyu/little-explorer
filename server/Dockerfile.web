@@ -14,6 +14,7 @@ RUN pip install --no-cache-dir aiohttp==3.14.3 livekit-api==1.2.1 python-dotenv=
 
 COPY server/src ./src
 COPY LittleExplorer/Resources/library.json ./content/library.json
+COPY LittleExplorer/Resources/badges.json ./content/badges.json
 COPY LittleExplorer/Resources/Books ./content/Books
 COPY LittleExplorer/Resources/Photos ./content/Photos
 COPY LittleExplorer/Resources/Narration ./content/Narration

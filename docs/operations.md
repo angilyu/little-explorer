@@ -227,6 +227,77 @@ account and per book: active accounts and devices, app opens, books opened (dist
 pages viewed, reading minutes (time on pages) and read-aloud starts, finishes and early stops. Days are the
 devices' own dates. The events are in `/admin/backup` and restore, and deleting an account deletes them.
 
+`GET /account/reading` (signed-in session) returns the account's reading progress for the badges, worked out from
+its events on every device: `{"progress": {"pages": [...], "milo_pages": [...], "listened": [...], "days": [...]}}`.
+`pages` are the `book/page` ids with a page view, `milo_pages` those viewed with Milo on, `listened` those whose
+read-aloud finished, and `days` the devices' dates with a page view. The app merges it into its own copy on launch
+and when it comes back to the foreground.
+
+## Badges
+
+The Passport badges are server-controlled: `LittleExplorer/Resources/badges.json` is served in the content manifest
+like the books (see [Update books without an app update](content.md#update-books-without-an-app-update)). The app
+keeps the last copy it downloaded and ships the same file in the bundle, so badges work offline and on first launch.
+Names, hints, goals, groups, order, icons and colors can change, and badges can be added or removed, without an app
+update. Only a new kind of metric needs one.
+
+To change the badges:
+
+1. Edit `LittleExplorer/Resources/badges.json`.
+2. Run `cd server && env -u DATABASE_URL uv run pytest -q tests/test_badges.py tests/test_catalog.py`. The server
+   checks the catalog when it builds the manifest, so a bad one stops the content update (the app keeps the
+   previous catalog) instead of reaching the app.
+3. Merge to `main`. The Deploy workflow rebuilds Render; the next app launch picks the catalog up.
+
+The file has `format` (1), `categories` (the groups, in Passport order: `id`, `title`, `icon`, `tint`) and `badges`
+(in order within each group):
+
+| Field | Meaning |
+|---|---|
+| `id` | Stable id, lowercase with dashes. The app remembers which badges were seen by id, so never reuse an old id for a different badge. A per-city badge's id contains `{city}` (e.g. `expert-{city}` becomes `expert-Paris`). |
+| `category` | A category `id`. |
+| `title` | The name, at most 20 characters. |
+| `hint` | What to do, shown while locked (at most 44 characters). |
+| `done` | What the child did, shown once earned (at most 44 characters). |
+| `icon` | An SF Symbol name (iOS 17), e.g. `book.fill`. An unknown name shows a star. |
+| `tint` | A `#RRGGBB` color (the app uses the group's if it can't read it). |
+| `metric` | What it counts (below). |
+| `goal` | How many, 1 to 10000, or `"all"` for metrics with a limit from the shelves. |
+| `each` | `"city"` for per-city metrics only: the badge repeats for every city with several books. |
+
+`{goal}` in `title`, `hint` and `done` becomes the goal (after it is lowered to what the shelves have) and `{city}` the
+city. Keep the words short and simple: the badges are read by 6 and 7 year olds.
+
+| Metric | Counts | Limit from the shelves |
+|---|---|---|
+| `stars` | all stars earned | |
+| `star_answers` | answers (and older questions) that earned a star | |
+| `long_answers` | long answers (8+ words) | |
+| `because_answers` | answers that explain with "because" | |
+| `stars_in_a_day` | most stars on one day | |
+| `star_days` | different days with a star | |
+| `morning_stars` | stars before 9 am | |
+| `bedtime_stars` | stars at 7 pm or later | |
+| `books_starred` | different books with a star | books |
+| `cities_starred` | Passport stamps (cities with a star, not the Travel shelf) | cities |
+| `city_books_starred` | books of one city with a star (`"each": "city"`) | that city's books |
+| `pages_read` | different pages read (on screen 1+ second) | |
+| `pages_listened` | different pages read aloud to the end | |
+| `milo_pages` | different pages read with Milo on | |
+| `books_finished` | books with every page read | books |
+| `reading_days` | different days with a page read | |
+| `reading_streak` | most days in a row with a page read | |
+| `cities_read` | cities (not the Travel shelf) with a page read | cities |
+| `countries_read` | countries with a page read (not the Travel shelf) | countries |
+
+The reading metrics count the signed-in account's reading progress (see [Reading activity](#reading-activity)), so
+they stay locked while signed out. The app skips any badge it can't use (an unknown metric or category, a missing
+name, a bad goal) rather than failing, and falls back to the bundled catalog if the downloaded one can't be read or
+has a newer `format`. A badge the child has seen earned stays earned on that device even if its goal goes up; on a
+device where it wasn't seen yet the new goal applies, so raise goals sparingly. Adding a metric means adding it to
+`BadgeMetric` in `Stores/BadgeCatalog.swift` and `Stores/Badges.swift`, and to `METRICS` in
+`server/src/little_explorer_agent/badges.py`, then shipping the app before using it in the catalog.
+
 ## Coins
 
 A grown-up can turn stars into coins (10 stars = 1 coin by default) in the Grown-ups corner, behind the parent
@@ -340,7 +411,8 @@ scripts/screenshots.sh <iphone-udid> <ipad-udid>   # regenerates docs/screenshot
 DEBUG builds accept launch arguments for screenshots: `-demoBook paris-food -demoPage 4`,
 `-demoVoice listening|live|nap|rest|star`, `-demoRead`, `-demoStars 23`, `-demoPassport`, `-demoCalendar`
 (the Passport's star calendar, with stars spread over the last few weeks), `-demoBadges` (the Passport's badges,
-some earned and some not, from 40 stars and an early-morning star), `-demoCoins 2`,
+some earned and some not, from 40 stars, an early-morning star and a few weeks of reading, with the "New badge!"
+celebration; `-demoBadges seen` without it, `-demoBadges reading` or another group id to open that group), `-demoCoins 2`,
 `-demoGate` (the parent gate on the shelf), `-demoAccount welcome|email|code` (the signed-out welcome screen and
 sign-in's email or code step), `-demoParent` (the Grown-ups corner) and `-demoMilo
 signin|talk|talk-consent|off|turn-on` (the Milo consent screen after sign-in, the gate and consent when Talk to Milo
