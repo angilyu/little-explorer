@@ -350,3 +350,34 @@ def test_travel_books_are_a_general_shelf_not_a_city():
     assert note[1] == '- Book: "Take a Flight", a general travel book for kids (not about one city)'
     assert not books["paris"].is_travel
     assert page_note({"book": "paris", "page": "welcome"})[1].startswith("- Book: Paris, France")
+
+
+async def test_refresh_made_adds_the_familys_made_books(monkeypatch):
+    from aiohttp import web
+    from aiohttp.test_utils import TestServer
+
+    from little_explorer_agent import content
+
+    made = {"id": "made-abc123", "city": "Paris", "country": "France", "level": 1, "generated": True,
+            "pages": [{"id": "p01", "text": "Look! A big tower.", "about": "The Eiffel Tower is 330 m tall."}]}
+    seen = []
+
+    async def made_books(request):
+        seen.append((request.query.get("account"), request.headers.get("Authorization")))
+        return web.json_response({"books": [made]})
+
+    app = web.Application()
+    app.router.add_get("/made-books", made_books)
+    monkeypatch.setattr(content, "_made_books", {})
+    async with TestServer(app) as server:
+        target = (str(server.make_url("/made-books")), "r")
+        assert await content.refresh_made("", target) == 0
+        assert await content.refresh_made("acct-1", None) == 0
+        assert await content.refresh_made("acct-1", target) == 1
+    assert seen == [("acct-1", "Bearer r")]
+    book, page = content.lookup({"book": "made-abc123", "page": "p01"})
+    assert book.level == 1 and page.about == "The Eiffel Tower is 330 m tall."
+    assert content.lookup({"book": "paris"})[0].city == "Paris"  # the catalog is still there
+    # A server that's down leaves Milo with what it had.
+    assert await content.refresh_made("acct-1", ("http://127.0.0.1:9/made-books", "r"), timeout=1) == 0
+    assert "made-abc123" in content.current_books()

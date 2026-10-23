@@ -22,12 +22,15 @@ struct ParentCornerView: View {
     @State private var confirmConvert = false
     @State private var converting = false
     @State private var coinMessage: String?
+    @State private var makingBook = [.form, .sections, .note, .error, .limit].contains(DemoLaunch.current?.make)
+    @State private var madeBookMenu = DemoLaunch.current?.make == .menu ? MakeDemo.book() : nil
 
     var body: some View {
         NavigationStack {
             List {
                 accountSection
                 librarySection
+                MadeBooksSection(books: books)
                 miloSection
                 coinSection
 
@@ -64,6 +67,8 @@ struct ParentCornerView: View {
             }
             .navigationTitle("Grown-ups corner")
             .navigationDestination(isPresented: $arranging) { ArrangeLibraryView() }
+            .navigationDestination(isPresented: $makingBook) { MakeBookView(sections: MadeBooksSection.sections(books)) }
+            .navigationDestination(item: $madeBookMenu) { MadeBookMenuView(book: $0) }
             .task {
                 await loadCoins()
             }

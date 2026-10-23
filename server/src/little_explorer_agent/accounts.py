@@ -632,6 +632,10 @@ class Accounts:
             cur, "DELETE FROM book_assets WHERE book_id IN (SELECT id FROM books WHERE account_id = ?)", (account_id,)
         ).rowcount
         counts["books"] = ex(cur, "DELETE FROM books WHERE account_id = ?", (account_id,)).rowcount
+        # Reports the grown-up sent, and reports about the books they made (now gone).
+        counts["book_reports"] = ex(
+            cur, "DELETE FROM book_reports WHERE account_id = ? OR book_owner = ?", (account_id, account_id)
+        ).rowcount
         # Its jobs lose everything about the account but keep their day and cost, so the global daily spend
         # cap still counts money already spent; a job still going stops at its next step.
         counts["generation_jobs"] = ex(

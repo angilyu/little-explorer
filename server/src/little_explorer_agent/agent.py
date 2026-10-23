@@ -47,7 +47,7 @@ from .buddy import (  # noqa: E402
     make_parallel_topic_gate,
     realtime_instructions,
 )
-from .content import BOOK_KEY, PAGE_KEY, refresh_remote  # noqa: E402
+from .content import BOOK_KEY, PAGE_KEY, refresh_made, refresh_remote  # noqa: E402
 from .modes import app_plays_intro, parse_job_metadata, parse_tz, resolve_mode  # noqa: E402
 from .speech import speech_setup  # noqa: E402
 from .stars import (  # noqa: E402
@@ -60,7 +60,7 @@ from .stars import (  # noqa: E402
     report_star,
     star_payload,
 )
-from .usage import UsageMeter, report_usage  # noqa: E402
+from .usage import UsageMeter, report_target, report_usage  # noqa: E402
 from .voice import ContextStore, TurnDecision, UserTurn, VoicePreset, preset_from_env  # noqa: E402
 from .voice.turns import is_noise  # noqa: E402
 from .voice.realtime import RealtimeConfig, start_realtime_session  # noqa: E402
@@ -479,7 +479,7 @@ async def entrypoint(ctx: JobContext) -> None:
 
     # Runs on every job end, including the child leaving abruptly or the worker shutting down.
     ctx.add_shutdown_callback(write_usage)
-    await refresh_remote()
+    await asyncio.gather(refresh_remote(), refresh_made(account_id, report_target(path="made-books")))
     game = StarGame(
         ctx,
         StarKeeper(

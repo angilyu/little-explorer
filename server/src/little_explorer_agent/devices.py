@@ -238,6 +238,20 @@ SCHEMA = (
         created_at TEXT NOT NULL,
         PRIMARY KEY (book_id, path)
     )""",
+    # A grown-up's report about a made book on their shelf, for the owner to look at (GET /admin/reports).
+    """CREATE TABLE IF NOT EXISTS book_reports (
+        id TEXT PRIMARY KEY,
+        account_id TEXT NOT NULL,
+        book_id TEXT NOT NULL,
+        book_owner TEXT NOT NULL,
+        title TEXT NOT NULL,
+        reason TEXT NOT NULL,
+        note TEXT NOT NULL DEFAULT '',
+        page TEXT NOT NULL DEFAULT '',
+        status TEXT NOT NULL DEFAULT 'open',
+        created_at TEXT NOT NULL
+    )""",
+    "CREATE INDEX IF NOT EXISTS book_reports_status ON book_reports (status, created_at)",
 )
 
 # Columns added after the first release, as (table, column, type). Added on startup if missing.
@@ -254,6 +268,8 @@ COLUMNS = (
     ("sessions", "account_id", "TEXT"),
     # May make books in the cloud (dogfood); the ``bookgen.everyone`` setting turns it on for all.
     ("accounts", "can_generate", "INTEGER NOT NULL DEFAULT 0"),
+    # 'book' (a new book, counted against the quota) or 'page' (a grown-up asked for one page again).
+    ("generation_jobs", "kind", "TEXT NOT NULL DEFAULT 'book'"),
 )
 INDEXES = (
     "CREATE INDEX IF NOT EXISTS stars_account ON stars (account_id)",
@@ -270,7 +286,7 @@ DOGFOOD_EMAILS = ("angilyu@gmail.com", "hfevers@gmail.com")
 TABLES = (
     "devices", "sessions", "stars", "coin_conversions", "settings",
     "accounts", "account_books", "email_codes", "auth_sessions", "hearts", "reading_events",
-    "generation_jobs", "books", "book_assets", "account_library_prefs",
+    "generation_jobs", "books", "book_assets", "account_library_prefs", "book_reports",
 )
 
 STAR_ID = re.compile(r"^[A-Za-z0-9-]{8,64}$")
