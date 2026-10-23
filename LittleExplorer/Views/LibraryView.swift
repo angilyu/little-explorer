@@ -8,6 +8,7 @@ struct LibraryView: View {
     @Environment(CoinStore.self) private var coins
     @Environment(AccountStore.self) private var account
     @Environment(ReadingActivity.self) private var reading
+    @Environment(ContentStore.self) private var content
     @Environment(\.horizontalSizeClass) private var sizeClass
 
     @State private var openBook: OpenBook?
@@ -53,9 +54,10 @@ struct LibraryView: View {
                 .environment(reading)
         }
         .sheet(isPresented: $showPassport) {
-            PassportView(shelves: BookLibrary.shelves(books))
+            PassportView(shelves: BookLibrary.shelves(books), catalog: content.badges)
                 .environment(stars)
                 .environment(coins)
+                .environment(reading)
                 .passportSizing()
         }
         .sheet(isPresented: $showGate) {
@@ -174,7 +176,13 @@ struct LibraryView: View {
             stars.merge(StarStore.demoAwards(total: demo.seedStars, shelves: BookLibrary.shelves(books)))
         }
         if demo.showBadges {
-            stars.merge(StarStore.demoBadgeExtras(shelves: BookLibrary.shelves(books)))
+            let shelves = BookLibrary.shelves(books)
+            stars.merge(StarStore.demoBadgeExtras(shelves: shelves))
+            reading.seedDemo(ReadingProgress.demo(shelves: shelves))
+            // Everything earned counts as seen but a couple, so the Passport celebrates those.
+            let earned = stars.badges(shelves: shelves, catalog: content.badges, reading: reading.progress).filter(\.earned).map(\.id)
+            let fresh = demo.badgesSeen ? [] : Array(earned.filter { ["first-book", "on-a-roll"].contains($0) }.prefix(2))
+            stars.markBadgesSeen(earned.filter { !fresh.contains($0) })
         }
         if demo.seedCoins > 0 { coins.seedDemo(coins: demo.seedCoins) }
         if demo.openPassport { showPassport = true }

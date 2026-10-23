@@ -20,8 +20,9 @@ iPad versions are in [`docs/screenshots`](docs/screenshots).
 - **Gets them talking, not just tapping.** Milo stays quiet while your kid reads the page aloud, then cheers them
   on. Milo answers their questions about the book and asks easy, open follow-ups. When they answer in two words
   ("the boat"), Milo hands them a sentence to finish ("You could say, I would ride the boat because...").
-- **Rewards real effort.** Thoughtful answers earn stars, cities earn Passport stamps, milestones earn badges, and a
-  star calendar fills up. A grown-up can trade stars for coins.
+- **Rewards real effort.** Thoughtful answers earn stars, cities earn Passport stamps, and a star calendar fills up.
+  Badges for pages and books read, read-aloud, reading days in a row, Milo stars and places visited are grouped in
+  the Passport, and the server can change them without an app update. A grown-up can trade stars for coins.
 - **Safe by design.** No ads, no in-app purchases, no tracking. The only personal information is a grown-up's email:
   nothing about your child is asked for. Milo is told to keep things kind and kid-appropriate and never to ask for
   personal details. Milo stays off until a grown-up allows it (asked at sign-in and behind the grown-up check, and can be
@@ -143,4 +144,4 @@ xcodebuild -project LittleExplorer.xcodeproj -scheme LittleExplorer \
 - [Milo, the voice buddy](docs/milo.md): engine details and tuning knobs, the e2e harness, session costs, naps, and
   the star, Passport and badge rules.
 - [Running Little Explorer](docs/operations.md): the parent gate, accounts and email sign-in, Milo time limits,
-  coins, admin tools, deploy, and TestFlight.
+  coins, badges, admin tools, deploy, and TestFlight.

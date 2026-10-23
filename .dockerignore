@@ -2,6 +2,7 @@
 *
 !server/src
 !LittleExplorer/Resources/library.json
+!LittleExplorer/Resources/badges.json
 !LittleExplorer/Resources/Books
 !LittleExplorer/Resources/Photos
 !LittleExplorer/Resources/Narration

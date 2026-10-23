@@ -73,8 +73,12 @@ struct StarBadge: Identifiable, Equatable {
     let goal: Int
     /// City Expert badges show that city's flag on the medal.
     var flagBook: Book? = nil
+    /// The badge catalog's category id, e.g. "reading".
+    var category: String = ""
+    /// He has already seen it earned, so it stays earned if the catalog raises its goal later.
+    var kept = false
 
-    var earned: Bool { progress >= goal }
+    var earned: Bool { kept || progress >= goal }
 
     /// What VoiceOver reads for the badge card.
     func accessibilityLabel(isNew: Bool = false) -> String {

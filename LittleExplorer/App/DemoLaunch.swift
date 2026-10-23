@@ -12,8 +12,10 @@ import Foundation
 /// `-demoCoins 2` seeds that many coins (made from 10 stars each, so they come off `-demoStars`).
 /// `-demoCalendar` opens the Passport at its star calendar (with 60 stars over the last few weeks
 /// unless `-demoStars` says otherwise).
-/// `-demoBadges` opens the Passport at its badges, with some earned and some still to go (40 stars
-/// and an early-morning star unless `-demoStars` says otherwise).
+/// `-demoBadges` opens the Passport at its badges, with some earned and some still to go (40 stars,
+/// an early-morning star and a few weeks of reading unless `-demoStars` says otherwise) and two of them
+/// new, so the "New badge!" celebration shows. `-demoBadges seen` has none new; `-demoBadges reading`
+/// (any badge category id) has none new and opens that category.
 /// `-demoGate` opens the grown-ups gate on the shelf; `-demoParent` opens the grown-ups corner without it.
 /// `-demoAccount welcome|email|code` shows the signed-out welcome screen (and sign-in's email or code step);
 /// `-demoAccount new` signs in as a new account with only the default books. Other demos run signed in to a
@@ -58,6 +60,10 @@ struct DemoLaunch: Equatable {
     var openParent = false
     var showCalendar = false
     var showBadges = false
+    /// With `showBadges`: every earned badge already seen (no celebration).
+    var badgesSeen = false
+    /// With `showBadges`: the badge category to open.
+    var badgeCategory: String?
     var accountScreen: AccountScreen?
     var milo: Milo?
 
@@ -117,6 +123,10 @@ struct DemoLaunch: Equatable {
             demo.showBadges = true
             demo.openPassport = true
             if demo.seedStars == 0 { demo.seedStars = 40 }
+            if let option = value(after: "-demoBadges"), !option.hasPrefix("-") {
+                demo.badgesSeen = true
+                if option != "seen" { demo.badgeCategory = option }
+            }
             found = true
         }
         if let voice = value(after: "-demoVoice") {

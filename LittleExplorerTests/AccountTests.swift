@@ -384,6 +384,41 @@ final class AccountTests: XCTestCase {
         XCTAssertEqual(CoinStore(defaults: defaults).coins, 3)
     }
 
+    func testSignInFetchesReadingProgressAndSignOutForgetsIt() async throws {
+        let stars = StarStore(defaults: defaults)
+        let coins = CoinStore(defaults: defaults)
+        let account = store()
+        let reading = ReadingActivity(
+            defaults: defaults, accountId: { account.account?.id }, token: { account.token }, send: { _, _ in }
+        )
+        let base = base
+        let sync = AccountSync(
+            account: account, stars: stars, coins: coins, reading: reading, defaults: defaults,
+            baseURL: { base }, deviceId: { "IPAD-1" }, session: urlSession
+        )
+        sync.start()
+
+        // Sign in, account, stars and coins offline, then the reading progress from his other devices.
+        StubAccountServer.replies = [
+            (200, signInReply(claimed: false)),
+            (200, #"{"account":\#(family)}"#),
+            nil, nil,
+            (200, #"{"progress":{"pages":["paris/welcome","london/hello"],"listened":["paris/welcome"],"days":["2027-01-15"]}}"#),
+        ]
+        try await account.verify(email: "mom@example.com", code: "123456", device: device)
+
+        let fetch = try XCTUnwrap(StubAccountServer.sent.last)
+        XCTAssertEqual(fetch.method, "GET")
+        XCTAssertEqual(fetch.path, "/account/reading")
+        XCTAssertEqual(fetch.session, "tok-1")
+        XCTAssertEqual(reading.progress.pages, ["paris/welcome", "london/hello"])
+        XCTAssertEqual(reading.progress.listened, ["paris/welcome"])
+
+        await account.signOut()
+        XCTAssertTrue(reading.progress.isEmpty)
+        XCTAssertNil(defaults.data(forKey: "account.fam.readingProgress.v1"))
+    }
+
     func testImportIsRetriedUntilTheServerHasIt() async throws {
         let stars = StarStore(defaults: defaults)
         stars.merge([award("a")])

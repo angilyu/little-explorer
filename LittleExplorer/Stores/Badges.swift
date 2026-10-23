@@ -1,107 +1,61 @@
 import Foundation
 
 /// The Passport badges, worked out from what the app already keeps: his stars (with their kind, time
-/// and book) and the cities and books on the shelves. Nothing here can be lost again: every goal counts
-/// things he has done, never a streak.
+/// and book), the signed-in account's reading progress, and the cities and books on the shelves. Which
+/// badges there are (names, hints, goals, icons, categories and order) comes from the badge catalog
+/// (`badges.json`, see ``BadgeCatalog``); each one counts a ``BadgeMetric``. Nothing here can be lost
+/// again: goals count things he has done (a streak is his best run ever), and a badge he has seen
+/// earned stays earned even if its goal goes up later.
 extension StarStore {
-    static let curiousCatGoal = 10
-    /// Every answer of 5+ words earns a star (up to 5 per page); 8+ words also counts as long.
-    static let bigTalkerGoal = 3
-    static let whyWizardGoal = 3
-    static let starShowerGoal = 5
-    static let comeBackGoal = 5
-    static let bookwormGoal = 10
-    static let globeTrotterGoal = 3
-    static let superStarGoal = 50
-    /// A star before this hour is an Early Bird star; one at or after `nightOwlHour` is a Night Owl star.
-    static let earlyBirdHour = 9
-    static let nightOwlHour = 19
+    /// A star before this hour is a morning (Early Bird) star; one at or after `bedtimeHour` is a bedtime
+    /// (Night Owl) star.
+    static let morningHour = 9
+    static let bedtimeHour = 19
 
     var whyHowCount: Int { awards.filter(\.whyHow).count }
 
-    /// Every badge in Passport order: the fixed ones, then an Expert badge for each city with several
-    /// books (a star in every one of them), e.g. Paris Expert. New cities and books just work.
-    func badges(shelves: [CityShelf], calendar: Calendar = .current) -> [StarBadge] {
-        let days = StarDays(awards: awards, calendar: calendar)
-        let hours = awards.compactMap { award in
-            StarDays.date(from: award.awardedAt, timeZone: calendar.timeZone).map { calendar.component(.hour, from: $0) }
-        }
-        let bookCount = shelves.reduce(0) { $0 + $1.books.count }
-        let starredBooks = Set(awards.map(\.book).filter { !$0.isEmpty }).count
-        let places = stamps(shelves: shelves)
+    /// Every badge in Passport order: the catalog's categories, and its badges in order within each.
+    /// A per-city badge (e.g. Paris Expert) repeats for every city with several books, so new cities and
+    /// books just work.
+    func badges(
+        shelves: [CityShelf], calendar: Calendar = .current, catalog: BadgeCatalog = .bundled,
+        reading: ReadingProgress = ReadingProgress()
+    ) -> [StarBadge] {
+        let facts = BadgeFacts(store: self, shelves: shelves, calendar: calendar, reading: reading)
 
-        func badge(
-            _ id: String, _ title: String, _ symbol: String, _ tint: String, hint: String, done: String,
-            progress: Int, goal: Int
-        ) -> StarBadge {
-            let goal = max(goal, 1)
-            return StarBadge(id: id, title: title, detail: hint, doneText: done, systemImage: symbol, tint: tint, progress: min(progress, goal), goal: goal)
-        }
-
-        let bookwormGoal = min(Self.bookwormGoal, bookCount)
-        let globeGoal = min(Self.globeTrotterGoal, places.count)
-        var badges = [
-            badge(
-                "curious-cat", "Curious Cat", "cat.fill", "#F28C28", hint: "Earn \(Self.curiousCatGoal) stars",
-                done: "You earned \(Self.curiousCatGoal) stars!",
-                progress: questionCount, goal: Self.curiousCatGoal
-            ),
-            badge(
-                "big-talker", "Big Talker", "bubble.left.and.bubble.right.fill", "#3A86FF", hint: "Give \(Self.bigTalkerGoal) long answers",
-                done: "\(Self.bigTalkerGoal) long answers!",
-                progress: longQuestionCount, goal: Self.bigTalkerGoal
-            ),
-            badge(
-                "why-wizard", "Why Wizard", "wand.and.stars", "#8E44AD",
-                hint: "Answer with \u{201C}because\u{201D} \(Self.whyWizardGoal) times",
-                done: "You answered with \u{201C}because\u{201D} \(Self.whyWizardGoal) times!",
-                progress: whyHowCount, goal: Self.whyWizardGoal
-            ),
-            badge(
-                "star-shower", "Star Shower", "sparkles", "#4361EE", hint: "Earn \(Self.starShowerGoal) stars in one day",
-                done: "\(Self.starShowerGoal) stars in one day!",
-                progress: days.counts.values.max() ?? 0, goal: Self.starShowerGoal
-            ),
-            badge(
-                "come-back-kid", "Come-Back Kid", "hand.wave.fill", "#14A098", hint: "Earn stars on \(Self.comeBackGoal) different days",
-                done: "Stars on \(Self.comeBackGoal) different days!",
-                progress: days.counts.count, goal: Self.comeBackGoal
-            ),
-            badge(
-                "early-bird", "Early Bird", "bird.fill", "#F4B400", hint: "Earn a star early in the morning",
-                done: "A star before \(Self.earlyBirdHour) am!",
-                progress: hours.contains { $0 < Self.earlyBirdHour } ? 1 : 0, goal: 1
-            ),
-            badge(
-                "night-owl", "Night Owl", "moon.stars.fill", "#2B2D6E", hint: "Earn a star at bedtime",
-                done: "A star at bedtime!",
-                progress: hours.contains { $0 >= Self.nightOwlHour } ? 1 : 0, goal: 1
-            ),
-            badge(
-                "bookworm", "Bookworm", "books.vertical.fill", "#2E9E44", hint: "Earn stars in \(bookwormGoal) different books",
-                done: "Stars in \(bookwormGoal) books!",
-                progress: starredBooks, goal: bookwormGoal
-            ),
-            badge(
-                "globe-trotter", "Globe Trotter", "globe.americas.fill", "#1E88E5", hint: "Get stamps from \(globeGoal) cities",
-                done: "Stamps from \(globeGoal) cities!",
-                progress: places.filter(\.stamped).count, goal: globeGoal
-            ),
-            badge(
-                "super-star", "Super Star", "trophy.fill", "#E63946", hint: "Earn \(Self.superStarGoal) stars",
-                done: "\(Self.superStarGoal) stars!",
-                progress: total, goal: Self.superStarGoal
-            ),
-        ]
-        for shelf in shelves where shelf.books.count > 1 {
-            var expert = badge(
-                "expert-\(shelf.city)", "\(shelf.city) Expert", "medal.fill", "#D4A017",
-                hint: "Earn a star in every \(shelf.city) book",
-                done: "A star in every \(shelf.city) book!",
-                progress: shelf.books.filter { hasAsked(inBook: $0.id) }.count, goal: shelf.books.count
+        func make(_ rule: BadgeRule, id: String, city: String?, progress: Int, cap: Int?) -> StarBadge? {
+            let goal: Int
+            switch rule.goal {
+            case let .count(count): goal = max(min(count, cap ?? count), 1)
+            case .all:
+                guard let cap else { return nil }
+                goal = max(cap, 1)
+            }
+            func fill(_ text: String) -> String {
+                text.replacingOccurrences(of: "{goal}", with: "\(goal)").replacingOccurrences(of: "{city}", with: city ?? "")
+            }
+            return StarBadge(
+                id: id, title: fill(rule.title), detail: fill(rule.hint), doneText: fill(rule.done),
+                systemImage: rule.icon, tint: rule.tint, progress: min(progress, goal), goal: goal,
+                category: rule.category, kept: seenBadges.contains(id)
             )
-            expert.flagBook = shelf.flagBook
-            badges.append(expert)
+        }
+
+        var badges: [StarBadge] = []
+        for category in catalog.categories {
+            for rule in catalog.badges where rule.category == category.id {
+                if rule.metric.perCity {
+                    for shelf in shelves where shelf.books.count > 1 {
+                        let id = rule.id.replacingOccurrences(of: "{city}", with: shelf.city)
+                        let count = facts.perCity(rule.metric, shelf)
+                        guard var badge = make(rule, id: id, city: shelf.city, progress: count, cap: shelf.books.count) else { continue }
+                        badge.flagBook = shelf.flagBook
+                        badges.append(badge)
+                    }
+                } else if let badge = make(rule, id: rule.id, city: nil, progress: facts.value(rule.metric), cap: facts.cap(rule.metric)) {
+                    badges.append(badge)
+                }
+            }
         }
         return badges
     }
@@ -109,5 +63,72 @@ extension StarStore {
     /// Earned badges he hasn't seen in the Passport yet.
     func newBadgeIds(in badges: [StarBadge]) -> Set<String> {
         Set(badges.filter(\.earned).map(\.id)).subtracting(seenBadges)
+    }
+}
+
+/// The numbers the badge metrics count, worked out once per list of badges.
+@MainActor
+private struct BadgeFacts {
+    let store: StarStore
+    let shelves: [CityShelf]
+    let reading: ReadingProgress
+    let starDays: StarDays
+    let hours: [Int]
+    let places: [CityShelf]
+
+    init(store: StarStore, shelves: [CityShelf], calendar: Calendar, reading: ReadingProgress) {
+        self.store = store
+        self.shelves = shelves
+        self.reading = reading
+        starDays = StarDays(awards: store.awards, calendar: calendar)
+        hours = store.awards.compactMap { award in
+            StarDays.date(from: award.awardedAt, timeZone: calendar.timeZone).map { calendar.component(.hour, from: $0) }
+        }
+        places = shelves.filter { !$0.isTravel }
+    }
+
+    private var bookCount: Int { shelves.reduce(0) { $0 + $1.books.count } }
+
+    func value(_ metric: BadgeMetric) -> Int {
+        switch metric {
+        case .stars: store.total
+        case .starAnswers: store.questionCount
+        case .longAnswers: store.longQuestionCount
+        case .becauseAnswers: store.whyHowCount
+        case .starsInADay: starDays.counts.values.max() ?? 0
+        case .starDays: starDays.counts.count
+        case .morningStars: hours.filter { $0 < StarStore.morningHour }.count
+        case .bedtimeStars: hours.filter { $0 >= StarStore.bedtimeHour }.count
+        case .booksStarred: Set(store.awards.map(\.book).filter { !$0.isEmpty }).count
+        case .citiesStarred: store.stamps(shelves: shelves).filter(\.stamped).count
+        case .cityBooksStarred: 0
+        case .pagesRead: reading.pages.count
+        case .pagesListened: reading.listened.count
+        case .miloPages: reading.miloPages.count
+        case .booksFinished: shelves.flatMap(\.books).filter(reading.finished).count
+        case .readingDays: reading.days.count
+        case .readingStreak: reading.longestStreak
+        case .citiesRead:
+            places.filter { shelf in shelf.books.contains { reading.booksRead.contains($0.id) } }.count
+        case .countriesRead:
+            Set(places.flatMap(\.books).filter { reading.booksRead.contains($0.id) }.map(\.country)).count
+        }
+    }
+
+    /// The most there can be with these shelves (a goal is lowered to it), or nil if there's no limit.
+    func cap(_ metric: BadgeMetric) -> Int? {
+        switch metric {
+        case .booksStarred, .booksFinished: bookCount
+        case .citiesStarred, .citiesRead: places.count
+        case .countriesRead: Set(places.flatMap(\.books).map(\.country)).count
+        default: nil
+        }
+    }
+
+    func perCity(_ metric: BadgeMetric, _ shelf: CityShelf) -> Int {
+        switch metric {
+        case .cityBooksStarred: shelf.books.filter { store.hasAsked(inBook: $0.id) }.count
+        default: 0
+        }
     }
 }

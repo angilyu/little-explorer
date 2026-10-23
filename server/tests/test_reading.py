@@ -317,6 +317,37 @@ async def test_reading_endpoint(client, accounts, clock, log):
     assert resp.status == 401
 
 
+def test_progress_merges_every_device(log, clock):
+    assert log.progress("acct-1") == {"pages": [], "milo_pages": [], "listened": [], "days": []}
+    log.record("acct-1", IPAD, [
+        event(when=at(clock, 1), page="eiffel", milo=True),
+        event(when=at(clock, 1), page="eiffel"),
+        event("read_aloud", when=at(clock), page="eiffel", outcome="finished"),
+        event("read_aloud", when=at(clock), page="louvre", outcome="stopped"),
+        event("app_open", when=at(clock, 3)),
+    ], BOOKS)
+    log.record("acct-1", IPHONE, [event(when=at(clock), book="london", page="big-ben")], BOOKS)
+    log.record("acct-2", IPHONE, [event(when=at(clock, 5), book="tokyo", page="tower")], BOOKS)
+    today = datetime.fromtimestamp(clock.t, tz=PACIFIC).date()
+    assert log.progress("acct-1") == {
+        "pages": ["london/big-ben", "paris/eiffel"],
+        "milo_pages": ["paris/eiffel"],
+        "listened": ["paris/eiffel"],
+        "days": [str(today - timedelta(days=1)), str(today)],
+    }
+
+
+async def test_reading_progress_endpoint(client, accounts, clock):
+    assert (await client.get("/account/reading", headers=APP)).status == 401
+    token, _, _ = sign_in(accounts, clock)
+    session = {**APP, "X-Pip-Session": token}
+    resp = await client.get("/account/reading", headers=session)
+    assert resp.status == 200 and (await resp.json()) == {"progress": {"pages": [], "milo_pages": [], "listened": [], "days": []}}
+    await client.post("/account/reading", json={"events": [event(when=at(clock), milo=True)]}, headers=session)
+    progress = (await (await client.get("/account/reading", headers=session)).json())["progress"]
+    assert progress["pages"] == ["paris/eiffel"] and progress["milo_pages"] == ["paris/eiffel"] and len(progress["days"]) == 1
+
+
 async def test_reading_endpoint_rate_limit(client, accounts, clock, monkeypatch):
     monkeypatch.setattr(reading_module, "PER_ACCOUNT_PER_HOUR", 3)
     token, _, _ = sign_in(accounts, clock)

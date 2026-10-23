@@ -120,31 +120,62 @@ locally and, on launch, merges back the server's copy (`GET /account/stars`; `GE
 builds), so stars survive a reinstall. Only counts, kinds, book, page and time are stored, never what the child said.
 
 The library's top corner shows the child's total; tapping it opens the Passport: a stamp for each city where they have
-earned a star (not the Travel shelf), then a grid of badges. Stars earned before the answer rule were for questions
-(`kind` `question`); new ones are `answer`, and the badges count both.
+earned a star (not the Travel shelf), the badges, then the star calendar. Stars earned before the answer rule were for
+questions (`kind` `question`); new ones are `answer`, and the badges count both.
 
-| Badge | How to earn it |
-|---|---|
-| Curious Cat | 10 stars |
-| Big Talker | 3 long answers |
-| Why Wizard | 3 answers that explain with "because" (`why_how`) |
-| Star Shower | 5 stars in one day |
-| Come-Back Kid | stars on 5 different days (any days, not a streak) |
-| Early Bird | a star before 9 am |
-| Night Owl | a star at 7 pm or later |
-| Bookworm | stars in 10 different books |
-| Globe Trotter | stamps from 3 cities |
-| Super Star | 50 stars |
-| *City* Expert | a star in every book of a city with several books, e.g. Paris Expert (the medal shows the city's flag) |
+The badges come from the badge catalog (`badges.json`), which the server can change without an app update (see
+[Badges](operations.md#badges)). They are grouped, and each group is one card in the Passport (one column on iPhone,
+two on iPad) with its earned medals, how many it has ("3 of 6 badges") and the badge closest to being earned ("Next:
+Book Stack, 3/5"). Tapping a card opens the group: "You earned" medals first, then "Still to find" with a hint and a
+progress bar each, closest first. The bundled catalog:
 
-Badges are worked out from the saved stars and the shelves (`Stores/Badges.swift`), so a new city or
-book just works, and every goal counts things the child has done, so no badge can be lost. Days and times are in the
-device's time zone, as in the calendar. A badge not earned yet is gray with a short hint ("Earn a star at
-bedtime") and how close the child is (9/10); an earned one is a colored medal that says what they did ("Stars on 5 different
-days!"). Badges earned since the Passport was last opened get a NEW! ribbon and a little wiggle (none with Reduce
-Motion), a "New badge!" banner and the star chime; they count as seen when the Passport is closed (kept on the
-device only). VoiceOver reads e.g. "Why Wizard badge, earned. You answered with “because” 3 times!" or "Bookworm
-badge, not yet. Earn stars in 10 different books. 9 of 10." The last page of each book shows the
+| Group | Badge | How to earn it | Counts |
+|---|---|---|---|
+| Reading | First Book | read every page of a book | reading progress |
+| Reading | Page Turner | read 25 different pages | reading progress |
+| Reading | Good Listener | listen to 10 pages read aloud to the end | reading progress |
+| Reading | Book Stack | read 5 whole books | reading progress |
+| Reading | Super Reader | read 100 different pages | reading progress |
+| Reading | Story Time | listen to 50 pages read aloud | reading progress |
+| Every Day | Book Buddy | read on 5 different days | reading progress |
+| Every Day | On a Roll | read 3 days in a row (best run ever) | reading progress |
+| Every Day | Super Week | read 7 days in a row | reading progress |
+| Every Day | Reading Champ | read on 20 different days | reading progress |
+| Every Day | Come-Back Kid | stars on 5 different days (any days, not a streak) | stars |
+| Every Day | Early Bird | a star before 9 am | stars |
+| Every Day | Night Owl | a star at 7 pm or later | stars |
+| Milo Stars | Milo Pal | read 10 pages with Milo on | reading progress |
+| Milo Stars | Curious Cat | 10 stars | stars |
+| Milo Stars | Big Talker | 3 long answers | stars |
+| Milo Stars | Why Wizard | 3 answers that explain with "because" (`why_how`) | stars |
+| Milo Stars | Star Shower | 5 stars in one day | stars |
+| Milo Stars | Bookworm | stars in 10 different books | stars |
+| Milo Stars | Super Star | 50 stars | stars |
+| Places | City Hopper | read a page in books about 3 cities (not the Travel shelf) | reading progress, shelves |
+| Places | Globe Trotter | stamps from 3 cities | stars, shelves |
+| Places | World Traveler | read books from 4 countries | reading progress, shelves |
+| Places | *City* Expert | a star in every book of a city with several books, e.g. Paris Expert (the medal shows the city's flag) | stars, shelves |
+
+A page counts as read when it was on screen for a second or more, and as listened to when read-aloud played to the
+end. Goals that depend on the shelves are lowered to what the shelves have (with 3 cities, City Hopper needs 3).
+
+**Reading progress.** While signed in, the app keeps a small summary per account on the device
+(`account.<id>.readingProgress.v1`): which pages were read, read with Milo on and listened to (`book/page`), and on
+which days. It is filled in as pages are read and merged with `GET /account/reading`, which returns the same summary
+worked out from the account's reading events on every device, so badges match across the family's devices. Nothing
+is ever taken away, so a badge can't be lost; signing out removes the summary from the device. Signed out there is no
+reading progress (and none is recorded in demo launches), so the reading badges stay locked; the star badges work as
+before.
+
+Badges are worked out in `Stores/Badges.swift` from the saved stars, the reading progress and the shelves, so a new
+city or book just works. Days and times are in the device's time zone, as in the calendar. A badge not earned yet is
+gray with a short hint ("Earn a star at bedtime") and how close the child is (9/10); an earned one is a colored medal
+that says what they did ("Stars on 5 different days!"). Badges earned since the Passport was last opened get a NEW!
+ribbon (on the medal and its group's card), a little wiggle (none with Reduce Motion), a "New badge!" celebration with
+confetti (no confetti with Reduce Motion) and the star chime; they count as seen when the Passport is closed (kept on
+the device only, per account). A badge the child has seen earned stays earned even if its goal is raised later.
+VoiceOver reads e.g. "Why Wizard badge, earned. You answered with “because” 3 times!" or "Bookworm badge, not yet.
+Earn stars in 10 different books. 9 of 10." The last page of each book shows the
 stars from that book, and each book's cover in the library shows a gold star with the number earned in that
 book (hidden until it has one; VoiceOver reads e.g. "Famous Places, 7 stars"). `tools/devices.py` lists stars per account (and per device). Pipeline mode gives stars too, but Milo doesn't announce them.
 
