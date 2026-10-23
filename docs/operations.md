@@ -418,6 +418,16 @@ curl -X POST -H "Authorization: Bearer $PIP_ADMIN_KEY" -H "Content-Type: applica
    - The account is granted the book.
    - Milo learns it, with its level, on his next content refresh.
 
+**Shelves.** Every account the app sees is an explicit list, even when its `all_books` flag is on.
+`/auth/verify`, `/account` and `/account/milo-consent` send `all_books: false` and `books` = the shelf:
+- `all_books` accounts: every hand-made (bundled) book, including ones added later, plus the made books the account
+  owns or was granted. Other families' made books are never on it.
+- Other accounts: only their grants (their own made books are granted when published).
+
+The server's `may_read` checks follow the same rule. The admin endpoints and `tools/devices.py` still show the real
+`all_books` flag and grants. The 1.0 app reads `all_books: true` as "every manifest book", so this keeps made books
+off other families' shelves without an app update.
+
 **Moderation fails closed.** If moderation can't be reached, the job is retried later and never publishes unchecked
 text. A rejected request or page ends the job as `rejected` and deletes its files. Rejected and failed jobs don't
 count against the account's quota.

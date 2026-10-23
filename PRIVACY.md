@@ -73,8 +73,8 @@ if they like, a short note about what the book should be about. To write it:
 
 The book's text is kept on our server. Its photos and recordings are kept in a private
 [Cloudflare R2](https://www.cloudflare.com/developer-platform/r2/) storage bucket. They stay until the book or the
-account is deleted. A made book is shown only on the shelves of the accounts it was made for. Like the bundled books,
-though, its text and files are part of the app's shared book list, so they aren't secret. That's one more reason to
+account is deleted. A made book is shown only on the shelf of the account it was made for (and any account the owner
+grants it to). Its text and files are still part of the app's shared book list, though, so they aren't secret. That's one more reason to
 keep personal details out of the request. We record what each book cost to make, with no content.
 
 ## Where it is stored

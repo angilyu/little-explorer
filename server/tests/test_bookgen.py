@@ -817,6 +817,63 @@ def test_dogfood_accounts_can_generate(store, accounts, tmp_path):
     assert not Accounts(DeviceStore(sqlite_path=tmp_path / "d.sqlite3", limits=Limits()), secret="s").get(mom.id).can_generate
 
 
+async def _make_book_for(c, service, email, title):
+    resp = await c.post("/admin/books/generate", json={**REQUEST, "title": title, "account": email}, headers=ADMIN)
+    assert resp.status == 202, await resp.text()
+    job_id = (await resp.json())["job"]["id"]
+    for _ in range(200):
+        job = service.books.job(job_id)
+        if job.status == "done" and job.book_id in service.manifest["order"]:
+            return job.book_id
+        await asyncio.sleep(0.02)
+    raise AssertionError(service.books.job(job_id))
+
+
+async def _app_account(c, accounts, email, device):
+    code, _ = accounts.start(email)
+    token, _, _ = accounts.verify(email, code, (device, "iPad", "iPad13,1"))
+    return (await (await c.get("/account", headers={**APP, "X-Pip-Session": token})).json())["account"]
+
+
+async def test_all_books_accounts_only_see_their_own_made_books(server, accounts, clock):
+    # The 1.0 app reads all_books: true as "every book in the manifest", which would show one family's made
+    # book to every all_books account (App Review's too); the app always gets an explicit shelf instead.
+    c, service = server
+    a, _ = accounts.create("angilyu@gmail.com", all_books=True)
+    b, _ = accounts.create("hfevers@gmail.com", all_books=True)
+    theirs = await _make_book_for(c, service, b.email, "Owls at Night")
+    mine = await _make_book_for(c, service, a.email, "Tall Towers")
+    catalog = list(service.static["order"])
+    assert {theirs, mine} <= set(service.manifest["order"]) and not {theirs, mine} & set(catalog)
+
+    shelf = await _app_account(c, accounts, a.email, "BDFF5D95-6EBF-47BC-AA79-5FE554F0502B")
+    assert shelf["all_books"] is False
+    assert shelf["books"] == catalog + [mine]  # every hand-made book, its own made book, not B's
+    assert theirs not in shelf["books"]
+    assert accounts.get(a.email).may_read(mine) and not accounts.get(a.email).may_read(theirs)
+    assert accounts.get(a.email).may_read("chengdu")  # a hidden hand-made book
+    assert accounts.get(b.email).may_read(theirs) and not accounts.get(b.email).may_read(mine)
+
+    # A hand-made book added later (a deploy with a new bundled book) is on every all_books shelf.
+    service.static["order"].append("brand-new-city")
+    clock.t += 120  # the next sign-in code
+    assert "brand-new-city" in (await _app_account(c, accounts, a.email, "C0FFEE00-6EBF-47BC-AA79-5FE554F0502B"))["books"]
+    assert accounts.get(a.email).may_read("brand-new-city")
+
+    # The owner still sees the real flag and the account's own grants.
+    detail = await (await c.get(f"/admin/accounts/{a.email}", headers=ADMIN)).json()
+    assert detail["account"]["all_books"] is True and mine in detail["account"]["books"]
+    assert theirs not in detail["account"]["books"]
+
+
+async def test_accounts_without_all_books_see_only_their_grants(server, accounts):
+    c, service = server
+    a, _ = accounts.create("angilyu@gmail.com")
+    mine = await _make_book_for(c, service, a.email, "Tall Towers")
+    shelf = await _app_account(c, accounts, a.email, "BDFF5D95-6EBF-47BC-AA79-5FE554F0502B")
+    assert shelf["all_books"] is False and shelf["books"] == sorted([*accounts.default_books, mine])
+
+
 async def test_account_delete_removes_made_books(server, accounts, clock):
     c, service = server
     account, _ = accounts.create("hfevers@gmail.com")

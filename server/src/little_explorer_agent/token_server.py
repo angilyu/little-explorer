@@ -520,14 +520,14 @@ async def handle_auth_verify(request: web.Request) -> web.Response:
     except AuthError as exc:
         return _refusal(exc)
     log.info("device %s signed in to account %s (claimed: %s)", device[0], account.id, claimed)
-    return web.json_response({"token": token, "account": account.as_json(), "claimed_device": claimed})
+    return web.json_response({"token": token, "account": account.app_json(), "claimed_device": claimed})
 
 
 async def handle_account(request: web.Request) -> web.Response:
     session = await _session(request)
     if isinstance(session, web.Response):
         return session
-    return web.json_response({"account": session.account.as_json()})
+    return web.json_response({"account": session.account.app_json()})
 
 
 async def handle_sign_out(request: web.Request) -> web.Response:
@@ -566,7 +566,7 @@ async def handle_account_milo_consent(request: web.Request) -> web.Response:
         account = await asyncio.to_thread(request.app[ACCOUNTS].set_milo_consent, session.account.id, body["allow"])
     except LookupError:
         return _signed_out()
-    return web.json_response({"account": account.as_json()})
+    return web.json_response({"account": account.app_json()})
 
 
 async def handle_account_stars(request: web.Request) -> web.Response:
@@ -1010,6 +1010,8 @@ def create_app(
     if bookgen is None:
         bookgen = BookgenService(app[STORE], static_manifest=build_manifest(root), static_files=content_files(root))
     app[BOOKGEN] = bookgen
+    # all_books accounts read the hand-made books being served, never other families' made books.
+    app[ACCOUNTS].catalog = lambda: bookgen.static["order"]
     # The same dict the book service updates in place when made books are published.
     app[MANIFEST] = bookgen.manifest
     app[FILES] = bookgen.static_files

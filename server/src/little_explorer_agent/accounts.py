@@ -27,6 +27,7 @@ from __future__ import annotations
 
 import hashlib
 import hmac
+import json
 import logging
 import os
 import re
@@ -113,8 +114,20 @@ class Account:
     milo_consent: bool | None = None
     # May make books in the cloud: the account's own flag, or book making is on for everyone.
     can_generate: bool = False
+    # The hand-made books ``all_books`` stands for (the shelf order of the bundled library). Made books are
+    # never part of it: an account only reads the made books it was granted (its own are granted when published).
+    catalog: tuple[str, ...] = ()
+
+    @property
+    def shelf(self) -> tuple[str, ...]:
+        """Every book the account may read: its grants, plus every hand-made book if it has ``all_books``."""
+        if not self.all_books:
+            return self.books
+        catalog = set(self.catalog)
+        return self.catalog + tuple(b for b in self.books if b not in catalog)
 
     def as_json(self) -> dict[str, Any]:
+        """For the owner: the real ``all_books`` flag and the account's own grants."""
         return {
             "id": self.id,
             "email": self.email,
@@ -124,8 +137,36 @@ class Account:
             "can_generate": self.can_generate,
         }
 
+    def app_json(self) -> dict[str, Any]:
+        """For the app: always an explicit shelf. The 1.0 app reads ``all_books: true`` as "every book in the
+        manifest", which would include other families' made books, so it is never sent to the app."""
+        return {**self.as_json(), "all_books": False, "books": list(self.shelf)}
+
     def may_read(self, book_id: str) -> bool:
-        return self.all_books or book_id in self.books
+        return book_id in self.shelf
+
+
+def bundled_catalog() -> tuple[str, ...]:
+    """The bundled library's book ids in shelf order (``library.json``)."""
+    from .catalog import LIBRARY_FILE, resources_dir
+
+    try:
+        order = json.loads((resources_dir() / LIBRARY_FILE).read_text(encoding="utf-8")).get("order") or []
+    except (OSError, ValueError) as exc:
+        log.warning("could not read the bundled library: %s", exc)
+        return ()
+    return tuple(b for b in order if isinstance(b, str))
+
+
+def _cached(load: Callable[[], tuple[str, ...]]) -> Callable[[], tuple[str, ...]]:
+    value: list[tuple[str, ...]] = []
+
+    def get() -> tuple[str, ...]:
+        if not value:
+            value.append(load())
+        return value[0]
+
+    return get
 
 
 @dataclass(frozen=True)
@@ -164,6 +205,8 @@ class Accounts:
         self.daily_cap = daily_cap
         self.clock = clock
         self.bookgen_everyone = bookgen_everyone
+        # Where all_books accounts get their hand-made books; the web app points it at the served catalog.
+        self.catalog: Callable[[], Iterable[str]] = _cached(bundled_catalog)
 
     @classmethod
     def from_env(cls, store: DeviceStore, env: Mapping[str, str] | None = None) -> Accounts:
@@ -200,7 +243,8 @@ class Accounts:
         ).fetchall()
         consent = {"yes": True, "no": False}.get(row[4])
         can_generate = bool(row[5]) or self._bookgen_everyone(cur)
-        return Account(row[0], row[1], bool(row[2]), tuple(b[0] for b in books), row[3], consent, can_generate)
+        catalog = tuple(self.catalog()) if row[2] else ()
+        return Account(row[0], row[1], bool(row[2]), tuple(b[0] for b in books), row[3], consent, can_generate, catalog)
 
     def _bookgen_everyone(self, cur: Any) -> bool:
         if self.bookgen_everyone:
