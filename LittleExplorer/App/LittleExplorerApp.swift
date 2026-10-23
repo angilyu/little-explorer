@@ -26,7 +26,7 @@ struct LittleExplorerApp: App {
         WindowGroup {
             Group {
                 if account.isSignedIn, account.asksMiloConsent {
-                    MiloConsentView(confirming: account.account?.miloConsent == true) { _ in
+                    MiloConsentView {
                         withAnimation { account.finishMiloConsent() }
                     }
                     .background(

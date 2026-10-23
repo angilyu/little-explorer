@@ -10,7 +10,7 @@ struct ParentCornerView: View {
     @Environment(ContentStore.self) private var content
     @Environment(AccountStore.self) private var account
     @Environment(VoiceModeController.self) private var voice
-    @State private var showMiloConsent = false
+    @State private var miloConsent: MiloConsentView.Purpose? = DemoLaunch.current?.milo == .turnOn ? .ask : nil
     @State private var miloMessage: String?
     @State private var confirmSignOut = false
     @State private var showDelete = false
@@ -110,13 +110,13 @@ struct ParentCornerView: View {
                 Toggle("Milo, the AI voice buddy", isOn: Binding(
                     get: { account.miloAllowed },
                     set: { on in
-                        if on { showMiloConsent = true } else { turnMiloOff() }
+                        if on { miloConsent = .ask } else { turnMiloOff() }
                     }
                 ))
                 if let miloMessage {
                     Text(miloMessage).foregroundStyle(.red)
                 }
-                Button("What Milo sends and keeps") { showMiloConsent = true }
+                Button("What Milo sends and keeps") { miloConsent = account.miloAllowed ? .about : .ask }
                 Link("Privacy policy", destination: MiloConsentView.privacyURL)
             } header: {
                 Text("Milo")
@@ -125,8 +125,8 @@ struct ParentCornerView: View {
                      ? "On: while Milo is on, your child's voice and the page being read go to OpenAI through LiveKit. Turning Milo off counts on every device signed in with this email."
                      : "Off: Milo can't talk, and nothing is sent. Reading and read-aloud still work. Turn Milo on to read what Milo sends and allow it.")
             }
-            .sheet(isPresented: $showMiloConsent) {
-                MiloConsentView(confirming: account.miloAllowed) { _ in showMiloConsent = false }
+            .sheet(isPresented: Binding(get: { miloConsent != nil }, set: { if !$0 { miloConsent = nil } })) {
+                MiloConsentView(purpose: miloConsent ?? .about) { miloConsent = nil }
                     .environment(account)
                     .presentationDetents([.large])
                     .passportSizing()

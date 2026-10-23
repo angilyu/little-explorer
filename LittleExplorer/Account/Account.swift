@@ -9,7 +9,7 @@ struct Account: Codable, Equatable, Sendable {
     /// Book ids on this account's shelf; nil means every book (the server's `all_books`).
     let books: [String]?
     /// A grown-up's choice about Milo for the whole account: true once they allowed Milo, false if they
-    /// turned Milo off, nil if never asked (accounts from before the consent screen).
+    /// turned Milo off in the Grown-ups corner, nil if a grown-up hasn't chosen yet ("Not now" saves nothing).
     let miloConsent: Bool?
 
     enum CodingKeys: String, CodingKey {

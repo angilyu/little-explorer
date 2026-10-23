@@ -38,10 +38,11 @@ child reads, listens and, if the grown-up turns it on, talks with Milo, a voice 
 
 ## Talking with Milo
 
-Milo is an AI voice buddy, and it is **off until a grown-up allows it**. Right after a grown-up signs in, the app
-explains what Milo sends and keeps and asks **Allow Milo** or **Not now**. On devices that were already signed in
-before this step existed, the same explanation appears behind the grown-up check the first time **Talk to Milo**
-is tapped. "Not now" keeps Milo off; reading and read-aloud work the same either way.
+Milo is an AI voice buddy, and it is **off until a grown-up allows it**. After a grown-up signs in, the app
+explains what Milo sends and keeps and asks **Allow Milo** or **Not now**. This is asked at every sign-in until a
+grown-up allows Milo; once allowed, it isn't asked again on any iPad or iPhone signed in with that email. "Not now"
+keeps Milo off and saves nothing. While Milo isn't allowed, tapping **Talk to Milo** shows the grown-up check and
+then the same explanation, so a child can't turn Milo on alone. Reading and read-aloud work the same either way.
 
 While Milo is on and the child has tapped **Talk to Milo**, the child's speech and the page being read are
 streamed through [LiveKit](https://livekit.io) (the voice connection) to [OpenAI](https://openai.com) (the AI)
@@ -51,8 +52,9 @@ handles the audio under its own API terms, which say API data isn't used to trai
 Milo is off, nothing is streamed.
 
 The grown-up's choice is saved with the account, so it counts on every iPad and iPhone signed in with that email.
-To turn Milo off, open the **Grown-ups** corner (behind the grown-up check) and switch off **Milo, the AI voice
-buddy**. Our server then refuses to start Milo for that account until a grown-up turns it back on.
+To turn Milo on or off later, open the **Grown-ups** corner (behind the grown-up check) and use **Milo, the AI voice
+buddy**; turning it on shows the same explanation and asks **Allow Milo**. After a grown-up turns Milo off there,
+our server refuses to start Milo for that account.
 
 ## Where it is stored
 

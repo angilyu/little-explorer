@@ -18,28 +18,26 @@ import Foundation
 /// `-demoAccount welcome|email|code` shows the signed-out welcome screen (and sign-in's email or code step);
 /// `-demoAccount new` signs in as a new account with only the default books. Other demos run signed in to a
 /// family account with every book.
-/// `-demoMilo signin` shows Milo's consent screen right after a new account signs in; `-demoMilo confirm` shows
-/// it for an account that already allowed Milo on another device; `-demoMilo talk` (with `-demoBook`) taps
-/// "Talk to Milo" on a device signed in before the consent screen existed, which opens the grown-up check;
+/// `-demoMilo signin` shows Milo's consent screen right after a new email signs in; `-demoMilo talk` (with
+/// `-demoBook`) taps "Talk to Milo" on an account that hasn't allowed Milo, which opens the grown-up check;
 /// `-demoMilo talk-consent` shows the consent screen after it; `-demoMilo off` is an account whose grown-up
-/// turned Milo off (with `-demoParent`, the Grown-ups corner's Milo switch is off). Other demos have Milo allowed.
+/// turned Milo off (with `-demoParent`, the Grown-ups corner's Milo switch is off); `-demoMilo turn-on` opens
+/// the Grown-ups corner with Milo off and the consent its switch shows. Other demos have Milo allowed.
 struct DemoLaunch: Equatable {
     enum AccountScreen: String { case welcome, email, code, new }
     enum Milo: String {
-        case signin, confirm, talk, off
+        case signin, talk, off
         case talkConsent = "talk-consent"
+        case turnOn = "turn-on"
 
         /// The account's consent in this demo.
         var consent: Bool? {
             switch self {
             case .signin, .talk, .talkConsent: nil
-            case .confirm: true
-            case .off: false
+            case .off, .turnOn: false
             }
         }
 
-        /// Shows the consent screen that follows a sign-in.
-        var afterSignIn: Bool { self == .signin || self == .confirm }
         /// Taps "Talk to Milo" when the book opens.
         var talks: Bool { self == .talk || self == .talkConsent }
     }
@@ -106,6 +104,7 @@ struct DemoLaunch: Equatable {
         if let milo = value(after: "-demoMilo").flatMap(Milo.init(rawValue:)) {
             demo.milo = milo
             if milo == .signin, demo.accountScreen == nil { demo.accountScreen = .new }
+            if milo == .turnOn { demo.openParent = true }
             found = true
         }
         if arguments.contains("-demoCalendar") {

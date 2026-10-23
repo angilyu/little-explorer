@@ -158,6 +158,11 @@ final class ContentTests: XCTestCase {
         XCTAssertNil(signIn.account?.miloConsent)
         XCTAssertEqual(DemoLaunch.parse(["app", "-demoMilo", "talk-consent"])?.milo, .talkConsent)
         XCTAssertEqual(DemoLaunch.parse(["app", "-demoMilo", "off"])?.account?.miloConsent, false)
+        let turnOn = try XCTUnwrap(DemoLaunch.parse(["app", "-demoMilo", "turn-on"]))
+        XCTAssertEqual(turnOn.milo, .turnOn)
+        XCTAssertTrue(turnOn.openParent)
+        XCTAssertEqual(turnOn.account?.miloConsent, false)
+        XCTAssertNil(DemoLaunch.parse(["app", "-demoMilo", "confirm"]), "the already-on version is gone")
         XCTAssertEqual(DemoLaunch.parse(["app", "-demoGate"])?.account?.miloAllowed, true)
         XCTAssertEqual(DemoLaunch.parse(["app", "-demoStars", "12", "-demoBadges"])?.seedStars, 12)
     }
