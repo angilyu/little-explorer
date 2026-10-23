@@ -5,11 +5,15 @@ import UIKit
 /// Where book files come from: books, photos and narration downloaded from the Milo server win over the
 /// copies bundled in the app. Files are looked up by name (e.g. "paris.json", "paris-eiffel.jpg"),
 /// because the app bundle is flat and the server's catalog keeps names unique.
+///
+/// `madeDir` holds the books a grown-up made in the app (see ``MadeBookLibrary``); their names never
+/// clash with the catalog's, so photos and clips are found there too.
 struct ContentFiles: @unchecked Sendable {
     let cacheDir: URL
     let bundle: Bundle
+    var madeDir: URL? = nil
 
-    static let shared = ContentFiles(cacheDir: defaultCacheDir, bundle: .main)
+    static let shared = ContentFiles(cacheDir: defaultCacheDir, bundle: .main, madeDir: MadeBookLibrary.defaultDir)
 
     /// Files inside the app only, ignoring downloads.
     static func bundleOnly(_ bundle: Bundle) -> ContentFiles {
@@ -23,7 +27,9 @@ struct ContentFiles: @unchecked Sendable {
 
     func cachedURL(_ name: String) -> URL? {
         let url = cacheDir.appendingPathComponent(name)
-        return FileManager.default.fileExists(atPath: url.path) ? url : nil
+        if FileManager.default.fileExists(atPath: url.path) { return url }
+        guard let made = madeDir?.appendingPathComponent(name) else { return nil }
+        return FileManager.default.fileExists(atPath: made.path) ? made : nil
     }
 
     func bundledURL(_ name: String) -> URL? {
@@ -113,11 +119,15 @@ struct ContentFiles: @unchecked Sendable {
     }
 }
 
-/// `GET /content/manifest.json` from the Milo server (see server/src/little_explorer_agent/catalog.py).
+/// `GET /content/manifest.json` from the Milo server (see server/src/little_explorer_agent/catalog.py), or an
+/// account's made books from `GET /account/content/manifest.json` (bookgen/manifest.py).
 struct ContentManifest: Codable, Equatable {
     struct Entry: Codable, Equatable {
         let sha256: String
         let size: Int
+        /// Where to download it instead of `/content/<path>`: a made book's photos and clips come from a
+        /// short-lived storage link (fetched without the app's keys).
+        var url: String? = nil
     }
 
     let format: Int

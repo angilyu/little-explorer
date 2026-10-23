@@ -59,6 +59,10 @@ class BookgenConfig:
     stt_model: str = "whisper-1"
     per_day: int = 3
     per_month: int = 10
+    # Tries a day, counting ones that failed or were turned down (which don't use up the quota).
+    tries_per_day: int = 8
+    # "Make this page again" a day; these don't use up a book from the quota.
+    page_redos_per_day: int = 5
     daily_usd_cap: float = 2.0
     job_usd_cap: float = 0.75
     max_attempts: int = 4
@@ -82,6 +86,8 @@ class BookgenConfig:
             text_model=(env.get("BOOKGEN_TEXT_MODEL") or "").strip() or cls.text_model,
             per_day=int(_num(env, "BOOKGEN_PER_DAY", cls.per_day)),
             per_month=int(_num(env, "BOOKGEN_PER_MONTH", cls.per_month)),
+            tries_per_day=int(_num(env, "BOOKGEN_TRIES_PER_DAY", cls.tries_per_day)),
+            page_redos_per_day=int(_num(env, "BOOKGEN_PAGE_REDOS_PER_DAY", cls.page_redos_per_day)),
             daily_usd_cap=_num(env, "BOOKGEN_DAILY_USD_CAP", cls.daily_usd_cap),
             job_usd_cap=_num(env, "BOOKGEN_JOB_USD_CAP", cls.job_usd_cap),
             poll_s=_num(env, "BOOKGEN_POLL_SECONDS", cls.poll_s),
@@ -94,6 +100,8 @@ class BookgenConfig:
             "jobs_at_once": 1,
             "per_day": self.per_day,
             "per_month": self.per_month,
+            "tries_per_day": self.tries_per_day,
+            "page_redos_per_day": self.page_redos_per_day,
             "daily_usd_cap": self.daily_usd_cap,
             "job_usd_cap": self.job_usd_cap,
         }

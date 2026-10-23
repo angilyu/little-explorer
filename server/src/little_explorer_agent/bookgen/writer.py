@@ -275,3 +275,80 @@ def all_texts(book: dict[str, Any]) -> list[str]:
 
 def credit_texts(credits: dict[str, Any]) -> list[str]:
     return [str(credits.get(k) or "") for k in ("author", "commonsTitle", "license")]
+
+
+# -- "make this page again" ------------------------------------------------------------------------
+
+PAGE_SCHEMA = _page_schema()
+
+
+def _page_problems(level: int, page: dict[str, Any]) -> list[str]:
+    if not str(page.get("text") or "").strip():
+        return ["the page has no text"]
+    problems = list(check_page_text(level, page["text"]))
+    if not str(page.get("about") or "").strip():
+        problems.append("the page has no about notes")
+    if not [q for q in page.get("photo_queries") or [] if str(q).strip()]:
+        problems.append("the page has no photo queries")
+    return problems
+
+
+def _page_request(book: dict[str, Any], page_id: str) -> str:
+    pages = [{"page": p["id"], "text": p["text"]} for p in book["pages"]]
+    old = next(p for p in book["pages"] if p["id"] == page_id)
+    return (
+        f"<book>\n{json.dumps({'title': book.get('theme'), 'section': book.get('city'), 'pages': pages}, ensure_ascii=False)}\n</book>\n"
+        f"A grown-up asked for page {page_id} again. Write a new page {page_id} that fits between its neighbours, "
+        f"shows something different from the old page and every other page, and keeps the book's reading level.\n"
+        f"<old_page>\n{json.dumps({'text': old['text'], 'about': old.get('about', '')}, ensure_ascii=False)}\n</old_page>"
+    )
+
+
+async def rewrite_page(client: OpenAIClient, config: BookgenConfig, book: dict[str, Any], page_id: str,
+                       costs: CostLog) -> dict[str, Any]:
+    """Write one page of a published book again, fact-checked, in the book's shape (photo still to find)."""
+    level = int(book.get("level") or 1)
+    instructions = writing_instructions(level).replace(
+        f"Write exactly {PAGES[level_of(level).number]} pages:", "Write one page of an existing book. For reference, a whole book has:"
+    )
+    text = _page_request(book, page_id)
+    page: dict[str, Any] = {}
+    for attempt in range(REWRITES + 1):
+        prompt = text
+        problems = _page_problems(level, page) if attempt else []
+        if problems:
+            prompt += "\nYour last try had these problems; fix them:\n- " + "\n- ".join(problems) + \
+                "\n<draft>\n" + json.dumps(page, ensure_ascii=False) + "\n</draft>"
+        result = await client.structured(
+            model=config.text_model, instructions=instructions, input=prompt,
+            schema_name="picture_page", schema=PAGE_SCHEMA, max_output_tokens=3000, reasoning="low",
+        )
+        costs.tokens("text", config.text_model, result.input_tokens, result.output_tokens)
+        page = result.data
+        if not _page_problems(level, page):
+            break
+    else:
+        raise BookError(f"couldn't write the page at level {level}: {'; '.join(_page_problems(level, page)[:3])}")
+
+    result = await client.structured(
+        model=config.text_model, instructions=check_instructions(level),
+        input="<book>\n" + json.dumps({"title": book.get("theme"), "pages": [
+            {"page": 1, "text": page["text"], "about": page["about"]}]}, ensure_ascii=False) + "\n</book>",
+        schema_name="fact_check", schema=CHECK_SCHEMA, web_search=True, max_output_tokens=3000, reasoning="low",
+    )
+    costs.tokens("text", config.text_model, result.input_tokens, result.output_tokens, result.web_searches)
+    if not result.data.get("safe", False):
+        raise Rejected(str(result.data.get("reason") or "The page didn't pass the safety check.")[:200])
+    for fix in result.data.get("fixes") or []:
+        if int(fix.get("page") or 0) == 1 and str(fix.get("text") or "").strip():
+            fixed = {**page, "text": fix["text"].strip(), "about": str(fix.get("about") or page["about"]).strip()}
+            if not _page_problems(level, fixed):
+                page = fixed
+    queries = [str(q).strip()[:100] for q in page.get("photo_queries") or [] if str(q).strip()][:3]
+    return {
+        "id": page_id,
+        "text": page["text"].strip(),
+        "about": page["about"].strip(),
+        "emoji": _one_emoji(page.get("emoji", ""), "📖"),
+        "photo": {"query": queries[0] if queries else str(book.get("theme") or ""), "alternates": queries[1:]},
+    }

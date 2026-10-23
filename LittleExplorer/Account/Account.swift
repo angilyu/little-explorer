@@ -11,25 +11,29 @@ struct Account: Codable, Equatable, Sendable {
     /// A grown-up's choice about Milo for the whole account: true once they allowed Milo, false if they
     /// turned Milo off in the Grown-ups corner, nil if a grown-up hasn't chosen yet ("Not now" saves nothing).
     let miloConsent: Bool?
+    /// The grown-up may make books in the app ("Make a book"): on for a few accounts first, then everyone.
+    let canGenerate: Bool
 
     enum CodingKeys: String, CodingKey {
         case id, email, books
         case allBooks = "all_books"
         case miloConsent = "milo_consent"
+        case canGenerate = "can_generate"
     }
 
-    init(id: String, email: String, books: [String]?, miloConsent: Bool? = nil) {
+    init(id: String, email: String, books: [String]?, miloConsent: Bool? = nil, canGenerate: Bool = false) {
         self.id = id
         self.email = email
         self.books = books
         self.miloConsent = miloConsent
+        self.canGenerate = canGenerate
     }
 
     /// Milo may connect only after a grown-up allowed it.
     var miloAllowed: Bool { miloConsent == true }
 
     func with(miloConsent: Bool?) -> Account {
-        Account(id: id, email: email, books: books, miloConsent: miloConsent)
+        Account(id: id, email: email, books: books, miloConsent: miloConsent, canGenerate: canGenerate)
     }
 
     init(from decoder: Decoder) throws {
@@ -39,6 +43,7 @@ struct Account: Codable, Equatable, Sendable {
         let all = try c.decodeIfPresent(Bool.self, forKey: .allBooks) ?? false
         books = all ? nil : (try c.decodeIfPresent([String].self, forKey: .books) ?? [])
         miloConsent = try c.decodeIfPresent(Bool.self, forKey: .miloConsent)
+        canGenerate = try c.decodeIfPresent(Bool.self, forKey: .canGenerate) ?? false
     }
 
     func encode(to encoder: Encoder) throws {
@@ -48,6 +53,7 @@ struct Account: Codable, Equatable, Sendable {
         try c.encode(books == nil, forKey: .allBooks)
         try c.encode(books ?? [], forKey: .books)
         try c.encodeIfPresent(miloConsent, forKey: .miloConsent)
+        try c.encode(canGenerate, forKey: .canGenerate)
     }
 
     /// The books a new account starts with. The server's list (`PIP_DEFAULT_BOOKS`) is the one that counts;

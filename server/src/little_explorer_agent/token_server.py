@@ -60,11 +60,20 @@ It also serves the book content (see :mod:`.catalog`): ``GET /content/manifest.j
 ``GET /content/<path>`` for each file in it, so books and the Passport badges (``badges.json``, see
 :mod:`.badges`) can change without an app update.
 
-Made books (see :mod:`.bookgen`): ``POST /admin/books/generate`` with ``{"account", "title", "section",
-"level", "note"}`` queues a book for an account that ``can_generate`` (``202 {"job", "usage"}``); the
-in-process runner writes, illustrates and narrates it and publishes it into the manifest. Generated
-books' JSON is served from memory and their photos and narration are ``302`` redirects to short-lived
-presigned R2 URLs. ``GET /admin/books``, ``GET /admin/books/<id>``, ``POST /admin/books/<id>/publish |
+Made books (see :mod:`.bookgen`): a grown-up whose account ``can_generate`` (the account JSON says so) makes
+a book in the app with ``POST /account/books {"title", "section", "level", "about"?}`` (``202 {"job",
+"usage"}``) and follows it with ``GET /account/jobs/<id>``; ``GET /account/bookgen`` returns whether the
+account may make books, the levels, the quota left and the active job. ``GET /account/books`` lists the
+account's made books, ``DELETE /account/books/<id>`` deletes one, ``POST /account/books/<id>/pages/<page>/
+regenerate`` makes one page again and ``POST /account/books/<id>/report {"reason", "note"?, "page"?}`` tells
+the owner about a book (``GET /admin/reports``). The in-process runner writes, illustrates and narrates each
+book and puts it on its account's shelf. Made books are never in the public ``/content/manifest.json``
+(the hand-made catalog every install downloads): a signed-in app also syncs ``GET /account/content/
+manifest.json``, which lists only that account's made books (its own and any the owner granted it). Their
+JSON comes from ``GET /account/content/<path>`` and their photos and clips from the short-lived signed R2
+``url`` in each manifest entry. The agent reads an account's made books with ``GET /made-books?account=<id>``
+(report key) so Milo knows their pages. The owner can also queue a book with ``POST /admin/books/generate``
+``{"account", "title", "section", "level", "about"}``. ``GET /admin/books``, ``GET /admin/books/<id>``, ``POST /admin/books/<id>/publish |
 unpublish | delete``, ``GET /admin/jobs``, ``GET /admin/jobs/<id>``, ``POST /admin/jobs/<id>/cancel``,
 ``GET | POST /admin/bookgen {"everyone"}`` and ``POST /admin/accounts/<email or id>/bookgen
 {"can_generate"}`` manage it. ``GET /levels`` lists the reading levels for the parent screen.
@@ -87,10 +96,11 @@ from pathlib import Path
 from aiohttp import web
 
 from . import agent_name
-from .accounts import Accounts, AuthError, Session, normalize_email, valid_book_id
+from .accounts import Account, Accounts, AuthError, Session, normalize_email, valid_book_id
+from .bookgen import manifest as made_files
 from .bookgen.service import BookgenService
-from .bookgen.store import Asset, LimitError
-from .bookgen.writer import validate_request
+from .bookgen.store import ACTIVE, NOTE_MAX, REPORT_REASONS, LimitError
+from .bookgen.writer import ABOUT_MAX, SECTION_MAX, TITLE_MAX, validate_request
 from .catalog import build_manifest, content_files, resources_dir
 from .coins import CoinError, CoinLedger
 from .config import load_env
@@ -657,10 +667,11 @@ async def handle_account_reading(request: web.Request) -> web.Response:
     body = await _json_body(request)
     if body is None:
         return web.json_response({"error": "bad body"}, status=400)
-    known = request.app[MANIFEST].get("order", [])
+    # The catalog, plus the made books on the account's shelf (a made book's id is in the account's grants).
+    known = set(request.app[MANIFEST].get("order", [])) | set(session.account.books)
     try:
         counts = await asyncio.to_thread(
-            request.app[READING].record, session.account.id, session.device_id, body.get("events"), set(known)
+            request.app[READING].record, session.account.id, session.device_id, body.get("events"), known
         )
     except ReadingError as exc:
         return web.json_response(exc.as_json(), status=exc.status)
@@ -682,6 +693,219 @@ async def handle_account_library(request: web.Request) -> web.Response:
     except LibraryError as exc:
         return web.json_response(exc.as_json(), status=exc.status)
     return web.json_response({"library": library})
+
+
+# -- grown-ups: making books -----------------------------------------------------------------------
+
+NOT_ALLOWED = "Making books isn't turned on for this account yet."
+NOT_READY = "Book making isn't available right now. Please try again later."
+REQUEST_WORDS = {"title": "The book name", "section": "The section", "about": "What it's about"}
+
+
+def _request_problem(exc: ValueError) -> str:
+    message = str(exc)
+    for field, words in REQUEST_WORDS.items():
+        if message.startswith(field + " "):
+            return words + message[len(field):] + "."
+    if message.startswith("level"):
+        return "Please choose a level."
+    if message.startswith("title and section"):
+        return "The book name and section need some letters."
+    return "Please check the book name, section and level."
+
+
+def _no_book() -> web.Response:
+    return web.json_response({"error": "not_found", "message": "That book isn't on this account."}, status=404)
+
+
+def _gated(account: Account, bookgen: BookgenService) -> web.Response | None:
+    if not account.can_generate:
+        return web.json_response({"error": "not_allowed", "message": NOT_ALLOWED}, status=403)
+    if not bookgen.ready:
+        return web.json_response({"error": "not_ready", "message": NOT_READY}, status=503)
+    return None
+
+
+async def handle_account_bookgen(request: web.Request) -> web.Response:
+    """What the Make a book screen needs: may this account make books, the levels, the quota and the active job."""
+    session = await _session(request)
+    if isinstance(session, web.Response):
+        return session
+    account = session.account
+    if not account.can_generate:
+        return web.json_response({"can_generate": False})
+    bookgen = request.app[BOOKGEN]
+    books = bookgen.books
+    usage = await asyncio.to_thread(books.usage, account.id)
+    jobs = await asyncio.to_thread(books.account_jobs, account.id, 5)
+    active = next((j for j in jobs if j.status in ACTIVE), None)
+    return web.json_response({
+        "can_generate": True,
+        "ready": bookgen.ready,
+        "levels": levels_json(),
+        "usage": usage,
+        "fields": {"title_max": TITLE_MAX, "section_max": SECTION_MAX, "about_max": ABOUT_MAX},
+        "active": active.parent_json() if active else None,
+        "jobs": [j.parent_json() for j in jobs],
+    })
+
+
+async def handle_account_books(request: web.Request) -> web.Response:
+    """GET the account's own made books; POST {"title", "section", "level", "about"?} to make a new one."""
+    session = await _session(request)
+    if isinstance(session, web.Response):
+        return session
+    account, bookgen = session.account, request.app[BOOKGEN]
+    if request.method == "GET":
+        rows = await asyncio.to_thread(bookgen.books.books, account.id)
+        return web.json_response({"books": [
+            {k: v for k, v in b.as_json().items() if k != "account_id"} for b in rows if b.status in ("draft", "published")
+        ]})
+    if denied := _gated(account, bookgen):
+        return denied
+    body = await _json_body(request)
+    if body is None:
+        return web.json_response({"error": "bad_request", "message": "Please fill in the form."}, status=400)
+    try:
+        book_request = validate_request(body)
+    except ValueError as exc:
+        return web.json_response({"error": "bad_request", "message": _request_problem(exc)}, status=400)
+    try:
+        job = await asyncio.to_thread(bookgen.queue, account.id, book_request)
+    except LimitError as exc:
+        return web.json_response(exc.as_json(), status=exc.status)
+    bookgen.wake()
+    log.info("account %s queued book %s (job %s)", account.id, job.book_id, job.id)
+    usage = await asyncio.to_thread(bookgen.books.usage, account.id)
+    return web.json_response({"job": job.parent_json(), "usage": usage}, status=202)
+
+
+async def handle_account_job(request: web.Request) -> web.Response:
+    session = await _session(request)
+    if isinstance(session, web.Response):
+        return session
+    job = await asyncio.to_thread(request.app[BOOKGEN].books.job, request.match_info["id"])
+    if job is None or job.account_id != session.account.id:
+        return web.json_response({"error": "not_found", "message": "No such book job."}, status=404)
+    return web.json_response({"job": job.parent_json()})
+
+
+async def handle_account_book_delete(request: web.Request) -> web.Response:
+    """Delete a book this account made (from every shelf it's on). It still counts toward the month's limit."""
+    session = await _session(request)
+    if isinstance(session, web.Response):
+        return session
+    bookgen = request.app[BOOKGEN]
+    book_id = request.match_info["id"]
+    book = await asyncio.to_thread(bookgen.books.book, book_id)
+    if book is None or book.account_id != session.account.id:
+        return _no_book()
+    try:
+        deleted = await bookgen.delete_book(book_id)
+    except LookupError:
+        return _no_book()
+    log.info("account %s deleted made book %s (%d files)", session.account.id, book_id, deleted)
+    return web.json_response({"ok": True})
+
+
+async def handle_account_page_regenerate(request: web.Request) -> web.Response:
+    """Make one page of the account's own published book again (its own daily limit; not a book from the quota)."""
+    session = await _session(request)
+    if isinstance(session, web.Response):
+        return session
+    account, bookgen = session.account, request.app[BOOKGEN]
+    if denied := _gated(account, bookgen):
+        return denied
+    book_id, page = request.match_info["id"], request.match_info["page"]
+    try:
+        job = await asyncio.to_thread(bookgen.queue_page, account.id, book_id, page)
+    except LookupError:
+        return _no_book()
+    except ValueError as exc:
+        return web.json_response({"error": "not_ready", "message": str(exc)}, status=409)
+    except LimitError as exc:
+        return web.json_response(exc.as_json(), status=exc.status)
+    bookgen.wake()
+    log.info("account %s asked for page %s of %s again (job %s)", account.id, page, book_id, job.id)
+    usage = await asyncio.to_thread(bookgen.books.usage, account.id)
+    return web.json_response({"job": job.parent_json(), "usage": usage}, status=202)
+
+
+async def handle_account_book_report(request: web.Request) -> web.Response:
+    """Tell the owner something is wrong with a made book on this account's shelf."""
+    session = await _session(request)
+    if isinstance(session, web.Response):
+        return session
+    bookgen = request.app[BOOKGEN]
+    body = await _json_body(request)
+    reason = (body or {}).get("reason")
+    note, page = (body or {}).get("note") or "", (body or {}).get("page") or ""
+    if reason not in REPORT_REASONS or not isinstance(note, str) or not isinstance(page, str):
+        return web.json_response({"error": "bad_request", "message": "Please choose what's wrong."}, status=400)
+    found = await bookgen.shelf_book(session.account.id, request.match_info["id"])
+    if found is None:
+        return _no_book()
+    report = await asyncio.to_thread(bookgen.books.add_report, session.account.id, found[0], reason,
+                                     note.strip()[:NOTE_MAX], page.strip()[:8])
+    log.warning("account %s reported made book %s (%s)", session.account.id, found[0].id, reason)
+    return web.json_response({"ok": True, "id": report}, status=201)
+
+
+async def handle_account_manifest(request: web.Request) -> web.Response:
+    """The made books on this account's shelf, as a manifest the app syncs next to the catalog."""
+    session = await _session(request)
+    if isinstance(session, web.Response):
+        return session
+    manifest, _ = await request.app[BOOKGEN].account_manifest(session.account.id)
+    return web.json_response(manifest, headers={"Cache-Control": "no-store"})
+
+
+def _made_book_of(rel: str) -> str | None:
+    if rel.startswith("Books/") and rel.endswith(".json"):
+        book_id = rel[len("Books/"):-len(".json")]
+    elif rel.startswith("Narration/") and rel.endswith(".narration.json"):
+        book_id = rel[len("Narration/"):-len(".narration.json")]
+    else:
+        return None
+    return book_id if valid_book_id(book_id) else None
+
+
+async def handle_account_content_file(request: web.Request) -> web.Response:
+    """A made book's JSON or clip timings, for an account whose shelf it's on (photos and clips: the manifest's url)."""
+    session = await _session(request)
+    if isinstance(session, web.Response):
+        return session
+    rel = request.match_info["path"]
+    book_id = _made_book_of(rel)
+    found = await request.app[BOOKGEN].shelf_book(session.account.id, book_id) if book_id else None
+    data = made_files.book_files(*found).get(rel) if found else None
+    if not isinstance(data, bytes):
+        raise web.HTTPNotFound()
+    return web.Response(body=data, content_type="application/json", headers={"Cache-Control": "no-store"})
+
+
+async def handle_made_books(request: web.Request) -> web.Response:
+    """For the agent (report key): the made books on an account's shelf, so Milo knows their pages."""
+    if not authorized(request, request.app[REPORT_KEY], required=True):
+        return web.json_response({"error": "unauthorized"}, status=401)
+    account = request.query.get("account", "")
+    if not account:
+        return web.json_response({"error": "account is required"}, status=400)
+    return web.json_response({"books": await request.app[BOOKGEN].made_books(account)})
+
+
+async def handle_admin_reports(request: web.Request) -> web.Response:
+    if denied := _admin(request):
+        return denied
+    return web.json_response({"reports": await asyncio.to_thread(request.app[BOOKGEN].books.reports)})
+
+
+async def handle_admin_report_close(request: web.Request) -> web.Response:
+    if denied := _admin(request):
+        return denied
+    if not await asyncio.to_thread(request.app[BOOKGEN].books.close_report, request.match_info["id"]):
+        return web.json_response({"error": "no such report"}, status=404)
+    return web.json_response({"ok": True})
 
 
 # -- owner: accounts ---------------------------------------------------------------------------------
@@ -758,6 +982,7 @@ async def handle_admin_account_action(request: web.Request) -> web.Response:
             if not isinstance(grant, list) or not isinstance(revoke, list) or every not in (None, True, False):
                 return web.json_response({"error": "grant/revoke must be lists, all_books true or false"}, status=400)
             known = set(request.app[MANIFEST].get("order", []))
+            known |= await asyncio.to_thread(request.app[BOOKGEN].books.published_ids)
             unknown = [b for b in grant if valid_book_id(b) and b not in known]
             if unknown:
                 return web.json_response({"error": f"no such book: {', '.join(unknown)}"}, status=400)
@@ -809,7 +1034,6 @@ async def handle_admin_restore(request: web.Request) -> web.Response:
     except ValueError as exc:
         return web.json_response({"error": str(exc)}, status=400)
     log.warning("owner restored a backup: %s", counts)
-    await request.app[BOOKGEN].refresh()
     request.app[BOOKGEN].wake()  # the backup may hold unfinished jobs
     return web.json_response({"ok": True, "restored": counts})
 
@@ -939,18 +1163,17 @@ async def handle_admin_job_cancel(request: web.Request) -> web.Response:
 
 
 async def handle_health(request: web.Request) -> web.Response:
-    # The deploy workflow polls this until the new commit and book content are live. ``bundled`` is the
-    # version of the commit's own books; ``content`` also counts generated books, so it differs once one is out.
+    # The deploy workflow polls this until the new commit and book content are live. Made books are listed per
+    # account, never in the public manifest, so ``content`` (what's served) and ``bundled`` (the commit's books)
+    # are the same.
     commit = os.environ.get("RENDER_GIT_COMMIT", "").strip() or None
     content = request.app[MANIFEST]["version"]
-    bookgen = request.app.get(BOOKGEN)
-    bundled = bookgen.static["version"] if bookgen is not None else content
+    bundled = content
     return web.json_response({"ok": True, "commit": commit, "content": content, "bundled": bundled})
 
 
 async def handle_manifest(request: web.Request) -> web.Response:
-    # The app asks on launch and when it comes back to the front: user traffic, which may wake the database.
-    request.app[BOOKGEN].maybe_refresh()
+    # The hand-made catalog, from memory: it never touches the database.
     manifest = request.app[MANIFEST]
     headers = {"Cache-Control": "no-cache", "ETag": f'"{manifest["version"]}"'}
     if request.headers.get("If-None-Match") == headers["ETag"]:
@@ -960,13 +1183,6 @@ async def handle_manifest(request: web.Request) -> web.Response:
 
 async def handle_content_file(request: web.Request) -> web.StreamResponse:
     rel = request.match_info["path"]
-    bookgen = request.app[BOOKGEN]
-    made = bookgen.extra.get(rel)
-    if isinstance(made, bytes):
-        return web.Response(body=made, content_type="application/json", headers={"Cache-Control": "no-cache"})
-    if isinstance(made, Asset):
-        # Made books' photos and clips live in a private R2 bucket: send a short-lived signed link.
-        raise web.HTTPFound(bookgen.url_for(made), headers={"Cache-Control": "no-store"})
     path = request.app[FILES].get(rel)
     if path is None:
         raise web.HTTPNotFound()
@@ -1039,7 +1255,7 @@ def create_app(
     app[BOOKGEN] = bookgen
     # all_books accounts read the hand-made books being served, never other families' made books.
     app[ACCOUNTS].catalog = lambda: bookgen.static["order"]
-    # The same dict the book service updates in place when made books are published.
+    # The hand-made catalog; made books are listed per account (/account/content/manifest.json).
     app[MANIFEST] = bookgen.manifest
     app[FILES] = bookgen.static_files
     app.router.add_post("/token", handle_token)
@@ -1073,6 +1289,16 @@ def create_app(
     app.router.add_post("/account/reading", handle_account_reading)
     app.router.add_get("/account/library", handle_account_library)
     app.router.add_put("/account/library", handle_account_library)
+    app.router.add_get("/account/bookgen", handle_account_bookgen)
+    app.router.add_get("/account/books", handle_account_books)
+    app.router.add_post("/account/books", handle_account_books)
+    app.router.add_delete("/account/books/{id}", handle_account_book_delete)
+    app.router.add_post("/account/books/{id}/pages/{page}/regenerate", handle_account_page_regenerate)
+    app.router.add_post("/account/books/{id}/report", handle_account_book_report)
+    app.router.add_get("/account/jobs/{id}", handle_account_job)
+    app.router.add_get("/account/content/manifest.json", handle_account_manifest)
+    app.router.add_get("/account/content/{path:.+}", handle_account_content_file)
+    app.router.add_get("/made-books", handle_made_books)
     app.router.add_get("/admin/accounts", handle_admin_accounts)
     app.router.add_post("/admin/accounts", handle_admin_accounts)
     app.router.add_get("/admin/accounts/{ref}", handle_admin_account)
@@ -1089,6 +1315,8 @@ def create_app(
     app.router.add_get("/admin/jobs", handle_admin_jobs)
     app.router.add_get("/admin/jobs/{id}", handle_admin_job)
     app.router.add_post("/admin/jobs/{id}/cancel", handle_admin_job_cancel)
+    app.router.add_get("/admin/reports", handle_admin_reports)
+    app.router.add_post("/admin/reports/{id}/close", handle_admin_report_close)
 
     async def run_bookgen(app: web.Application) -> AsyncIterator[None]:
         await app[BOOKGEN].start()

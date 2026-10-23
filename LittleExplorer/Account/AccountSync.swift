@@ -21,6 +21,9 @@ struct AccountSync {
     let coins: CoinStore
     var reading: ReadingActivity?
     var library: LibraryStore?
+    /// The account's made books and the books being made (see "Make a book").
+    var made: MadeBookLibrary?
+    var maker: BookMaker?
     var defaults: UserDefaults = .standard
     var baseURL: () -> URL = { VoiceSettings.tokenServerURL() }
     var deviceId: () -> String = { DeviceIdentity.current().id }
@@ -59,7 +62,9 @@ struct AccountSync {
         async let saved: Void = stars.restore(from: StarBackup(baseURL: baseURL(), deviceId: deviceId(), session: session, token: token))
         async let balance: Bool = coins.refresh(using: CoinService(baseURL: baseURL(), deviceId: deviceId(), session: session, token: token))
         async let arranged: Void = library?.sync() ?? ()
-        _ = await (saved, balance, arranged)
+        async let madeBooks: Void = made?.sync() ?? ()
+        async let making: Void = refreshMaker()
+        _ = await (saved, balance, arranged, madeBooks, making)
         await reading?.restore(using: ReadingService(baseURL: baseURL(), session: session), token: token)
     }
 
@@ -69,6 +74,8 @@ struct AccountSync {
         coins.forgetAccount(accountId)
         reading?.forgetAccount(accountId)
         library?.forgetAccount(accountId)
+        made?.forget()
+        maker?.reset()
         defaults.removeObject(forKey: importKey(accountId))
     }
 
@@ -77,6 +84,14 @@ struct AccountSync {
         coins.switchAccount(accountId)
         reading?.switchAccount(accountId)
         library?.switchAccount(accountId)
+        if made?.accountId != accountId { maker?.reset() }
+        made?.switchAccount(accountId)
+    }
+
+    /// Only accounts that may make books ask what's being made.
+    private func refreshMaker() async {
+        guard account.account?.canGenerate == true else { return }
+        await maker?.refresh()
     }
 
     private func importKey(_ accountId: String) -> String { "account.\(accountId).importPending" }

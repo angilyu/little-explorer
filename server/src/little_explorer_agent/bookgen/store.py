@@ -28,7 +28,29 @@ COUNTED = ("queued", "running", "done")  # failed and rejected jobs don't use up
 # Postgres advisory lock that makes claiming and queueing one at a time across instances.
 LOCK_KEY = 7_270_421
 _JOB_COLUMNS = ("id, account_id, book_id, status, step, input, error, attempts, lease_until, run_after, cost_usd, "
-                "costs, day, month, created_at, updated_at, finished_at")
+                "costs, day, month, created_at, updated_at, finished_at, kind")
+REPORT_REASONS = ("wrong", "scary", "photo", "other")
+NOTE_MAX = 300
+
+# What a grown-up sees while a book is made (the app shows the same words under the placeholder cover).
+STEP_WORDS = {"text": "Writing…", "photos": "Finding photos…", "narration": "Recording…", "publish": "Almost ready…"}
+SOMETHING_WRONG = "Something went wrong while making this book. It didn't count toward your limit. Please try again."
+
+
+def friendly_error(status: str, error: str) -> str | None:
+    """The reason a grown-up sees for a book that wasn't made (the owner sees the raw ``error``)."""
+    if status == "rejected":
+        return (f"This book couldn't be made: {error} " if error else "This book couldn't be made. ") + \
+            "It didn't count toward your limit. Try a different idea."
+    if status != "failed":
+        return None
+    if error.startswith(("found free photos for only", "no photo for the new page")):
+        return "We couldn't find enough free photos for this idea. It didn't count toward your limit. Try another topic."
+    if "deleted" in error:
+        return "This book was deleted."
+    if "cancelled" in error:
+        return "This book was stopped. It didn't count toward your limit."
+    return SOMETHING_WRONG
 _BOOK_COLUMNS = "id, account_id, job_id, title, section, level, status, json, narration, created_at, updated_at, published_at"
 
 
@@ -64,6 +86,7 @@ class Job:
     created_at: str
     updated_at: str
     finished_at: str | None
+    kind: str = "book"
 
     @classmethod
     def from_row(cls, row: Sequence[Any]) -> Job:
@@ -79,7 +102,19 @@ class Job:
             "id": self.id, "account_id": self.account_id, "book_id": self.book_id, "status": self.status,
             "step": self.step, "input": self.input, "error": self.error, "attempts": self.attempts,
             "cost_usd": round(self.cost_usd, 4), "costs": self.costs, "created_at": self.created_at,
-            "updated_at": self.updated_at, "finished_at": self.finished_at,
+            "updated_at": self.updated_at, "finished_at": self.finished_at, "kind": self.kind,
+        }
+
+    def parent_json(self) -> dict[str, Any]:
+        """For the grown-up who asked: no costs or raw errors."""
+        active = self.status in ACTIVE
+        return {
+            "id": self.id, "book_id": self.book_id, "kind": self.kind, "status": self.status,
+            "step": self.step, "progress": STEP_WORDS.get(self.step, "Writing…") if active else None,
+            "title": self.input.get("title", ""), "section": self.input.get("section", ""),
+            "level": self.input.get("level"), "page": self.input.get("page"),
+            "message": friendly_error(self.status, self.error), "created_at": self.created_at,
+            "finished_at": self.finished_at,
         }
 
 
@@ -170,14 +205,31 @@ class BookStore:
         row = self._ex(cur, "SELECT COALESCE(SUM(cost_usd), 0) FROM generation_jobs WHERE day = ?", (day,)).fetchone()
         return float(row[0] or 0)
 
-    def _count(self, cur: Any, account_id: str, column: str, value: str) -> int:
-        marks = ", ".join("?" for _ in COUNTED)
+    def _count(self, cur: Any, account_id: str, column: str, value: str, kind: str = "book",
+               statuses: Sequence[str] = COUNTED) -> int:
+        marks = ", ".join("?" for _ in statuses)
         row = self._ex(
             cur,
-            f"SELECT COUNT(*) FROM generation_jobs WHERE account_id = ? AND {column} = ? AND status IN ({marks})",
-            (account_id, value, *COUNTED),
+            f"""SELECT COUNT(*) FROM generation_jobs WHERE account_id = ? AND {column} = ? AND kind = ?
+                AND status IN ({marks})""",
+            (account_id, value, kind, *statuses),
         ).fetchone()
         return int(row[0])
+
+    def _tries(self, cur: Any, account_id: str, day: str) -> int:
+        """Books asked for today, including ones turned down or failed (they don't use the quota)."""
+        return self._count(cur, account_id, "day", day, statuses=(*COUNTED, "failed", "rejected"))
+
+    def _check_queue(self, cur: Any, account_id: str, day: str) -> None:
+        """The limits every job shares: one at a time and the day's spending cap."""
+        marks = ", ".join("?" for _ in ACTIVE)
+        busy = self._ex(
+            cur, f"SELECT 1 FROM generation_jobs WHERE account_id = ? AND status IN ({marks})", (account_id, *ACTIVE)
+        ).fetchone()
+        if busy:
+            raise LimitError("busy", "A book is already being made. Please wait until it's ready.")
+        if self._spent(cur, day) >= self.config.daily_usd_cap:
+            raise LimitError("paused", "Book making is resting for today. Try again tomorrow.", 503)
 
     # -- queueing ----------------------------------------------------------------------------------
 
@@ -195,9 +247,16 @@ class BookStore:
                 cur, f"SELECT COUNT(*) FROM generation_jobs WHERE account_id = ? AND status IN ({marks})",
                 (account_id, *ACTIVE),
             ).fetchone()[0]
-            return {"active": int(active), "today": self._count(cur, account_id, "day", day),
-                    "this_month": self._count(cur, account_id, "month", day[:7]),
-                    "per_day": self.config.per_day, "per_month": self.config.per_month}
+            cfg = self.config
+            today, month = self._count(cur, account_id, "day", day), self._count(cur, account_id, "month", day[:7])
+            redos = self._count(cur, account_id, "day", day, "page")
+            return {"active": int(active), "today": today, "this_month": month,
+                    "per_day": cfg.per_day, "per_month": cfg.per_month,
+                    "left_today": max(0, min(cfg.per_day - today, cfg.per_month - month)),
+                    "left_this_month": max(0, cfg.per_month - month),
+                    "tries_today": self._tries(cur, account_id, day), "tries_per_day": cfg.tries_per_day,
+                    "page_redos_today": redos, "page_redos_per_day": cfg.page_redos_per_day,
+                    "page_redos_left": max(0, cfg.page_redos_per_day - redos)}
 
         return self.store._run(run)
 
@@ -211,18 +270,13 @@ class BookStore:
 
         def run(cur: Any) -> tuple[Job, BookRow]:
             self._lock(cur)
-            marks = ", ".join("?" for _ in ACTIVE)
-            busy = self._ex(
-                cur, f"SELECT 1 FROM generation_jobs WHERE account_id = ? AND status IN ({marks})", (account_id, *ACTIVE)
-            ).fetchone()
-            if busy:
-                raise LimitError("busy", "A book is already being made. Please wait until it's ready.")
+            self._check_queue(cur, account_id, day)
             if self._count(cur, account_id, "day", day) >= cfg.per_day:
                 raise LimitError("day_limit", f"You can make {cfg.per_day} books a day. Try again tomorrow.")
             if self._count(cur, account_id, "month", day[:7]) >= cfg.per_month:
                 raise LimitError("month_limit", f"You can make {cfg.per_month} books a month. Try again next month.")
-            if self._spent(cur, day) >= cfg.daily_usd_cap:
-                raise LimitError("paused", "Book making is resting for today. Try again tomorrow.", 503)
+            if self._tries(cur, account_id, day) >= cfg.tries_per_day:
+                raise LimitError("tries_limit", "That's a lot of tries for one day. Try again tomorrow.")
             stamp = self._stamp()
             job_id, book_id = uuid.uuid4().hex, new_book_id(request["title"])
             self._ex(
@@ -242,6 +296,45 @@ class BookStore:
             return job, book
 
         return self.store.transaction(run)
+
+    def queue_page(self, account_id: str, book_id: str, page_id: str) -> Job:
+        """Queue "make this page again" for a published book the account made. It doesn't use a book from the
+        quota (it's a tenth of the work); it has its own daily limit and shares the one-at-a-time rule and the
+        spending cap."""
+        day = self.store.day_of()
+        cfg = self.config
+
+        def run(cur: Any) -> Job:
+            self._lock(cur)
+            book = self._book(cur, book_id)
+            if not book or book.account_id != account_id:
+                raise LookupError(book_id)
+            if book.status != "published":
+                raise ValueError("This book isn't on the shelf.")
+            if not any(p.get("id") == page_id for p in book.json.get("pages") or []):
+                raise LookupError(page_id)
+            self._check_queue(cur, account_id, day)
+            if self._count(cur, account_id, "day", day, "page") >= cfg.page_redos_per_day:
+                raise LimitError("page_limit", f"You can remake {cfg.page_redos_per_day} pages a day. Try again tomorrow.")
+            stamp = self._stamp()
+            job_id = uuid.uuid4().hex
+            request = {"title": book.title, "section": book.section, "level": book.level,
+                       "about": str(self._input_of(cur, book.job_id).get("about") or ""), "page": page_id}
+            self._ex(
+                cur,
+                """INSERT INTO generation_jobs (id, account_id, book_id, status, step, input, day, month, created_at,
+                    updated_at, kind) VALUES (?, ?, ?, 'queued', 'text', ?, ?, ?, ?, ?, 'page')""",
+                (job_id, account_id, book_id, json.dumps(request, ensure_ascii=False), day, day[:7], stamp, stamp),
+            )
+            job = self._job(cur, job_id)
+            assert job
+            return job
+
+        return self.store.transaction(run)
+
+    def _input_of(self, cur: Any, job_id: str) -> dict[str, Any]:
+        job = self._job(cur, job_id)
+        return job.input if job else {}
 
     # -- the runner's side -------------------------------------------------------------------------
 
@@ -469,11 +562,117 @@ class BookStore:
             params = (account_id or "",)
         return [r[0] for r in self.store._run(lambda cur: self._ex(cur, sql, params).fetchall())]
 
-    def drop_assets(self, book_id: str) -> int:
-        """Forget a failed book's assets (the caller deletes them from R2)."""
-        return self.store.transaction(
-            lambda cur: self._ex(cur, "DELETE FROM book_assets WHERE book_id = ?", (book_id,)).rowcount
-        )
+    def drop_assets(self, book_id: str, paths: Sequence[str] | None = None) -> int:
+        """Forget a failed book's assets, or just ``paths`` (the caller deletes them from R2)."""
+        if paths is None:
+            return self.store.transaction(
+                lambda cur: self._ex(cur, "DELETE FROM book_assets WHERE book_id = ?", (book_id,)).rowcount
+            )
+
+        def run(cur: Any) -> int:
+            return sum(self._ex(cur, "DELETE FROM book_assets WHERE book_id = ? AND path = ?", (book_id, p)).rowcount
+                       for p in paths)
+
+        return self.store.transaction(run)
+
+    def replace_page(self, job: Job, page: dict[str, Any], clip: dict[str, Any], drop: Sequence[str],
+                     costs: list[dict[str, Any]]) -> list[str] | None:
+        """Swap a remade page (and its clip) into the published book and finish the job, all at once.
+        Forgets the old page's files in ``drop`` and returns their R2 keys; None if the job isn't ours any more."""
+        stamp = self._stamp()
+
+        def run(cur: Any) -> list[str] | None:
+            if not self._fenced(cur, job):
+                return None
+            book = self._book(cur, job.book_id)
+            if not book or book.status != "published":
+                return None
+            data = book.json
+            data["pages"] = [page if p.get("id") == page["id"] else p for p in data.get("pages") or []]
+            clips = dict(book.narration or {})
+            clips[f"{book.id}/{page['id']}"] = clip
+            keys = []
+            for path in drop:
+                row = self._ex(cur, "SELECT r2_key FROM book_assets WHERE book_id = ? AND path = ?",
+                               (book.id, path)).fetchone()
+                if row:
+                    keys.append(row[0])
+                    self._ex(cur, "DELETE FROM book_assets WHERE book_id = ? AND path = ?", (book.id, path))
+            self._ex(cur, "UPDATE books SET json = ?, narration = ?, updated_at = ? WHERE id = ?",
+                     (json.dumps(data, ensure_ascii=False), json.dumps(clips, ensure_ascii=False), stamp, book.id))
+            self._ex(
+                cur,
+                """UPDATE generation_jobs SET status = 'done', step = 'publish', error = '', lease_until = 0,
+                    finished_at = ?, updated_at = ?, costs = ?, cost_usd = ? WHERE id = ?""",
+                (stamp, stamp, json.dumps(costs), round(sum(float(c.get("usd") or 0) for c in costs), 6), job.id),
+            )
+            return keys
+
+        return self.store.transaction(run)
+
+    # -- a grown-up's own books --------------------------------------------------------------------
+
+    def _with_assets(self, cur: Any, books: list[BookRow]) -> list[tuple[BookRow, dict[str, Asset]]]:
+        out = []
+        for book in books:
+            rows = self._ex(
+                cur, "SELECT book_id, path, r2_key, sha256, size FROM book_assets WHERE book_id = ?", (book.id,)
+            ).fetchall()
+            out.append((book, {r[1]: Asset(r[0], r[1], r[2], r[3], int(r[4])) for r in rows}))
+        return out
+
+    def shelf_books(self, account_id: str, book_id: str | None = None) -> list[tuple[BookRow, dict[str, Asset]]]:
+        """The published made books on an account's shelf (its own and any the owner granted it), oldest first,
+        with their assets; or just ``book_id`` if it's one of them."""
+        one, params = ("AND b.id = ?", (account_id, book_id)) if book_id else ("", (account_id,))
+        columns = ", ".join(f"b.{c.strip()}" for c in _BOOK_COLUMNS.split(","))
+
+        def run(cur: Any) -> list[tuple[BookRow, dict[str, Asset]]]:
+            books = [BookRow.from_row(r) for r in self._ex(
+                cur,
+                f"""SELECT {columns} FROM books b JOIN account_books g ON g.book_id = b.id
+                WHERE g.account_id = ? AND b.status = 'published' {one} ORDER BY b.published_at, b.id""",
+                params,
+            ).fetchall()]
+            return self._with_assets(cur, books)
+
+        return self.store._run(run)
+
+    def account_jobs(self, account_id: str, limit: int = 10) -> list[Job]:
+        rows = self.store._run(lambda cur: self._ex(
+            cur, f"SELECT {_JOB_COLUMNS} FROM generation_jobs WHERE account_id = ? ORDER BY created_at DESC, id LIMIT ?",
+            (account_id, limit),
+        ).fetchall())
+        return [Job.from_row(r) for r in rows]
+
+    def published_ids(self) -> set[str]:
+        rows = self.store._run(lambda cur: self._ex(cur, "SELECT id FROM books WHERE status = 'published'").fetchall())
+        return {r[0] for r in rows}
+
+    def add_report(self, account_id: str, book: BookRow, reason: str, note: str, page: str) -> str:
+        report_id = uuid.uuid4().hex
+        self.store.transaction(lambda cur: self._ex(
+            cur,
+            """INSERT INTO book_reports (id, account_id, book_id, book_owner, title, reason, note, page, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+            (report_id, account_id, book.id, book.account_id, book.title, reason, note, page, self._stamp()),
+        ))
+        return report_id
+
+    def reports(self, limit: int = 100) -> list[dict[str, Any]]:
+        rows = self.store._run(lambda cur: self._ex(
+            cur,
+            """SELECT id, account_id, book_id, book_owner, title, reason, note, page, status, created_at
+            FROM book_reports ORDER BY created_at DESC, id LIMIT ?""",
+            (limit,),
+        ).fetchall())
+        keys = ("id", "account_id", "book_id", "book_owner", "title", "reason", "note", "page", "status", "created_at")
+        return [dict(zip(keys, r)) for r in rows]
+
+    def close_report(self, report_id: str) -> bool:
+        return self.store.transaction(lambda cur: self._ex(
+            cur, "UPDATE book_reports SET status = 'closed' WHERE id = ?", (report_id,)
+        ).rowcount) == 1
 
     # -- owner -------------------------------------------------------------------------------------
 
