@@ -8,6 +8,7 @@
   "theme": "Passport",
   "coverColor": "#7A1F3D",
   "tagline": "A little book that opens the world",
+  "level": 2,
   "pages": [
     {
       "id": "welcome",

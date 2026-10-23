@@ -13,7 +13,7 @@ from typing import Any
 from .voice import VoicePreset
 
 VOICE_STYLE = (
-    "Voice: a kind, cheerful grown-up friend chatting with a 6-year-old. Natural, relaxed and "
+    "Voice: a kind, cheerful grown-up friend chatting with a young child. Natural, relaxed and "
     "conversational, like a real person, with a smile in the voice. Tone: warm and curious, never "
     "sing-song, exaggerated or robotic. Pace: an easy, everyday pace with natural pauses between "
     "sentences. Questions rise naturally at the end."

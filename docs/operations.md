@@ -342,6 +342,134 @@ curl -X POST -H "Authorization: Bearer $PIP_ADMIN_KEY" -H "Content-Type: applica
 
 The app reads the rules each time the Grown-ups corner opens, so changes apply right away.
 
+## Made books (cloud generation)
+
+The server can write a new book for an account: the text, real Wikimedia Commons photos and the read-aloud
+narration. Then it publishes the book into `content/manifest.json`, so the current app shows it on that account's shelf with no
+app update. For now only the owner starts a book (through the admin endpoint below); the parent page comes later.
+The code is in [`server/src/little_explorer_agent/bookgen/`](../server/src/little_explorer_agent/bookgen).
+
+**Who may make books.** `accounts.can_generate` is the dogfood flag. A one-time migration
+(`migration.bookgen_dogfood`) turns it on for `angilyu@gmail.com` and `hfevers@gmail.com`, and new accounts with
+those emails get it too. Turn it on for one more account, or off again:
+
+```bash
+curl -X POST -H "Authorization: Bearer $PIP_ADMIN_KEY" -H "Content-Type: application/json" \
+  -d '{"can_generate": true}' https://little-explorer-pip.onrender.com/admin/accounts/someone@example.com/bookgen
+```
+
+To **turn it on for everyone**, use `POST /admin/bookgen {"everyone": true}` (a saved setting; `false` turns it back
+off), or set `BOOKGEN_EVERYONE=1` on Render. Either one makes every account's `can_generate` true. The account JSON
+already carries `can_generate`, so the Phase 2 parent page can use it.
+
+**Make a book** (202 means it is queued):
+
+```bash
+curl -X POST -H "Authorization: Bearer $PIP_ADMIN_KEY" -H "Content-Type: application/json" \
+  -d '{"account": "angilyu@gmail.com", "title": "Owls at Night", "section": "Animals", "level": 1,
+       "note": "barn owls, how they hunt in the dark"}' \
+  https://little-explorer-pip.onrender.com/admin/books/generate
+```
+
+- `title` (the cover title), `section` (the shelf it goes on; an existing city such as `Paris` or a new name) and
+  `level` (1, 2 or 3) are required; `note` (what the book should be about) is optional.
+- The section is the book's `city`. The app makes a shelf for it, and a new section also adds a Passport stamp.
+- The answer is `{"job", "usage"}`. The errors are:
+  - 400: the request is invalid
+  - 403: the account can't make books
+  - 404: no such account
+  - 429 `busy`: the account already has a book being made
+  - 429 `day_limit` or `month_limit`: the daily or monthly limit is reached
+  - 503 `paused`: the global spend cap is reached
+  - 503: book generation isn't configured
+
+**Watch and manage it:**
+
+| Endpoint | What it does |
+|---|---|
+| `GET /admin/bookgen` | ready or not, runner state, limits, spent today, levels, number of made books on the shelf |
+| `GET /admin/jobs`, `GET /admin/jobs/<id>` | jobs with their step, attempts, error and the per-call cost log (`costs`, `cost_usd`) |
+| `POST /admin/jobs/<id>/cancel` | stops a queued or running job and deletes its unpublished files |
+| `GET /admin/books?account=<email or id>`, `GET /admin/books/<id>` | made books; one book in full with its narration timings |
+| `POST /admin/books/<id>/unpublish` | **kill switch**: takes it off every shelf right away (the files stay) |
+| `POST /admin/books/<id>/publish` | puts an unpublished book back |
+| `POST /admin/books/<id>/delete` | removes the book and its R2 files for good |
+| `GET /levels` (no key) | the three reading levels and their descriptions |
+
+**How a book is made.** One job at a time, in four steps. After each step the result is saved (R2 for files, the
+`books` and `book_assets` tables for the rest), so a retry never pays twice for work already done:
+
+1. **Text:**
+   - OpenAI moderation checks the parent's title, section and note.
+   - `gpt-5.4-mini` writes the pages at the requested level (8 at level 1, 10 at levels 2 and 3). Each page is checked against the level's sentence
+     and word limits and rewritten if needed, up to 2 times.
+   - A second pass with web search checks the facts and fixes or drops pages.
+   - Every page is moderated again.
+2. **Photos:**
+   - Commons is searched with the page's query and alternates. Only free licenses are used, checked through the
+     Commons API like `scripts/fetch_photos.py`, and no photo is used twice.
+   - The first candidate that passes moderation (an image check at 512 px) is resized to a JPEG and stored in R2.
+   - At least 75% of the pages need a photo, or the job fails.
+3. **Narration:** `gpt-4o-mini-tts` (voice `coral`) at the level's pace, then `whisper-1` word timings and an ffmpeg
+   level/encode to m4a, the same as `scripts/generate_narration.py`.
+4. **Publish:**
+   - The book goes into the manifest.
+   - The account is granted the book.
+   - Milo learns it, with its level, on his next content refresh.
+
+**Moderation fails closed.** If moderation can't be reached, the job is retried later and never publishes unchecked
+text. A rejected request or page ends the job as `rejected` and deletes its files. Rejected and failed jobs don't
+count against the account's quota.
+
+**The runner is free.** It is one asyncio task inside the Render web service, so it needs no worker or paid plan. The
+service is already kept awake (`KEEPALIVE_SECONDS` and the keep-awake workflow).
+- A job holds a Postgres row lease (`lease_until`, claimed with `FOR UPDATE SKIP LOCKED`), renewed at every step.
+- If the service restarts or redeploys mid-book, the lease runs out and the next start resumes the job from its
+  last finished step.
+- Other errors retry with backoff (1, 2, 4… minutes, up to an hour) for up to 4 attempts.
+- Memory stays low (512 MB, 0.1 CPU): one photo is processed at a time and ffmpeg runs as a subprocess.
+- The image installs `ffmpeg` and `pillow`.
+
+**Files.** Photos and narration are stored in the private Cloudflare R2 bucket `little-explorer-books` under
+`books/<book id>/`. The manifest serves a made book's JSON and the merged `library.json`/`narration.json` from
+memory; photos and m4a files are `302` redirects to presigned R2 links that last an hour. The app still checks every
+file's SHA-256. The bundled books don't change, and with no made books the manifest is exactly the bundled one.
+`/healthz` reports both `content` (the live manifest) and `bundled` (this commit's books); the deploy workflow checks
+`bundled`.
+
+**Limits and cost.** About **$0.13 a book** with the "Typical" models:
+
+- `gpt-5.4-mini` for the text and the fact check, plus a few web searches
+- narration, about $0.05
+- moderation, which is free
+
+The limits are:
+
+- one job at a time across the server
+- per account, 3 books a day (`BOOKGEN_PER_DAY`) and 10 a month (`BOOKGEN_PER_MONTH`)
+- per book, a $0.75 stop (`BOOKGEN_JOB_USD_CAP`), so a runaway book fails
+- for the whole server, a $2 daily spend cap (`BOOKGEN_DAILY_USD_CAP`), after which new requests get 503 and the
+  runner starts no new job until the next day
+
+Each job's `costs` log lists every call with its model, tokens or seconds, and dollars.
+
+**Settings** (Render env vars; they're already set on the service):
+
+- `BOOKGEN_OPENAI_API_KEY`: a separate OpenAI key, so book costs show separately from Milo
+- `R2_ACCOUNT_ID`, `R2_BUCKET`, `R2_ENDPOINT`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`: an object-scoped R2 token;
+  it can't list buckets, and the server doesn't need it to
+- Optional:
+  - `BOOKGEN_TEXT_MODEL` (default `gpt-5.4-mini`)
+  - the limits above
+  - `BOOKGEN_POLL_SECONDS` (default 30)
+  - `BOOKGEN_RUNNER=0`, which serves made books but doesn't make new ones
+  - `BOOKGEN_EVERYONE`
+
+Without the OpenAI key or R2, book generation is off. `/admin/books/generate` answers 503, and everything else works
+as before.
+
+**Reading levels.** Every book has a `level` (the bundled books are 2). See [Reading levels](content.md#reading-levels).
+
 ## Deploy
 
 Two free-tier pieces. The app only talks to the first; LiveKit dispatches the second.
@@ -381,7 +509,7 @@ changed, runs the server tests, and deploys only the pieces that need it:
 - **Render** builds `server/Dockerfile.web` from the repo root. Its env vars are
   `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET`, `PIP_ACCESS_KEY`, `KEEPALIVE_SECONDS`, `DATABASE_URL`,
   `PIP_ADMIN_KEY`, `PIP_REPORT_KEY` and the [account email settings](#accounts) (`PIP_AUTH_SECRET`,
-  `PIP_EMAIL_PROVIDER`, `PIP_EMAIL_FROM`, `GMAIL_*`), set in the Render dashboard, not in git. A free service sleeps after 15 idle minutes, so with `KEEPALIVE_SECONDS` set the
+  `PIP_EMAIL_PROVIDER`, `PIP_EMAIL_FROM`, `GMAIL_*`) and [book generation](#made-books-cloud-generation) (`BOOKGEN_*`, `R2_*`), set in the Render dashboard, not in git. A free service sleeps after 15 idle minutes, so with `KEEPALIVE_SECONDS` set the
   server pings its own `/healthz` to stay awake (one always-on service fits in the free 750 hours a month). If it
   does fall asleep (e.g. after a redeploy fails), the first token takes about a minute.
 - **Keep-awake ping** (`.github/workflows/keep-awake.yml`) GETs the public `/healthz` every 10 minutes as a

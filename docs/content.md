@@ -34,6 +34,38 @@ Travel books have `"city": "Travel"` and `"kind": "travel"`: they share one Trav
 badge (`travel-flag.png`), Milo is told they are general travel books rather than about one city, and they
 don't give a Passport stamp.
 
+### Reading levels
+
+Every book has a `level`: 1, 2 or 3. A book without one counts as 2, and all the bundled books are level 2. The
+level sets how a made book is written and narrated and how Milo talks about it (see
+[Milo's talk rules](milo.md#reading-levels)). The descriptions below come from
+[`levels.py`](../server/src/little_explorer_agent/levels.py) and are served at `GET /levels`, so the parent page
+can show the same words:
+
+| Level | Ages | Name | What a page looks like | Example |
+|---|---|---|---|---|
+| L1 | 4–5 | Just starting | One short sentence per page, easy words that repeat. | "Look! A big tower." |
+| L2 | 5–7 | Early reader | One or two simple sentences, each with a fun place or food. | "The Eiffel Tower sparkles every night." |
+| L3 | 7–9 | Reading alone | Two or three longer sentences, with one new "wow" word explained. | "Workers paint the tower every seven years, so it never gets rusty." |
+
+The writer's limits per page are:
+
+- **L1:** 1 sentence of up to 6 words.
+- **L2:** 1–2 sentences of up to 12 words each.
+- **L3:** up to 3 sentences of up to 16 words each, and at most 40 words on the page.
+
+The current app doesn't show the level yet; the cover's level icon comes with the app update in a later phase.
+
+### Made books
+
+The server can also write books for an account (see
+[Made books](operations.md#made-books-cloud-generation)). A made book uses the same JSON shape, with a few
+differences:
+
+- It has `"generated": true`, and its `city` is the section the grown-up picked.
+- Each page's `photo` also keeps its search `query` and `alternates`.
+- Its files live in R2, not in the repo.
+
 ## Photos
 
 All photos come from Wikimedia Commons under free licenses (public domain, CC0, CC BY, CC BY-SA).

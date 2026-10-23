@@ -1,6 +1,6 @@
 # Little Explorer: Privacy and Terms
 
-Last updated: October 22, 2026
+Last updated: October 23, 2026
 
 Little Explorer is a picture-book app about cities and travel for young children. A grown-up signs in, and the
 child reads, listens and, if the grown-up turns it on, talks with Milo, a voice buddy.
@@ -59,16 +59,34 @@ To turn Milo on or off later, open the **Grown-ups** corner (behind the grown-up
 buddy**; turning it on shows the same explanation and asks **Allow Milo**. After a grown-up turns Milo off there,
 our server refuses to start Milo for that account.
 
+## Books made for your family
+
+Some accounts can ask for a new book to be written: the grown-up gives a title, a shelf name, a reading level and,
+if they like, a short note about what the book should be about. To write it:
+
+- That request is sent to [OpenAI](https://openai.com), along with the book's text as it is written. OpenAI writes
+  the text, checks its facts with web search, checks that everything is suitable for a child, and records the
+  read-aloud voice.
+- Photos come from [Wikimedia Commons](https://commons.wikimedia.org) under free licenses, with the credit shown
+  under each photo.
+- Nothing about the child is sent. Please don't put names or other personal details in the title or note.
+
+The book's text is kept on our server. Its photos and recordings are kept in a private
+[Cloudflare R2](https://www.cloudflare.com/developer-platform/r2/) storage bucket. They stay until the book or the
+account is deleted. A made book is shown only on the shelves of the accounts it was made for. Like the bundled books,
+though, its text and files are part of the app's shared book list, so they aren't secret. That's one more reason to
+keep personal details out of the request. We record what each book cost to make, with no content.
+
 ## Where it is stored
 
 On the device, and on our server (hosted by [Render](https://render.com), with the database at
-[Neon](https://neon.tech)), over encrypted connections. The sign-in token stays in the device's Keychain.
+[Neon](https://neon.tech), and the files of made books at Cloudflare R2), over encrypted connections. The sign-in token stays in the device's Keychain.
 
 ## Deleting your account
 
 In the app, open the **Grown-ups** corner (behind the grown-up check) and tap **Delete account…**. After you
 type a new code we email you, the account is deleted for good: its email, books list, stars, coins, hearts,
-reading activity and sign-ins are removed from the server right away, and every device signed in to it is
+reading activity, sign-ins, and the books made for it with their files are removed from the server right away, and every device signed in to it is
 signed out. Backups made before that are overwritten over time. The minutes each device used are unlinked from the account and kept
 only with the device's random id; email us to remove them too.
 

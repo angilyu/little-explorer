@@ -37,9 +37,12 @@ from collections.abc import Callable, Iterable, Mapping, Sequence
 from dataclasses import dataclass
 from typing import Any
 
-from .devices import STAR_ID, STARS_PER_AWARD, DeviceStore, Scope, limit_min, valid_device_id
+from .devices import DOGFOOD_EMAILS, STAR_ID, STARS_PER_AWARD, DeviceStore, Scope, limit_min, valid_device_id
 
 log = logging.getLogger("little_explorer.accounts")
+
+# Settings key: book making is on for every account ("on"/"off"), see set_bookgen_everyone.
+BOOKGEN_EVERYONE = "bookgen.everyone"
 
 DEFAULT_BOOKS = (
     "paris",
@@ -108,6 +111,8 @@ class Account:
     created_at: str
     # Whether a grown-up allowed Milo for the account (True), turned it off (False) or was never asked (None).
     milo_consent: bool | None = None
+    # May make books in the cloud: the account's own flag, or book making is on for everyone.
+    can_generate: bool = False
 
     def as_json(self) -> dict[str, Any]:
         return {
@@ -116,6 +121,7 @@ class Account:
             "all_books": self.all_books,
             "books": list(self.books),
             "milo_consent": self.milo_consent,
+            "can_generate": self.can_generate,
         }
 
     def may_read(self, book_id: str) -> bool:
@@ -145,6 +151,7 @@ class Accounts:
         review_code: str = "",
         daily_cap: int = DAILY_CAP,
         clock: Callable[[], float] = time.time,
+        bookgen_everyone: bool = False,
     ) -> None:
         self.store = store
         if not secret:
@@ -156,6 +163,7 @@ class Accounts:
         self.review_code = review_code.strip() if re.fullmatch(r"\d{6}", review_code.strip()) else ""
         self.daily_cap = daily_cap
         self.clock = clock
+        self.bookgen_everyone = bookgen_everyone
 
     @classmethod
     def from_env(cls, store: DeviceStore, env: Mapping[str, str] | None = None) -> Accounts:
@@ -168,6 +176,7 @@ class Accounts:
             review_email=env.get("PIP_REVIEW_EMAIL", ""),
             review_code=env.get("PIP_REVIEW_CODE", ""),
             daily_cap=int(env.get("PIP_EMAIL_DAILY_CAP", "").strip() or DAILY_CAP),
+            bookgen_everyone=env.get("BOOKGEN_EVERYONE", "").strip().lower() in ("1", "true", "yes", "on"),
         )
 
     def _hmac(self, *parts: str) -> str:
@@ -180,7 +189,9 @@ class Accounts:
 
     def _account(self, cur: Any, column: str, value: str) -> Account | None:
         row = self.store._exec(
-            cur, f"SELECT id, email, all_books, created_at, milo_consent FROM accounts WHERE {column} = ?", (value,)
+            cur,
+            f"SELECT id, email, all_books, created_at, milo_consent, can_generate FROM accounts WHERE {column} = ?",
+            (value,),
         ).fetchone()
         if not row:
             return None
@@ -188,7 +199,46 @@ class Accounts:
             cur, "SELECT book_id FROM account_books WHERE account_id = ? ORDER BY book_id", (row[0],)
         ).fetchall()
         consent = {"yes": True, "no": False}.get(row[4])
-        return Account(row[0], row[1], bool(row[2]), tuple(b[0] for b in books), row[3], consent)
+        can_generate = bool(row[5]) or self._bookgen_everyone(cur)
+        return Account(row[0], row[1], bool(row[2]), tuple(b[0] for b in books), row[3], consent, can_generate)
+
+    def _bookgen_everyone(self, cur: Any) -> bool:
+        if self.bookgen_everyone:
+            return True
+        row = self.store._exec(cur, "SELECT value FROM settings WHERE key = ?", (BOOKGEN_EVERYONE,)).fetchone()
+        return bool(row) and row[0] == "on"
+
+    def bookgen_everyone_on(self) -> bool:
+        """Book making is on for every account (``BOOKGEN_EVERYONE`` or the owner's setting)."""
+        return self.store._run(self._bookgen_everyone)
+
+    def set_bookgen_everyone(self, on: bool) -> bool:
+        def run(cur: Any) -> None:
+            self.store._exec(cur, "DELETE FROM settings WHERE key = ?", (BOOKGEN_EVERYONE,))
+            self.store._exec(
+                cur, "INSERT INTO settings (key, value, updated_at) VALUES (?, ?, ?)",
+                (BOOKGEN_EVERYONE, "on" if on else "off", self._stamp()),
+            )
+
+        self.store.transaction(run)
+        log.warning("owner turned book making %s for everyone", "on" if on else "off")
+        return self.bookgen_everyone_on()
+
+    def set_can_generate(self, ref: str, allow: bool) -> Account:
+        """Let one account (by email or id) make books, or stop it."""
+
+        def run(cur: Any) -> Account:
+            account = self._by_ref(cur, ref)
+            if not account:
+                raise LookupError(ref)
+            self.store._exec(cur, "UPDATE accounts SET can_generate = ? WHERE id = ?", (int(allow), account.id))
+            fresh = self._account(cur, "id", account.id)
+            assert fresh is not None
+            return fresh
+
+        account = self.store.transaction(run)
+        log.info("account %s may make books: %s", account.id, allow)
+        return account
 
     def _by_ref(self, cur: Any, ref: str) -> Account | None:
         email = normalize_email(ref)
@@ -203,8 +253,8 @@ class Accounts:
         account_id = uuid.uuid4().hex
         self.store._exec(
             cur,
-            "INSERT INTO accounts (id, email, all_books, created_at, last_seen) VALUES (?, ?, ?, ?, ?)",
-            (account_id, email, int(all_books), stamp, stamp),
+            "INSERT INTO accounts (id, email, all_books, created_at, last_seen, can_generate) VALUES (?, ?, ?, ?, ?, ?)",
+            (account_id, email, int(all_books), stamp, stamp, int(email in DOGFOOD_EMAILS)),
         )
         for book in self.default_books:
             self.store._exec(
@@ -532,6 +582,12 @@ class Accounts:
             ("reading_events", "account_id"),
         ):
             counts[table] = ex(cur, f"DELETE FROM {table} WHERE {column} = ?", (account_id,)).rowcount
+        # Books the account made (their R2 objects are removed by the caller, see bookgen.BookStore).
+        counts["book_assets"] = ex(
+            cur, "DELETE FROM book_assets WHERE book_id IN (SELECT id FROM books WHERE account_id = ?)", (account_id,)
+        ).rowcount
+        for table in ("books", "generation_jobs"):
+            counts[table] = ex(cur, f"DELETE FROM {table} WHERE account_id = ?", (account_id,)).rowcount
         ex(cur, "DELETE FROM email_codes WHERE email = ?", (email,))
         # Session minutes stay as the device's (they're how much Milo was used, not the account's).
         ex(cur, "UPDATE sessions SET account_id = NULL WHERE account_id = ?", (account_id,))
@@ -668,7 +724,7 @@ class Accounts:
                     (SELECT COUNT(*) FROM hearts h WHERE h.account_id = a.id),
                     a.milo_status, a.daily_limit_min,
                     (SELECT COALESCE(SUM(m.duration_s), 0) FROM sessions m WHERE m.account_id = a.id AND m.day = ?),
-                    a.milo_consent
+                    a.milo_consent, a.can_generate
                 FROM accounts a ORDER BY a.created_at""",
                 (day,),
             ).fetchall()
@@ -691,6 +747,7 @@ class Accounts:
                 "limit_min": 0.0 if r[11] == "blocked" else limit_min(r[11], r[12], limits),
                 "today_min": round(float(r[13] or 0) / 60, 1),
                 "milo_consent": {"yes": True, "no": False}.get(r[14]),
+                "can_generate": bool(r[15]),
             }
             for r in self.store._run(run)
         ]
