@@ -1,7 +1,11 @@
 import SwiftUI
 
 struct LibraryView: View {
+    /// The books on his shelf: the account's, arranged by a grown-up, without the hidden ones.
     let books: [Book]
+    /// Every book of the account in the arranged order, hidden ones too: the Passport and badges count
+    /// these (hiding a book doesn't take away what he earned), and the grown-ups corner lists them.
+    var allBooks: [Book]? = nil
 
     @Environment(VoiceModeController.self) private var voice
     @Environment(StarStore.self) private var stars
@@ -18,6 +22,7 @@ struct LibraryView: View {
     @State private var didApplyDemo = false
 
     private var regular: Bool { sizeClass == .regular }
+    private var everyBook: [Book] { allBooks ?? books }
 
     var body: some View {
         NavigationStack {
@@ -54,7 +59,7 @@ struct LibraryView: View {
                 .environment(reading)
         }
         .sheet(isPresented: $showPassport) {
-            PassportView(shelves: BookLibrary.shelves(books), catalog: content.badges)
+            PassportView(shelves: BookLibrary.shelves(everyBook), catalog: content.badges)
                 .environment(stars)
                 .environment(coins)
                 .environment(reading)
@@ -67,7 +72,7 @@ struct LibraryView: View {
             }
         }
         .sheet(isPresented: $showParentCorner) {
-            ParentCornerView(books: books)
+            ParentCornerView(books: everyBook)
                 .environment(account)
                 .environment(voice)
                 .environment(coins)
@@ -110,7 +115,7 @@ struct LibraryView: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel(book.openLabel)
-        .accessibilityValue(BookCoverView.accessibilityValue(starCount: stars.stars(inBook: book.id)))
+        .accessibilityValue(BookCoverView.accessibilityValue(level: book.readingLevel, starCount: stars.stars(inBook: book.id)))
         .id(book.id)
     }
 
@@ -173,10 +178,10 @@ struct LibraryView: View {
         guard !didApplyDemo, let demo = DemoLaunch.current else { return }
         didApplyDemo = true
         if demo.seedStars > 0 {
-            stars.merge(StarStore.demoAwards(total: demo.seedStars, shelves: BookLibrary.shelves(books)))
+            stars.merge(StarStore.demoAwards(total: demo.seedStars, shelves: BookLibrary.shelves(everyBook)))
         }
         if demo.showBadges {
-            let shelves = BookLibrary.shelves(books)
+            let shelves = BookLibrary.shelves(everyBook)
             stars.merge(StarStore.demoBadgeExtras(shelves: shelves))
             reading.seedDemo(ReadingProgress.demo(shelves: shelves))
             // Everything earned counts as seen but a couple, so the Passport celebrates those.
@@ -225,12 +230,12 @@ struct BookCoverView: View {
     var starCount = 0
     var regular = true
 
-    /// What VoiceOver adds after "Open the Paris book", e.g. "7 stars".
-    static func accessibilityValue(starCount: Int) -> String {
+    /// What VoiceOver adds after "Open the Paris book", e.g. "Level 2, 7 stars".
+    static func accessibilityValue(level: Int, starCount: Int) -> String {
         switch starCount {
-        case ..<1: ""
-        case 1: "1 star"
-        default: "\(starCount) stars"
+        case ..<1: "Level \(level)"
+        case 1: "Level \(level), 1 star"
+        default: "Level \(level), \(starCount) stars"
         }
     }
 
@@ -261,6 +266,11 @@ struct BookCoverView: View {
                     .padding(regular ? 12 : 8)
                     .accessibilityHidden(true)
                 }
+                .overlay(alignment: .topLeading) {
+                    LevelBadge(level: book.readingLevel, regular: regular)
+                        .padding(.leading, regular ? 24 : 15)
+                        .padding(.top, regular ? 12 : 8)
+                }
             VStack(alignment: .leading, spacing: 4) {
                 Text(book.coverTitle)
                     .font(.system(size: regular ? 30 : 21, weight: .heavy, design: .rounded))
@@ -284,5 +294,32 @@ struct BookCoverView: View {
         }
         .shadow(color: .black.opacity(0.18), radius: 12, x: 0, y: 8)
         .contentShape(Rectangle())
+    }
+}
+
+/// The small round reading-level number on a cover (1, 2 or 3), in the level's color. VoiceOver reads the
+/// level with the cover ("Level 2"), so the badge itself is hidden from it.
+struct LevelBadge: View {
+    let level: Int
+    var regular = true
+
+    static func color(_ level: Int) -> Color {
+        switch level {
+        case 1: Color(hex: "#1E8449")
+        case 3: Color(hex: "#6A3FC7")
+        default: Color(hex: "#1565C0")
+        }
+    }
+
+    var body: some View {
+        let size: CGFloat = regular ? 40 : 28
+        Text("\(level)")
+            .font(.system(size: regular ? 22 : 16, weight: .black, design: .rounded))
+            .foregroundStyle(Self.color(level))
+            .frame(width: size, height: size)
+            .background(Circle().fill(.white))
+            .overlay(Circle().strokeBorder(Self.color(level), lineWidth: regular ? 3 : 2.5))
+            .shadow(color: .black.opacity(0.15), radius: 3, x: 0, y: 1)
+            .accessibilityHidden(true)
     }
 }

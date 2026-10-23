@@ -54,7 +54,8 @@ The writer's limits per page are:
 - **L2:** 1–2 sentences of up to 12 words each.
 - **L3:** up to 3 sentences of up to 16 words each, and at most 40 words on the page.
 
-The current app doesn't show the level yet; the cover's level icon comes with the app update in a later phase.
+The app shows the level as a small numbered badge in the cover's top corner (green 1, blue 2, purple 3);
+VoiceOver reads it as "Level 2". A missing or unknown `level` shows as 2.
 
 ### Made books
 

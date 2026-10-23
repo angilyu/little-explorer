@@ -59,6 +59,12 @@ To turn Milo on or off later, open the **Grown-ups** corner (behind the grown-up
 buddy**; turning it on shows the same explanation and asks **Allow Milo**. After a grown-up turns Milo off there,
 our server refuses to start Milo for that account.
 
+## Library arrangement
+
+A grown-up can hide books and change the order of the shelves and books in the **Grown-ups** corner. That
+arrangement (book ids, shelf names and when each was changed) is saved with the account on our server, so every
+device signed in to it shows the same shelf, and a copy is kept on the device until you sign out.
+
 ## Books made for your family
 
 Some accounts can ask for a new book to be written: the grown-up gives a title, a shelf name, a reading level and,
@@ -86,7 +92,7 @@ On the device, and on our server (hosted by [Render](https://render.com), with t
 
 In the app, open the **Grown-ups** corner (behind the grown-up check) and tap **Delete account…**. After you
 type a new code we email you, the account is deleted for good: its email, books list, stars, coins, hearts,
-reading activity, sign-ins, and the books made for it with their files are removed from the server right away, and every device signed in to it is
+reading activity, library arrangement, sign-ins, and the books made for it with their files are removed from the server right away, and every device signed in to it is
 signed out. Backups made before that are overwritten over time. The minutes each device used are unlinked from the account and kept
 only with the device's random id; email us to remove them too.
 
