@@ -642,9 +642,9 @@ async def test_paused_runner_waits_for_tomorrow_only_with_work(store, clock, fak
 async def test_idle_service_never_touches_the_database(server, store, monkeypatch):
     # Neon's free plan scales to zero when idle; a poll every few seconds would keep it awake all month.
     c, service = server
-    for _ in range(20):
-        await asyncio.sleep(0)
-    assert service.runner.state["running"] and service.runner.state["next_check_s"] is None
+    # Startup: the made books were loaded before serving; wait for the runner's first check to finish too.
+    await asyncio.wait_for(service.runner.asleep.wait(), timeout=10)
+    assert service.runner.state["next_check_s"] is None and service._refreshing is None
     calls: list[str] = []
     run = store._run
     monkeypatch.setattr(store, "_run", lambda fn: (calls.append("db"), run(fn))[1])
@@ -655,7 +655,7 @@ async def test_idle_service_never_touches_the_database(server, store, monkeypatc
         now[0] += 2 * 86_400
         assert (await c.get("/healthz")).status == 200
         await asyncio.sleep(0.1)  # any timer (poll_s is 0.05 in these tests) would fire
-    assert calls == [] and service.runner.state["next_check_s"] is None
+    assert calls == [] and service.runner.asleep.is_set()
 
     # A manifest request (user traffic) reloads made books in the background when they're 10+ minutes old.
     assert (await c.get("/content/manifest.json", headers=APP)).status == 200

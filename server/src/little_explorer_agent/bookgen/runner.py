@@ -52,6 +52,8 @@ class Runner:
         self.commons = commons or Commons()
         self.on_publish = on_publish
         self._wake = asyncio.Event()
+        # Set while the runner sleeps with no timer, until woken (no database access in the meantime).
+        self.asleep = asyncio.Event()
         self.state: dict[str, Any] = {"running": False, "job": None, "step": None, "last_error": None, "paused": False,
                                       "next_check_s": None}
 
@@ -90,7 +92,11 @@ class Runner:
                     continue
                 delay = self.state.get("next_check_s")
                 if delay is None:
-                    await self._wake.wait()
+                    self.asleep.set()
+                    try:
+                        await self._wake.wait()
+                    finally:
+                        self.asleep.clear()
                     continue
                 try:
                     await asyncio.wait_for(self._wake.wait(), timeout=delay)
