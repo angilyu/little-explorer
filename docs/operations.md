@@ -17,17 +17,20 @@ and iPhone signed in with that email. The only personal data is the grown-up's e
 - **Signed out**, the app shows a welcome screen: a fan of photos from the books, what's inside, and a card for
   grown-ups. Tapping **Sign in or sign up** asks for the email and the code right away: there is no parent gate
   before sign-in, since it only asks for an email (the gate still guards the Grown-ups corner, coin trades and
-  Milo's consent on devices that are already signed in). The code works for 10 minutes and 5 tries; a new one can
-  be sent after 60 seconds (at most 5 an hour per email, 20 an hour per network, and `PIP_EMAIL_DAILY_CAP`,
-  default 100, a day in all). The sign-in token is kept in the Keychain on this device only.
-- **Milo consent.** Right after the code is verified, the app shows what Milo sends (the child's voice and the
-  page, to OpenAI through LiveKit) and keeps, and asks **Allow Milo** or **Not now**. The choice is saved on the
-  account (`accounts.milo_consent`, set by `POST /account/milo-consent`), so it counts on every device; a second
-  device signing in to an account that already allowed Milo sees the same text with **Keep Milo on** / **Turn Milo
-  off**. Devices signed in before this step see it behind the parent gate on their first **Talk to Milo**.
-  The Grown-ups corner has a **Milo, the AI voice buddy** switch to turn Milo on or off later. The app only asks
-  for a Milo token once the account allows Milo, and `/token` answers 403 `milo_off` for an account that turned
-  it off (accounts that never answered, i.e. older builds, still work).
+  Milo's consent when **Talk to Milo** is tapped before Milo is allowed). The code works for 10 minutes and 5
+  tries; a new one can be sent after 60 seconds (at most 5 an hour per email, 20 an hour per network, and
+  `PIP_EMAIL_DAILY_CAP`, default 100, a day in all). The sign-in token is kept in the Keychain on this device only.
+- **Milo consent.** Milo starts only when the account's `accounts.milo_consent` is `yes`. After every sign-in
+  where it isn't `yes`, the app shows what Milo sends (the child's voice and the page, to OpenAI through LiveKit)
+  and keeps, and asks **Allow Milo** (saves `yes` via `POST /account/milo-consent`) or **Not now** (saves
+  nothing). Accounts that said `yes` never see it, on any device. While consent isn't `yes` (NULL, or `no` from the
+  Grown-ups corner), **Talk to Milo** stays visible; tapping it shows the parent gate, then the same consent
+  screen: **Allow Milo** saves `yes` and starts Milo, **Not now** goes back to the page. This applies to devices
+  that were signed in before the consent screen too. The Grown-ups corner has a **Milo, the AI voice buddy**
+  switch: turning it on shows the consent text and saves `yes`, turning it off saves `no`.
+  The gating is in the app. `/token` answers 403 `milo_off` only for `no`; NULL is still allowed, so builds
+  without the consent screen keep working. The tradeoff: an app build that doesn't check consent (anything
+  before #38) can still start Milo for an account that never said `yes`.
 - **Signed in**, the shelf shows the account's books. **Sign out** and **Delete account…** are in the Grown-ups
   corner (behind the gate). Signing out keeps everything on the server. Deleting asks for a new code sent to
   the account's email, then removes the email, books list, stars, coins, reading activity (and any hearts from
@@ -340,9 +343,9 @@ DEBUG builds accept launch arguments for screenshots: `-demoBook paris-food -dem
 some earned and some not, from 40 stars and an early-morning star), `-demoCoins 2`,
 `-demoGate` (the parent gate on the shelf), `-demoAccount welcome|email|code` (the signed-out welcome screen and
 sign-in's email or code step), `-demoParent` (the Grown-ups corner) and `-demoMilo
-signin|confirm|talk|talk-consent|off` (the Milo consent screen after sign-in, its "already on" version, the gate
-and consent on the first Talk to Milo, and the corner with Milo off). `-demoShelf grown-ups` scrolls to the
-Grown-ups button.
+signin|talk|talk-consent|off|turn-on` (the Milo consent screen after sign-in, the gate and consent when Talk to Milo
+is tapped before Milo is allowed, the corner with Milo off, and the consent its switch shows when turned on).
+`-demoShelf grown-ups` scrolls to the Grown-ups button.
 
 ### Install on an iPhone or iPad (TestFlight)
 

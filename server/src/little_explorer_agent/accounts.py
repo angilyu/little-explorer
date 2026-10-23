@@ -12,10 +12,12 @@ The first account a device links to also claims what the device earned before ac
 Milo's daily minutes are the account's too: a new account gets ``PIP_LIMIT_UNKNOWN_MIN`` (10) a
 day until the owner approves it (``PIP_LIMIT_APPROVED_MIN``, 60), blocks it or sets its own limit.
 
-Milo needs a grown-up's permission: the app shows what Milo shares (the child's voice and the open page
-go to OpenAI through LiveKit) after sign-in, or behind the grown-up check before Milo's first talk, and
-records the choice for the whole account with :meth:`Accounts.set_milo_consent` (``milo_consent``:
-``yes``, ``no``, or NULL if never asked). ``/token`` refuses an account whose grown-up turned Milo off.
+Milo needs a grown-up's permission: until the account says yes, the app shows what Milo shares (the
+child's voice and the open page go to OpenAI through LiveKit) after every sign-in and behind the grown-up
+check when "Talk to Milo" is tapped. "Allow Milo" records ``yes`` for the whole account with
+:meth:`Accounts.set_milo_consent`; "Not now" records nothing; the Grown-ups corner's switch records ``yes``
+or ``no`` (``milo_consent``: ``yes``, ``no``, or NULL). The app gates Milo on ``yes``; ``/token`` refuses
+only ``no``, so builds older than the consent screen keep working.
 
 A new account's shelf is ``PIP_DEFAULT_BOOKS`` (comma-separated ids); the owner can grant more, or
 every book (``all_books``), with ``tools/devices.py``.

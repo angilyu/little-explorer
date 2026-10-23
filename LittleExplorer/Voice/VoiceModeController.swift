@@ -25,8 +25,8 @@ final class VoiceModeController {
     /// True while Milo's recorded hello plays. The mic stays off meanwhile, so Milo doesn't hear
     /// (and answer) his own voice, and he only counts as listening once it's over.
     private(set) var isIntroPlaying = false
-    /// "Talk to Milo" was tapped before a grown-up allowed Milo, so nothing connected; the reader asks a
-    /// grown-up (the gate, then ``MiloConsentView``) and calls ``consentHandled()``.
+    /// "Talk to Milo" was tapped before a grown-up allowed Milo for the account, so nothing connected; the
+    /// reader asks a grown-up (the gate, then ``MiloConsentView``) and calls ``consentHandled()``.
     private(set) var needsConsent = false
 
     nonisolated static let napNotice = "Milo is taking a nap — tap to talk again"

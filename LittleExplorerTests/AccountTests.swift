@@ -172,24 +172,39 @@ final class AccountTests: XCTestCase {
 
     func testMiloConsentDecodesAndSurvivesARelaunch() throws {
         let decode = { (json: String) in try JSONDecoder().decode(Account.self, from: Data(json.utf8)) }
-        XCTAssertNil(try decode(family).miloConsent, "accounts from before the consent screen were never asked")
-        XCTAssertFalse(try decode(family).miloAllowed)
+        XCTAssertNil(try decode(family).miloConsent, "never allowed (or \"Not now\") saves nothing")
+        XCTAssertFalse(try decode(family).miloAllowed, "Milo waits for a grown-up's OK")
         let allowed = try decode(#"{"id":"fam","email":"mom@example.com","all_books":true,"milo_consent":true}"#)
         XCTAssertTrue(allowed.miloAllowed)
         XCTAssertEqual(try JSONDecoder().decode(Account.self, from: JSONEncoder().encode(allowed)), allowed)
         XCTAssertFalse(try decode(#"{"id":"fam","email":"mom@example.com","milo_consent":false}"#).miloAllowed)
     }
 
-    func testSigningInAsksAboutMiloBeforeTheShelf() async throws {
-        let account = store()
-        XCTAssertFalse(account.asksMiloConsent)
+    func testEverySignInAsksAboutMiloUntilTheAccountAllowsIt() async throws {
+        for consent in ["null", "false", "true"] {
+            StubAccountServer.replies = [(200, signInReply(
+                claimed: false, account: #"{"id":"fam","email":"mom@example.com","all_books":true,"milo_consent":\#(consent)}"#
+            ))]
+            let account = store()
+            XCTAssertFalse(account.asksMiloConsent)
+            try await account.verify(email: "mom@example.com", code: "123456", device: device)
+            XCTAssertEqual(account.asksMiloConsent, consent != "true", "milo_consent \(consent)")
+            XCTAssertEqual(account.miloAllowed, consent == "true")
+        }
+    }
+
+    func testNotNowSavesNothingAndARelaunchDoesNotAsk() async throws {
         StubAccountServer.replies = [(200, signInReply(claimed: false))]
+        let account = store()
         try await account.verify(email: "mom@example.com", code: "123456", device: device)
         XCTAssertTrue(account.asksMiloConsent)
-        XCTAssertFalse(account.miloAllowed)
-        account.finishMiloConsent()
+        let sent = StubAccountServer.sent.count
+        account.finishMiloConsent()  // "Not now"
+        XCTAssertEqual(StubAccountServer.sent.count, sent, "nothing goes to the server")
         XCTAssertFalse(account.asksMiloConsent)
-        XCTAssertFalse(store().asksMiloConsent, "a relaunch doesn't ask again")
+        XCTAssertNil(account.account?.miloConsent)
+        XCTAssertFalse(account.miloAllowed, "Talk to Milo asks a grown-up instead")
+        XCTAssertFalse(store().asksMiloConsent, "a relaunch doesn't ask again; the next sign-in does")
     }
 
     func testAllowingMiloSavesItOnTheAccount() async throws {
@@ -212,6 +227,7 @@ final class AccountTests: XCTestCase {
         let account = store()
         try await account.verify(email: "mom@example.com", code: "123456", device: device)
         XCTAssertTrue(account.miloAllowed, "a second device sees the account's choice")
+        XCTAssertFalse(account.asksMiloConsent, "and isn't asked again")
 
         StubAccountServer.replies = [nil]
         try await account.setMiloConsent(false)

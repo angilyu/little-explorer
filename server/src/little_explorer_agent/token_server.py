@@ -18,9 +18,10 @@ gets ``401 {"error": "signed_out"}``. Otherwise the participant identity is ``de
 agent learns the device, the account and the remaining seconds through the dispatch metadata.
 Before any of that, a grown-up's choice about Milo counts: if the account (the session's, or for old
 builds the device's linked account) has Milo turned off (``POST /account/milo-consent {"allow": false}``),
-``/token`` answers ``403 {"error": "milo_off"}`` and no agent is dispatched. Accounts never asked
-(``milo_consent`` null, e.g. families on builds older than the consent screen) keep working; current
-builds don't ask for a token until a grown-up allowed Milo. Requests without a device count as the
+``/token`` answers ``403 {"error": "milo_off"}`` and no agent is dispatched. Accounts that never said
+yes or no (``milo_consent`` null, which "Not now" leaves as it is) keep working here, so builds older than the
+consent screen still work; current builds gate Milo themselves and don't ask for a token until the
+account says yes. Requests without a device count as the
 shared ``anonymous`` device. The app also sends ``"tz"``
 (its IANA time zone), which the agent uses to count stars per local day.
 

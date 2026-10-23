@@ -154,8 +154,9 @@ struct AccountService {
 @Observable
 final class AccountStore {
     private(set) var account: Account?
-    /// Set by a sign-in on this device: the app shows the grown-up what Milo shares (``MiloConsentView``)
-    /// before the shelf, while the grown-up who typed the code is still holding the device.
+    /// Set by a sign-in on this device when the account hasn't allowed Milo: the app shows the grown-up what
+    /// Milo shares (``MiloConsentView``) before the shelf, while the grown-up who typed the code is still
+    /// holding the device. Accounts that allowed Milo go straight to the shelf.
     private(set) var asksMiloConsent = false
 
     @ObservationIgnored private let tokens: SessionTokenStore
@@ -201,7 +202,7 @@ final class AccountStore {
         let result = try await service().verify(email: email, code: code, device: device)
         tokens.write(result.token)
         willSignIn?(result)
-        asksMiloConsent = true
+        asksMiloConsent = !result.account.miloAllowed
         save(result.account)
         await onSignIn?(result)
     }
@@ -230,7 +231,7 @@ final class AccountStore {
         }
     }
 
-    /// The grown-up made their choice about Milo after signing in (or chose "Not now").
+    /// The grown-up allowed Milo after signing in, or chose "Not now" (which saves nothing).
     func finishMiloConsent() {
         asksMiloConsent = false
     }
@@ -277,7 +278,7 @@ extension AccountStore {
             defaults.removePersistentDomain(forName: suite)
             let store = AccountStore(tokens: MemorySessionTokenStore(), defaults: defaults)
             if let account = demo.account { store.signInForDemo(account) }
-            if demo.milo?.afterSignIn == true { store.asksMiloConsent = true }
+            if demo.milo == .signin { store.asksMiloConsent = true }
             return store
         }
         #endif

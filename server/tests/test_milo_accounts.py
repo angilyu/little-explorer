@@ -436,7 +436,8 @@ async def test_the_app_records_milo_consent_for_the_account(client, accounts, cl
 async def test_token_refuses_an_account_whose_grown_up_turned_milo_off(client, accounts, clock):
     token, account, _ = sign_in(accounts, clock, device=IPAD)
     session = {**APP, "X-Pip-Session": token}
-    # Never asked (families on builds before the consent screen) keeps working.
+    # Never allowed (NULL, which "Not now" leaves as it is) keeps working for builds older than the consent
+    # screen; current builds gate Milo on yes themselves.
     assert (await client.post("/token", json={"device": {"id": IPAD}}, headers=session)).status == 200
     accounts.set_milo_consent(account.id, False)
     resp = await client.post("/token", json={"device": {"id": IPAD}}, headers=session)
