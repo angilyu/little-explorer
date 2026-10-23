@@ -112,6 +112,10 @@ a Postgres lease so a restart picks up where it stopped. Files are stored in a p
 about $0.13. Milo's talk rules follow the book's level. It is dogfood-only for now; see
 [Made books](docs/operations.md#made-books-cloud-generation).
 
+Each cover shows its level as a small numbered badge. In the Grown-ups corner, **Arrange library** lets a parent
+hide books and reorder the sections and the books in them; the arrangement is saved with the account and synced
+to its other devices ([Library arrangement](docs/operations.md#library-arrangement)).
+
 ### Testing a voice agent end to end
 
 `server/tools/e2e_smoke.py` joins a real LiveKit room the way the app does. It plays synthesized speech into the

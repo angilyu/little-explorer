@@ -289,8 +289,8 @@ final class StarStoreTests: XCTestCase {
     }
 
     func testBookCoverReadsItsStars() {
-        XCTAssertEqual(BookCoverView.accessibilityValue(starCount: 0), "")
-        XCTAssertEqual(BookCoverView.accessibilityValue(starCount: 1), "1 star")
-        XCTAssertEqual(BookCoverView.accessibilityValue(starCount: 7), "7 stars")
+        XCTAssertEqual(BookCoverView.accessibilityValue(level: 2, starCount: 0), "Level 2")
+        XCTAssertEqual(BookCoverView.accessibilityValue(level: 1, starCount: 1), "Level 1, 1 star")
+        XCTAssertEqual(BookCoverView.accessibilityValue(level: 3, starCount: 7), "Level 3, 7 stars")
     }
 }

@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// Parent-only screen: the account, turning his stars into coins, book updates, and photo credits
-/// with links.
+/// Parent-only screen: the account, arranging the shelf, turning his stars into coins, book updates,
+/// and photo credits with links.
 struct ParentCornerView: View {
     let books: [Book]
 
@@ -10,6 +10,8 @@ struct ParentCornerView: View {
     @Environment(ContentStore.self) private var content
     @Environment(AccountStore.self) private var account
     @Environment(VoiceModeController.self) private var voice
+    @Environment(LibraryStore.self) private var library
+    @State private var arranging = DemoLaunch.current?.openArrange == true
     @State private var miloConsent: MiloConsentView.Purpose? = DemoLaunch.current?.milo == .turnOn ? .ask : nil
     @State private var miloMessage: String?
     @State private var confirmSignOut = false
@@ -25,6 +27,7 @@ struct ParentCornerView: View {
         NavigationStack {
             List {
                 accountSection
+                librarySection
                 miloSection
                 coinSection
 
@@ -60,6 +63,7 @@ struct ParentCornerView: View {
                 }
             }
             .navigationTitle("Grown-ups corner")
+            .navigationDestination(isPresented: $arranging) { ArrangeLibraryView() }
             .task {
                 await loadCoins()
             }
@@ -97,6 +101,26 @@ struct ParentCornerView: View {
             }
             .sheet(isPresented: $showDelete) {
                 DeleteAccountView().environment(account)
+            }
+        }
+    }
+
+    // MARK: - Library
+
+    @ViewBuilder
+    private var librarySection: some View {
+        if account.isSignedIn {
+            Section {
+                NavigationLink {
+                    ArrangeLibraryView()
+                } label: {
+                    LabeledContent("Arrange library", value: library.prefs.hiddenCount == 0 ? "" : "\(library.prefs.hiddenCount) hidden")
+                }
+                .accessibilityHint("Hide books or change the order of the shelf")
+            } header: {
+                Text("Library")
+            } footer: {
+                Text("Hide books or change the order of the sections and books on the shelf.")
             }
         }
     }
