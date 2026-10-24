@@ -7,6 +7,7 @@
   "theme": "Fun & Art",
   "coverColor": "#7E57A8",
   "tagline": "Carousels, boats and painters",
+  "level": 2,
   "pages": [
     {
       "id": "welcome",

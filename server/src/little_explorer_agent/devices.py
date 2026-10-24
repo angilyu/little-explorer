@@ -181,6 +181,55 @@ SCHEMA = (
     )""",
     "CREATE INDEX IF NOT EXISTS reading_events_account ON reading_events (account_id, received_s)",
     "CREATE INDEX IF NOT EXISTS reading_events_day ON reading_events (day)",
+    # Books made in the cloud (see bookgen/): one job per book, run one at a time by the in-process
+    # runner, which holds a lease (epoch seconds) it renews at every step.
+    """CREATE TABLE IF NOT EXISTS generation_jobs (
+        id TEXT PRIMARY KEY,
+        account_id TEXT NOT NULL,
+        book_id TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'queued',
+        step TEXT NOT NULL DEFAULT 'text',
+        input TEXT NOT NULL,
+        error TEXT NOT NULL DEFAULT '',
+        attempts INTEGER NOT NULL DEFAULT 0,
+        lease_until BIGINT NOT NULL DEFAULT 0,
+        run_after BIGINT NOT NULL DEFAULT 0,
+        cost_usd REAL NOT NULL DEFAULT 0,
+        costs TEXT NOT NULL DEFAULT '[]',
+        day TEXT NOT NULL,
+        month TEXT NOT NULL,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        finished_at TEXT
+    )""",
+    "CREATE INDEX IF NOT EXISTS generation_jobs_status ON generation_jobs (status, created_at)",
+    "CREATE INDEX IF NOT EXISTS generation_jobs_account ON generation_jobs (account_id, day)",
+    # The book itself: the same JSON as LittleExplorer/Resources/Books/<id>.json, plus its clips.
+    """CREATE TABLE IF NOT EXISTS books (
+        id TEXT PRIMARY KEY,
+        account_id TEXT NOT NULL,
+        job_id TEXT NOT NULL,
+        title TEXT NOT NULL,
+        section TEXT NOT NULL,
+        level INTEGER NOT NULL,
+        status TEXT NOT NULL DEFAULT 'draft',
+        json TEXT NOT NULL DEFAULT '{}',
+        narration TEXT NOT NULL DEFAULT '{}',
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        published_at TEXT
+    )""",
+    "CREATE INDEX IF NOT EXISTS books_account ON books (account_id)",
+    # Every photo and clip of a book, stored in R2 under r2_key; path is what the manifest lists.
+    """CREATE TABLE IF NOT EXISTS book_assets (
+        book_id TEXT NOT NULL,
+        path TEXT NOT NULL,
+        r2_key TEXT NOT NULL,
+        sha256 TEXT NOT NULL,
+        size INTEGER NOT NULL,
+        created_at TEXT NOT NULL,
+        PRIMARY KEY (book_id, path)
+    )""",
 )
 
 # Columns added after the first release, as (table, column, type). Added on startup if missing.
@@ -195,6 +244,8 @@ COLUMNS = (
     ("accounts", "milo_consent", "TEXT"),
     ("accounts", "milo_consent_at", "TEXT"),
     ("sessions", "account_id", "TEXT"),
+    # May make books in the cloud (dogfood); the ``bookgen.everyone`` setting turns it on for all.
+    ("accounts", "can_generate", "INTEGER NOT NULL DEFAULT 0"),
 )
 INDEXES = (
     "CREATE INDEX IF NOT EXISTS stars_account ON stars (account_id)",
@@ -204,10 +255,14 @@ INDEXES = (
 )
 # One-time data moves, each recorded in ``settings`` once done (see ``DeviceStore._migrate``).
 MILO_PER_ACCOUNT = "migration.milo_per_account"
+BOOKGEN_DOGFOOD = "migration.bookgen_dogfood"
+# The accounts that may make books before everyone can (see bookgen/config.py).
+DOGFOOD_EMAILS = ("angilyu@gmail.com", "hfevers@gmail.com")
 # Every table, for /admin/backup and restore (in an order that restores cleanly).
 TABLES = (
     "devices", "sessions", "stars", "coin_conversions", "settings",
     "accounts", "account_books", "email_codes", "auth_sessions", "hearts", "reading_events",
+    "generation_jobs", "books", "book_assets",
 )
 
 STAR_ID = re.compile(r"^[A-Za-z0-9-]{8,64}$")
@@ -441,6 +496,23 @@ class DeviceStore:
                 raise
             cur.execute("COMMIT")
             log.info("moved Milo's minutes to accounts: %s", moved)
+        if not self._exec(cur, "SELECT 1 FROM settings WHERE key = ?", (BOOKGEN_DOGFOOD,)).fetchone():
+            marks = ", ".join("?" for _ in DOGFOOD_EMAILS)
+            cur.execute("BEGIN")
+            try:
+                turned_on = self._exec(
+                    cur, f"UPDATE accounts SET can_generate = 1 WHERE email IN ({marks})", DOGFOOD_EMAILS
+                ).rowcount
+                self._exec(
+                    cur,
+                    "INSERT INTO settings (key, value, updated_at) VALUES (?, ?, ?)",
+                    (BOOKGEN_DOGFOOD, "done", self.now().isoformat(timespec="seconds")),
+                )
+            except BaseException:
+                cur.execute("ROLLBACK")
+                raise
+            cur.execute("COMMIT")
+            log.info("book making turned on for %d dogfood account(s)", max(turned_on, 0))
 
     def _milo_per_account(self, cur: Any) -> dict[str, int]:
         """Milo's minutes moved from devices to accounts: every session of a linked device counts

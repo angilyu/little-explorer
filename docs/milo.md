@@ -60,6 +60,22 @@ reading, adult chatter, claps while the child is quiet, a clap or "hmm" while th
 "mm-hmm" while they talk. `--json FILE` saves the numbers. To A/B a change locally without touching production, run the
 worker and token server with a different `LIVEKIT_AGENT_NAME` (e.g. `little-explorer-dev`).
 
+## Reading levels
+
+Milo has a neutral child persona: he talks to "a young child (about 4 to 9 years old)". On every page he gets
+the open book's reading level and the talk rules for it (from
+[`levels.py`](../server/src/little_explorer_agent/levels.py); level 2 when no book is open):
+
+- **Level 1 (ages 4–5):** one or two very short sentences, about six words each, with easy words. He repeats the
+  page's key word and asks either/or questions ("Is it big or small?").
+- **Level 2 (ages 5–7):** short, simple sentences, two to four a turn. This is how Milo has always talked, and all
+  the bundled books are level 2.
+- **Level 3 (ages 7–9):** sentences of up to about twelve words. He asks "why" and "how" questions and may use one
+  new interesting word a turn, explaining it right away.
+
+Narration for made books follows the level too: slower with pauses at level 1, a lively storytelling pace at
+level 3. See [Reading levels](content.md#reading-levels).
+
 ## What a session costs
 
 When a Milo session ends (the child closes the book, the app drops off, or the worker stops), the agent appends one row to

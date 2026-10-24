@@ -7,6 +7,7 @@
   "theme": "Hebrew Words",
   "coverColor": "#3949AB",
   "tagline": "Shalom, toda and a scoop of glida!",
+  "level": 2,
   "narration": {
     "instructions": "This book teaches a child first words in Hebrew. Say every Hebrew word, whether it is written in Hebrew letters or in English letters, the way a native Israeli Hebrew speaker says it, clearly and warmly, never anglicized: Ivrit (eev-REET), Shalom (shah-LOHM), Boker tov (BOH-ker TOHV), Toda (toh-DAH), Mayim (MAH-yeem), Yam (YAHM, rhymes with mom), Glida (glee-DAH), Tapuz (tah-POOZ), Kelev (KEH-lev), Gamal (gah-MAHL), Achat (ah-KHAHT), Shtayim (shtah-YEEM), Shalosh (shah-LOHSH), Lehitraot (leh-heet-rah-OHT). When the text is only Hebrew letters, say just that Hebrew word or words, slowly and clearly, like a teacher showing a new word. A short hint like shah-LOHM is how to sound out the word: say it as one smooth word, the way an Israeli would. Everything else is English.",
     "phraseByPhrase": true

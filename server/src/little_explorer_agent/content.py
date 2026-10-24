@@ -21,6 +21,8 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
+from .levels import DEFAULT_LEVEL, parse_level
+
 # Participant-attribute keys published by the app (PageContext.attributes in Book.swift).
 BOOK_KEY = "book"
 PAGE_KEY = "page"
@@ -49,6 +51,8 @@ class Book:
     pages: tuple[Page, ...]
     theme: str = ""
     kind: str = ""
+    # Reading level 1-3 (see :mod:`.levels`); hand-written books without one are level 2.
+    level: int = DEFAULT_LEVEL
 
     @property
     def is_travel(self) -> bool:
@@ -76,6 +80,7 @@ def _parse_book(data: Mapping[str, Any]) -> Book:
         pages=pages,
         theme=data.get("theme") or "",
         kind=data.get("kind") or "",
+        level=parse_level(data.get("level")) or DEFAULT_LEVEL,
     )
 
 

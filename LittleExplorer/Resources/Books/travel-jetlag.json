@@ -8,6 +8,7 @@
   "theme": "Jet Lag",
   "coverColor": "#312E81",
   "tagline": "When your body clock gets mixed up",
+  "level": 2,
   "pages": [
     {
       "id": "welcome",

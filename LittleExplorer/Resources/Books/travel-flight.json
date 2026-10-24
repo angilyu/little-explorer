@@ -8,6 +8,7 @@
   "theme": "Take a Flight",
   "coverColor": "#0E7490",
   "tagline": "Wings, clouds and a window seat",
+  "level": 2,
   "pages": [
     {
       "id": "welcome",

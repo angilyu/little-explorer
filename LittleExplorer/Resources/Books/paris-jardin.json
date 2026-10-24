@@ -7,6 +7,7 @@
   "theme": "Jardin d'Acclimatation",
   "coverColor": "#4E9A43",
   "tagline": "Little trains, peacocks and rides",
+  "level": 2,
   "pages": [
     {
       "id": "welcome",

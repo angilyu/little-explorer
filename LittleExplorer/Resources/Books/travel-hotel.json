@@ -8,6 +8,7 @@
   "theme": "Hotel Stay",
   "coverColor": "#B45309",
   "tagline": "Key cards, lifts and a breakfast buffet",
+  "level": 2,
   "pages": [
     {
       "id": "welcome",

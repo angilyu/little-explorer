@@ -57,6 +57,15 @@ It also serves the book content (see :mod:`.catalog`): ``GET /content/manifest.j
 ``GET /content/<path>`` for each file in it, so books and the Passport badges (``badges.json``, see
 :mod:`.badges`) can change without an app update.
 
+Made books (see :mod:`.bookgen`): ``POST /admin/books/generate`` with ``{"account", "title", "section",
+"level", "note"}`` queues a book for an account that ``can_generate`` (``202 {"job", "usage"}``); the
+in-process runner writes, illustrates and narrates it and publishes it into the manifest. Generated
+books' JSON is served from memory and their photos and narration are ``302`` redirects to short-lived
+presigned R2 URLs. ``GET /admin/books``, ``GET /admin/books/<id>``, ``POST /admin/books/<id>/publish |
+unpublish | delete``, ``GET /admin/jobs``, ``GET /admin/jobs/<id>``, ``POST /admin/jobs/<id>/cancel``,
+``GET | POST /admin/bookgen {"everyone"}`` and ``POST /admin/accounts/<email or id>/bookgen
+{"can_generate"}`` manage it. ``GET /levels`` lists the reading levels for the parent screen.
+
 Run: ``uv run python -m little_explorer_agent.token_server``.
 """
 
@@ -76,11 +85,15 @@ from aiohttp import web
 
 from . import agent_name
 from .accounts import Accounts, AuthError, Session, normalize_email, valid_book_id
+from .bookgen.service import BookgenService
+from .bookgen.store import Asset, LimitError
+from .bookgen.writer import validate_request
 from .catalog import build_manifest, content_files, resources_dir
 from .coins import CoinError, CoinLedger
 from .config import load_env
 from .content import BOOK_KEY, CITY_KEY, PAGE_KEY, PAGE_NUMBER_KEY, PAGE_TEXT_KEY
 from .devices import ANONYMOUS, REST_MESSAGE, STATUSES, Decision, DeviceStore, Scope, valid_device_id
+from .levels import levels_json
 from .mail import Mailer, MailError, compose
 from .modes import PipMode, job_metadata, parse_intro, parse_mode, parse_tz
 from .reading import ReadingError, ReadingLog
@@ -507,14 +520,14 @@ async def handle_auth_verify(request: web.Request) -> web.Response:
     except AuthError as exc:
         return _refusal(exc)
     log.info("device %s signed in to account %s (claimed: %s)", device[0], account.id, claimed)
-    return web.json_response({"token": token, "account": account.as_json(), "claimed_device": claimed})
+    return web.json_response({"token": token, "account": account.app_json(), "claimed_device": claimed})
 
 
 async def handle_account(request: web.Request) -> web.Response:
     session = await _session(request)
     if isinstance(session, web.Response):
         return session
-    return web.json_response({"account": session.account.as_json()})
+    return web.json_response({"account": session.account.app_json()})
 
 
 async def handle_sign_out(request: web.Request) -> web.Response:
@@ -532,10 +545,13 @@ async def handle_account_delete(request: web.Request) -> web.Response:
         return session
     body = await _json_body(request) or {}
     account = session.account
+    bookgen = request.app[BOOKGEN]
+    keys = await asyncio.to_thread(bookgen.books.asset_keys, account_id=account.id)
     try:
         counts = await asyncio.to_thread(request.app[ACCOUNTS].delete, account.id, account.email, body.get("code"))
     except AuthError as exc:
         return _refusal(exc)
+    await bookgen.forget_account(keys)
     return web.json_response({"ok": True, "deleted": counts})
 
 
@@ -550,7 +566,7 @@ async def handle_account_milo_consent(request: web.Request) -> web.Response:
         account = await asyncio.to_thread(request.app[ACCOUNTS].set_milo_consent, session.account.id, body["allow"])
     except LookupError:
         return _signed_out()
-    return web.json_response({"account": account.as_json()})
+    return web.json_response({"account": account.app_json()})
 
 
 async def handle_account_stars(request: web.Request) -> web.Response:
@@ -737,6 +753,12 @@ async def handle_admin_account_action(request: web.Request) -> web.Response:
                 lambda: accounts.set_milo(ref, status=status, daily_limit_min=limit, clear_limit=clear_limit)
             )
             log.info("owner set account %s Milo: %s", account.id, body)
+        elif action == "bookgen":
+            allow = body.get("can_generate")
+            if not isinstance(allow, bool):
+                return web.json_response({"error": "send {\"can_generate\": true or false}"}, status=400)
+            account = await asyncio.to_thread(accounts.set_can_generate, ref, allow)
+            log.info("owner set account %s can_generate=%s", account.id, allow)
         else:
             return web.json_response({"error": "unknown action"}, status=404)
     except LookupError:
@@ -766,16 +788,148 @@ async def handle_admin_restore(request: web.Request) -> web.Response:
     except ValueError as exc:
         return web.json_response({"error": str(exc)}, status=400)
     log.warning("owner restored a backup: %s", counts)
+    await request.app[BOOKGEN].refresh()
+    request.app[BOOKGEN].wake()  # the backup may hold unfinished jobs
     return web.json_response({"ok": True, "restored": counts})
 
 
+# -- owner: making books ---------------------------------------------------------------------------
+
+
+async def handle_levels(request: web.Request) -> web.Response:
+    """The reading levels, with the short descriptions a grown-up sees when making a book."""
+    return web.json_response({"levels": levels_json()})
+
+
+async def handle_admin_bookgen(request: web.Request) -> web.Response:
+    """Book making status; POST {"everyone": true} lets every account make books (not just dogfood)."""
+    if denied := _admin(request):
+        return denied
+    accounts = request.app[ACCOUNTS]
+    if request.method == "POST":
+        body = await _json_body(request)
+        if body is None or not isinstance(body.get("everyone"), bool):
+            return web.json_response({"error": 'send {"everyone": true or false}'}, status=400)
+        await asyncio.to_thread(accounts.set_bookgen_everyone, body["everyone"])
+        log.info("owner turned book making for everyone %s", "on" if body["everyone"] else "off")
+    status = await request.app[BOOKGEN].status()
+    everyone = await asyncio.to_thread(accounts.bookgen_everyone_on)
+    return web.json_response({**status, "everyone": everyone})
+
+
+async def handle_admin_generate(request: web.Request) -> web.Response:
+    """Queue a book for an account: {"account", "title", "section", "level", "about"?}."""
+    if denied := _admin(request):
+        return denied
+    body = await _json_body(request)
+    if body is None:
+        return web.json_response({"error": "bad body"}, status=400)
+    bookgen = request.app[BOOKGEN]
+    if not bookgen.ready:
+        return web.json_response({"error": "book making is not set up on this server"}, status=503)
+    try:
+        book_request = validate_request(body)
+    except ValueError as exc:
+        return web.json_response({"error": str(exc)}, status=400)
+    account = await asyncio.to_thread(request.app[ACCOUNTS].get, str(body.get("account") or ""))
+    if account is None:
+        return web.json_response({"error": "no such account"}, status=404)
+    if not account.can_generate:
+        return web.json_response({"error": "this account can't make books yet"}, status=403)
+    try:
+        job = await asyncio.to_thread(bookgen.queue, account.id, book_request)
+    except LimitError as exc:
+        return web.json_response(exc.as_json(), status=exc.status)
+    bookgen.wake()
+    log.info("owner queued book %s (job %s) for account %s", job.book_id, job.id, account.id)
+    usage = await asyncio.to_thread(bookgen.books.usage, account.id)
+    return web.json_response({"job": job.as_json(), "usage": usage}, status=202)
+
+
+async def handle_admin_books(request: web.Request) -> web.Response:
+    if denied := _admin(request):
+        return denied
+    account = request.query.get("account")
+    if account:
+        found = await asyncio.to_thread(request.app[ACCOUNTS].get, account)
+        if found is None:
+            return web.json_response({"error": "no such account"}, status=404)
+        account = found.id
+    books = await asyncio.to_thread(request.app[BOOKGEN].books.books, account or None)
+    return web.json_response({"books": [b.as_json() for b in books]})
+
+
+async def handle_admin_book(request: web.Request) -> web.Response:
+    if denied := _admin(request):
+        return denied
+    book = await asyncio.to_thread(request.app[BOOKGEN].books.book, request.match_info["id"])
+    if book is None:
+        return web.json_response({"error": "no such book"}, status=404)
+    return web.json_response(book.as_json(full=True))
+
+
+async def handle_admin_book_action(request: web.Request) -> web.Response:
+    """publish / unpublish (the kill switch) / delete a made book."""
+    if denied := _admin(request):
+        return denied
+    book_id, action = request.match_info["id"], request.match_info["action"]
+    bookgen = request.app[BOOKGEN]
+    try:
+        if action in ("publish", "unpublish"):
+            book = await bookgen.set_published(book_id, action == "publish")
+            log.info("owner %sed book %s", action, book_id)
+            return web.json_response(book)
+        if action == "delete":
+            deleted = await bookgen.delete_book(book_id)
+            log.info("owner deleted book %s (%d files)", book_id, deleted)
+            return web.json_response({"ok": True, "deleted_files": deleted})
+    except LookupError:
+        return web.json_response({"error": "no such book"}, status=404)
+    except ValueError as exc:
+        return web.json_response({"error": str(exc)}, status=409)
+    return web.json_response({"error": "unknown action"}, status=404)
+
+
+async def handle_admin_jobs(request: web.Request) -> web.Response:
+    if denied := _admin(request):
+        return denied
+    jobs = await asyncio.to_thread(request.app[BOOKGEN].books.jobs)
+    return web.json_response({"jobs": [j.as_json() for j in jobs]})
+
+
+async def handle_admin_job(request: web.Request) -> web.Response:
+    if denied := _admin(request):
+        return denied
+    job = await asyncio.to_thread(request.app[BOOKGEN].books.job, request.match_info["id"])
+    if job is None:
+        return web.json_response({"error": "no such job"}, status=404)
+    return web.json_response(job.as_json())
+
+
+async def handle_admin_job_cancel(request: web.Request) -> web.Response:
+    if denied := _admin(request):
+        return denied
+    try:
+        job = await request.app[BOOKGEN].cancel(request.match_info["id"])
+    except LookupError:
+        return web.json_response({"error": "no such job"}, status=404)
+    log.info("owner cancelled job %s", job.id)
+    return web.json_response(job.as_json())
+
+
 async def handle_health(request: web.Request) -> web.Response:
-    # The deploy workflow polls this until the new commit and book content are live.
+    # The deploy workflow polls this until the new commit and book content are live. ``bundled`` is the
+    # version of the commit's own books; ``content`` also counts generated books, so it differs once one is out.
     commit = os.environ.get("RENDER_GIT_COMMIT", "").strip() or None
-    return web.json_response({"ok": True, "commit": commit, "content": request.app[MANIFEST]["version"]})
+    content = request.app[MANIFEST]["version"]
+    bookgen = request.app.get(BOOKGEN)
+    bundled = bookgen.static["version"] if bookgen is not None else content
+    return web.json_response({"ok": True, "commit": commit, "content": content, "bundled": bundled})
 
 
 async def handle_manifest(request: web.Request) -> web.Response:
+    # The app asks on launch and when it comes back to the front: user traffic, which may wake the database.
+    request.app[BOOKGEN].maybe_refresh()
     manifest = request.app[MANIFEST]
     headers = {"Cache-Control": "no-cache", "ETag": f'"{manifest["version"]}"'}
     if request.headers.get("If-None-Match") == headers["ETag"]:
@@ -784,7 +938,15 @@ async def handle_manifest(request: web.Request) -> web.Response:
 
 
 async def handle_content_file(request: web.Request) -> web.StreamResponse:
-    path = request.app[FILES].get(request.match_info["path"])
+    rel = request.match_info["path"]
+    bookgen = request.app[BOOKGEN]
+    made = bookgen.extra.get(rel)
+    if isinstance(made, bytes):
+        return web.Response(body=made, content_type="application/json", headers={"Cache-Control": "no-cache"})
+    if isinstance(made, Asset):
+        # Made books' photos and clips live in a private R2 bucket: send a short-lived signed link.
+        raise web.HTTPFound(bookgen.url_for(made), headers={"Cache-Control": "no-store"})
+    path = request.app[FILES].get(rel)
     if path is None:
         raise web.HTTPNotFound()
     return web.FileResponse(path, headers={"Cache-Control": "no-cache"})
@@ -822,6 +984,7 @@ FILES = web.AppKey("files", dict)
 ACCOUNTS = web.AppKey("accounts", Accounts)
 MAILER = web.AppKey("mailer", Mailer)
 READING = web.AppKey("reading_log", ReadingLog)
+BOOKGEN = web.AppKey("bookgen", BookgenService)
 
 
 def create_app(
@@ -835,6 +998,7 @@ def create_app(
     accounts: Accounts | None = None,
     mailer: Mailer | None = None,
     reading: ReadingLog | None = None,
+    bookgen: BookgenService | None = None,
 ) -> web.Application:
     app = web.Application()
     app[ACCESS_KEY] = (os.environ.get("PIP_ACCESS_KEY", "") if access_key is None else access_key).strip()
@@ -846,8 +1010,14 @@ def create_app(
     app[MAILER] = mailer or Mailer.from_env()
     app[READING] = reading or ReadingLog(app[STORE])
     root = content_root or resources_dir()
-    app[MANIFEST] = build_manifest(root)
-    app[FILES] = content_files(root)
+    if bookgen is None:
+        bookgen = BookgenService(app[STORE], static_manifest=build_manifest(root), static_files=content_files(root))
+    app[BOOKGEN] = bookgen
+    # all_books accounts read the hand-made books being served, never other families' made books.
+    app[ACCOUNTS].catalog = lambda: bookgen.static["order"]
+    # The same dict the book service updates in place when made books are published.
+    app[MANIFEST] = bookgen.manifest
+    app[FILES] = bookgen.static_files
     app.router.add_post("/token", handle_token)
     app.router.add_get("/healthz", handle_health)
     app.router.add_get("/content/manifest.json", handle_manifest)
@@ -883,6 +1053,23 @@ def create_app(
     app.router.add_post("/admin/accounts/{ref}/{action}", handle_admin_account_action)
     app.router.add_get("/admin/backup", handle_admin_backup)
     app.router.add_post("/admin/restore", handle_admin_restore)
+    app.router.add_get("/levels", handle_levels)
+    app.router.add_get("/admin/bookgen", handle_admin_bookgen)
+    app.router.add_post("/admin/bookgen", handle_admin_bookgen)
+    app.router.add_post("/admin/books/generate", handle_admin_generate)
+    app.router.add_get("/admin/books", handle_admin_books)
+    app.router.add_get("/admin/books/{id}", handle_admin_book)
+    app.router.add_post("/admin/books/{id}/{action}", handle_admin_book_action)
+    app.router.add_get("/admin/jobs", handle_admin_jobs)
+    app.router.add_get("/admin/jobs/{id}", handle_admin_job)
+    app.router.add_post("/admin/jobs/{id}/cancel", handle_admin_job_cancel)
+
+    async def run_bookgen(app: web.Application) -> AsyncIterator[None]:
+        await app[BOOKGEN].start()
+        yield
+        await app[BOOKGEN].stop()
+
+    app.cleanup_ctx.append(run_bookgen)
 
     target = keepalive_target()
     if target:
@@ -908,6 +1095,10 @@ def main() -> None:
     log.info("serving content version %s (%d files)", app[MANIFEST]["version"], len(app[FILES]))
     log.info("device limits in %s storage: %s", app[STORE].kind, app[STORE].limits)
     log.info("coin defaults (env): %s", app[COINS].defaults)
+    if app[BOOKGEN].ready:
+        log.info("book generation: on (%s), limits %s", app[BOOKGEN].config.text_model, app[BOOKGEN].config.limits_json())
+    else:
+        log.info("book generation: off (needs BOOKGEN_OPENAI_API_KEY and R2_* settings)")
     log.info("sign-in email: %s; new accounts get %d books", app[MAILER].describe(), len(app[ACCOUNTS].default_books))
     if not app[ADMIN_KEY] or not app[REPORT_KEY]:
         log.warning("PIP_ADMIN_KEY or PIP_REPORT_KEY is not set: /admin or /usage is turned off")
