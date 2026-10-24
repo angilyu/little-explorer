@@ -393,7 +393,7 @@ changed, runs the server tests, and deploys only the pieces that need it:
   server pings its own `/healthz` to stay awake (one always-on service fits in the free 750 hours a month). If it
   does fall asleep (e.g. after a redeploy fails), the first token takes about a minute.
 - **Milo warm-ups** (`POST /milo/warm`, see [Waking Milo up](milo.md#waking-milo-up-cold-starts)) wake the LiveKit
-  agent when a book opens, since the free Build plan scales it to zero between sessions (a 10–20 s cold start).
+  agent when the app or a book opens, since the free Build plan scales it to zero between sessions (a 10–20 s cold start).
   Optional Render env vars: `PIP_WARM=0` turns them off, `PIP_WARM_DEVICE_GAP_S` (default 600) and `PIP_WARM_FRESH_S`
   (default 300) space them out. Render logs `warming Milo for device …`; `lk agent logs` shows `warm-up job in room
   milo-warm-…` and no usage report. A warm-up never joins its room, so LiveKit meters no agent minutes for it; keep an
