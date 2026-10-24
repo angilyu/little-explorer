@@ -14,8 +14,9 @@ iPad versions are in [`docs/screenshots`](docs/screenshots).
 A real conversation with Milo (1.5 minutes) on the first page of the Tibidabo book: "Tibidabo is a fun park on
 top of a mountain!"
 
-▶️ **Listen:** [audio (M4A)](https://github.com/angilyu/little-explorer/raw/main/docs/media/milo-and-francis.m4a) ·
-[video (MP4)](https://github.com/angilyu/little-explorer/raw/main/docs/media/milo-and-francis.mp4)
+https://github.com/user-attachments/assets/34633b00-ee52-497f-9ea6-21643bf2e5d9
+
+If the player doesn't show, download the [audio (M4A)](docs/media/milo-and-francis.m4a).
 
 > [!NOTE]
 > The kid's voice is my son, Francis. Milo's voice is AI. The quiet gaps were shortened; the words weren't changed.
