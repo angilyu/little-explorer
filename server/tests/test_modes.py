@@ -114,11 +114,11 @@ class FakeCtx:
 async def test_entrypoint_runs_the_chosen_engine(monkeypatch, tmp_path, metadata, env, expected):
     ran = []
 
-    async def fake_pipeline(ctx, game, timer, greeting):
+    async def fake_pipeline(ctx, game, timer, greeting, record=False):
         ran.append("pipeline")
         return FakeSession()
 
-    async def fake_realtime(ctx, game, timer, greeting):
+    async def fake_realtime(ctx, game, timer, greeting, record=False):
         ran.append("realtime")
         return FakeSession()
 
@@ -155,7 +155,7 @@ async def test_greeting_is_skipped_only_when_the_app_plays_the_intro(monkeypatch
     """New apps play the recorded intro on tap; older ones still get the spoken greeting."""
     greetings = []
 
-    async def fake_realtime(ctx, game, timer, greeting):
+    async def fake_realtime(ctx, game, timer, greeting, record=False):
         greetings.append(greeting)
         return FakeSession()
 
@@ -168,6 +168,30 @@ async def test_greeting_is_skipped_only_when_the_app_plays_the_intro(monkeypatch
     assert greetings == [expected]
 
 
+@pytest.mark.parametrize(
+    ("account", "listed", "expected"),
+    [("acct-1", "acct-1,acct-2", True), ("acct-3", "acct-1,acct-2", False), (None, "acct-1", False), ("acct-1", None, False)],
+)
+async def test_entrypoint_records_only_listed_accounts(monkeypatch, tmp_path, account, listed, expected):
+    recorded = []
+
+    async def fake_realtime(ctx, game, timer, greeting, record=False):
+        recorded.append(record)
+        return FakeSession()
+
+    monkeypatch.setattr(agent_mod, "attach_room_context", lambda store, room: None)
+    monkeypatch.setenv("PIP_USAGE_FILE", str(tmp_path / "usage.csv"))
+    monkeypatch.delenv("PIP_CONTENT_URL", raising=False)
+    monkeypatch.setenv("PIP_MODE", "realtime")
+    if listed is None:
+        monkeypatch.delenv("PIP_RECORD_ACCOUNTS", raising=False)
+    else:
+        monkeypatch.setenv("PIP_RECORD_ACCOUNTS", listed)
+    monkeypatch.setattr(agent_mod, "_realtime", fake_realtime)
+    await agent_mod.entrypoint(FakeCtx(job_metadata("realtime", "ipad-1", 600, account_id=account)))
+    assert recorded == [expected]
+
+
 def test_intro_flag_parsing():
     assert parse_intro("app") == "app" and parse_intro(" APP ") == "app"
     assert parse_intro("milo") is None and parse_intro(None) is None and parse_intro(1) is None
@@ -178,7 +202,7 @@ async def test_empty_room_ends_without_a_session(monkeypatch, tmp_path):
     """A tap cancelled during a cold start leaves a room nobody joins: no greeting, no session."""
     ran = []
 
-    async def fake_realtime(ctx, game, timer, greeting):
+    async def fake_realtime(ctx, game, timer, greeting, record=False):
         ran.append("realtime")
         return FakeSession()
 

@@ -397,6 +397,7 @@ async def start_realtime_session(
     context_store: ContextStore | None = None,
     on_interrupt: Callable[[str], None] | None = None,
     on_commit: Callable[[bool], None] | None = None,
+    record: bool = False,
 ) -> AgentSession:
     """Connect, follow the app's page context, and start a realtime ``AgentSession``.
 
@@ -406,6 +407,7 @@ async def start_realtime_session(
     context with the caller. ``on_interrupt(cause)`` is told just before Milo is cut off on purpose
     (``barge_in`` or ``guard``), for the timing log. With server turns, ``on_commit(forced)`` is
     told when his turn is committed: by OpenAI, or ``forced`` by the :class:`CommitFallback`.
+    ``record`` lets LiveKit Cloud keep the session's audio, transcript, traces and logs (off by default).
     """
     await ctx.connect()
     store = ContextStore() if context_store is None else context_store
@@ -514,7 +516,8 @@ async def start_realtime_session(
             if getattr(item, "role", None) == "assistant":
                 reply_guard.remember("assistant", getattr(item, "text_content", "") or "")
 
-    await session.start(agent=agent, room=ctx.room, room_options=_room_options(preset))
+    # Passed explicitly so LiveKit Cloud's project-wide observability setting never applies on its own.
+    await session.start(agent=agent, room=ctx.room, room_options=_room_options(preset), record=record)
     if fallback is not None:
         rt = agent.realtime_llm_session
         rt_holder.append(rt)
