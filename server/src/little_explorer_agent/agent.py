@@ -66,6 +66,7 @@ from .voice.turns import is_noise  # noqa: E402
 from .voice.realtime import RealtimeConfig, start_realtime_session  # noqa: E402
 from .voice.session import attach_room_context, start_graph_session  # noqa: E402
 from .voice.timing import TurnTimer  # noqa: E402
+from .warm import is_warm  # noqa: E402
 
 log = logging.getLogger("little_explorer.agent")
 
@@ -461,8 +462,14 @@ async def participant_joined(ctx: Any, timeout: float = PARTICIPANT_WAIT_S) -> b
 
 
 async def entrypoint(ctx: JobContext) -> None:
-    mode = resolve_mode(ctx.job.metadata)
     meta = parse_job_metadata(ctx.job.metadata)
+    if is_warm(meta):
+        # A warm-up (see warm.py) only wakes this replica: never join the room, so LiveKit meters
+        # nothing, and no OpenAI, usage or stars.
+        log.info("warm-up job in room %s: replica is ready", ctx.job.room.name)
+        ctx.shutdown(reason="warm")
+        return
+    mode = resolve_mode(ctx.job.metadata)
     device_id = str(meta.get("device_id") or "")
     # The signed-in account whose minutes and stars these are (old apps: none; the server falls back
     # to the device's link).
@@ -536,14 +543,21 @@ PREWARM_MODULES = (
 
 
 def prewarm(_proc: Any = None) -> None:
-    """Import the heavy, lazily loaded modules while the idle process waits for a job."""
+    """Import the heavy, lazily loaded modules and read the books while the idle process waits for
+    a job (reading them in the job's loop blocked it for ~0.5 s)."""
     import importlib
+
+    from .content import load_books
 
     for name in PREWARM_MODULES:
         try:
             importlib.import_module(name)
         except Exception:  # an optional extra may be missing; the session imports what it needs
             log.debug("prewarm: could not import %s", name)
+    try:
+        load_books()
+    except Exception:  # the session reads them again if this fails
+        log.warning("prewarm: could not load the books", exc_info=True)
 
 
 def create_server() -> AgentServer:

@@ -82,6 +82,19 @@ struct TokenService {
         return try JSONDecoder().decode(VoiceCredentials.self, from: data)
     }
 
+    /// Asks the server to wake Milo's agent ahead of a likely tap (see ``MiloWarmer``). Signed-in only.
+    func warm() async throws {
+        guard let token = sessionToken() else { return }
+        var request = URLRequest(url: baseURL.appendingPathComponent("milo/warm"))
+        request.httpMethod = "POST"
+        request.timeoutInterval = 10
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        if let accessKey { request.setValue("Bearer \(accessKey)", forHTTPHeaderField: "Authorization") }
+        request.setValue(token, forHTTPHeaderField: AccountService.sessionHeader)
+        request.httpBody = try JSONEncoder().encode(TokenRequest(context: nil, device: device))
+        _ = try await session.data(for: request)
+    }
+
     static func errorCode(_ data: Data) -> String? {
         ((try? JSONSerialization.jsonObject(with: data)) as? [String: Any])?["error"] as? String
     }

@@ -595,20 +595,25 @@ class DeviceStore:
         model: str = "",
         now: datetime | None = None,
         account_id: str | None = None,
+        record: bool = True,
     ) -> Decision:
         """Record that ``device_id`` asked to talk, and decide whether it may: on ``account_id``'s
-        minutes (the signed-in account), else its linked account's, else its own (see module docs)."""
+        minutes (the signed-in account), else its linked account's, else its own (see module docs).
+        ``record=False`` only reads (a Milo warm-up): no device row, no auto-block."""
         now = now or self.now()
         day = self.day_of(now)
 
         def run(cur: Any) -> tuple[Device, str | None, str, float, float]:
-            device = self._touch(cur, device_id, _text(name), _text(model), now)
+            if record:
+                device = self._touch(cur, device_id, _text(name), _text(model), now)
+            else:
+                device = self._get(cur, device_id) or Device(device_id)
             account = self._whose(cur, account_id, device_id)
             if account:
                 used = self._account_used_s(cur, account.id, day)
                 return device, account.id, account.status, used, account.limit_min(self.limits) * 60
             used, limit = self._over_limit(cur, device, day)
-            if device.status != "blocked" and limit - used < self.limits.min_start_s:
+            if record and device.status != "blocked" and limit - used < self.limits.min_start_s:
                 device = self._auto_block(cur, device, day, max(used, limit), limit)
             return device, None, device.status, used, limit
 
