@@ -67,9 +67,9 @@ the next session waits 10–20 s while LiveKit starts a replica
 ([cold start](https://docs.livekit.io/deploy/agents/managing-deployments/#cold-start)). The recorded intro covers the
 first 5 s; after that the child waits for "Waking Milo up…". Once Milo has joined, his first reply takes under a second.
 
-**Warm on intent.** When a book opens, or the app comes back to a book, the app sends `POST /milo/warm` (`MiloWarmer`,
+**Warm on intent.** When the app opens or comes back to the foreground, and when a book opens, the app sends `POST /milo/warm` (`MiloWarmer`,
 fire and forget: it never blocks the reader and failures are ignored). The token server dispatches the agent into an
-empty `milo-warm-…` room with `{"warm": true}` metadata, so LiveKit starts a replica while the child looks at the page.
+empty `milo-warm-…` room with `{"warm": true}` metadata, so LiveKit starts a replica while the child picks a book and looks at the page.
 The agent sees the flag and ends the job without joining the room: no OpenAI connection, no usage row, no stars. When
 the child taps a little later, the replica is up and Milo joins about 2 s after the tap, as in the timing example above. Nothing else about a session changes,
 and older builds never warm. The agent's idle process also reads the books before a job now (reading them when a
@@ -79,7 +79,8 @@ To save LiveKit minutes, warm-ups are rare:
 
 - **App:** only when signed in, a grown-up said yes to Milo, Milo is asleep, and this device talked to Milo in the last
   7 days but not in the last 5 minutes (the replica that served it is probably still up); at most once per 10 minutes.
-  A device that has never talked to Milo doesn't warm, so its first talk still cold-starts.
+  A device with no recorded talk yet (new, or just updated from a build before warm-ups) warms for 7 days from its
+  first try (`milo.warmFirstSeenAt`), then stops until Milo is used.
 - **Server:** the same access key and sign-in as `/token`; the account must have said yes, not be blocked and have
   minutes left today. At most one warm-up per device per 10 minutes (`PIP_WARM_DEVICE_GAP_S`, seconds), and none within
   5 minutes (`PIP_WARM_FRESH_S`) of any token, finished session or other warm-up. One replica serves every device, so

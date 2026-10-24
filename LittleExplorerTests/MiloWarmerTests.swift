@@ -31,11 +31,20 @@ final class MiloWarmerTests: XCTestCase {
         defaults.set(clock.addingTimeInterval(-seconds), forKey: MiloWarmer.lastUsedKey)
     }
 
-    func testNeverWarmsADeviceThatHasNotUsedMilo() async {
+    func testWarmsADeviceWithoutARecordedTalkForAWeekFromTheFirstTry() async {
+        // Builds before warm-ups never stamped lastUsedAt, so an updated device starts with none.
         let warmer = makeWarmer()
-        XCTAssertFalse(warmer.warmIfUseful())
+        XCTAssertTrue(warmer.warmIfUseful())
         await warmer.pending?.value
-        XCTAssertEqual(sent, 0)
+        XCTAssertEqual(sent, 1)
+        XCTAssertEqual(defaults.object(forKey: MiloWarmer.firstSeenKey) as? Date, clock)
+
+        clock += MiloWarmer.gap
+        XCTAssertTrue(warmer.warmIfUseful(), "the first try is kept, not moved forward")
+        clock += MiloWarmer.recentUse - MiloWarmer.gap
+        XCTAssertFalse(warmer.warmIfUseful(), "a week with Milo on but never used stops the warm-ups")
+        await warmer.pending?.value
+        XCTAssertEqual(sent, 2)
     }
 
     func testWarmsWhenMiloWasUsedThisWeekAtMostOncePerTenMinutes() async {

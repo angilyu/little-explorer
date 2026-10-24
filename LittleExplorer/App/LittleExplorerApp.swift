@@ -53,6 +53,7 @@ struct LittleExplorerApp: App {
                     let sync = AccountSync(account: account, stars: stars, coins: coins, reading: reading)
                     sync.start()
                     reading.appOpened()
+                    voice.warmUp()
                     async let books: Void = content.refresh()
                     async let saved: Void = sync.refresh()
                     _ = await (books, saved)
@@ -72,6 +73,7 @@ struct LittleExplorerApp: App {
                     if phase == .background { flushInBackground() }
                     guard phase == .active, DemoLaunch.current == nil else { return }
                     reading.appOpened()
+                    voice.warmUp()
                     Task { await reading.flush() }
                     Task { await content.refresh() }
                     Task { await AccountSync(account: account, stars: stars, coins: coins, reading: reading).refresh() }
