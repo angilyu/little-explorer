@@ -76,6 +76,7 @@ struct BookReaderView: View {
                 Task { await voice.turnOff() }
             } else if phase == .active {
                 showPage(pageIndex)
+                voice.warmUp()
             }
         }
         .sheet(isPresented: Binding(
@@ -98,6 +99,7 @@ struct BookReaderView: View {
                 reading.readAloud(use, index: index)
             }
             showPage(pageIndex)
+            voice.warmUp()
             if DemoLaunch.current?.startsWithVoice == true || DemoLaunch.current?.milo?.talks == true {
                 Task { await voice.turnOn() }
             }

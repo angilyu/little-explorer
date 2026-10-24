@@ -60,6 +60,45 @@ reading, adult chatter, claps while the child is quiet, a clap or "hmm" while th
 "mm-hmm" while they talk. `--json FILE` saves the numbers. To A/B a change locally without touching production, run the
 worker and token server with a different `LIVEKIT_AGENT_NAME` (e.g. `little-explorer-dev`).
 
+## Waking Milo up (cold starts)
+
+Milo's agent runs on LiveKit Cloud's free Build plan, where a deployed agent scales to zero once its sessions end and
+the next session waits 10–20 s while LiveKit starts a replica
+([cold start](https://docs.livekit.io/deploy/agents/managing-deployments/#cold-start)). The recorded intro covers the
+first 5 s; after that the child waits for "Waking Milo up…". Once Milo has joined, his first reply takes under a second.
+
+**Warm on intent.** When a book opens, or the app comes back to a book, the app sends `POST /milo/warm` (`MiloWarmer`,
+fire and forget: it never blocks the reader and failures are ignored). The token server dispatches the agent into an
+empty `milo-warm-…` room with `{"warm": true}` metadata, so LiveKit starts a replica while the child looks at the page.
+The agent sees the flag and ends the job without joining the room: no OpenAI connection, no usage row, no stars. When
+the child taps a little later, the replica is up and Milo joins about 2 s after the tap, as in the timing example above. Nothing else about a session changes,
+and older builds never warm. The agent's idle process also reads the books before a job now (reading them when a
+session started blocked its audio for ~0.5 s).
+
+To save LiveKit minutes, warm-ups are rare:
+
+- **App:** only when signed in, a grown-up said yes to Milo, Milo is asleep, and this device talked to Milo in the last
+  7 days but not in the last 5 minutes (the replica that served it is probably still up); at most once per 10 minutes.
+  A device that has never talked to Milo doesn't warm, so its first talk still cold-starts.
+- **Server:** the same access key and sign-in as `/token`; the account must have said yes, not be blocked and have
+  minutes left today. At most one warm-up per device per 10 minutes (`PIP_WARM_DEVICE_GAP_S`, seconds), and none within
+  5 minutes (`PIP_WARM_FRESH_S`) of any token, finished session or other warm-up. One replica serves every device, so
+  that also caps warm-ups at 12 an hour overall. `PIP_WARM=0` turns them off. A warm-up only reads the database (no rows,
+  no `last_seen` stamp), and an idle server still never touches it, so the free Neon database can sleep.
+
+**What it costs.** LiveKit meters agent session time per second, with a 10 s minimum per session, and "if an agent
+receives a job but never connects to the room, no metering occurs"
+([billing](https://docs.livekit.io/deploy/admin/billing/),
+[per-second metering](https://livekit.com/blog/introducing-per-second-metering-for-livekit)). A warm-up never
+connects, so it should use none of the Build plan's 1,000 agent session minutes a month, and the empty room has no
+participants. In a local test worker, a warm-up job ended 15 ms after it arrived. Even if each warm-up were billed the 10 s minimum, a family opening books 6 times a day would add about
+6 × 10 s × 30 ≈ 30 minutes a month. Check the agent session minutes on the LiveKit dashboard after a release.
+
+**Tradeoff.** LiveKit's Ship plan (about $50 a month) avoids cold starts; we stay on the free plan and warm on intent
+instead. A warm-up only helps when it comes 10–20 s before the tap, so a child who taps straight away still waits,
+though less. LiveKit doesn't say how long an idle replica stays up; on 2026-10-23 one was still running 18 minutes after
+its last session. To compare, the `voice-timing` line's `agent joined` drops from ~10–20 s to ~2 s after a warm-up.
+
 ## What a session costs
 
 When a Milo session ends (the child closes the book, the app drops off, or the worker stops), the agent appends one row to

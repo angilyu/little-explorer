@@ -25,6 +25,10 @@ account says yes. Requests without a device count as the
 shared ``anonymous`` device. The app also sends ``"tz"``
 (its IANA time zone), which the agent uses to count stars per local day.
 
+``POST /milo/warm {"device"}`` (access key and ``X-Pip-Session``) wakes the agent before a likely
+tap, for a signed-in account that said yes to Milo and may still talk today (see :mod:`.warm`). It
+only reads the database and answers ``202 {"warmed": true}`` or ``200 {"warmed": false, "reason"}``.
+
 Stars (see :mod:`.stars`): the agent backs each award up with ``POST /stars`` (report key), stamped
 with the account, and reads the account's list with ``GET /stars?account=<id>`` (report key) when a
 session starts, to keep the 5-stars-per-page daily limit across sessions. Old builds restore a
@@ -84,6 +88,7 @@ from .devices import ANONYMOUS, REST_MESSAGE, STATUSES, Decision, DeviceStore, S
 from .mail import Mailer, MailError, compose
 from .modes import PipMode, job_metadata, parse_intro, parse_mode, parse_tz
 from .reading import ReadingError, ReadingLog
+from .warm import Warmer
 
 log = logging.getLogger("little_explorer.tokens")
 
@@ -203,6 +208,7 @@ async def handle_token(request: web.Request) -> web.Response:
     except RuntimeError as exc:
         log.error("%s", exc)
         return web.json_response({"error": "token server is not configured"}, status=500)
+    request.app[WARMER].agent_busy()
     log.info(
         "token for room %s, device %s, account %s, %.0f s left today",
         payload["roomName"], device_id, decision.account_id, decision.remaining_s,
@@ -213,6 +219,45 @@ async def handle_token(request: web.Request) -> web.Response:
 def _milo_off(device_id: str, account_id: str | None) -> web.Response:
     log.info("refused device %s: a grown-up turned Milo off for account %s", device_id, account_id)
     return web.json_response({"error": "milo_off", "message": MILO_OFF_MESSAGE}, status=403)
+
+
+async def handle_warm(request: web.Request) -> web.Response:
+    """Start a Milo replica ahead of a likely tap (see ``warm.py``). Only reads the database."""
+    if not authorized(request, request.app[ACCESS_KEY]):
+        return web.json_response({"error": "unauthorized"}, status=401)
+    body = await _json_body(request) if request.can_read_body else None
+    device = parse_device((body or {}).get("device"))
+    if device is None or device[0] == ANONYMOUS:
+        return web.json_response({"error": "bad device"}, status=400)
+    token = request.headers.get(SESSION_HEADER, "").strip()
+    if not token:
+        return _signed_out()
+    device_id, name, model = device
+    warmer = request.app[WARMER]
+    if reason := warmer.skip_reason(device_id):
+        return web.json_response({"warmed": False, "reason": reason})
+    warmer.claim(device_id)
+    try:
+        session = await asyncio.to_thread(request.app[ACCOUNTS].session, token, touch=False)
+        if session is None:
+            return _signed_out()
+        if session.account.milo_consent is not True:
+            return web.json_response({"error": "milo_off"}, status=403)
+        decision = await asyncio.to_thread(
+            lambda: request.app[STORE].check(device_id, name, model, account_id=session.account.id, record=False)
+        )
+    except Exception:
+        log.exception("warm-up check failed for device %s", device_id)
+        return web.json_response({"warmed": False, "reason": "error"})
+    if not decision.allowed:
+        return web.json_response({"error": decision.reason}, status=403 if decision.reason == "blocked" else 429)
+    try:
+        room = await warmer.warm()
+    except Exception:
+        log.exception("warm-up dispatch failed")
+        return web.json_response({"warmed": False, "reason": "dispatch"}, status=502)
+    log.info("warming Milo for device %s in room %s", device_id, room)
+    return web.json_response({"warmed": True}, status=202)
 
 
 def parse_device(raw: object) -> tuple[str, str, str] | None:
@@ -254,6 +299,7 @@ async def handle_usage(request: web.Request) -> web.Response:
         device = await asyncio.to_thread(request.app[STORE].record_session, body)
     except ValueError as exc:
         return web.json_response({"error": str(exc)}, status=400)
+    request.app[WARMER].agent_busy()
     log.info("usage: room %s, device %s, %.0f s", body.get("room"), device.id, float(body.get("duration_s") or 0))
     return web.json_response({"ok": True, "device_status": device.status})
 
@@ -822,6 +868,7 @@ FILES = web.AppKey("files", dict)
 ACCOUNTS = web.AppKey("accounts", Accounts)
 MAILER = web.AppKey("mailer", Mailer)
 READING = web.AppKey("reading_log", ReadingLog)
+WARMER = web.AppKey("warmer", Warmer)
 
 
 def create_app(
@@ -835,6 +882,7 @@ def create_app(
     accounts: Accounts | None = None,
     mailer: Mailer | None = None,
     reading: ReadingLog | None = None,
+    warmer: Warmer | None = None,
 ) -> web.Application:
     app = web.Application()
     app[ACCESS_KEY] = (os.environ.get("PIP_ACCESS_KEY", "") if access_key is None else access_key).strip()
@@ -845,10 +893,12 @@ def create_app(
     app[ACCOUNTS] = accounts or Accounts.from_env(app[STORE])
     app[MAILER] = mailer or Mailer.from_env()
     app[READING] = reading or ReadingLog(app[STORE])
+    app[WARMER] = warmer or Warmer()
     root = content_root or resources_dir()
     app[MANIFEST] = build_manifest(root)
     app[FILES] = content_files(root)
     app.router.add_post("/token", handle_token)
+    app.router.add_post("/milo/warm", handle_warm)
     app.router.add_get("/healthz", handle_health)
     app.router.add_get("/content/manifest.json", handle_manifest)
     app.router.add_get("/content/{path:.+}", handle_content_file)
