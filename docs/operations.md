@@ -132,8 +132,12 @@ The same as HTTP: `GET`/`POST /admin/accounts`, `GET /admin/accounts/<email or i
 
 No audio is stored. Every Milo session starts with `AgentSession.start(record=False)` (pipeline and realtime), so
 LiveKit Cloud's Agent observability uploads no audio, transcripts, traces or logs for Milo, even with it on for the
-project. To check after a deploy, open a new session under Sessions in the LiveKit dashboard: **Agent insights** should
-have no audio or transcript. The worker's runtime logs (`lk agent logs`) still hold the short turn text that
+project. The one exception is `PIP_RECORD_ACCOUNTS`: a comma-separated list of account ids (shown by
+`tools/devices.py account <email>`) whose sessions LiveKit does record, for debugging with our own test accounts. Set
+it in the env file and run `scripts/deploy_agent.sh`; leave it empty to record nothing. List only our own accounts:
+recording anyone else's child needs their consent and a PRIVACY.md change first. To check after a deploy, open a new
+session under Sessions in the LiveKit dashboard: **Agent insights** should have no audio or transcript (or have them,
+for a listed account). The worker's runtime logs (`lk agent logs`) still hold the short turn text that
 `_log_decision` writes. The app never holds LiveKit secrets. A small token server mints room tokens that dispatch the agent automatically.
 
 ```sh

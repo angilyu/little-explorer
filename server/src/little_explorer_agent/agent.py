@@ -172,7 +172,7 @@ def _shared_graph():
 
 
 def _log_decision(turn: UserTurn, decision: TurnDecision) -> None:
-    # Transcripts only go to the local log for debugging; no audio is recorded or stored.
+    # Transcripts only go to the local log for debugging; no audio is recorded or stored (except PIP_RECORD_ACCOUNTS).
     log.info("turn %s page=%s: %r", decision.name, turn.context.get("page"), turn.text[:120])
 
 
@@ -385,7 +385,9 @@ def make_realtime_guard(tracker: ReadingTracker, topic_gate: TopicGate | None) -
     return guard
 
 
-async def _pipeline(ctx: JobContext, game: StarGame, timer: TurnTimer, greeting: str | None) -> AgentSession:
+async def _pipeline(
+    ctx: JobContext, game: StarGame, timer: TurnTimer, greeting: str | None, record: bool = False
+) -> AgentSession:
     tracker = ReadingTracker()
     preset, speech = speech_setup(agent_preset())
     return await start_graph_session(
@@ -399,11 +401,14 @@ async def _pipeline(ctx: JobContext, game: StarGame, timer: TurnTimer, greeting:
         context_message=make_context_note(tracker),
         on_decision=game.pipeline_decision,
         greeting=greeting,
+        record=record,
         **speech,
     )
 
 
-async def _realtime(ctx: JobContext, game: StarGame, timer: TurnTimer, greeting: str | None) -> AgentSession:
+async def _realtime(
+    ctx: JobContext, game: StarGame, timer: TurnTimer, greeting: str | None, record: bool = False
+) -> AgentSession:
     store = ContextStore()
     config = realtime_config()
     if config.turns == "server" and config.barge_in == "vad":
@@ -425,6 +430,7 @@ async def _realtime(ctx: JobContext, game: StarGame, timer: TurnTimer, greeting:
         context_store=store,
         on_interrupt=timer.note_interrupt,
         on_commit=timer.committed,
+        record=record,
     )
 
     def refresh() -> None:
@@ -439,6 +445,14 @@ def session_model(mode: str, env: dict[str, str] | None = None) -> str:
     if mode == "realtime":
         return realtime_config(env).model
     return REPLY_MODEL.split(":", 1)[-1].split("@", 1)[0]
+
+
+def records_account(account_id: str, env: Mapping[str, str] | None = None) -> bool:
+    """Whether LiveKit Cloud may record this account's sessions: only accounts listed in
+    ``PIP_RECORD_ACCOUNTS`` (comma-separated account ids). None by default, and never without an account."""
+    env = os.environ if env is None else env
+    listed = {part.strip() for part in env.get("PIP_RECORD_ACCOUNTS", "").split(",")}
+    return bool(account_id) and account_id in listed
 
 
 def remaining_seconds(meta: Mapping[str, object]) -> float | None:
@@ -501,7 +515,10 @@ async def entrypoint(ctx: JobContext) -> None:
     # New apps play the recorded intro on tap; only older ones still need the spoken greeting.
     greeting = None if app_plays_intro(meta) else GREETING
     log.info("intro: %s", "played by the app" if greeting is None else "spoken by Milo")
-    session = await (_realtime if mode == "realtime" else _pipeline)(ctx, game, timer, greeting)
+    record = records_account(account_id)
+    if record:
+        log.info("LiveKit Cloud records this session (account %s is in PIP_RECORD_ACCOUNTS)", account_id)
+    session = await (_realtime if mode == "realtime" else _pipeline)(ctx, game, timer, greeting, record=record)
     game.watch(session)
     meter.bind(session)
     timer.attach(session)
