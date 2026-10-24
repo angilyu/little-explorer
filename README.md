@@ -9,14 +9,17 @@ buddy who listens while they read and talks with them about the places in the bo
 
 iPad versions are in [`docs/screenshots`](docs/screenshots).
 
-## Hear Milo
+## 🎧 Hear Milo
 
-A real conversation with Milo (1.5 minutes) on the first page of the Tibidabo book: "Tibidabo is a fun park on
-top of a mountain!"
+Milo is the app's AI voice buddy, a friendly reading pal who sits on every page with your kid. Milo stays quiet while
+they read aloud, answers their "why" questions about the book, and asks easy follow-ups that get them talking in full
+sentences. Thoughtful answers earn stars.
 
-https://github.com/user-attachments/assets/34633b00-ee52-497f-9ea6-21643bf2e5d9
+Here's a real chat on the first page of the Tibidabo book: "Tibidabo is a fun park on top of a mountain!"
 
-If the player doesn't show, download the [audio (M4A)](docs/media/milo-and-francis.m4a).
+https://github.com/user-attachments/assets/282edd4a-194c-458f-aef0-22287a4b968e
+
+<sub>1:30 · Oct 20, 2026 · captioned · quiet gaps trimmed, words unedited · 🎧 <a href="docs/media/milo-and-francis.m4a">Audio only</a></sub>
 
 > [!NOTE]
 > The kid's voice is my son, Francis. Milo's voice is AI. The quiet gaps were shortened; the words weren't changed.
