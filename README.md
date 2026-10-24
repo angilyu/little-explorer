@@ -9,6 +9,40 @@ buddy who listens while they read and talks with them about the places in the bo
 
 iPad versions are in [`docs/screenshots`](docs/screenshots).
 
+## Hear Milo
+
+A real conversation with Milo (1.5 minutes) on the first page of the Tibidabo book: "Tibidabo is a fun park on
+top of a mountain!"
+
+▶️ **Listen:** [audio (M4A)](https://github.com/angilyu/little-explorer/raw/main/docs/media/milo-and-francis.m4a) ·
+[video (MP4)](https://github.com/angilyu/little-explorer/raw/main/docs/media/milo-and-francis.mp4)
+
+> [!NOTE]
+> The kid's voice is my son, Francis. Milo's voice is AI. The quiet gaps were shortened; the words weren't changed.
+
+### Transcript
+
+**Francis:** Why did they make this a theme park on a mountain?
+
+**Milo:** That's a great question! They built the fun park on the mountain so people could see amazing views of the
+whole city below. Also, it made the park feel extra special, like a magical place in the clouds. What do you think it
+would feel like to ride up high on that mountaintop?
+
+**Francis:** Like, I can see the whole view and a lot of rides there.
+
+**Milo:** Ooh, you can see the whole view and a lot of rides there? Great answer! That's a star! It must feel like
+you're floating above the whole world. If you were standing up there, what would you want to look at first?
+
+**Francis:** Maybe look at another city.
+
+**Milo:** Maybe look at the city? That sounds exciting! You could say, "I would look at the city because it's so big
+and bright."
+
+**Francis:** I would look at the city because it looks pretty cool and I've not really seen these kinds of cities.
+
+**Milo:** Star for you! That's a fantastic reason! The city from up there must look like a big shining puzzle. What
+do you think you might hear at the top of the mountain?
+
 ## What it does for your kid
 
 - **Opens up the world.** 39 books and 502 pages about Paris, London, Barcelona, Beijing, Shanghai, Chengdu,
