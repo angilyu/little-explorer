@@ -109,7 +109,7 @@ and talks over the TV. Milo stacks several checks to handle that:
 - **Forced commit.** `semantic_vad` at low eagerness doesn't cut off slow readers, but it sometimes waits up to about
   8 s on a finished question. After 2.5 s of silence (5 s if the kid was just reading), the agent commits the turn
   itself.
-- **Instant hello.** A recorded 5 s intro plays the moment the button is tapped, while the token, room and agent connect
+- **Instant hello.** A recorded 5.2 s intro plays the moment the button is tapped, while the token, room and agent connect
   behind it. Anything said before the agent joins is kept with LiveKit pre-connect audio.
 
 ### Two swappable voice engines

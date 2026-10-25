@@ -10,7 +10,7 @@ On every page turn the app sends the current page (book, page, sentence) to the 
 **Instant hello:** the app plays Milo's recorded intro ("Hi, I'm Milo. You can read the page to me, or ask me
 anything you wonder about.", `Resources/Narration/milo-intro.m4a`, also served from `/content`) the moment the button is
 tapped, and connects in the background. The token request sends `"intro": "app"`, so the agent doesn't greet again;
-older builds leave it out and the agent still says the greeting. The mic stays off while the 5 s intro plays (so
+older builds leave it out and the agent still says the greeting. The mic stays off while the 5.2 s intro plays (so
 Milo doesn't hear himself), and the button shows "Waking Milo up…" until the intro is over and Milo is listening. After
 the intro, what the child says before the agent has joined (a cold start) is kept with LiveKit pre-connect audio and handed
 to Milo when he arrives. Each step is timed from the tap in the device log (category `voice-timing`, e.g.
@@ -63,9 +63,13 @@ worker and token server with a different `LIVEKIT_AGENT_NAME` (e.g. `little-expl
 ## Waking Milo up (cold starts)
 
 Milo's agent runs on LiveKit Cloud's free Build plan, where a deployed agent scales to zero once its sessions end and
-the next session waits 10–20 s while LiveKit starts a replica
-([cold start](https://docs.livekit.io/deploy/agents/managing-deployments/#cold-start)). The recorded intro covers the
-first 5 s; after that the child waits for "Waking Milo up…". Once Milo has joined, his first reply takes under a second.
+the next session has to wait while LiveKit starts a replica
+([cold start](https://docs.livekit.io/deploy/agents/managing-deployments/#cold-start)). Measured on 2026-10-24, a cold
+start took about 16 s from `/token` to the job: ~11 s for LiveKit to schedule the container, ~5 s for it to boot and
+register. Then Milo joins about 2 s after the job, so tap→listening is ~18 s cold. The recorded intro (5.2 s) covers
+only the start; after that the child waits for "Waking Milo up…". With a running replica the job arrives as the device
+joins and Milo is in the room ~2 s after the tap, before the intro ends, so the intro length is the floor on
+tap→listening (~5.2 s). Once Milo has joined, his first reply takes under a second.
 
 **Warm on intent.** When the app opens or comes back to the foreground, and when a book opens, the app sends `POST /milo/warm` (`MiloWarmer`,
 fire and forget: it never blocks the reader and failures are ignored). The token server dispatches the agent into an
@@ -96,9 +100,9 @@ participants. In a local test worker, a warm-up job ended 15 ms after it arrived
 6 × 10 s × 30 ≈ 30 minutes a month. Check the agent session minutes on the LiveKit dashboard after a release.
 
 **Tradeoff.** LiveKit's Ship plan (about $50 a month) avoids cold starts; we stay on the free plan and warm on intent
-instead. A warm-up only helps when it comes 10–20 s before the tap, so a child who taps straight away still waits,
-though less. LiveKit doesn't say how long an idle replica stays up; on 2026-10-23 one was still running 18 minutes after
-its last session. To compare, the `voice-timing` line's `agent joined` drops from ~10–20 s to ~2 s after a warm-up.
+instead. A warm-up only helps fully when it comes ~16 s before the tap, so a child who taps straight away still waits,
+though less. The warm-up request itself can take ~3 s on the server when the database is waking up. LiveKit doesn't say how long an idle replica stays up; on 2026-10-23 one was still running 18 minutes after
+its last session. To compare, the `voice-timing` line's `agent joined` drops from ~18 s to ~2 s after a warm-up.
 
 ## What a session costs
 
