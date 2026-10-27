@@ -10,9 +10,9 @@ child reads, listens and, if the grown-up turns it on, talks with Milo, a voice 
 - **The grown-up's email address.** It is the only personal information we ask for. We never ask for the
   child's name, age, photo or anything else about the child.
 - **The family's progress:** which books the account can see, and the stars and coins earned in the app. A
-  star records the book, the page, when it was earned, and a short note from Milo about the answer (a few
-  words, not a recording). Earlier versions of the app also saved the pages the child marked with a heart
-  ("hearts"). The app doesn't do that anymore; hearts already saved stay with the account until it is deleted.
+  star records the book, the page, when it was earned, whether it was for an answer or a question, and a
+  short note from Milo about it (a few words, not a recording). Earlier versions of the app also saved the
+  pages the child marked with a heart ("hearts"). The app doesn't do that anymore; hearts already saved stay with the account until it is deleted.
 - **Milo time:** how many minutes each iPad or iPhone talked with Milo each day, and which account it was
   signed in to, so we can apply the account's daily time limit (shared by its devices) and see what the voice
   service costs. Each device is known by a random id, its name and model.

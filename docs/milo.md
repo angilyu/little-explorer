@@ -125,11 +125,12 @@ counts as talking. Tapping **Talk to Milo** starts a fresh session.
 
 ## Stars and the Passport
 
-The child earns stars for answering Milo, not for talking a lot: up to 5 stars on each page each day. Milo ends its
-replies with one easy, open question, and each answer of 5 words or more earns a star until the page has 5
-for the day. Asking Milo a question doesn't earn a star (Milo still answers it). The first star on a page starts Milo's reply with
-"Great answer, that's a star!"; later ones get a short, varied cheer ("Another star!", "Ooh, star!") and the
-rest follows right away. Milo never counts stars or says how many are left, and once a page has all 5 for
+The child earns stars for answering Milo and for asking Milo real questions, not for talking a lot: up to 5 stars
+on each page each day. Milo ends its replies with one easy, open question, and each answer of 5 words or more earns
+a star; each question of the child's own with 3 words or more ("What's this tower?") earns one too, until the page
+has 5 for the day (answers and questions share the 5). The first star on a page starts Milo's reply with
+"Great answer, that's a star!" (or "Great question, that's a star!"); later ones get a short, varied cheer
+("Another star!", "Ooh, good question, star!") and the rest follows right away. Milo never counts stars or says how many are left, and once a page has all 5 for
 the day Milo doesn't mention stars there. When the child answers Milo's question in fewer than 5 words ("the boat"), Milo
 (realtime mode) gently asks for more and gives them a sentence start to finish from their own words ("Ooh, the boat! Can
 you tell me more? You could say, I would ride the boat because..."), never mentioning words or stars. Milo does this at
@@ -138,16 +139,21 @@ are all taken, and never for reading the page aloud, small talk, noise or the ch
 sentence earns the star as usual. The agent (`stars.py`) checks every award before it counts, using the input
 transcription and what Milo said last; nothing the model says can hand out a star:
 
-- 1 star per real answer: Milo's last reply asked a question, and the answer has at least 5 words
-  (`PIP_STAR_MIN_WORDS`). Reading the page aloud, the child's own question, "hi Milo" or other small talk,
-  grown-ups or noise earn nothing. Each star needs a new question from Milo and a new answer.
+- 1 star per real answer (`kind` `answer`): Milo's last reply asked a question, and the answer has at least 5
+  words (`PIP_STAR_MIN_WORDS`). Each answer star needs a new question from Milo and a new answer.
+- 1 star per real question of the child's own (`kind` `question`): it ends with "?" or starts like a question
+  ("why", "what's", "how", "can you", "I wonder"...) and has at least 3 words after any "hi"/"Milo"
+  (`PIP_STAR_QUESTION_MIN_WORDS`), so "Why?" or "What's that?" earn nothing but "What's this tower?" does. Milo
+  doesn't need to have asked anything first. Asking Milo to repeat himself ("What did you say?") doesn't count.
+- Both need the turn to be meant for Milo (the guard said RESPOND). Reading the page aloud, "hi Milo", "how are
+  you" or other small talk, grown-ups or noise earn nothing, and each heard turn earns at most one star.
 - The 5 per page count across every session on that account (or unlinked device) that day, so reconnecting doesn't start a page
   over, but favorite books earn again tomorrow. The day is the child's local day: the app sends its time zone
   (`"tz"`) with `/token`, the agent stamps each award's `awarded_at` in it (older apps fall back to
   `PIP_TIMEZONE`), and a star's day is the date in its own `awarded_at`, the same day the star calendar
   shows. When a session starts, the agent loads the account's earlier stars per page and day from
   `GET /stars?account=<id>` (report key; `?device=<id>` for an old build) in the background, off the voice path; if that fails it counts this session only.
-- Long (8+ words, `PIP_STAR_LONG_WORDS`) answers and ones that explain with "because" are noted for the badges
+- Long (8+ words, `PIP_STAR_LONG_WORDS`) answers or questions and ones that explain with "because" are noted for the badges
   but earn no extra stars. `PIP_STAR_COOLDOWN_S` can add a pause between stars (off by default: turn-taking
   already paces them, and a cooldown could make Milo cheer for a star that is then refused).
 - The token server enforces the same limit, so an older agent can't go over it: `POST /stars` refuses an award
@@ -164,8 +170,9 @@ locally and, on launch, merges back the server's copy (`GET /account/stars`; `GE
 builds), so stars survive a reinstall. Only counts, kinds, book, page and time are stored, never what the child said.
 
 The library's top corner shows the child's total; tapping it opens the Passport: a stamp for each city where they have
-earned a star (not the Travel shelf), the badges, then the star calendar. Stars earned before the answer rule were for
-questions (`kind` `question`); new ones are `answer`, and the badges count both.
+earned a star (not the Travel shelf), the badges, then the star calendar. Stars for answers are `kind` `answer`;
+stars for the child's own questions are `question` (the kind stars had before the answer rule, so every app build and
+the token server already accept it), and the badges count both.
 
 The badges come from the badge catalog (`badges.json`), which the server can change without an app update (see
 [Badges](operations.md#badges)). They are grouped, and each group is one card in the Passport (one column on iPhone,

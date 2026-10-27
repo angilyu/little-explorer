@@ -279,8 +279,8 @@ city. Keep the words short and simple: the badges are read by 6 and 7 year olds.
 | Metric | Counts | Limit from the shelves |
 |---|---|---|
 | `stars` | all stars earned | |
-| `star_answers` | answers (and older questions) that earned a star | |
-| `long_answers` | long answers (8+ words) | |
+| `star_answers` | answers and questions that earned a star | |
+| `long_answers` | long answers or questions (8+ words) | |
 | `because_answers` | answers that explain with "because" | |
 | `stars_in_a_day` | most stars on one day | |
 | `star_days` | different days with a star | |
