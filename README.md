@@ -13,7 +13,7 @@ iPad versions are in [`docs/screenshots`](docs/screenshots).
 
 Milo is the app's AI voice buddy, a friendly reading pal who sits on every page with your kid. Milo stays quiet while
 they read aloud, answers their "why" questions about the book, and asks easy follow-ups that get them talking in full
-sentences. Thoughtful answers earn stars.
+sentences. Thoughtful answers and curious questions earn stars.
 
 Here's a real chat on the first page of the Tibidabo book: "Tibidabo is a fun park on top of a mountain!"
 
@@ -58,7 +58,7 @@ do you think you might hear at the top of the mountain?
 - **Gets them talking, not just tapping.** Milo stays quiet while your kid reads the page aloud, then cheers them
   on. Milo answers their questions about the book and asks easy, open follow-ups. When they answer in two words
   ("the boat"), Milo hands them a sentence to finish ("You could say, I would ride the boat because...").
-- **Rewards real effort.** Thoughtful answers earn stars, cities earn Passport stamps, and a star calendar fills up.
+- **Rewards real effort.** Thoughtful answers and curious questions earn stars, cities earn Passport stamps, and a star calendar fills up.
   Badges for pages and books read, read-aloud, reading days in a row, Milo stars and places visited are grouped in
   the Passport, and the server can change them without an app update. A grown-up can trade stars for coins.
 - **Safe by design.** No ads, no in-app purchases, no tracking. The only personal information is a grown-up's email:
@@ -122,7 +122,7 @@ appends its tokens and estimated cost to a local CSV, and `tools/usage_report.py
 ### The model can't hand out stars
 
 Stars are checked in code (`stars.py`), not decided by the LLM. A star needs an answer to Milo's own question, at least
-5 words long, with at most 5 stars per page per day. The server enforces the same limit. There's deliberately no
+5 words long, or a real question of the child's own, at least 3 words long, with at most 5 stars per page per day. The server enforces the same limit. There's deliberately no
 "give star" tool: a tool call made `gpt-realtime` answer in a second response, so the check runs off the voice path
 instead.
 

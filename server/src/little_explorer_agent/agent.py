@@ -8,8 +8,8 @@ passes ``remaining_s``). Either way he sets his ``milo.ended`` attribute to ``id
 the app can switch its toggle off with the right message, then leaves the room. Each session's
 length and cost is reported to the token server for per-device usage (see :mod:`.usage`).
 
-Answering Milo earns stars (see :mod:`.stars`): when the guard lets the child's answer to Milo's
-question through and Milo replies, :class:`StarKeeper` checks it against what was heard, and
+Answering Milo, or asking him a real question, earns stars (see :mod:`.stars`): when the guard lets
+the child's turn through and Milo replies, :class:`StarKeeper` checks it against what was heard, and
 :class:`StarGame` sends each award to the app (``milo.star`` data topic) and backs it up on the token
 server.
 """
