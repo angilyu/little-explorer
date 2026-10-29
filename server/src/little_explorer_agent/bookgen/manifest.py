@@ -1,10 +1,11 @@
-"""The content manifest with made books added (see :mod:`..catalog` for the hand-made ones).
+"""Each account's own content manifest: the made books on its shelf (see :mod:`..catalog` for the hand-made ones).
 
-With nothing published, the static manifest is served exactly as before. Otherwise the made books
-are appended to ``library.json``'s order and the manifest's ``order``; their book JSON, the merged
-``library.json`` and ``narration.json`` are served from memory, and their photos and clips redirect
-(302) to short-lived signed R2 links, since the bucket is private. File names stay unique across
-folders because the app caches them flat.
+The public ``/content/manifest.json`` is the hand-made catalog only, the same for every install; the 1.0 app
+downloads every file in it, so made books must never be listed there. A signed-in app also asks for
+``/account/content/manifest.json``, which lists only the account's own made books and the ones the owner
+granted it. Its book JSON and per-book narration (``Narration/<id>.narration.json``) are served from memory
+with the account's session; photos and clips carry a short-lived signed R2 link (``url``), since the bucket
+is private. File names stay unique across folders and against the catalog because the app caches them flat.
 """
 
 from __future__ import annotations
@@ -12,15 +13,17 @@ from __future__ import annotations
 import hashlib
 import json
 import logging
-from pathlib import Path
+from collections.abc import Callable, Iterable
 from typing import Any
 
-from ..catalog import LIBRARY_FILE
+from ..catalog import MANIFEST_FORMAT
 from .store import Asset, BookRow
 
 log = logging.getLogger(__name__)
 
-NARRATION_FILE = "Narration/narration.json"
+
+def narration_path(book_id: str) -> str:
+    return f"Narration/{book_id}.narration.json"
 
 
 def _entry(data: bytes) -> dict[str, Any]:
@@ -31,47 +34,45 @@ def _version(files: dict[str, dict[str, Any]]) -> str:
     return hashlib.sha256(json.dumps({rel: e["sha256"] for rel, e in files.items()}, sort_keys=True).encode()).hexdigest()[:16]
 
 
-def merge(static: dict[str, Any], static_files: dict[str, Path],
-          published: list[tuple[BookRow, dict[str, Asset]]]) -> tuple[dict[str, Any], dict[str, bytes | Asset]]:
-    """The manifest to serve, and the made files: bytes to serve, or an :class:`Asset` to redirect to."""
-    if not published:
-        return static, {}
-    files = dict(static["files"])
-    taken = {rel.rsplit("/", 1)[-1] for rel in files}
-    order = list(static["order"])
-    extra: dict[str, bytes | Asset] = {}
-    clips: dict[str, Any] = {}
-    for book, assets in published:
-        data = book.json
-        pages = data.get("pages") or []
-        names = {f"Books/{book.id}.json"} | set(assets)
-        if book.id in order or not pages or any(rel.rsplit("/", 1)[-1] in taken for rel in names):
-            log.warning("made book %s left out of the manifest (clashes or is empty)", book.id)
-            continue
-        body = json.dumps(data, ensure_ascii=False, indent=2).encode()
-        extra[f"Books/{book.id}.json"] = body
-        files[f"Books/{book.id}.json"] = _entry(body)
-        for rel, asset in sorted(assets.items()):
-            extra[rel] = asset
-            files[rel] = {"sha256": asset.sha256, "size": asset.size}
-        for key, clip in (book.narration or {}).items():
-            if f"Narration/{clip.get('file')}.m4a" in assets:
-                clips[key] = clip
-        taken |= {rel.rsplit("/", 1)[-1] for rel in names}
-        order.append(book.id)
-    if len(order) == len(static["order"]):
-        return static, {}
+def book_files(book: BookRow, assets: dict[str, Asset]) -> dict[str, bytes | Asset]:
+    """A published book's files the app needs: its JSON, its clips' timings, and the photos and clips it uses
+    (not leftovers, e.g. a remade page's new photo before the page is swapped in)."""
+    data = book.json
+    files: dict[str, bytes | Asset] = {f"Books/{book.id}.json": json.dumps(data, ensure_ascii=False, indent=2).encode()}
+    for page in data.get("pages") or []:
+        rel = f"Photos/{(page.get('photo') or {}).get('file')}"
+        if rel in assets:
+            files[rel] = assets[rel]
+    clips = {}
+    for key, clip in sorted((book.narration or {}).items()):
+        rel = f"Narration/{clip.get('file')}.m4a"
+        if rel in assets:
+            clips[key] = clip
+            files[rel] = assets[rel]
+    files[narration_path(book.id)] = json.dumps({"clips": clips}, ensure_ascii=False, indent=2).encode()
+    return files
 
-    library = json.loads(static_files[LIBRARY_FILE].read_bytes()) if LIBRARY_FILE in static_files else {}
-    library["order"] = order
-    body = json.dumps(library, ensure_ascii=False, indent=2).encode()
-    extra[LIBRARY_FILE] = body
-    files[LIBRARY_FILE] = _entry(body)
-    if clips:
-        narration = json.loads(static_files[NARRATION_FILE].read_bytes()) if NARRATION_FILE in static_files else {}
-        narration.setdefault("clips", {}).update(clips)
-        body = json.dumps(narration, ensure_ascii=False, indent=2).encode()
-        extra[NARRATION_FILE] = body
-        files[NARRATION_FILE] = _entry(body)
-    manifest = {**static, "version": _version(files), "order": order, "files": files}
-    return manifest, extra
+
+def account_manifest(shelf: Iterable[tuple[BookRow, dict[str, Asset]]], static: dict[str, Any],
+                     url_for: Callable[[Asset], str]) -> tuple[dict[str, Any], dict[str, bytes | Asset]]:
+    """The manifest for one account and the files behind it (bytes to serve, or an :class:`Asset`)."""
+    taken = {rel.rsplit("/", 1)[-1] for rel in static.get("files", {})}
+    catalog = set(static.get("order", []))
+    files: dict[str, dict[str, Any]] = {}
+    served: dict[str, bytes | Asset] = {}
+    order: list[str] = []
+    for book, assets in shelf:
+        made = book_files(book, assets)
+        names = {rel.rsplit("/", 1)[-1] for rel in made}
+        if book.id in catalog or book.id in order or not book.json.get("pages") or names & taken:
+            log.warning("made book %s left out of the account manifest (clashes or is empty)", book.id)
+            continue
+        for rel, item in made.items():
+            served[rel] = item
+            if isinstance(item, Asset):
+                files[rel] = {"sha256": item.sha256, "size": item.size, "url": url_for(item)}
+            else:
+                files[rel] = _entry(item)
+        taken |= names
+        order.append(book.id)
+    return {"format": MANIFEST_FORMAT, "version": _version(files), "order": order, "files": files}, served

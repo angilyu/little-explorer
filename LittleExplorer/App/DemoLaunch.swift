@@ -29,10 +29,15 @@ import Foundation
 /// `-demoOrder Paris:paris-food,paris` orders a section's books (repeat the flag for more sections).
 /// `-demoArrange` opens the grown-ups corner at "Arrange library" (with `-demoShelf`, scrolled to that book). `-demoLevels paris:1,london:3` sets those
 /// books' reading levels (the bundled ones are all level 2).
+/// `-demoMake form|sections|note|error|limit` opens the Grown-ups corner at "Make a book" (filled in, at the
+/// section picker, with the first-time note, with an error, or at the daily limit); `-demoMake placeholder`
+/// shows a book being made on the shelf; `-demoMake made` shows a finished made book on the shelf; `-demoMake
+/// menu` opens a made book's grown-up menu. The account may make books, and nothing is sent to the server.
 /// `-demoUpgrade required` shows the update screen for a build that's no longer supported; `-demoUpgrade
 /// recommended` shows the "Maybe later" update prompt.
 struct DemoLaunch: Equatable {
     enum AccountScreen: String { case welcome, email, code, new }
+    enum Make: String { case form, sections, note, error, limit, placeholder, made, menu }
     enum Upgrade: String { case required, recommended }
     enum Milo: String {
         case signin, talk, off
@@ -79,6 +84,7 @@ struct DemoLaunch: Equatable {
     var bookOrders: [String: [String]] = [:]
     var openArrange = false
     var levels: [String: Int] = [:]
+    var make: Make?
 
     /// `books` with the demo's reading levels.
     func leveled(_ books: [Book]) -> [Book] {
@@ -103,8 +109,8 @@ struct DemoLaunch: Equatable {
     var account: Account? {
         switch accountScreen {
         case .welcome, .email, .code: nil
-        case .new: Account(id: "demo-new", email: "parent@example.com", books: Account.defaultBooks, miloConsent: miloConsent)
-        case nil: Account(id: "demo-family", email: "family@example.com", books: nil, miloConsent: miloConsent)
+        case .new: Account(id: "demo-new", email: "parent@example.com", books: Account.defaultBooks, miloConsent: miloConsent, canGenerate: make != nil)
+        case nil: Account(id: "demo-family", email: "family@example.com", books: nil, miloConsent: miloConsent, canGenerate: make != nil)
         }
     }
 
@@ -154,6 +160,15 @@ struct DemoLaunch: Equatable {
             }
             found = true
         }
+        if let make = value(after: "-demoMake").flatMap(Make.init(rawValue:)) {
+            demo.make = make
+            switch make {
+            case .placeholder: demo.shelfBook = demo.shelfBook ?? MakeDemo.placeholderId
+            case .made: demo.shelfBook = demo.shelfBook ?? MakeDemo.bookId
+            default: demo.openParent = true
+            }
+            found = true
+        }
         if arguments.contains("-demoArrange") { demo.openArrange = true; demo.openParent = true; found = true }
         if let screen = value(after: "-demoAccount").flatMap(AccountScreen.init(rawValue:)) {
             demo.accountScreen = screen; found = true
@@ -199,5 +214,43 @@ struct DemoLaunch: Equatable {
             }
         }
         return found ? demo : nil
+    }
+}
+
+/// The pretend made books and server replies for `-demoMake` (no network, no OpenAI).
+enum MakeDemo {
+    static let bookId = "the-tall-tower-a1b2c3"
+    static let jobId = "demo-job"
+    static var placeholderId: String { "making-\(jobId)" }
+
+    /// A made book: the bundled Eiffel Tower book, as if a grown-up had made it at level 1.
+    static func book(_ files: ContentFiles = .shared) -> Book? {
+        guard let data = files.data("paris-eiffel.json"), let source = try? BookLibrary.decode(data) else { return nil }
+        return Book(
+            id: bookId, city: "Paris", country: source.country, flag: source.flag, flagImage: source.flagImage,
+            coverColor: "#C0392B", tagline: "A very tall tower that sparkles at night", theme: "The Tall Tower",
+            level: BookLevel(1), generated: true, pages: source.pages
+        )
+    }
+
+    static func status(_ make: DemoLaunch.Make) -> MakeStatus {
+        var usage = MakeUsage()
+        usage.today = 1
+        usage.thisMonth = 4
+        usage.leftToday = 2
+        usage.leftThisMonth = 6
+        usage.triesToday = 1
+        if make == .limit {
+            usage.today = 3
+            usage.thisMonth = 7
+            usage.leftToday = 0
+            usage.leftThisMonth = 3
+            usage.triesToday = 3
+        }
+        let active = make == .placeholder
+            ? MakeJob(id: jobId, bookId: "paris-by-boat-d4e5f6", status: "running", step: "photos", progress: "Finding photos…",
+                      title: "Paris by Boat", section: "Paris", level: 2)
+            : nil
+        return MakeStatus(canGenerate: true, usage: usage, active: active, jobs: active.map { [$0] } ?? [])
     }
 }

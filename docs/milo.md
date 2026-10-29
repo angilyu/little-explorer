@@ -76,6 +76,12 @@ the open book's reading level and the talk rules for it (from
 Narration for made books follows the level too: slower with pauses at level 1, a lively storytelling pace at
 level 3. See [Reading levels](content.md#reading-levels).
 
+**Made books.** Made books aren't in the public manifest, so at the start of a signed-in session the agent also
+fetches the made books on that account's shelf from the token server's `GET /made-books?account=<id>` (with the
+report key) and finds their pages, `about` notes and level like any other book. If that call fails, Milo still knows
+the catalog and talks about the page from what the app sends. Made books are kept in the worker's memory by their
+random id, so one family's book is never looked up for another's session.
+
 ## Waking Milo up (cold starts)
 
 Milo's agent runs on LiveKit Cloud's free Build plan, where a deployed agent scales to zero once its sessions end and

@@ -21,9 +21,16 @@ struct ContentUpdater {
     /// The server's `/content` URL.
     let baseURL: URL
     var session: URLSession = .shared
+    /// Adds the app's keys to requests to `baseURL` (the account's made books need the sign-in).
+    var authorize: (URLRequest) -> URLRequest = { $0 }
+    /// A made-books shelf may be empty; the catalog never is.
+    var allowsEmpty = false
 
     func update(knownVersion: String?) async throws -> Outcome {
-        let manifest = try await fetchManifest()
+        try await apply(fetchManifest(), knownVersion: knownVersion)
+    }
+
+    func apply(_ manifest: ContentManifest, knownVersion: String?) async throws -> Outcome {
         guard manifest.format == 1 else { throw ContentUpdateError.unsupportedFormat(manifest.format) }
         let plan = files.plan(for: manifest)
         if manifest.version == knownVersion, plan.downloads.isEmpty, plan.stale.isEmpty { return .unchanged }
@@ -49,8 +56,8 @@ struct ContentUpdater {
         return .updated(version: manifest.version, downloaded: plan.downloads.count)
     }
 
-    private func fetchManifest() async throws -> ContentManifest {
-        var request = URLRequest(url: baseURL.appendingPathComponent("manifest.json"))
+    func fetchManifest() async throws -> ContentManifest {
+        var request = authorize(URLRequest(url: baseURL.appendingPathComponent("manifest.json")))
         request.timeoutInterval = 30
         request.cachePolicy = .reloadIgnoringLocalCacheData
         request.addClientHeaders()
@@ -61,10 +68,15 @@ struct ContentUpdater {
     }
 
     private func download(_ path: String, entry: ContentManifest.Entry, to target: URL) async throws {
-        var request = URLRequest(url: baseURL.appendingPathComponent(path))
+        var request: URLRequest
+        if let link = entry.url.flatMap(URL.init(string:)) {
+            request = URLRequest(url: link)
+        } else {
+            request = authorize(URLRequest(url: baseURL.appendingPathComponent(path)))
+            // Like the manifest request, so the server knows the build (not sent to presigned R2 links).
+            request.addClientHeaders()
+        }
         request.timeoutInterval = 60
-        // The server picks the shared files (library.json, narration.json) by version, like the manifest.
-        request.addClientHeaders()
         let (data, response) = try await session.data(for: request)
         guard (response as? HTTPURLResponse)?.statusCode == 200 else { throw ContentUpdateError.badDownload(path) }
         try data.write(to: target, options: .atomic)
@@ -80,7 +92,7 @@ struct ContentUpdater {
             let staged = staging.appendingPathComponent(name)
             return FileManager.default.fileExists(atPath: staged.path) ? staged : files.url(name)
         }
-        guard !manifest.order.isEmpty else { throw ContentUpdateError.invalid("empty shelf") }
+        guard allowsEmpty || !manifest.order.isEmpty else { throw ContentUpdateError.invalid("empty shelf") }
         for id in manifest.order {
             guard let bookURL = url("\(id).json"), let book = try? BookLibrary.decode(Data(contentsOf: bookURL)) else {
                 throw ContentUpdateError.invalid("book \(id)")

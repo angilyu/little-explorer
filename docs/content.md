@@ -65,7 +65,15 @@ differences:
 
 - It has `"generated": true`, and its `city` is the section the grown-up picked.
 - Each page's `photo` also keeps its search `query` and `alternates`.
-- Its files live in R2, not in the repo.
+- Its files live in R2, not in the repo, and it is listed only in its account's manifest
+  (`/account/content/manifest.json`), never the public one. Its clip timings are a per-book
+  `Narration/<id>.narration.json` (same `{"clips": …}` shape), merged with the bundled ones when it is read aloud.
+
+In the app (1.1 and later) a made book is a normal book on the shelf: its level badge, Arrange library (hide, order,
+its own section), read-aloud with word highlighting, stars, badges, Passport stamps and Milo all work the same. It
+also shows a small "Made with AI" label on the cover. While one is being made, a dashed placeholder cover sits on
+its section's shelf with the progress ("Writing…", "Finding photos…", "Recording…") and can't be opened. The app
+asks for the job's status every few seconds only while a job is active and the app is in the foreground.
 
 ## Photos
 

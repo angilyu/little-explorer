@@ -69,8 +69,10 @@ device signed in to it shows the same shelf, and a copy is kept on the device un
 
 ## Books made for your family
 
-Some accounts can ask for a new book to be written: the grown-up gives a title, a shelf name, a reading level and,
-if they like, a short note about what the book should be about. To write it:
+Some accounts can ask for a new book to be written. In the **Grown-ups** corner (behind the grown-up check),
+**Make a book** asks for a reading level, a shelf (section), a book name and, if they like, a short note (up to 300
+characters) about what the book should be about. The first time, the app explains: "Your words are sent to OpenAI to
+write the book. Photos are real, licensed photos. The text is written by AI and checked automatically." To write it:
 
 - That request is sent to [OpenAI](https://openai.com), along with the book's text as it is written. OpenAI writes
   the text, checks its facts with web search, checks that everything is suitable for a child, and records the
@@ -79,11 +81,16 @@ if they like, a short note about what the book should be about. To write it:
   under each photo.
 - Nothing about the child is sent. Please don't put names or other personal details in the title or note.
 
-The book's text is kept on our server. Its photos and recordings are kept in a private
+The book's text and the grown-up's request are kept on our server. Its photos and recordings are kept in a private
 [Cloudflare R2](https://www.cloudflare.com/developer-platform/r2/) storage bucket. They stay until the book or the
-account is deleted. A made book is shown only on the shelf of the account it was made for (and any account the owner
-grants it to). Its text and files are still part of the app's shared book list, though, so they aren't secret. That's one more reason to
-keep personal details out of the request. We record what each book cost to make, with no content.
+account is deleted. A made book is sent only to devices signed in to the account it was made for (and any account the
+owner grants it to), never in the app's shared book list, and its photos and recordings are fetched through links
+that expire after an hour. Made books show a small "Made with AI" label.
+
+A grown-up can hide a made book, make one page again, report a problem with it, or delete it from the Grown-ups
+corner. Deleting removes the book and its files from our server and from every shelf right away. A report (what's
+wrong, the page, and an optional note) is kept so the app's owner can check the book; the owner can take any made book
+off every shelf. We record what each book cost to make, which steps ran and, for books that weren't made, why.
 
 ## Where it is stored
 

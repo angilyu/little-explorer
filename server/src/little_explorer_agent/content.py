@@ -6,6 +6,10 @@ them on every page turn.
 
 With ``PIP_CONTENT_URL`` set (the token server's ``/content``), :func:`refresh_remote` fetches the
 current books before each session, so book edits reach Milo without redeploying the agent.
+
+Books a grown-up made in the app aren't in that catalog: they're only on their family's shelf. At
+the start of a signed-in session, :func:`refresh_made` fetches the made books on that account's shelf
+from the token server's ``/made-books`` (with the report key) and :func:`lookup` finds them too.
 """
 
 from __future__ import annotations
@@ -99,9 +103,42 @@ _remote_version: str | None = None
 _remote_checked = 0.0
 
 
+# Made books seen this process. Their ids are random and an app only shows its own family's, so
+# keeping earlier sessions' books here can't show one family's book to another.
+_made_books: dict[str, Book] = {}
+
+
 def current_books() -> dict[str, Book]:
-    """Books from the content server when fetched, else the ones on disk."""
-    return _remote_books if _remote_books is not None else load_books()
+    """Books from the content server when fetched, else the ones on disk, plus any made books."""
+    books = _remote_books if _remote_books is not None else load_books()
+    return {**_made_books, **books} if _made_books else books
+
+
+async def refresh_made(account_id: str, target: tuple[str, str] | None, *, timeout: float = 5.0) -> int:
+    """Fetch the made books on ``account_id``'s shelf from ``GET <target url>?account=``.
+
+    ``target`` is ``(url, report key)``. Returns how many were loaded; failures are logged and keep
+    Milo working with the catalog books.
+    """
+    if not account_id or not target:
+        return 0
+    from aiohttp import ClientSession, ClientTimeout
+
+    url, key = target
+    try:
+        async with (
+            ClientSession(timeout=ClientTimeout(total=timeout)) as session,
+            session.get(url, params={"account": account_id}, headers={"Authorization": f"Bearer {key}"}) as r,
+        ):
+            r.raise_for_status()
+            books = [_parse_book(b) for b in (await r.json()).get("books", [])]
+    except Exception as exc:  # noqa: BLE001 - Milo still knows the catalog
+        log.warning("could not fetch made books: %s", exc)
+        return 0
+    _made_books.update({b.id: b for b in books})
+    if books:
+        log.info("made books for this session: %s", sorted(b.id for b in books))
+    return len(books)
 
 
 async def refresh_remote(base_url: str | None = None, *, max_age: float = 60.0, timeout: float = 8.0) -> bool:

@@ -1,5 +1,5 @@
-"""Book making: store limits and leases, the runner (mocked OpenAI, Commons and R2), the merged
-manifest and the owner endpoints. No network, no OpenAI spend."""
+"""Book making: store limits and leases, the runner (mocked OpenAI, Commons and R2), each account's
+manifest of made books, and the grown-up and owner endpoints. No network, no OpenAI spend."""
 
 import asyncio
 import hashlib
@@ -7,6 +7,7 @@ import io
 import json
 import shutil
 import subprocess
+from datetime import UTC, datetime
 from urllib.parse import parse_qs, urlsplit
 
 import pytest
@@ -16,13 +17,12 @@ from little_explorer_agent.accounts import Accounts
 from little_explorer_agent.bookgen import moderation, narration, writer
 from little_explorer_agent.bookgen.config import BookgenConfig, R2Config
 from little_explorer_agent.bookgen.cost import CostLog
-from little_explorer_agent.bookgen.manifest import merge
 from little_explorer_agent.bookgen.oai import Moderation, OpenAIError, TextResult
 from little_explorer_agent.bookgen.photos import Photo, acceptable, license_of, to_jpeg
-from little_explorer_agent.bookgen.runner import LeaseLost, Runner, r2_key
+from little_explorer_agent.bookgen.runner import LeaseLost, Runner, page_paths, r2_key
 from little_explorer_agent.bookgen.service import BookgenService
 from little_explorer_agent.bookgen.storage import MemoryStorage, R2Storage
-from little_explorer_agent.bookgen.store import BookStore, LimitError, new_book_id
+from little_explorer_agent.bookgen.store import BookStore, LimitError, friendly_error, new_book_id
 from little_explorer_agent.catalog import build_manifest, content_files, resources_dir
 from little_explorer_agent.devices import BOOKGEN_DOGFOOD, DeviceStore, Limits
 from little_explorer_agent.mail import Mailer
@@ -68,7 +68,7 @@ def draft(level, pages=None):
 
 class FakeOpenAI:
     def __init__(self, level=2, *, request_ok=True, flag_word=None, flag_images=0, safe=True, fixes=None,
-                 drafts=None, moderation_down=False):
+                 drafts=None, moderation_down=False, pages=None):
         self.level = level
         self.request_ok = request_ok
         self.flag_word = flag_word
@@ -77,6 +77,7 @@ class FakeOpenAI:
         self.fixes = fixes or []
         self.drafts = list(drafts or [])
         self.moderation_down = moderation_down
+        self.pages = list(pages or [])
         self.calls = []
 
     async def structured(self, *, model, instructions, input, schema_name, schema, web_search=False,
@@ -87,6 +88,10 @@ class FakeOpenAI:
                     "reason": "" if self.request_ok else "Books can't be about toy brands."}
         elif schema_name == "picture_book":
             data = self.drafts.pop(0) if self.drafts else draft(self.level)
+        elif schema_name == "picture_page":
+            data = self.pages.pop(0) if self.pages else {
+                "text": page_text(self.level, "again"), "about": "A new true fact for Milo.", "emoji": "🌉",
+                "photo_queries": ["Tower at sunset", "Tower from the river"]}
         else:
             data = {"safe": self.safe, "reason": "" if self.safe else "Too scary.", "fixes": self.fixes}
         return TextResult(data, 2000, 3000, 2 if web_search else 0)
@@ -173,9 +178,9 @@ def make_books(store, clock, **overrides):
     return BookStore(store, config, clock=clock)
 
 
-def make_runner(books, client=None, storage=None, commons=None, on_publish=None):
+def make_runner(books, client=None, storage=None, commons=None):
     return Runner(books, books.config, client=client or FakeOpenAI(), storage=storage or MemoryStorage(),
-                  commons=commons or FakeCommons(), on_publish=on_publish)
+                  commons=commons or FakeCommons())
 
 
 # -- requests and levels ---------------------------------------------------------------------------
@@ -385,7 +390,10 @@ def test_queue_limits(store, clock):
     with pytest.raises(LimitError) as exc:
         books.queue("acct", REQUEST)
     assert exc.value.code == "day_limit"
-    assert books.usage("acct") == {"active": 0, "today": 2, "this_month": 2, "per_day": 2, "per_month": 3}
+    usage = books.usage("acct")
+    assert {k: usage[k] for k in ("active", "today", "this_month", "per_day", "per_month", "left_today")} == \
+        {"active": 0, "today": 2, "this_month": 2, "per_day": 2, "per_month": 3, "left_today": 0}
+    assert usage["left_this_month"] == 1 and usage["page_redos_today"] == 0
     # Failed and rejected books don't use up the quota.
     other = make_books(store, clock, per_day=1)
     job, _ = other.queue("other", REQUEST)
@@ -463,18 +471,14 @@ def test_new_book_id():
 
 async def test_runner_makes_and_publishes_a_book(store, clock, fake_narrate):
     books = make_books(store, clock)
-    storage, published = MemoryStorage(), []
-
-    async def on_publish():
-        published.append(True)
-
-    runner = make_runner(books, storage=storage, on_publish=on_publish)
+    storage = MemoryStorage()
+    runner = make_runner(books, storage=storage)
     job, row = books.queue("acct", REQUEST)
     assert await runner.run_once() is True
     done = books.job(job.id)
     assert done.status == "done" and done.step == "publish" and done.error == ""
     book = books.book(row.id)
-    assert book.status == "published" and published == [True]
+    assert book.status == "published"
     pages = book.json["pages"]
     assert len(pages) == 10 and all(p["photo"]["file"] == f"{row.id}-{p['id']}.jpg" for p in pages)
     assert pages[0]["photo"]["verified"] is True and pages[0]["photo"]["license"] == "CC BY-SA 4.0"
@@ -646,31 +650,18 @@ async def test_paused_runner_waits_for_tomorrow_only_with_work(store, clock, fak
 async def test_idle_service_never_touches_the_database(server, store, monkeypatch):
     # Neon's free plan scales to zero when idle; a poll every few seconds would keep it awake all month.
     c, service = server
-    # Startup: the made books were loaded before serving; wait for the runner's first check to finish too.
     await asyncio.wait_for(service.runner.asleep.wait(), timeout=10)
-    assert service.runner.state["next_check_s"] is None and service._refreshing is None
+    assert service.runner.state["next_check_s"] is None
     calls: list[str] = []
     run = store._run
     monkeypatch.setattr(store, "_run", lambda fn: (calls.append("db"), run(fn))[1])
-    now = [service.clock()]
-    service.clock = lambda: now[0]
 
-    for _ in range(3):  # a week of idle time, with the keep-awake pings
-        now[0] += 2 * 86_400
+    for _ in range(3):  # idle time with the keep-awake pings, and every install checking the catalog
         assert (await c.get("/healthz")).status == 200
+        assert (await c.get("/content/manifest.json", headers=APP)).status == 200
+        assert (await c.get("/content/library.json", headers=APP)).status == 200
         await asyncio.sleep(0.1)  # any timer (poll_s is 0.05 in these tests) would fire
     assert calls == [] and service.runner.asleep.is_set()
-
-    # A manifest request (user traffic) reloads made books in the background when they're 10+ minutes old.
-    assert (await c.get("/content/manifest.json", headers=APP)).status == 200
-    await service._refreshing
-    assert calls
-    calls.clear()
-    now[0] += 60
-    assert (await c.get("/content/manifest.json", headers=APP)).status == 200
-    for _ in range(20):
-        await asyncio.sleep(0)
-    assert calls == []
 
 
 async def test_cancelled_job_stops_at_the_next_step(store, clock, fake_narrate):
@@ -710,33 +701,34 @@ async def published_service(store, clock, static, fake_narrate):
     return service, job
 
 
-async def test_manifest_adds_published_books(store, clock, static, fake_narrate):
-    manifest, files = static
+async def test_account_manifest_lists_only_the_shelf(store, clock, static, fake_narrate):
+    manifest, _ = static
     before = json.loads(json.dumps(manifest))
-    assert merge(manifest, files, [])[0] is manifest
     service, job = await published_service(store, clock, static, fake_narrate)
-    served = service.manifest
-    assert served is manifest  # updated in place
-    assert served["order"] == before["order"] + [job.book_id] and served["version"] != before["version"]
-    for rel, entry in before["files"].items():
-        if rel not in ("library.json", "Narration/narration.json"):
-            assert served["files"][rel] == entry
-    library = json.loads(service.extra["library.json"])
-    assert library["order"] == served["order"]
-    clips = json.loads(service.extra["Narration/narration.json"])["clips"]
-    assert f"{job.book_id}/p01" in clips and len(clips) == len(json.loads((files["Narration/narration.json"]).read_bytes())["clips"]) + 10
-    body = service.extra[f"Books/{job.book_id}.json"]
-    assert served["files"][f"Books/{job.book_id}.json"]["size"] == len(body)
-    assert json.loads(body)["level"] == 2
-    photo = service.extra[f"Photos/{job.book_id}-p01.jpg"]
-    assert served["files"][f"Photos/{job.book_id}-p01.jpg"]["sha256"] == photo.sha256
-    # Unpublishing (the kill switch) restores the static manifest exactly.
-    await service.set_published(job.book_id, False)
-    assert service.manifest == before and service.extra == {}
-    await service.set_published(job.book_id, True)
-    assert job.book_id in service.manifest["order"]
-    assert await service.delete_book(job.book_id) == 20
-    assert service.manifest == before and service.storage.objects == {}
+    assert service.manifest == before  # the public catalog never changes
+
+    made, served = await service.account_manifest("acct")
+    book_id = job.book_id
+    assert made["order"] == [book_id] and made["format"] == 1
+    body = served[f"Books/{book_id}.json"]
+    assert made["files"][f"Books/{book_id}.json"] == {"sha256": hashlib.sha256(body).hexdigest(), "size": len(body)}
+    assert json.loads(body)["generated"] is True and json.loads(body)["level"] == 2
+    clips = json.loads(served[f"Narration/{book_id}.narration.json"])["clips"]
+    assert len(clips) == 10 and clips[f"{book_id}/p01"]["file"] == f"read-{book_id}-p01"
+    photo = made["files"][f"Photos/{book_id}-p01.jpg"]
+    assert photo["url"].startswith(f"https://r2.invalid/books/{book_id}/") and photo["size"] > 0
+    assert f"Narration/read-{book_id}-p01.m4a" in made["files"]
+    assert len(made["files"]) == 22  # the book, its clips' timings, 10 photos, 10 clips
+    # File names never clash with the catalog's (the app caches files flat).
+    names = [rel.rsplit("/", 1)[-1] for rel in made["files"]]
+    assert not set(names) & {rel.rsplit("/", 1)[-1] for rel in manifest["files"]}
+
+    assert (await service.account_manifest("someone-else"))[0]["order"] == []
+    await service.set_published(book_id, False)  # the kill switch
+    assert (await service.account_manifest("acct"))[0]["order"] == []
+    await service.set_published(book_id, True)
+    assert await service.delete_book(book_id) == 20
+    assert (await service.account_manifest("acct"))[0]["order"] == [] and service.storage.objects == {}
 
 
 # -- the web server --------------------------------------------------------------------------------
@@ -806,8 +798,7 @@ async def test_generate_endpoint(server, accounts):
 
     for _ in range(200):  # the runner started with the app; wait for it
         job = await (await c.get(f"/admin/jobs/{job_id}", headers=ADMIN)).json()
-        order = (await (await c.get("/content/manifest.json", headers=APP_1_2)).json())["order"]
-        if job["status"] == "done" and job["book_id"] in order:  # on_publish refreshes just after
+        if job["status"] == "done":
             break
         await asyncio.sleep(0.02)
     assert job["status"] == "done", job
@@ -818,27 +809,22 @@ async def test_generate_endpoint(server, accounts):
     full = await (await c.get(f"/admin/books/{book_id}", headers=ADMIN)).json()
     assert full["book"]["level"] == 2 and len(full["narration"]) == 10
 
-    manifest = await (await c.get("/content/manifest.json", headers=APP_1_2)).json()
-    assert manifest["order"][-1] == book_id
-    library = await (await c.get("/content/library.json", headers=APP_1_2)).json()
-    assert library["order"] == manifest["order"]
-    # The 1.0 and 1.1 apps (which download files without headers) keep the hand-made catalog, files included.
-    for old in ({}, APP_1_1):
-        resp = await c.get("/content/manifest.json", headers=old)
-        assert await resp.json() == service.static and resp.headers["ETag"] == f'"{service.static["version"]}"'
-        for rel in ("library.json", "Narration/narration.json"):
-            body = await (await c.get(f"/content/{rel}", headers=old)).read()
-            assert hashlib.sha256(body).hexdigest() == service.static["files"][rel]["sha256"]
-    resp = await c.get(f"/content/Books/{book_id}.json")
-    assert resp.status == 200 and (await resp.json())["id"] == book_id
-    resp = await c.get(f"/content/Photos/{book_id}-p01.jpg", allow_redirects=False)
-    assert resp.status == 302 and resp.headers["Location"].startswith(f"https://r2.invalid/books/{book_id}/")
-    resp = await c.get(f"/content/Narration/read-{book_id}-p01.m4a", allow_redirects=False)
-    assert resp.status == 302
-    assert (await c.get("/content/Photos/paris-p01.jpg")).status in (200, 404)
+    # The public catalog (and the 1.0 app, which downloads all of it) never sees a made book.
+    manifest = await (await c.get("/content/manifest.json")).json()
+    assert book_id not in manifest["order"] and manifest == build_manifest()
+    assert not [rel for rel in manifest["files"] if book_id in rel]
+    assert (await c.get(f"/content/Books/{book_id}.json")).status == 404
+    assert (await c.get(f"/content/Photos/{book_id}-p01.jpg", allow_redirects=False)).status == 404
     health = await (await c.get("/healthz")).json()
-    assert health["content"] == manifest["version"] and health["bundled"] == build_manifest()["version"]
-    assert health["bundled"] != health["content"]
+    assert health["content"] == health["bundled"] == build_manifest()["version"]
+    # The account that owns it gets it in its own manifest.
+    kid = await _signed_in(accounts, "kid@example.com", "BDFF5D95-6EBF-47BC-AA79-5FE554F0502B")
+    made = await (await c.get("/account/content/manifest.json", headers=kid)).json()
+    assert made["order"] == [book_id]
+    # The 1.0 and 1.1 apps can't label made books (and never ask; this is in case).
+    unversioned = {k: v for k, v in kid.items() if not k.startswith("X-App-")}
+    for old in (unversioned, {**unversioned, **APP_1_1}):
+        assert (await (await c.get("/account/content/manifest.json", headers=old)).json())["order"] == []
 
     status = await (await c.get("/admin/bookgen", headers=ADMIN)).json()
     assert status["ready"] and status["everyone"] is False and status["made_books_on_shelf"] == 1
@@ -846,8 +832,8 @@ async def test_generate_endpoint(server, accounts):
 
     resp = await c.post(f"/admin/books/{book_id}/unpublish", headers=ADMIN)
     assert resp.status == 200 and (await resp.json())["status"] == "unpublished"
-    assert book_id not in (await (await c.get("/content/manifest.json", headers=APP_1_2)).json())["order"]
-    assert (await c.get(f"/content/Books/{book_id}.json")).status == 404
+    assert (await (await c.get("/account/content/manifest.json", headers=kid)).json())["order"] == []
+    assert (await c.get(f"/account/content/Books/{book_id}.json", headers=kid)).status == 404
     assert (await c.post(f"/admin/books/{book_id}/frobnicate", headers=ADMIN)).status == 404
     resp = await c.post(f"/admin/books/{book_id}/delete", headers=ADMIN)
     assert (await resp.json())["deleted_files"] == 20 and service.storage.objects == {}
@@ -889,12 +875,24 @@ async def _make_book_for(c, service, email, title):
     resp = await c.post("/admin/books/generate", json={**REQUEST, "title": title, "account": email}, headers=ADMIN)
     assert resp.status == 202, await resp.text()
     job_id = (await resp.json())["job"]["id"]
-    for _ in range(200):
+    return (await _wait_done(service, job_id)).book_id
+
+
+async def _wait_done(service, job_id, statuses=("done",)):
+    for _ in range(300):
         job = service.books.job(job_id)
-        if job.status == "done" and job.book_id in service.manifest["order"]:
-            return job.book_id
+        if job.status in statuses or job.status in ("failed", "rejected"):
+            return job
         await asyncio.sleep(0.02)
     raise AssertionError(service.books.job(job_id))
+
+
+async def _signed_in(accounts, email, device):
+    """App headers with a fresh session for the account."""
+    accounts.clock.t += 120  # past the resend wait for a new code
+    code, _ = accounts.start(email)
+    token, _, _ = accounts.verify(email, code, (device, "iPad", "iPad13,1"))
+    return {**APP, **APP_1_2, "X-Pip-Session": token}
 
 
 async def _app_account(c, accounts, email, device, client=APP_1_2):
@@ -912,7 +910,7 @@ async def test_all_books_accounts_only_see_their_own_made_books(server, accounts
     theirs = await _make_book_for(c, service, b.email, "Owls at Night")
     mine = await _make_book_for(c, service, a.email, "Tall Towers")
     catalog = list(service.static["order"])
-    assert {theirs, mine} <= set(service.manifest["order"]) and not {theirs, mine} & set(catalog)
+    assert {theirs, mine} <= service.books.published_ids() and not {theirs, mine} & set(catalog)
 
     shelf = await _app_account(c, accounts, a.email, "BDFF5D95-6EBF-47BC-AA79-5FE554F0502B")
     assert shelf["all_books"] is False
@@ -955,18 +953,15 @@ async def test_account_delete_removes_made_books(server, accounts, clock):
     account, _ = accounts.create("hfevers@gmail.com")
     job = service.queue(account.id, REQUEST)
     service.wake()
-    for _ in range(200):
-        if service.books.job(job.id).status == "done" and job.book_id in service.manifest["order"]:
-            break
-        await asyncio.sleep(0.02)
-    assert service.storage.objects and job.book_id in service.manifest["order"]
+    assert (await _wait_done(service, job.id)).status == "done"
+    assert service.storage.objects and job.book_id in service.books.published_ids()
     code, _ = accounts.start("hfevers@gmail.com")
     token, _, _ = accounts.verify("hfevers@gmail.com", code, ("BDFF5D95-6EBF-47BC-AA79-5FE554F0502B", "iPad", "iPad13,1"))
     clock.t += 120
     code, _ = accounts.start("hfevers@gmail.com", "delete")
     resp = await c.post("/account/delete", json={"code": code}, headers={**APP, "X-Pip-Session": token})
     assert resp.status == 200, await resp.text()
-    assert service.storage.objects == {} and job.book_id not in service.manifest["order"]
+    assert service.storage.objects == {} and job.book_id not in service.books.published_ids()
     assert service.books.books(account.id) == []
     kept = service.books.job(job.id)  # nothing about the account, but today's spend still counts
     assert kept.account_id == "" and kept.input == {} and kept.cost_usd > 0
@@ -982,3 +977,305 @@ def test_backup_covers_bookgen_tables(store, clock):
     store.transaction(lambda cur: store._exec(cur, "DELETE FROM books", ()))
     store.restore({"tables": dump})
     assert len(books.books("a")) == 1
+
+
+# -- grown-ups making books in the app -------------------------------------------------------------
+
+MOM_DEVICE = "BDFF5D95-6EBF-47BC-AA79-5FE554F0502B"
+DAD_DEVICE = "C0FFEE00-6EBF-47BC-AA79-5FE554F0502B"
+
+
+def test_tries_cap_and_failed_attempts_dont_count(store, clock):
+    books = make_books(store, clock, per_day=3, tries_per_day=3)
+    for status in ("rejected", "failed"):
+        books.queue("a", REQUEST)
+        books.finish(books.claim(), status, error="no")
+    usage = books.usage("a")
+    assert usage["today"] == 0 and usage["left_today"] == 3 and usage["tries_today"] == 2
+    books.queue("a", REQUEST)
+    books.finish(books.claim(), "rejected", error="no")
+    with pytest.raises(LimitError) as exc:
+        books.queue("a", REQUEST)
+    assert exc.value.code == "tries_limit" and exc.value.status == 429
+
+
+def test_friendly_errors():
+    assert "didn't count" in friendly_error("rejected", "Books can't be about toy brands.")
+    assert friendly_error("rejected", "Too scary.").startswith("This book couldn't be made: Too scary.")
+    assert "free photos" in friendly_error("failed", "found free photos for only 3 of 10 pages")
+    assert friendly_error("failed", "RuntimeError: boom").startswith("Something went wrong")
+    assert "boom" not in friendly_error("failed", "RuntimeError: boom")
+    assert friendly_error("failed", "cancelled by the owner").startswith("This book was stopped")
+    assert friendly_error("done", "") is None and friendly_error("running", "") is None
+
+
+async def _published_book(store, clock, fake_narrate, client=None, commons=None, account="acct"):
+    books = make_books(store, clock)
+    storage = MemoryStorage()
+    runner = make_runner(books, client=client or FakeOpenAI(), storage=storage, commons=commons or FakeCommons())
+    _, row = books.queue(account, REQUEST)
+    assert await runner.run_once()
+    assert books.book(row.id).status == "published"
+    return books, runner, storage, row.id
+
+
+async def test_page_regenerate_swaps_one_page(store, clock, fake_narrate):
+    books, runner, storage, book_id = await _published_book(store, clock, fake_narrate)
+    before = books.book(book_id)
+    old_keys = {p: a.r2_key for p, a in books.assets(book_id).items()}
+    usage = books.usage("acct")
+
+    with pytest.raises(LookupError):
+        books.queue_page("someone-else", book_id, "p03")
+    with pytest.raises(LookupError):
+        books.queue_page("acct", book_id, "p99")
+    job = books.queue_page("acct", book_id, "p03")
+    assert job.kind == "page" and job.input["page"] == "p03" and job.input["about"] == "The Eiffel Tower"
+    with pytest.raises(LimitError) as exc:
+        books.queue_page("acct", book_id, "p04")
+    assert exc.value.code == "busy"
+    assert await runner.run_once()
+
+    done = books.job(job.id)
+    assert done.status == "done" and done.cost_usd > 0
+    after = books.book(book_id)
+    photo_file, clip_name, _ = page_paths(done)
+    page = after.json["pages"][2]
+    assert page["text"] == page_text(2, "again") and page["photo"]["file"] == photo_file
+    assert after.json["pages"][3] == before.json["pages"][3]  # the rest of the book is untouched
+    assert after.narration[f"{book_id}/p03"]["file"] == clip_name
+    assets = books.assets(book_id)
+    assert f"Photos/{photo_file}" in assets and f"Narration/{clip_name}.m4a" in assets
+    assert f"Photos/{book_id}-p03.jpg" not in assets and f"Narration/read-{book_id}-p03.m4a" not in assets
+    assert len(assets) == 20
+    assert old_keys[f"Photos/{book_id}-p03.jpg"] not in storage.objects  # the old page's files are gone
+    assert set(storage.objects) == {a.r2_key for a in assets.values()}
+    # A page redo doesn't use a book from the quota; it has its own daily count.
+    again = books.usage("acct")
+    assert again["today"] == usage["today"] and again["page_redos_today"] == 1 and again["page_redos_left"] == 4
+    # The account manifest shows the new page only.
+    made, _ = account_manifest_of(books, storage)
+    assert f"Photos/{photo_file}" in made["files"] and f"Photos/{book_id}-p03.jpg" not in made["files"]
+
+
+def account_manifest_of(books, storage):
+    from little_explorer_agent.bookgen.manifest import account_manifest
+
+    return account_manifest(books.shelf_books("acct"), {"files": {}, "order": []},
+                            lambda a: storage.presign(a.r2_key, 60))
+
+
+async def test_page_redo_limit(store, clock, fake_narrate):
+    books, runner, _, book_id = await _published_book(store, clock, fake_narrate)
+    books.config = BookgenConfig(**{**books.config.__dict__, "page_redos_per_day": 1})
+    books.queue_page("acct", book_id, "p02")
+    assert await runner.run_once()
+    with pytest.raises(LimitError) as exc:
+        books.queue_page("acct", book_id, "p02")
+    assert exc.value.code == "page_limit"
+
+
+async def test_failed_page_redo_keeps_the_book(store, clock, fake_narrate):
+    books, runner, storage, book_id = await _published_book(store, clock, fake_narrate)
+    before, keys = books.book(book_id), set(storage.objects)
+    runner.commons.missing = 1  # no photo for the new page
+    job = books.queue_page("acct", book_id, "p05")
+    assert await runner.run_once()
+    failed = books.job(job.id)
+    assert failed.status == "failed" and failed.parent_json()["message"].startswith("We couldn't find enough free photos")
+    assert books.book(book_id).json == before.json and books.book(book_id).status == "published"
+    assert set(storage.objects) == keys and len(books.assets(book_id)) == 20
+    assert books.usage("acct")["page_redos_today"] == 0  # a failed redo doesn't count
+
+
+async def test_rejected_page_redo_keeps_the_book(store, clock, fake_narrate):
+    client = FakeOpenAI()
+    books, runner, storage, book_id = await _published_book(store, clock, fake_narrate, client=client)
+    before, keys = books.book(book_id), set(storage.objects)
+    client.safe = False
+    job = books.queue_page("acct", book_id, "p02")
+    assert await runner.run_once()
+    rejected = books.job(job.id)
+    assert rejected.status == "rejected" and "Too scary." in rejected.parent_json()["message"]
+    assert books.book(book_id).json == before.json and set(storage.objects) == keys
+
+
+async def test_parent_gating(server, accounts):
+    c, _ = server
+    accounts.create("someone@example.com")
+    headers = await _signed_in(accounts, "someone@example.com", MOM_DEVICE)
+    assert (await c.get("/account/bookgen")).status == 401
+    assert await (await c.get("/account/bookgen", headers=headers)).json() == {"can_generate": False}
+    me = (await (await c.get("/account", headers=headers)).json())["account"]
+    assert me["can_generate"] is False
+    resp = await c.post("/account/books", json=REQUEST, headers=headers)
+    assert resp.status == 403 and (await resp.json())["error"] == "not_allowed"
+    await c.post("/admin/bookgen", json={"everyone": True}, headers=ADMIN)
+    assert (await (await c.get("/account", headers=headers)).json())["account"]["can_generate"] is True
+    status = await (await c.get("/account/bookgen", headers=headers)).json()
+    assert status["can_generate"] and status["ready"] and [lv["level"] for lv in status["levels"]] == [1, 2, 3]
+    assert status["usage"]["left_today"] == 3 and status["fields"]["about_max"] == 300 and status["active"] is None
+
+
+async def test_parent_endpoints_need_a_ready_server(store, accounts, static):
+    manifest, files = static
+    service = BookgenService(store, static_manifest=manifest, static_files=files, config=BookgenConfig())
+    accounts.create("angilyu@gmail.com")
+    async with await make_client(store, accounts, service) as c:
+        headers = await _signed_in(accounts, "angilyu@gmail.com", MOM_DEVICE)
+        resp = await c.post("/account/books", json=REQUEST, headers=headers)
+        assert resp.status == 503 and (await resp.json())["error"] == "not_ready"
+        made = await (await c.get("/account/content/manifest.json", headers=headers)).json()
+        assert made["order"] == [] and made["files"] == {}
+
+
+async def test_parent_makes_a_book(server, accounts):
+    c, service = server
+    mom, _ = accounts.create("angilyu@gmail.com")
+    dad, _ = accounts.create("hfevers@gmail.com")
+    headers = await _signed_in(accounts, mom.email, MOM_DEVICE)
+    other = await _signed_in(accounts, dad.email, DAD_DEVICE)
+
+    resp = await c.post("/account/books", json={**REQUEST, "title": ""}, headers=headers)
+    assert resp.status == 400 and await resp.json() == {"error": "bad_request", "message": "The book name is required."}
+    resp = await c.post("/account/books", json={**REQUEST, "about": "x" * 301}, headers=headers)
+    assert (await resp.json())["message"] == "What it's about must be at most 300 characters."
+    resp = await c.post("/account/books", json={**REQUEST, "level": 7}, headers=headers)
+    assert (await resp.json())["message"] == "Please choose a level."
+
+    resp = await c.post("/account/books", json=REQUEST, headers=headers)
+    assert resp.status == 202, await resp.text()
+    body = await resp.json()
+    job = body["job"]
+    assert job["status"] == "queued" and job["progress"] == "Writing…" and job["title"] == "The Tall Tower"
+    assert "cost_usd" not in job and "costs" not in job and "error" not in job
+    assert body["usage"]["active"] == 1 and body["usage"]["today"] == 1
+    resp = await c.post("/account/books", json=REQUEST, headers=headers)
+    assert resp.status == 429 and (await resp.json())["error"] == "busy"
+    assert (await c.get(f"/account/jobs/{job['id']}", headers=other)).status == 404
+
+    await _wait_done(service, job["id"])
+    done = (await (await c.get(f"/account/jobs/{job['id']}", headers=headers)).json())["job"]
+    assert done["status"] == "done" and done["progress"] is None and done["message"] is None
+    book_id = done["book_id"]
+    mine = (await (await c.get("/account/books", headers=headers)).json())["books"]
+    assert [b["id"] for b in mine] == [book_id] and mine[0]["status"] == "published" and "account_id" not in mine[0]
+    assert (await (await c.get("/account/books", headers=other)).json())["books"] == []
+    status = await (await c.get("/account/bookgen", headers=headers)).json()
+    assert status["usage"]["left_today"] == 2 and status["jobs"][0]["id"] == job["id"]
+
+    # The account's own manifest has it; another family's doesn't, and can't fetch its files.
+    made = await (await c.get("/account/content/manifest.json", headers=headers)).json()
+    assert made["order"] == [book_id]
+    resp = await c.get(f"/account/content/Books/{book_id}.json", headers=headers)
+    assert resp.status == 200 and (await resp.json())["generated"] is True
+    resp = await c.get(f"/account/content/Narration/{book_id}.narration.json", headers=headers)
+    assert len((await resp.json())["clips"]) == 10
+    assert (await c.get(f"/account/content/Books/{book_id}.json", headers=other)).status == 404
+    assert (await c.get(f"/account/content/Books/{book_id}.json", headers=APP)).status == 401
+    assert (await c.get(f"/account/content/Photos/{book_id}-p01.jpg", headers=headers)).status == 404
+    assert (await c.get("/account/content/Books/..%2F..%2Fsecret.json", headers=headers)).status == 404
+    assert (await (await c.get("/account/content/manifest.json", headers=other)).json())["order"] == []
+    # The public catalog still never lists it.
+    assert book_id not in (await (await c.get("/content/manifest.json")).json())["order"]
+
+    # Reading a made book counts for the badges; reading another family's doesn't.
+    now = datetime.now(UTC).isoformat(timespec="seconds")
+
+    def view(event_id):
+        return {"id": event_id, "kind": "page_view", "at": now, "book": book_id, "page": "p01",
+                "page_index": 0, "seconds": 5, "milo": False}
+
+    resp = await c.post("/account/reading", json={"events": [view("evt-mom-0001")]}, headers=headers)
+    assert resp.status == 200 and (await resp.json())["stored"] == 1, await resp.text()
+    progress = (await (await c.get("/account/reading", headers=headers)).json())["progress"]
+    assert progress["pages"] == [f"{book_id}/p01"]
+    resp = await c.post("/account/reading", json={"events": [view("evt-dad-0001")]}, headers=other)
+    assert (await resp.json())["stored"] == 0
+
+    # Milo's agent reads the made books on the account's shelf (report key only).
+    assert (await c.get(f"/made-books?account={mom.id}")).status == 401
+    resp = await c.get(f"/made-books?account={mom.id}", headers={"Authorization": "Bearer r"})
+    made_books = (await resp.json())["books"]
+    assert [b["id"] for b in made_books] == [book_id] and made_books[0]["pages"][0]["about"]
+    resp = await c.get(f"/made-books?account={dad.id}", headers={"Authorization": "Bearer r"})
+    assert (await resp.json())["books"] == []
+
+
+async def test_parent_redo_report_and_delete(server, accounts):
+    c, service = server
+    mom, _ = accounts.create("angilyu@gmail.com")
+    dad, _ = accounts.create("hfevers@gmail.com")
+    headers = await _signed_in(accounts, mom.email, MOM_DEVICE)
+    other = await _signed_in(accounts, dad.email, DAD_DEVICE)
+    resp = await c.post("/account/books", json=REQUEST, headers=headers)
+    book_id = (await _wait_done(service, (await resp.json())["job"]["id"])).book_id
+    first = await (await c.get("/account/content/manifest.json", headers=headers)).json()
+
+    # Make a page again.
+    assert (await c.post(f"/account/books/{book_id}/pages/p02/regenerate", headers=other)).status == 404
+    assert (await c.post(f"/account/books/{book_id}/pages/p77/regenerate", headers=headers)).status == 404
+    resp = await c.post(f"/account/books/{book_id}/pages/p02/regenerate", headers=headers)
+    assert resp.status == 202, await resp.text()
+    body = await resp.json()
+    assert body["job"]["kind"] == "page" and body["job"]["page"] == "p02"
+    assert (await _wait_done(service, body["job"]["id"])).status == "done"
+    again = await (await c.get("/account/content/manifest.json", headers=headers)).json()
+    assert again["version"] != first["version"] and again["order"] == [book_id]
+    status = await (await c.get("/account/bookgen", headers=headers)).json()
+    assert status["usage"]["today"] == 1 and status["usage"]["page_redos_today"] == 1
+
+    # Report it (anyone whose shelf it's on); the owner sees it.
+    assert (await c.post(f"/account/books/{book_id}/report", json={"reason": "meh"}, headers=headers)).status == 400
+    assert (await c.post(f"/account/books/{book_id}/report", json={"reason": "wrong"}, headers=other)).status == 404
+    resp = await c.post(f"/account/books/{book_id}/report",
+                        json={"reason": "wrong", "note": "The tower isn't blue. " * 30, "page": "p02"}, headers=headers)
+    assert resp.status == 201
+    reports = (await (await c.get("/admin/reports", headers=ADMIN)).json())["reports"]
+    assert len(reports) == 1 and reports[0]["book_id"] == book_id and reports[0]["reason"] == "wrong"
+    assert len(reports[0]["note"]) == 300 and reports[0]["status"] == "open" and reports[0]["page"] == "p02"
+    assert (await c.get("/admin/reports")).status == 401
+    assert (await c.post(f"/admin/reports/{reports[0]['id']}/close", headers=ADMIN)).status == 200
+    assert (await (await c.get("/admin/reports", headers=ADMIN)).json())["reports"][0]["status"] == "closed"
+
+    # Delete it: only its maker can; it still counts toward the month.
+    assert (await c.delete(f"/account/books/{book_id}", headers=other)).status == 404
+    resp = await c.delete(f"/account/books/{book_id}", headers=headers)
+    assert resp.status == 200 and service.storage.objects == {}
+    assert (await (await c.get("/account/content/manifest.json", headers=headers)).json())["order"] == []
+    assert (await (await c.get("/account/books", headers=headers)).json())["books"] == []
+    assert (await (await c.get("/account/bookgen", headers=headers)).json())["usage"]["this_month"] == 1
+    assert (await c.delete(f"/account/books/{book_id}", headers=headers)).status == 404
+
+
+async def test_granted_made_book_is_on_another_shelf(server, accounts):
+    c, service = server
+    mom, _ = accounts.create("angilyu@gmail.com")
+    dad, _ = accounts.create("hfevers@gmail.com")
+    headers = await _signed_in(accounts, mom.email, MOM_DEVICE)
+    other = await _signed_in(accounts, dad.email, DAD_DEVICE)
+    resp = await c.post("/account/books", json=REQUEST, headers=headers)
+    book_id = (await _wait_done(service, (await resp.json())["job"]["id"])).book_id
+    resp = await c.post(f"/admin/accounts/{dad.email}/books", json={"grant": [book_id]}, headers=ADMIN)
+    assert resp.status == 200, await resp.text()
+    made = await (await c.get("/account/content/manifest.json", headers=other)).json()
+    assert made["order"] == [book_id]
+    resp = await c.post(f"/account/books/{book_id}/report", json={"reason": "photo"}, headers=other)
+    assert resp.status == 201
+    # Only the maker can remake or delete it.
+    assert (await c.post(f"/account/books/{book_id}/pages/p02/regenerate", headers=other)).status == 404
+    assert (await c.delete(f"/account/books/{book_id}", headers=other)).status == 404
+
+
+async def test_account_delete_removes_reports(server, accounts, clock):
+    c, service = server
+    mom, _ = accounts.create("angilyu@gmail.com")
+    headers = await _signed_in(accounts, mom.email, MOM_DEVICE)
+    resp = await c.post("/account/books", json=REQUEST, headers=headers)
+    book_id = (await _wait_done(service, (await resp.json())["job"]["id"])).book_id
+    await c.post(f"/account/books/{book_id}/report", json={"reason": "scary"}, headers=headers)
+    clock.t += 120
+    code, _ = accounts.start(mom.email, "delete")
+    resp = await c.post("/account/delete", json={"code": code}, headers=headers)
+    assert resp.status == 200, await resp.text()
+    assert (await (await c.get("/admin/reports", headers=ADMIN)).json())["reports"] == []

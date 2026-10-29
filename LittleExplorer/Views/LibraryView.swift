@@ -13,6 +13,7 @@ struct LibraryView: View {
     @Environment(AccountStore.self) private var account
     @Environment(ReadingActivity.self) private var reading
     @Environment(ContentStore.self) private var content
+    @Environment(BookMaker.self) private var maker
     @Environment(\.horizontalSizeClass) private var sizeClass
 
     @State private var openBook: OpenBook?
@@ -107,16 +108,24 @@ struct LibraryView: View {
         }
     }
 
+    @ViewBuilder
     private func cover(_ book: Book) -> some View {
-        Button {
-            openBook = OpenBook(book: book)
-        } label: {
-            BookCoverView(book: book, starCount: stars.stars(inBook: book.id), regular: regular)
+        if BookMaker.isPlaceholder(book) {
+            // A book being made: not openable until it's ready.
+            PlaceholderCoverView(book: book, regular: regular)
+                .id(book.id)
+        } else {
+            Button {
+                openBook = OpenBook(book: book)
+            } label: {
+                BookCoverView(book: book, starCount: stars.stars(inBook: book.id), regular: regular,
+                              remaking: maker.remaking(book.id)?.progressText)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(book.openLabel)
+            .accessibilityValue(BookCoverView.accessibilityValue(level: book.readingLevel, starCount: stars.stars(inBook: book.id), made: book.isMade))
+            .id(book.id)
         }
-        .buttonStyle(.plain)
-        .accessibilityLabel(book.openLabel)
-        .accessibilityValue(BookCoverView.accessibilityValue(level: book.readingLevel, starCount: stars.stars(inBook: book.id)))
-        .id(book.id)
     }
 
     /// A small "Grown-ups" button after the last shelf, out of the crowded top bar and away from his covers.
@@ -229,14 +238,17 @@ struct BookCoverView: View {
     /// Every star he has earned in this book (coins don't take them away). Hidden at 0.
     var starCount = 0
     var regular = true
+    /// A page of this made book being made again ("Writing…"), shown on the cover.
+    var remaking: String? = nil
 
-    /// What VoiceOver adds after "Open the Paris book", e.g. "Level 2, 7 stars".
-    static func accessibilityValue(level: Int, starCount: Int) -> String {
-        switch starCount {
+    /// What VoiceOver adds after "Open the Paris book", e.g. "Level 2, 7 stars" ("…, made with AI").
+    static func accessibilityValue(level: Int, starCount: Int, made: Bool = false) -> String {
+        let value = switch starCount {
         case ..<1: "Level \(level)"
         case 1: "Level \(level), 1 star"
         default: "Level \(level), \(starCount) stars"
         }
+        return made ? value + ", made with AI" : value
     }
 
     var body: some View {
@@ -270,6 +282,24 @@ struct BookCoverView: View {
                     LevelBadge(level: book.readingLevel, regular: regular)
                         .padding(.leading, regular ? 24 : 15)
                         .padding(.top, regular ? 12 : 8)
+                }
+                .overlay(alignment: .bottomTrailing) {
+                    if book.isMade {
+                        VStack(alignment: .trailing, spacing: 4) {
+                            if let remaking {
+                                Label(remaking, systemImage: "arrow.triangle.2.circlepath")
+                                    .font(.system(size: regular ? 14 : 10, weight: .bold, design: .rounded))
+                                    .foregroundStyle(.white)
+                                    .padding(.horizontal, regular ? 10 : 7)
+                                    .padding(.vertical, regular ? 5 : 3)
+                                    .background(Capsule().fill(Color.orange))
+                                    .fixedSize()
+                            }
+                            MadeWithAILabel(regular: regular)
+                        }
+                        .padding(regular ? 10 : 6)
+                        .accessibilityHidden(true)
+                    }
                 }
             VStack(alignment: .leading, spacing: 4) {
                 Text(book.coverTitle)

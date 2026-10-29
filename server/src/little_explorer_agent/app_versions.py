@@ -51,7 +51,7 @@ DEFAULT_TESTFLIGHT_URL = "itms-beta://"
 SETTING_PREFIX = "app."
 CACHE_S = 30.0
 # The first app that labels made (AI-written) books and lets a grown-up hide or report them. Older builds never
-# get made books: not in the manifest, not on the account's shelf.
+# get made books: not on the account's shelf, and an empty /account/content/manifest.json.
 MADE_BOOKS_VERSION = "1.2"
 
 Status = Literal["ok", "recommended", "required"]

@@ -391,8 +391,9 @@ The app reads the rules each time the Grown-ups corner opens, so changes apply r
 ## Made books (cloud generation)
 
 The server can write a new book for an account: the text, real Wikimedia Commons photos and the read-aloud
-narration. Then it publishes the book into `content/manifest.json`, so the current app shows it on that account's shelf with no
-app update. For now only the owner starts a book (through the admin endpoint below); the parent page comes later.
+narration. Then it publishes the book into that account's own manifest (`/account/content/manifest.json`), never
+the public one. A grown-up starts a book from **Make a book** in the app's Grown-ups corner (app 1.1 and later; see
+[Parent endpoints](#parent-endpoints)), and the owner can also start one through the admin endpoint below.
 The code is in [`server/src/little_explorer_agent/bookgen/`](../server/src/little_explorer_agent/bookgen).
 
 **Who may make books.** `accounts.can_generate` is the dogfood flag. A one-time migration
@@ -406,7 +407,7 @@ curl -X POST -H "Authorization: Bearer $PIP_ADMIN_KEY" -H "Content-Type: applica
 
 To **turn it on for everyone**, use `POST /admin/bookgen {"everyone": true}` (a saved setting; `false` turns it back
 off), or set `BOOKGEN_EVERYONE=1` on Render. Either one makes every account's `can_generate` true. The account JSON
-already carries `can_generate`, so the Phase 2 parent page can use it.
+(`/auth/verify`, `/account`) carries `can_generate`, and the app shows **Make a book** only when it's true.
 
 **Make a book** (202 means it is queued):
 
@@ -441,6 +442,36 @@ curl -X POST -H "Authorization: Bearer $PIP_ADMIN_KEY" -H "Content-Type: applica
 | `POST /admin/books/<id>/publish` | puts an unpublished book back |
 | `POST /admin/books/<id>/delete` | removes the book and its R2 files for good |
 | `GET /levels` (no key) | the three reading levels and their descriptions |
+| `GET /admin/reports`, `POST /admin/reports/<id>/close` | books grown-ups reported (reason, page, note), open first; close one when handled |
+
+### Parent endpoints
+
+The app calls these with the account's session token (`Authorization: Bearer <token>`). Making a book or a page
+answers 403 `not_allowed` when the account can't make books, and a book or job that isn't the account's own answers 404.
+
+| Endpoint | What it does |
+|---|---|
+| `GET /account/bookgen` | `can_generate`; when true, also `ready`, the levels, the field limits, `usage` (made today and this month, tries, page remakes and what's left) and the `active` job |
+| `POST /account/books` | `{"title", "section", "level", "about"?}` (title ≤ 40, section ≤ 30, about ≤ 300 characters); 202 with `{job, usage}` |
+| `GET /account/jobs/<id>` | the job's `status`, `step` and `progress` words ("Writing…", "Finding photos…", "Recording…", "Almost ready…") and, if it failed, a friendly `message` |
+| `GET /account/books` | the account's own made books (id, title, section, level, status, number of pages, dates) |
+| `DELETE /account/books/<id>` | deletes the account's own made book and its R2 files from every shelf; it still counts toward the month |
+| `POST /account/books/<id>/pages/<page>/regenerate` | writes, photographs and narrates one page again, then swaps it in; 409 `not_ready` if the book isn't on the shelf, 429 `busy` while another book or page is being made |
+| `POST /account/books/<id>/report` | `{"reason": "wrong" \| "scary" \| "photo" \| "other", "page"?, "note"?}` on any made book on the account's shelf; shows up in `/admin/reports` |
+| `GET /account/content/manifest.json` | the made books on the account's shelf, in the same format as the public manifest (see **Shelves** below) |
+| `GET /account/content/<path>` | a made book's JSON or its clip timings (`Narration/<id>.narration.json`) |
+
+Errors are `{"error": code, "message": text}`, and the app shows the `message` as it is. The codes are `bad_request`
+(400), `not_allowed` (403), `not_found` (404), `not_ready` (409 for a book not on the shelf; 503 when book making
+isn't set up), `busy`, `day_limit`, `month_limit`, `tries_limit` and `page_limit` (429), and `paused` (503). A job
+that moderation turns down ends as `rejected`, and its `message` says why and that it didn't count toward the limit; a
+failed job says so too. If moderation can't be reached, the job waits and retries (fails closed).
+
+**What counts.** A book counts toward the 3 a day and 10 a month once it is queued, running or done. Failed and rejected
+jobs don't count, but every try (including those) counts toward 8 tries a day (`BOOKGEN_TRIES_PER_DAY`), so a
+string of rejected ideas can't run up moderation and writing costs. Remaking a page doesn't use up a book; it has its
+own limit of 5 a day (`BOOKGEN_PAGE_REDOS_PER_DAY`), and only one job (book or page) runs per account at a time.
+Deleting a book doesn't give its slot back.
 
 **How a book is made.** One job at a time, in four steps. After each step the result is saved (R2 for files, the
 `books` and `book_assets` tables for the rest), so a retry never pays twice for work already done:
@@ -460,9 +491,13 @@ curl -X POST -H "Authorization: Bearer $PIP_ADMIN_KEY" -H "Content-Type: applica
 3. **Narration:** `gpt-4o-mini-tts` (voice `coral`) at the level's pace, then `whisper-1` word timings and an ffmpeg
    level/encode to m4a, the same as `scripts/generate_narration.py`.
 4. **Publish:**
-   - The book goes into the manifest.
-   - The account is granted the book.
-   - Milo learns it, with its level, on his next content refresh.
+   - The account is granted the book, so it goes into that account's manifest.
+   - Milo fetches it, with its level, at the start of the account's next Milo session.
+
+**Make a page again.** A page job runs the same steps for one page: the writer rewrites that page at the book's
+level (keeping the other pages as context), it is moderated, gets a new photo (never one the book already uses) and
+new narration, and then replaces the old page in the published book. Its files have their own names, so the old page
+stays on the shelf until the new one is ready, and a failed redo deletes only its own files.
 
 **Shelves.** Every account the app sees is an explicit list, even when its `all_books` flag is on.
 `/auth/verify`, `/account` and `/account/milo-consent` send `all_books: false` and `books` = the shelf:
@@ -474,15 +509,23 @@ The server's `may_read` checks follow the same rule. The admin endpoints and `to
 `all_books` flag and grants. The 1.0 app reads `all_books: true` as "every manifest book", so this keeps made books
 off other families' shelves without an app update.
 
-**Only 1.2 and later see made books** (`MADE_BOOKS_VERSION` in `app_versions.py`). Apps 1.0 and 1.1 can't show the
-"Made with AI" label or the menu to hide, delete or report a book. A request below 1.2 gets this treatment, and so does
-one with no `X-App-Version` header, which includes every content download from 1.0 and 1.1:
-- The bundled manifest and its ETag.
-- The bundled `library.json` and `narration.json`.
-- A `books` list without made books.
+**Two manifests.** The public `/content/manifest.json` is only the hand-made catalog, the same for every install.
+Made books are never in it: the 1.0 app downloads every file the manifest lists, so it keeps getting the catalog and
+never sees another family's made book (and never gets the made books of its own account either). The 1.2 app also
+asks for `/account/content/manifest.json` with the session token. That lists only the made books on the account's
+shelf (its own and the ones the owner granted it), with each book's JSON, a per-book clip-timings file
+(`Narration/<id>.narration.json`) and its photos and clips. Photos and clips carry a `url`, a presigned R2 link that
+lasts an hour; the app downloads them from there and checks their SHA-256, like every other file. The app keeps
+made books in their own folder, separate from the catalog, and forgets them when it signs out or switches account.
+A book whose id or file names would clash with the catalog is left out (and logged).
 
-So a parent with a 1.2 device and an older one on the same account sees made books only on the 1.2 device. 1.2 sends
-its headers on content downloads too.
+**Only 1.2 and later see made books** (`MADE_BOOKS_VERSION` in `app_versions.py`). Apps 1.0 and 1.1 can't show the
+"Made with AI" label or the menu to hide, delete or report a book. For a request below 1.2, including one with no
+`X-App-Version` header:
+- The account's `books` list leaves made books out.
+- `/account/content/manifest.json` is empty, and the database isn't read for it.
+
+So a parent with a 1.2 device and an older one on the same account sees made books only on the 1.2 device.
 
 **Moderation fails closed.** If moderation can't be reached, the job is retried later and never publishes unchecked
 text. A rejected request or page ends the job as `rejected` and deletes its files. Rejected and failed jobs don't
@@ -501,20 +544,18 @@ service is already kept awake (`KEEPALIVE_SECONDS` and the keep-awake workflow).
   - It sets a timer only while a job is waiting: a retry's backoff, a lease held by the other instance during a
     deploy, or the daily spending cap (until midnight). `GET /admin/bookgen` shows it as `runner.next_check_s`
     (`null` = asleep until woken).
-  - Made books are loaded at startup and whenever this instance publishes, unpublishes or deletes one. A
-    `/content/manifest.json` request reloads them in the background when the last load is over 10 minutes old
-    (that's user traffic, which wakes the database anyway). There's no timer.
+  - Made books aren't kept in memory. An account's manifest is read from the database when a signed-in app asks
+    for it (user traffic, which wakes the database anyway). The public manifest never touches the database, and
+    there's no timer.
   - `/healthz` and the keep-awake pings never touch the database.
 - Memory stays low (512 MB, 0.1 CPU): one photo is processed at a time and ffmpeg runs as a subprocess.
 - The image installs `ffmpeg` and `pillow`.
 
 **Files.** Photos and narration are stored in the private Cloudflare R2 bucket `little-explorer-books` under
 `books/<book id>/a<attempt>/` (each attempt writes its own objects, so a worker that lost its lease can't
-overwrite the new owner's files). The manifest serves a made book's JSON and the merged `library.json`/`narration.json` from
-memory; photos and m4a files are `302` redirects to presigned R2 links that last an hour. The app still checks every
-file's SHA-256. The bundled books don't change, and with no made books the manifest is exactly the bundled one.
-`/healthz` reports both `content` (the live manifest) and `bundled` (this commit's books); the deploy workflow checks
-`bundled`.
+overwrite the new owner's files). The account manifest serves a made book's JSON and clip timings from the
+database; photos and m4a files are presigned R2 links that last an hour. The public manifest is exactly the
+bundled one. `/healthz` reports both `content` and `bundled` (the same now); the deploy workflow checks `bundled`.
 
 **Limits and cost.** About **$0.13 a book** with the "Typical" models:
 
@@ -525,7 +566,10 @@ file's SHA-256. The bundled books don't change, and with no made books the manif
 The limits are:
 
 - one job at a time across the server
-- per account, 3 books a day (`BOOKGEN_PER_DAY`) and 10 a month (`BOOKGEN_PER_MONTH`)
+- per account, one book or page job at a time
+- per account, 3 books a day (`BOOKGEN_PER_DAY`) and 10 a month (`BOOKGEN_PER_MONTH`), 8 tries a day including
+  failed and rejected ones (`BOOKGEN_TRIES_PER_DAY`), and 5 page remakes a day (`BOOKGEN_PAGE_REDOS_PER_DAY`); see
+  **What counts** above
 - per book, a $0.75 stop (`BOOKGEN_JOB_USD_CAP`), so a runaway book fails
 - for the whole server, a $2 daily spend cap (`BOOKGEN_DAILY_USD_CAP`), after which new requests get 503 and the
   runner starts no new job until the next day

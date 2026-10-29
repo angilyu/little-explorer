@@ -10,6 +10,8 @@ struct LittleExplorerApp: App {
     @State private var account: AccountStore
     @State private var reading: ReadingActivity
     @State private var library: LibraryStore
+    @State private var made: MadeBookLibrary
+    @State private var maker: BookMaker
     @State private var upgrade = UpgradeChecker()
     @Environment(\.scenePhase) private var scenePhase
 
@@ -22,7 +24,27 @@ struct LittleExplorerApp: App {
         _account = State(initialValue: account)
         _reading = State(initialValue: ReadingActivity.live(account: account))
         _library = State(initialValue: LibraryStore.live(account: account))
+        let made = MadeBookLibrary.live(account: account)
+        let maker = BookMaker.live(account: account)
+        maker.onReady = { await made.sync(force: true) }
+        _made = State(initialValue: made)
+        _maker = State(initialValue: maker)
         _voice = State(initialValue: voice)
+    }
+
+    /// The account's catalog books, then its made books (the server already sent only the ones on its shelf).
+    private var shelf: [Book] {
+        let catalog = account.shelf(content.books)
+        let ids = Set(catalog.map(\.id))
+        let all = catalog + made.books.filter { !ids.contains($0.id) }
+        return DemoLaunch.current?.leveled(all) ?? all
+    }
+
+    /// Books being made show on the shelf as placeholder covers, in their section.
+    private var placeholders: [Book] { maker.placeholders.map(BookMaker.placeholder(for:)) }
+
+    private var sync: AccountSync {
+        AccountSync(account: account, stars: stars, coins: coins, reading: reading, library: library, made: made, maker: maker)
     }
 
     var body: some Scene {
@@ -40,8 +62,7 @@ struct LittleExplorerApp: App {
                             .ignoresSafeArea()
                     )
                 } else if account.isSignedIn {
-                    let shelf = DemoLaunch.current?.leveled(account.shelf(content.books)) ?? account.shelf(content.books)
-                    LibraryView(books: library.visible(shelf), allBooks: library.arranged(shelf))
+                    LibraryView(books: library.visible(shelf) + placeholders, allBooks: library.arranged(shelf))
                 } else {
                     WelcomeView(books: content.books)
                 }
@@ -54,6 +75,8 @@ struct LittleExplorerApp: App {
                 .environment(coins)
                 .environment(reading)
                 .environment(library)
+                .environment(made)
+                .environment(maker)
                 .sheet(isPresented: recommendsUpdate) {
                     if let prompt = upgrade.prompt {
                         UpgradeView(prompt: prompt) { upgrade.snoozeRecommended() }
@@ -71,10 +94,14 @@ struct LittleExplorerApp: App {
                     if let demo = DemoLaunch.current {
                         library.switchAccount(account.account?.id)
                         library.seedDemo(demo.library)
+                        if let make = demo.make {
+                            if [.placeholder, .made, .menu].contains(make) { made.seedDemo([MakeDemo.book()].compactMap { $0 }) }
+                            maker.seedDemo(status: MakeDemo.status(make), ownBooks: [MakeDemo.bookId])
+                        }
                         return
                     }
                     Task { await upgrade.check() }
-                    let sync = AccountSync(account: account, stars: stars, coins: coins, reading: reading, library: library)
+                    let sync = self.sync
                     sync.start()
                     reading.appOpened()
                     voice.warmUp()
@@ -95,6 +122,8 @@ struct LittleExplorerApp: App {
                     if id != nil { reading.appOpened() }
                 }
                 .onChange(of: scenePhase) { _, phase in
+                    // Books being made are checked on only while the app is in front.
+                    maker.setForeground(phase == .active)
                     if phase == .background { flushInBackground() }
                     guard phase == .active, DemoLaunch.current == nil else { return }
                     Task { await upgrade.check() }
@@ -102,7 +131,7 @@ struct LittleExplorerApp: App {
                     voice.warmUp()
                     Task { await reading.flush() }
                     Task { await content.refresh() }
-                    Task { await AccountSync(account: account, stars: stars, coins: coins, reading: reading, library: library).refresh() }
+                    Task { await sync.refresh() }
                 }
         }
     }

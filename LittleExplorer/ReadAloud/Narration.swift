@@ -50,12 +50,23 @@ struct NarrationLibrary {
 
     init(files: ContentFiles) {
         self.files = files
+        var clips: [String: Narration] = [:]
         if let data = files.data("narration.json"),
            let manifest = try? JSONDecoder().decode(Manifest.self, from: data) {
             clips = manifest.clips
-        } else {
-            clips = [:]
         }
+        // Each made book brings its own `<book>.narration.json` (keys are `book/page`, so they can't clash).
+        for url in Self.madeNarrations(files) {
+            guard let data = try? Data(contentsOf: url), let manifest = try? JSONDecoder().decode(Manifest.self, from: data) else { continue }
+            clips.merge(manifest.clips) { catalog, _ in catalog }
+        }
+        self.clips = clips
+    }
+
+    private static func madeNarrations(_ files: ContentFiles) -> [URL] {
+        guard let dir = files.madeDir,
+              let names = try? FileManager.default.contentsOfDirectory(atPath: dir.path) else { return [] }
+        return names.filter { $0.hasSuffix(".narration.json") }.sorted().map { dir.appendingPathComponent($0) }
     }
 
     /// The clip for this page, only if it still reads the page's current sentence.
