@@ -34,8 +34,8 @@ FORMAT = 1
 #: What each metric counts. Keep in step with ``BadgeMetric`` in ``LittleExplorer/Stores/Badges.swift``.
 METRICS: dict[str, str] = {
     "stars": "stars earned from Milo",
-    "star_answers": "answers that earned a star",
-    "long_answers": "long answers (8+ words) that earned a star",
+    "star_answers": "answers and questions that earned a star",
+    "long_answers": "long answers or questions (8+ words) that earned a star",
     "because_answers": "answers that explained with \u201cbecause\u201d",
     "stars_in_a_day": "most stars on one day",
     "star_days": "different days with a star",

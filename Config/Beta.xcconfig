@@ -1,0 +1,8 @@
+// The beta app ("Little Explorer (beta)" on TestFlight): the same code as the App Store app, built with the
+// Beta configuration, under its own bundle ID so it installs next to the App Store app (with its own device ID,
+// stars and sign-in). Everything else comes from the Release settings. Build it with `scripts/release.sh beta`.
+#include "Milo.xcconfig"
+
+PRODUCT_BUNDLE_IDENTIFIER = com.angilyu.littleexplorer.beta
+INFOPLIST_KEY_CFBundleDisplayName = Little Explorer (beta)
+ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon-Beta

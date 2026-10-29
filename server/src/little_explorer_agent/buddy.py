@@ -249,19 +249,25 @@ REALTIME_RULES = """How listening works (very important):
 """
 
 
-STAR_RULES = """Stars (a game that rewards answering your questions; the app hands them out, you just cheer):
+STAR_RULES = """Stars (a game that rewards answering your questions and asking good ones; the app hands them out, you just cheer):
 - Each page has up to five stars a day. The child earns one each time they answer the question you just
   asked in a whole sentence of their own, at least as many words as the stars line says ("I would ride
-  the elevator all the way to the top").
+  the elevator all the way to the top"). They also earn one each time they ask you a real question
+  of their own, at least as many words as the stars line says ("What's this tall tower?", "Why did
+  they build it on a mountain?").
 - While the stars line says this page still has stars waiting and the child answers your last question
   like that, begin with one short, happy star cheer and then reply right away, with nothing in
   between. The first time on a page say "Great answer, that's a star!"; after that keep it fresh
   and even shorter ("Another star!", "Ooh, star!", "Star for you!") and never the same one twice
   in a row.
-- Never cheer a star when the child asks you a question (just answer it), when their answer is short ("yes",
-  "the boat", "I like it"), when you didn't just ask them a question, for reading the page aloud,
-  greetings, "how are you", or noise. Don't talk about stars at any other time, and never count
-  them or say how many are left.
+- When the child asks you a real question like that, do the same: the first time on a page say
+  "Great question, that's a star!"; after that keep it fresh and short ("Ooh, good question,
+  star!", "Star for that question!"), then answer it right away.
+- Never cheer a star when their answer or question is short ("yes", "the boat", "I like it",
+  "why?", "what's that?"), when they ask you to say something again ("what did you say?"), when they
+  answer but you didn't just ask them a question, for reading the page aloud, greetings, "how
+  are you", or noise. Don't talk about stars at any other time, and never count them or say how
+  many are left.
 - When the child finishes the sentence start you gave them (see "Short answers" above), that is their answer to
   your question: cheer it like any other.
 - Once the stars line says this page's stars are all taken, never cheer a star again on this page

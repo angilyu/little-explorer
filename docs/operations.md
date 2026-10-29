@@ -130,7 +130,15 @@ The same as HTTP: `GET`/`POST /admin/accounts`, `GET /admin/accounts/<email or i
 
 ## Run the server
 
-No audio is stored. The app never holds LiveKit secrets. A small token server mints room tokens that dispatch the agent automatically.
+No audio is stored. Every Milo session starts with `AgentSession.start(record=False)` (pipeline and realtime), so
+LiveKit Cloud's Agent observability uploads no audio, transcripts, traces or logs for Milo, even with it on for the
+project. The one exception is `PIP_RECORD_ACCOUNTS`: a comma-separated list of account ids (shown by
+`tools/devices.py account <email>`) whose sessions LiveKit does record, for debugging with our own test accounts. Set
+it in the env file and run `scripts/deploy_agent.sh`; leave it empty to record nothing. List only our own accounts:
+recording anyone else's child needs their consent and a PRIVACY.md change first. To check after a deploy, open a new
+session under Sessions in the LiveKit dashboard: **Agent insights** should have no audio or transcript (or have them,
+for a listed account). The worker's runtime logs (`lk agent logs`) still hold the short turn text that
+`_log_decision` writes. The app never holds LiveKit secrets. A small token server mints room tokens that dispatch the agent automatically.
 
 ```sh
 cd server
@@ -271,8 +279,8 @@ city. Keep the words short and simple: the badges are read by 6 and 7 year olds.
 | Metric | Counts | Limit from the shelves |
 |---|---|---|
 | `stars` | all stars earned | |
-| `star_answers` | answers (and older questions) that earned a star | |
-| `long_answers` | long answers (8+ words) | |
+| `star_answers` | answers and questions that earned a star | |
+| `long_answers` | long answers or questions (8+ words) | |
 | `because_answers` | answers that explain with "because" | |
 | `stars_in_a_day` | most stars on one day | |
 | `star_days` | different days with a star | |
@@ -496,6 +504,102 @@ as before.
 
 **Reading levels.** Every book has a `level` (the bundled books are 2). See [Reading levels](content.md#reading-levels).
 
+## App versions and forced updates
+
+Several app builds are out at once: the App Store version, older App Store versions on devices that haven't
+updated, and TestFlight builds. The server and Milo must keep working for all of them, and the owner can make
+builds that are too old update.
+
+**Which build is calling.** From 1.1, every request the app makes (token, Milo warm-up, coins, account, stars,
+content manifest) sends `X-App-Version` (e.g. `1.1`), `X-App-Build` (e.g. `20261101.0930`) and `X-App-Channel`
+(`appstore`, `testflight` or `debug`). A request without `X-App-Version` is a **legacy** client: the 1.0 build.
+`/token` passes the build to Milo in the dispatch metadata (`app_version`, `app_build`, `app_channel`; absent for
+1.0), Milo logs it, and `tools/devices.py versions` counts the devices on each build.
+
+**The update pop-up (1.1 and later).** At launch and whenever it comes back to the foreground, the app calls
+`GET /app/version` (no access key) and gets
+`{"status": "ok"|"recommended"|"required", "update_url", "min_version", "recommended_version", "client"}`.
+
+- `required`: a full-screen "Time for an update!" screen the child can't close. Milo and narration stop.
+- `recommended`: a "A new version is ready" sheet with "Maybe later", which hides it for 3 days.
+- Update opens the parent gate, then the App Store (TestFlight builds open the TestFlight app).
+- If the check fails (offline, server down, an unknown answer) the app carries on; it never blocks the child
+  because of a failed check. A screen already shown as required stays until a check says otherwise.
+- The app also shows the required screen when any API call comes back `426 upgrade_required` (see `enforce`).
+
+**The policy.** Admin overrides win over env vars (Render), which win over the defaults. Overrides apply within
+30 seconds, with no deploy. If the database is down the server uses the env vars.
+
+| Setting | Env var | Admin field | CLI key | Default |
+| --- | --- | --- | --- | --- |
+| Builds below this must update | `PIP_APP_MIN_VERSION` | `min_version` | `min` | none |
+| Builds below this see "Maybe later" | `PIP_APP_RECOMMENDED_VERSION` | `recommended_version` | `recommended` | none |
+| TestFlight builds below this build number must update | `PIP_APP_TESTFLIGHT_MIN_BUILD` | `testflight_min_build` | `testflight-build` | none |
+| App Store link | `PIP_APP_STORE_URL` | `store_url` | `store` | `https://apps.apple.com/app/id6823828609` |
+| TestFlight link | `PIP_APP_TESTFLIGHT_URL` | `testflight_url` | `testflight` | `itms-beta://` |
+| Refuse API calls from builds that must update | `PIP_APP_ENFORCE` | `enforce` | `enforce` | `off` |
+
+`enforce` decides whether the server also turns too-old builds away, on top of the pop-up:
+
+- `off` (default): the server only tells the app. Every build keeps working.
+- `versioned`: app API calls (`/token`, `/milo/warm`, `/coins`, `/account`, `/auth/*`, the app's `/stars`
+  restore) from builds that sent a version below the minimum get `426 {"error": "upgrade_required"}`, which shows
+  the required screen. 1.0 isn't affected. Content, `/healthz`, `/app/version`, `/admin/*` and Milo's reports are
+  never refused.
+- `all`: also refuses legacy clients, so it counts 1.0 as below any minimum above 1.0.
+
+> **Warning:** 1.0 has no update pop-up. With `enforce=all` and a minimum above 1.0, the 1.0 app just breaks:
+> Milo, sign-in and coins fail with a generic error, and nothing tells the family to update. Use it only after
+> almost no device runs 1.0 (check `tools/devices.py versions`), and never while 1.0 is the only App Store version.
+
+**Raise the minimum version** (e.g. after 1.2 is live on the App Store):
+
+```bash
+cd server
+uv run python tools/devices.py versions                    # the policy, and how many devices run each build
+uv run python tools/devices.py versions recommended=1.2    # first, a gentle prompt for older builds
+uv run python tools/devices.py versions min=1.2            # later, builds below 1.2 must update (1.1 and later)
+uv run python tools/devices.py versions testflight-build=20261101.0930   # older TestFlight builds must update
+uv run python tools/devices.py versions enforce=versioned  # also refuse too-old builds' API calls
+uv run python tools/devices.py versions store=itms-apps://apps.apple.com/app/id6823828609   # a different link
+uv run python tools/devices.py versions min=default        # back to the env var or default; "reset" clears all
+curl -H "Authorization: Bearer $PIP_ADMIN_KEY" https://little-explorer-pip.onrender.com/admin/app-versions
+curl -X POST -H "Authorization: Bearer $PIP_ADMIN_KEY" -H "Content-Type: application/json" \
+  -d '{"min_version": "1.2"}' https://little-explorer-pip.onrender.com/admin/app-versions   # null clears a field
+curl -H "X-App-Version: 1.1" -H "X-App-Channel: appstore" https://little-explorer-pip.onrender.com/app/version
+```
+
+Only raise `min_version` to a version that is **live on the App Store**; otherwise families are told to update to
+a version they can't get. TestFlight builds (the beta app, and App Store builds installed through TestFlight) go by
+`testflight-build`, the build number, which is the date and time (see [Release the app](#release-the-app-beta-and-app-store)).
+
+**Release checklist.**
+
+1. Bump `MARKETING_VERSION` in the Xcode project for **every release of new code**, beta included: a version
+   number always means one commit, and `scripts/release.sh` refuses a version that was released from a different
+   commit. Beta-only rounds can use patch versions (1.1.1, 1.1.2); the App Store gets whichever one passes.
+2. Keep the server and Milo backward compatible (below). Server changes deploy before the app ships, so the old
+   app must keep working with the new server.
+3. When a version goes to the App Store, add its contract: copy `server/tests/contracts/app-1.0.json` to
+   `app-X.Y.json` with the requests that version sends and the response fields it reads, and replay it in
+   `test_client_compat.py`.
+4. After it's live, set `recommended`, and later `min`, as above.
+
+**Keeping old builds working.**
+
+- `server/tests/test_client_compat.py` replays what the 1.0 build sends (`contracts/app-1.0.json`) and checks the
+  status codes and response fields it reads, plus Milo's wire format (the data-channel topics, the
+  participant attributes and the star message). It runs with every server test run (`server-tests.yml` on
+  pull requests, and before every deploy). If it fails, the change would break an app build that's already out.
+- Changes to requests and responses are **additive**: add optional fields with defaults, never rename or remove a
+  field, change its type, or make a new field required. Old builds ignore new fields.
+- Gate new behavior that old builds can't handle on the build: `ClientInfo.from_headers(request.headers)` in the
+  server, `ClientInfo.from_metadata(metadata)` in Milo, then `client.at_least("1.2")` (false for 1.0).
+- Retire an old version by raising the minimum, not by removing what it uses. Remove server code for a version
+  only after `min_version` and `enforce` have kept it away for a while, and `tools/devices.py versions` shows no device on it.
+
+`-demoUpgrade required|recommended` in a DEBUG build shows the two screens.
+
 ## Deploy
 
 Two free-tier pieces. The app only talks to the first; LiveKit dispatches the second.
@@ -538,6 +642,12 @@ changed, runs the server tests, and deploys only the pieces that need it:
   `PIP_EMAIL_PROVIDER`, `PIP_EMAIL_FROM`, `GMAIL_*`) and [book generation](#made-books-cloud-generation) (`BOOKGEN_*`, `R2_*`), set in the Render dashboard, not in git. A free service sleeps after 15 idle minutes, so with `KEEPALIVE_SECONDS` set the
   server pings its own `/healthz` to stay awake (one always-on service fits in the free 750 hours a month). If it
   does fall asleep (e.g. after a redeploy fails), the first token takes about a minute.
+- **Milo warm-ups** (`POST /milo/warm`, see [Waking Milo up](milo.md#waking-milo-up-cold-starts)) wake the LiveKit
+  agent when the app or a book opens, since the free Build plan scales it to zero between sessions. A cold start is ~16 s from `/token` to the job (Milo listening ~18 s after the tap); warm, Milo joins ~2 s after the tap and the 5.2 s intro is the floor.
+  Optional Render env vars: `PIP_WARM=0` turns them off, `PIP_WARM_DEVICE_GAP_S` (default 600) and `PIP_WARM_FRESH_S`
+  (default 300) space them out. Render logs `warming Milo for device …`; `lk agent logs` shows `warm-up job in room
+  milo-warm-…` and no usage report. A warm-up never joins its room, so LiveKit meters no agent minutes for it; keep an
+  eye on the dashboard's agent session minutes (1,000 a month on the Build plan) anyway.
 - **Keep-awake ping** (`.github/workflows/keep-awake.yml`) GETs the public `/healthz` every 10 minutes as a
   backstop, so the app (and App Review) doesn't hit that ~50 s wake-up even if the self-ping stops. It needs no
   secrets and never deploys or runs tests. GitHub may delay scheduled runs (often by several minutes, more at busy
@@ -571,26 +681,78 @@ celebration; `-demoBadges seen` without it, `-demoBadges reading` or another gro
 sign-in's email or code step), `-demoParent` (the Grown-ups corner) and `-demoMilo
 signin|talk|talk-consent|off|turn-on` (the Milo consent screen after sign-in, the gate and consent when Talk to Milo
 is tapped before Milo is allowed, the corner with Milo off, and the consent its switch shows when turned on).
-`-demoShelf grown-ups` scrolls to the Grown-ups button.
+`-demoShelf grown-ups` scrolls to the Grown-ups button. `-demoUpgrade required|recommended` shows the
+[update screens](#app-versions-and-forced-updates).
 
-### Install on an iPhone or iPad (TestFlight)
+### Release the app (beta and App Store)
 
-The app is "Little Explorer: City Books" in App Store Connect, and every build goes to the internal TestFlight group
-"Family". Install **TestFlight** from the App Store on the device, sign in with the developer Apple ID, accept the
-invite, and turn on Automatic Updates for the app. New builds then install themselves; no cable is needed.
+There are two apps, built from the same code by the same target:
+
+| | App Store app | Beta app |
+| --- | --- | --- |
+| Name on the home screen | Little Explorer | Little Explorer (beta) |
+| Bundle ID | `com.angilyu.littleexplorer` | `com.angilyu.littleexplorer.beta` |
+| Build configuration | Release | Beta (`Config/Beta.xcconfig`: bundle ID, name, icon) |
+| Icon | `AppIcon` | `AppIcon-Beta`, with a purple "BETA" ribbon (`scripts/make_app_icon.py`) |
+| Goes to | App Store Connect, then App Review (you submit it) | TestFlight only (internal group "Family") |
+| `X-App-Channel` | `appstore` (`testflight` when installed through TestFlight) | always `testflight` |
+
+The beta installs next to the App Store app. It has its own keychain, so it's a separate device to the server, with
+its own device ID, stars and sign-in. Both read the same server, books and Milo.
+
+**Same version, same code.** `scripts/release.sh` builds both apps from one commit with the same `MARKETING_VERSION`
+and the same build number (the date and time), puts the commit's SHA in Info.plist as `GitCommit`, and tags the
+commit `v<version>-<build>` (e.g. `v1.1-20261102.1015`) once the first upload succeeds. Before it builds anything it
+refuses to:
+
+- run with uncommitted or untracked changes;
+- run on a commit that isn't pushed, or isn't in `origin/main`'s history (`--allow-branch` allows a pushed
+  branch). Any earlier main commit works, including a detached HEAD at a release tag;
+- release a version that a different commit was already released as (a `v<version>` or `v<version>-*` tag on
+  another commit): bump `MARKETING_VERSION`;
+- run when the project's `MARKETING_VERSION`s disagree.
+- upload a build without `PIP_ACCESS_KEY` in `Config/Local.xcconfig` (gitignored; Milo couldn't connect).
 
 ```sh
-scripts/testflight.sh               # archive, sign for App Store distribution, upload, and wait for Apple's processing
-scripts/testflight.sh --app-store   # the same, but the build can also be submitted for App Review
+scripts/release.sh check             # the checks, and the version, build and tag it would release
+scripts/release.sh beta --dry-run    # archive both apps and check their Info.plists; no upload, no tag
+scripts/release.sh beta              # Little Explorer (beta) -> TestFlight
+scripts/release.sh prod              # Little Explorer -> App Store Connect (uploaded, not submitted)
+scripts/release.sh both              # both, with the same build number
 ```
 
-By default the build is for internal testing only, and App Store Connect won't attach it to an App Store version. Use
-`--app-store` for a build you plan to submit for review; it still goes to "Family" as usual.
+Release `prod` after `beta` from the same commit and it reuses the beta's build number, so "1.2 (20261102.1015)"
+is the same code in both apps.
 
-It needs an App Store Connect API key (Admin role): the `.p8` in `~/.appstoreconnect/private_keys/`, and
-`ASC_KEY_ID` and `ASC_ISSUER_ID` in the environment or `~/.config/little-explorer/asc.env`. The build number is
-the date and time. `PIP_ACCESS_KEY` from `Config/Local.xcconfig` is built in, so keep TestFlight to internal
-testers. Book changes don't need a new build (see [Update books without an app update](content.md#update-books-without-an-app-update)).
+**Beta now, App Store later.** Usually the beta goes to TestFlight first and the App Store build follows once it has
+been tried (or once Apple has approved the previous version), by which time main has moved on. Main's tip is then
+new code under the same version, so `release.sh prod` there is refused. Build the App Store app from the beta's tag
+instead:
+
+```sh
+git fetch --tags && git tag -l 'v1.1-*'          # the beta's tag, e.g. v1.1-20261102.1015
+git checkout v1.1-20261102.1015                  # a detached HEAD at exactly the beta's commit
+scripts/release.sh prod                          # same version, build number and GitCommit as the beta
+git checkout main
+```
+
+New code on main then needs the next `MARKETING_VERSION` (e.g. 1.2) for its own betas. `--new-build` takes a new build number for the same commit (e.g. when Apple rejected
+the upload), and `--build N` sets one. A prod build is only uploaded: in App Store Connect, attach it to the App
+Store version and submit it for review yourself. It also shows in the App Store app's TestFlight.
+`scripts/testflight.sh` still works: it runs `release.sh beta` (`--app-store`: `release.sh prod`).
+
+To try a beta, install **TestFlight** from the App Store on the device, sign in with the developer Apple ID, accept
+the "Family" invite for "Little Explorer (beta)", and turn on Automatic Updates. New builds then install themselves;
+no cable is needed.
+
+Setup: the beta needs its own App Store Connect app record for `com.angilyu.littleexplorer.beta` (created by hand
+in App Store Connect; the API can't create apps). Uploading needs an App Store Connect API key (Admin role): the
+`.p8` in `~/.appstoreconnect/private_keys/`, and `ASC_KEY_ID` and `ASC_ISSUER_ID` in the environment or
+`~/.config/little-explorer/asc.env`. `PIP_ACCESS_KEY` from `Config/Local.xcconfig` is built in, so keep TestFlight
+to internal testers. Book changes don't need a new build (see [Update books without an app update](content.md#update-books-without-an-app-update)).
+
+The `Release checks` workflow (`.github/workflows/release-checks.yml`, `scripts/tests/test_release.py`) tests
+these checks and the Beta configuration on pull requests that touch them.
 
 > **Simulator note:** the iOS 26.2/26.3 simulators draw every emoji as a "?" box. Real devices are fine.
 >

@@ -9,6 +9,7 @@ struct LittleExplorerApp: App {
     @State private var coins = CoinStore.live()
     @State private var account: AccountStore
     @State private var reading: ReadingActivity
+    @State private var upgrade = UpgradeChecker()
     @Environment(\.scenePhase) private var scenePhase
 
     init() {
@@ -25,7 +26,10 @@ struct LittleExplorerApp: App {
     var body: some Scene {
         WindowGroup {
             Group {
-                if account.isSignedIn, account.asksMiloConsent {
+                if case .required(let url) = upgrade.prompt {
+                    // This build is no longer supported: nothing else shows until it's updated.
+                    UpgradeView(prompt: .required(url))
+                } else if account.isSignedIn, account.asksMiloConsent {
                     MiloConsentView {
                         withAnimation { account.finishMiloConsent() }
                     }
@@ -46,13 +50,26 @@ struct LittleExplorerApp: App {
                 .environment(stars)
                 .environment(coins)
                 .environment(reading)
+                .sheet(isPresented: recommendsUpdate) {
+                    if let prompt = upgrade.prompt {
+                        UpgradeView(prompt: prompt) { upgrade.snoozeRecommended() }
+                    }
+                }
+                .onChange(of: upgrade.isRequired) { _, required in
+                    guard required else { return }
+                    readAloud.stop()
+                    Task { await voice.turnOff() }
+                }
                 .task {
                     voice.onStar = { [stars] award in stars.receive(award) }
                     stars.onCelebrate = { StarChime.play() }
+                    if let demo = DemoLaunch.current?.upgrade { upgrade.show(demo == .required ? .required(nil) : .recommended(nil)) }
                     guard DemoLaunch.current == nil else { return }
+                    Task { await upgrade.check() }
                     let sync = AccountSync(account: account, stars: stars, coins: coins, reading: reading)
                     sync.start()
                     reading.appOpened()
+                    voice.warmUp()
                     async let books: Void = content.refresh()
                     async let saved: Void = sync.refresh()
                     _ = await (books, saved)
@@ -71,12 +88,22 @@ struct LittleExplorerApp: App {
                 .onChange(of: scenePhase) { _, phase in
                     if phase == .background { flushInBackground() }
                     guard phase == .active, DemoLaunch.current == nil else { return }
+                    Task { await upgrade.check() }
                     reading.appOpened()
+                    voice.warmUp()
                     Task { await reading.flush() }
                     Task { await content.refresh() }
                     Task { await AccountSync(account: account, stars: stars, coins: coins, reading: reading).refresh() }
                 }
         }
+    }
+
+    /// The "Maybe later" update prompt; closing it any way counts as "Maybe later".
+    private var recommendsUpdate: Binding<Bool> {
+        Binding(
+            get: { if case .recommended = upgrade.prompt { true } else { false } },
+            set: { if !$0 { upgrade.snoozeRecommended() } }
+        )
     }
 
     /// Sends the waiting reading activity while iOS gives the app a few seconds in the background.
