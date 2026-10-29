@@ -104,21 +104,23 @@ struct ArrangeLibraryView: View {
             PhotoView(photo: book.coverPage.photo, tint: Color(hex: book.coverColor))
                 .frame(width: 52, height: 40)
                 .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-                .overlay(alignment: .bottomTrailing) {
-                    LevelBadge(level: book.readingLevel, regular: false)
-                        .scaleEffect(0.7)
-                        .offset(x: 6, y: 6)
-                }
                 .saturation(hidden ? 0 : 1)
                 .opacity(hidden ? 0.45 : 1)
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: 4) {
                 Text(book.coverTitle)
                     .font(.body.weight(.semibold))
                     .foregroundStyle(hidden ? .secondary : .primary)
                     .lineLimit(1)
-                Text(hidden ? "Level \(book.readingLevel) · Hidden" : "Level \(book.readingLevel)")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                HStack(spacing: 6) {
+                    LevelBadge(level: book.readingLevel, regular: false)
+                        .saturation(hidden ? 0 : 1)
+                        .opacity(hidden ? 0.6 : 1)
+                    if hidden {
+                        Text("Hidden")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                }
             }
             Spacer(minLength: 8)
             Button {
