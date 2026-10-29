@@ -552,7 +552,8 @@ commit `v<version>-<build>` (e.g. `v1.1-20261102.1015`) once the first upload su
 refuses to:
 
 - run with uncommitted or untracked changes;
-- run on a commit that isn't pushed, or isn't on `origin/main` (`--allow-branch` allows a pushed branch);
+- run on a commit that isn't pushed, or isn't in `origin/main`'s history (`--allow-branch` allows a pushed
+  branch). Any earlier main commit works, including a detached HEAD at a release tag;
 - release a version that a different commit was already released as (a `v<version>` or `v<version>-*` tag on
   another commit): bump `MARKETING_VERSION`;
 - run when the project's `MARKETING_VERSION`s disagree.
@@ -567,7 +568,21 @@ scripts/release.sh both              # both, with the same build number
 ```
 
 Release `prod` after `beta` from the same commit and it reuses the beta's build number, so "1.2 (20261102.1015)"
-is the same code in both apps. `--new-build` takes a new build number for the same commit (e.g. when Apple rejected
+is the same code in both apps.
+
+**Beta now, App Store later.** Usually the beta goes to TestFlight first and the App Store build follows once it has
+been tried (or once Apple has approved the previous version), by which time main has moved on. Main's tip is then
+new code under the same version, so `release.sh prod` there is refused. Build the App Store app from the beta's tag
+instead:
+
+```sh
+git fetch --tags && git tag -l 'v1.1-*'          # the beta's tag, e.g. v1.1-20261102.1015
+git checkout v1.1-20261102.1015                  # a detached HEAD at exactly the beta's commit
+scripts/release.sh prod                          # same version, build number and GitCommit as the beta
+git checkout main
+```
+
+New code on main then needs the next `MARKETING_VERSION` (e.g. 1.2) for its own betas. `--new-build` takes a new build number for the same commit (e.g. when Apple rejected
 the upload), and `--build N` sets one. A prod build is only uploaded: in App Store Connect, attach it to the App
 Store version and submit it for review yourself. It also shows in the App Store app's TestFlight.
 `scripts/testflight.sh` still works: it runs `release.sh beta` (`--app-store`: `release.sh prod`).

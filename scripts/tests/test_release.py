@@ -95,9 +95,9 @@ def test_uploads_only_come_from_main(repo):
     commit(repo, "on a branch")
     git(repo, "push", "-q", "origin", "feature")
     result = release(repo, "both")
-    assert result.returncode == 1 and "isn't on origin/main" in result.stderr
+    assert result.returncode == 1 and "isn't in origin/main's history" in result.stderr
     result = release(repo, "check")
-    assert result.returncode == 0 and "isn't on origin/main" in result.stderr
+    assert result.returncode == 0 and "isn't in origin/main's history" in result.stderr
 
 
 def test_one_version_is_one_commit(repo):
@@ -217,3 +217,39 @@ def test_info_plists_carry_the_commit():
 
 def test_one_marketing_version():
     assert len(set(re.findall(r"MARKETING_VERSION = ([^;]+);", PBXPROJ.read_text()))) == 1
+
+
+def test_prod_later_from_the_betas_tag_after_main_moved_on(repo):
+    """Beta now, App Store later: main moves on, and prod is built from the beta's tag."""
+    beta = git(repo, "rev-parse", "HEAD")
+    tag(repo, "v1.1-20261101.0930")
+    for i in range(2):
+        (repo / f"later{i}.txt").write_text("new code on main")
+        commit(repo, f"later {i}")
+    git(repo, "push", "-q")
+    # Main's tip is new code under the same version: refused.
+    result = release(repo, "prod")
+    assert result.returncode == 1 and "already released from" in result.stderr
+    # The beta's tag (a detached HEAD, behind main's tip) builds with the beta's build number.
+    git(repo, "checkout", "-q", "v1.1-20261101.0930")
+    assert git(repo, "rev-parse", "HEAD") == beta
+    result = release(repo, "check")
+    assert result.returncode == 0, result.stderr
+    assert "1.1 (20261101.0930)" in result.stdout and "tag v1.1-20261101.0930" in result.stdout
+    assert "origin/main" not in result.stderr
+
+
+def test_a_detached_head_still_refuses_new_code_under_a_released_version(repo):
+    tag(repo, "v1.1-20261101.0930")
+    (repo / "notes.txt").write_text("new code")
+    commit(repo, "new code, same version")
+    git(repo, "push", "-q")
+    git(repo, "checkout", "-q", "--detach", "HEAD")
+    result = release(repo, "prod")
+    assert result.returncode == 1 and "bump MARKETING_VERSION" in result.stderr
+    assert "git checkout v1.1-20261101.0930" in result.stderr
+    # A detached commit that was never pushed is refused too.
+    (repo / "local.txt").write_text("local")
+    commit(repo, "detached, local only")
+    result = release(repo, "beta")
+    assert result.returncode == 1 and "isn't pushed" in result.stderr

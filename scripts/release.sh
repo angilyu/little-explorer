@@ -6,18 +6,22 @@
 #   scripts/release.sh both    # both, with the same build number
 #   scripts/release.sh check   # only the checks below, and what would be released
 #
+# To release the App Store build later from the same code as a beta (after main has moved on):
+#   git checkout v1.1-20261102.1015 && scripts/release.sh prod
+#
 # Options:
 #   --dry-run       archive and verify both apps, but don't upload or tag (checks only warn)
 #   --new-build     a new build number for this version (e.g. after Apple rejected a build)
 #   --build N       use build number N
-#   --allow-branch  release a pushed commit that isn't on origin/main
+#   --allow-branch  release a pushed commit that isn't in origin/main's history
 #
 # Both apps are archived from the same checkout with the same MARKETING_VERSION, the same build
 # number (CFBundleVersion, the date and time) and the commit's SHA in Info.plist (`GitCommit`), and
-# the commit is tagged v<version>-<build>. It refuses to run on uncommitted changes, on a commit
-# that isn't pushed (or not on main), or on a version that another commit was already released as:
-# new code needs a new MARKETING_VERSION. Releasing `prod` after `beta` at the same commit reuses
-# the beta's build number. A prod build is only uploaded: attach it to an App Store version and
+# the commit is tagged v<version>-<build>. Any commit in origin/main's history works, including a
+# detached HEAD at an earlier release tag. It refuses to run on uncommitted changes, on a commit
+# that isn't pushed (or isn't in main's history), or on a version that another commit was already released as:
+# new code needs a new MARKETING_VERSION. Releasing `prod` after `beta` at the same commit (e.g. at
+# the beta's tag) reuses the beta's build number. A prod build is only uploaded: attach it to an App Store version and
 # submit it for review in App Store Connect yourself.
 #
 # Uploading needs an App Store Connect API key (Users and Access -> Integrations -> Team Keys,
@@ -59,9 +63,9 @@ if [[ -z "$(git branch -r --contains "$head" 2>/dev/null)" ]]; then
   refuse "commit ${head:0:7} isn't pushed to $REMOTE"
 elif ! git merge-base --is-ancestor "$head" "$REMOTE/$MAIN" 2>/dev/null; then
   if $allow_branch || [[ "$mode" == check ]]; then
-    echo "warning: commit ${head:0:7} isn't on $REMOTE/$MAIN" >&2
+    echo "warning: commit ${head:0:7} isn't in $REMOTE/$MAIN's history" >&2
   else
-    refuse "commit ${head:0:7} isn't on $REMOTE/$MAIN (merge it first, or pass --allow-branch)"
+    refuse "commit ${head:0:7} isn't in $REMOTE/$MAIN's history (merge it first, or pass --allow-branch)"
   fi
 fi
 
@@ -75,7 +79,7 @@ released=""
 for tag in $(git tag -l "v$version" "v$version-*"); do
   commit="$(git rev-list -n 1 "$tag")"
   if [[ "$commit" != "$head" ]]; then
-    refuse "$version was already released from ${commit:0:7} ($tag); this is different code, so bump MARKETING_VERSION"
+    refuse "$version was already released from ${commit:0:7} ($tag); this is different code, so bump MARKETING_VERSION (or git checkout $tag to build that release again)"
   else
     released="$tag"
   fi
