@@ -32,6 +32,7 @@ from typing import Any  # noqa: E402
 from livekit.agents import AgentServer, AgentSession, JobContext, cli, function_tool, llm  # noqa: E402
 
 from . import agent_name  # noqa: E402
+from .app_versions import ClientInfo  # noqa: E402
 from .buddy import (  # noqa: E402
     GREETING,
     PERSONA,
@@ -489,7 +490,13 @@ async def entrypoint(ctx: JobContext) -> None:
     # to the device's link).
     account_id = str(meta.get("account_id") or "")
     remaining_s = remaining_seconds(meta)
-    log.info("Milo mode: %s, device %s, account %s, %s s left today", mode, device_id or "?", account_id or "?", remaining_s)
+    # The app build (legacy 1.0 apps send none). Gate anything an old app can't handle on
+    # client.at_least("x.y"), so older builds keep getting what they always did.
+    client = ClientInfo.from_metadata(meta)
+    log.info(
+        "Milo mode: %s, device %s, account %s, app %s, %s s left today",
+        mode, device_id or "?", account_id or "?", client.describe(), remaining_s,
+    )
     meter = UsageMeter(
         mode=mode, model=session_model(mode), room=ctx.job.room.name, device_id=device_id, account_id=account_id
     )

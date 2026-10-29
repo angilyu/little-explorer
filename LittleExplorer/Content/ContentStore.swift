@@ -53,6 +53,7 @@ struct ContentUpdater {
         var request = URLRequest(url: baseURL.appendingPathComponent("manifest.json"))
         request.timeoutInterval = 30
         request.cachePolicy = .reloadIgnoringLocalCacheData
+        request.addClientHeaders()
         let (data, response) = try await session.data(for: request)
         let status = (response as? HTTPURLResponse)?.statusCode ?? 0
         guard status == 200 else { throw ContentUpdateError.server(status: status) }

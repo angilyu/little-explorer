@@ -125,6 +125,7 @@ struct CoinService {
     private func request(_ path: String) -> URLRequest {
         var request = URLRequest(url: baseURL.appendingPathComponent(path))
         request.timeoutInterval = 20
+        request.addClientHeaders()
         if let accessKey { request.setValue("Bearer " + accessKey, forHTTPHeaderField: "Authorization") }
         if let token { request.setValue(token, forHTTPHeaderField: AccountService.sessionHeader) }
         return request
@@ -163,7 +164,9 @@ struct CoinService {
 
     private func send(_ request: URLRequest) async throws -> (Data, Int) {
         let (data, response) = try await session.data(for: request)
-        return (data, (response as? HTTPURLResponse)?.statusCode ?? 0)
+        let status = (response as? HTTPURLResponse)?.statusCode ?? 0
+        UpgradeSignal.check(status: status, data: data)
+        return (data, status)
     }
 
     private static func error(status: Int, data: Data) -> Error {

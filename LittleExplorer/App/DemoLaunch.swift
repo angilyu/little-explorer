@@ -25,8 +25,11 @@ import Foundation
 /// `-demoMilo talk-consent` shows the consent screen after it; `-demoMilo off` is an account whose grown-up
 /// turned Milo off (with `-demoParent`, the Grown-ups corner's Milo switch is off); `-demoMilo turn-on` opens
 /// the Grown-ups corner with Milo off and the consent its switch shows. Other demos have Milo allowed.
+/// `-demoUpgrade required` shows the update screen for a build that's no longer supported; `-demoUpgrade
+/// recommended` shows the "Maybe later" update prompt.
 struct DemoLaunch: Equatable {
     enum AccountScreen: String { case welcome, email, code, new }
+    enum Upgrade: String { case required, recommended }
     enum Milo: String {
         case signin, talk, off
         case talkConsent = "talk-consent"
@@ -66,6 +69,7 @@ struct DemoLaunch: Equatable {
     var badgeCategory: String?
     var accountScreen: AccountScreen?
     var milo: Milo?
+    var upgrade: Upgrade?
 
     /// Who the demo is signed in as: nobody on the welcome and sign-in screens.
     var account: Account? {
@@ -112,6 +116,9 @@ struct DemoLaunch: Equatable {
             if milo == .signin, demo.accountScreen == nil { demo.accountScreen = .new }
             if milo == .turnOn { demo.openParent = true }
             found = true
+        }
+        if let upgrade = value(after: "-demoUpgrade").flatMap(Upgrade.init(rawValue:)) {
+            demo.upgrade = upgrade; found = true
         }
         if arguments.contains("-demoCalendar") {
             demo.showCalendar = true

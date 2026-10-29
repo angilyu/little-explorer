@@ -1,15 +1,19 @@
-"""Draw the 1024x1024 app icon (a hot-air balloon over an open book) into the asset catalog.
+"""Draw the 1024x1024 app icon (a hot-air balloon over an open book) into the asset catalog, and the
+beta app's icon (the same picture with a "BETA" ribbon across the top-right corner).
 
 Usage: python3 scripts/make_app_icon.py   (needs Pillow)
 """
 
 from pathlib import Path
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 
 S = 1024
 K = 4  # supersampling for smooth edges
-OUT = Path(__file__).resolve().parent.parent / "LittleExplorer/Assets.xcassets/AppIcon.appiconset/AppIcon.png"
+ASSETS = Path(__file__).resolve().parent.parent / "LittleExplorer/Assets.xcassets"
+OUT = ASSETS / "AppIcon.appiconset/AppIcon.png"
+BETA_OUT = ASSETS / "AppIcon-Beta.appiconset/AppIcon-Beta.png"
+FONTS = ("/System/Library/Fonts/Avenir Next.ttc", "/System/Library/Fonts/HelveticaNeue.ttc")
 
 
 def lerp(a, b, t):
@@ -66,12 +70,60 @@ def draw() -> Image.Image:
     return img.resize((S, S), Image.LANCZOS)
 
 
-if __name__ == "__main__":
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    draw().save(OUT, optimize=True)
-    (OUT.parent / "Contents.json").write_text(
-        '{\n  "images" : [\n    {\n      "filename" : "AppIcon.png",\n      "idiom" : "universal",\n'
+def bold_font(size: int) -> ImageFont.FreeTypeFont:
+    for path in FONTS:
+        for index in range(12):
+            try:
+                font = ImageFont.truetype(path, size, index=index)
+            except OSError:
+                break
+            if font.getname()[1] in ("Heavy", "Bold"):
+                return font
+    return ImageFont.load_default(size)
+
+
+def beta(icon: Image.Image) -> Image.Image:
+    """``icon`` with a purple "BETA" ribbon across its top-right corner, placed inside the rounded
+    corner iOS cuts off so the whole word shows."""
+    n = S * K
+    img = icon.resize((n, n), Image.LANCZOS)
+    width, middle = 180 * K, 330 * K  # ribbon width; how far its center line sits from the corner
+    ribbon = Image.new("RGBA", (n, n), (0, 0, 0, 0))
+    d = ImageDraw.Draw(ribbon)
+    near, far = middle - width // 2, middle + width // 2
+    shadow = 10 * K
+    d.polygon([(n - far - shadow, 0), (n, far + shadow), (n, near + shadow), (n - near - shadow, 0)],
+              fill=(40, 20, 70, 90))
+    d.polygon([(n - far, 0), (n, far), (n, near), (n - near, 0)], fill=(120, 60, 200, 255))
+    edge = 7 * K
+    for offset in (near + 2 * edge, far - 2 * edge):
+        d.line([(n - offset, 0), (n, offset)], fill=(255, 255, 255, 150), width=edge // 2)
+
+    font = bold_font(112 * K)
+    text = Image.new("RGBA", (n, 200 * K), (0, 0, 0, 0))
+    td = ImageDraw.Draw(text)
+    td.text((n // 2, 100 * K), "BETA", font=font, fill=(255, 255, 255, 255), anchor="mm")
+    text = text.rotate(-45, expand=True, resample=Image.BICUBIC)
+    # The ribbon's center line crosses the corner's diagonal at (n - middle/2, middle/2).
+    cx, cy = n - middle // 2, middle // 2
+    ribbon.alpha_composite(text, (cx - text.width // 2, cy - text.height // 2))
+    img = img.convert("RGBA")
+    img.alpha_composite(ribbon)
+    return img.convert("RGB").resize((S, S), Image.LANCZOS)
+
+
+def save(img: Image.Image, out: Path) -> None:
+    out.parent.mkdir(parents=True, exist_ok=True)
+    img.save(out, optimize=True)
+    (out.parent / "Contents.json").write_text(
+        '{\n  "images" : [\n    {\n      "filename" : "' + out.name + '",\n      "idiom" : "universal",\n'
         '      "platform" : "ios",\n      "size" : "1024x1024"\n    }\n  ],\n'
         '  "info" : {\n    "author" : "xcode",\n    "version" : 1\n  }\n}\n'
     )
-    print(OUT)
+    print(out)
+
+
+if __name__ == "__main__":
+    icon = draw()
+    save(icon, OUT)
+    save(beta(icon), BETA_OUT)

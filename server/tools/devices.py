@@ -17,6 +17,11 @@ Run from server/ (it reads ``PIP_SERVER_URL`` and ``PIP_ADMIN_KEY`` from the usu
     uv run python tools/devices.py coins               # star-to-coin rules in force
     uv run python tools/devices.py coins rate=20 max=5 # change them; "off"/"on", "<key>=default"
     uv run python tools/devices.py coins reset         # back to the PIP_COINS* env defaults
+    uv run python tools/devices.py versions            # app version policy, and which builds devices run
+    uv run python tools/devices.py versions min=1.1 recommended=1.2   # update pop-ups (1.1 and later)
+    uv run python tools/devices.py versions testflight-build=20261101.0930   # older TestFlight builds update
+    uv run python tools/devices.py versions enforce=versioned         # also refuse too-old builds' API calls
+    uv run python tools/devices.py versions min=default # back to PIP_APP_MIN_VERSION; "reset" for all
     uv run python tools/devices.py accounts            # every grown-up account and its totals
     uv run python tools/devices.py account mom@example.com            # devices, stars, coins, books
     uv run python tools/devices.py create-account mom@example.com --all-books
@@ -137,6 +142,21 @@ class Admin:
             return self._call("GET", "/admin/coins")
         return self._call("POST", "/admin/coins", {**(changes or {}), **({"reset": True} if reset else {})})
 
+
+    def versions(self, changes: dict[str, Any] | None = None, reset: bool = False) -> dict[str, Any]:
+        if self.direct:
+            from little_explorer_agent.app_versions import VersionSettings
+
+            settings = VersionSettings.from_env(self.store)
+            if changes is None and not reset:
+                return settings.settings()
+            try:
+                return settings.update(changes or {}, reset=reset)
+            except ValueError as exc:
+                raise SystemExit(str(exc)) from None
+        if changes is None and not reset:
+            return self._call("GET", "/admin/app-versions")
+        return self._call("POST", "/admin/app-versions", {**(changes or {}), **({"reset": True} if reset else {})})
 
     def accounts(self) -> list[dict[str, Any]]:
         if self.direct:
@@ -342,6 +362,55 @@ def show_coins(data: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+VERSION_KEYS = {"min": "min_version", "min_version": "min_version", "recommended": "recommended_version",
+                "recommended_version": "recommended_version", "testflight-build": "testflight_min_build",
+                "testflight_min_build": "testflight_min_build", "store": "store_url", "store_url": "store_url",
+                "testflight": "testflight_url", "testflight_url": "testflight_url", "enforce": "enforce"}
+
+
+def version_changes(items: list[str]) -> dict[str, Any]:
+    """``min=1.1 enforce=versioned`` to ``{"min_version": "1.1", "enforce": "versioned"}``."""
+    changes: dict[str, Any] = {}
+    for item in items:
+        key, sep, value = item.partition("=")
+        if not sep or key not in VERSION_KEYS:
+            raise SystemExit(
+                f"Not a version setting: {item!r}. Use min=, recommended=, testflight-build=, store=, "
+                "testflight= or enforce=off|versioned|all (<key>=default for the env default)."
+            )
+        changes[VERSION_KEYS[key]] = None if value == "default" else value
+    return changes
+
+
+def app_builds(devices: list[dict[str, Any]]) -> list[list[str]]:
+    """Devices per app build they last asked Milo from, newest sighting first."""
+    builds: dict[str, list[str]] = {}
+    for d in devices:
+        builds.setdefault(d.get("app_version") or "not seen yet", []).append(str(d.get("last_seen") or ""))
+    rows = [[build, str(len(seen)), max(seen)[:16]] for build, seen in builds.items()]
+    return sorted(rows, key=lambda r: r[2], reverse=True)
+
+
+def show_versions(data: dict[str, Any], devices: list[dict[str, Any]] | None = None) -> str:
+    s = data["settings"]
+    lines = [
+        f"Must update below: {s['min_version'] or 'nothing (every version works)'}",
+        f"Asked to update below: {s['recommended_version'] or 'nothing'}",
+        f"TestFlight builds must update below build: {s['testflight_min_build'] or 'nothing'}",
+        f"App Store link: {s['store_url'] or '(none: the app opens its own App Store page)'}",
+        f"TestFlight link: {s['testflight_url']}",
+        f"Server refuses too-old builds: {s['enforce']}",
+    ]
+    if s["enforce"] == "all" and s["min_version"]:
+        lines.append("WARNING: enforce=all also refuses 1.0, which has no update pop-up; it just stops working.")
+    overrides = data.get("overrides") or {}
+    lines.append("Overrides: " + (", ".join(f"{k}={v}" for k, v in sorted(overrides.items())) or "none (env defaults)"))
+    if devices is not None:
+        lines += ["", "Builds devices last asked Milo from (1.0 = sends no version):"]
+        lines.append(_table([["BUILD", "DEVICES", "LAST SEEN"], *app_builds(devices)]) if devices else "No devices yet.")
+    return "\n".join(lines)
+
+
 def show_device(d: dict[str, Any]) -> str:
     limit = "default" if d.get("daily_limit_min") is None else f"{d['daily_limit_min']:g} min"
     return f"{d['display_name']} ({d['id']}): {d['status']}, daily limit {limit}"
@@ -426,6 +495,12 @@ def main(argv: list[str] | None = None) -> int:
     rename.add_argument("label")
     coins = sub.add_parser("coins", help="star-to-coin rules: show, change (rate=20 max=5 off) or reset")
     coins.add_argument("changes", nargs="*", help="rate=N, min=N, max=N (0 = no limit), on, off, <key>=default, reset")
+    versions = sub.add_parser("versions", help="app version policy (force update) and the builds devices run")
+    versions.add_argument(
+        "changes", nargs="*",
+        help="min=1.1, recommended=1.2, testflight-build=N, store=URL, testflight=URL, enforce=off|versioned|all, "
+        "<key>=default, reset",
+    )
     sub.add_parser("accounts", help="every grown-up account with its totals")
     account = sub.add_parser("account", help="one account: devices, books, stars, coins")
     account.add_argument("account", help="email or account id")
@@ -481,6 +556,15 @@ def main(argv: list[str] | None = None) -> int:
         items = [c for c in args.changes if c != "reset"]
         data = admin.coins(coin_changes(items) if items else None, reset=reset)
         print(json.dumps(data, indent=2) if args.json else show_coins(data))
+        return 0
+    if command == "versions":
+        reset = "reset" in args.changes
+        items = [c for c in args.changes if c != "reset"]
+        data = admin.versions(version_changes(items) if items else None, reset=reset)
+        if args.json:
+            print(json.dumps(data, indent=2))
+        else:
+            print(show_versions(data, None if items or reset else admin.devices()["devices"]))
         return 0
     if command == "accounts":
         rows = admin.accounts()

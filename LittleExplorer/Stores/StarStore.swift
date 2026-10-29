@@ -286,6 +286,7 @@ struct StarBackup {
         if token == nil { components.queryItems = [URLQueryItem(name: "device", value: deviceId)] }
         var request = URLRequest(url: components.url!)
         request.timeoutInterval = 20
+        request.addClientHeaders()
         if let token { request.setValue(token, forHTTPHeaderField: AccountService.sessionHeader) }
         if let accessKey { request.setValue("Bearer \(accessKey)", forHTTPHeaderField: "Authorization") }
         return request
@@ -294,6 +295,7 @@ struct StarBackup {
     func fetch() async throws -> [StarAward] {
         let (data, response) = try await session.data(for: request())
         let status = (response as? HTTPURLResponse)?.statusCode ?? 0
+        UpgradeSignal.check(status: status, data: data)
         guard (200..<300).contains(status) else { throw VoiceError.tokenServer(status: status) }
         return try JSONDecoder().decode(Response.self, from: data).stars
     }
