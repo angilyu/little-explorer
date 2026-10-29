@@ -70,6 +70,7 @@ struct AccountService {
         var request = URLRequest(url: baseURL.appendingPathComponent(path))
         request.httpMethod = method
         request.timeoutInterval = 30
+        request.addClientHeaders()
         if let accessKey { request.setValue("Bearer " + accessKey, forHTTPHeaderField: "Authorization") }
         if let token { request.setValue(token, forHTTPHeaderField: Self.sessionHeader) }
         if let body {
@@ -132,6 +133,7 @@ struct AccountService {
         }
         let status = (response as? HTTPURLResponse)?.statusCode ?? 0
         guard !(200..<300).contains(status) else { return data }
+        UpgradeSignal.check(status: status, data: data)
         throw Self.error(status: status, data: data)
     }
 

@@ -11,6 +11,9 @@ def _isolated(monkeypatch, tmp_path):
         monkeypatch.delenv(name, raising=False)
     for name in ("PIP_COINS", "PIP_STARS_PER_COIN", "PIP_COINS_MIN", "PIP_COINS_MAX"):
         monkeypatch.delenv(name, raising=False)
+    for name in ("PIP_APP_MIN_VERSION", "PIP_APP_RECOMMENDED_VERSION", "PIP_APP_TESTFLIGHT_MIN_BUILD",
+                 "PIP_APP_STORE_URL", "PIP_APP_TESTFLIGHT_URL", "PIP_APP_ENFORCE"):
+        monkeypatch.delenv(name, raising=False)
     for name in ("PIP_EMAIL_PROVIDER", "SMTP_HOST", "SMTP_USER", "SMTP_PASSWORD", "RESEND_API_KEY", "GMAIL_CLIENT_ID", "GMAIL_CLIENT_SECRET", "GMAIL_REFRESH_TOKEN", "PIP_EMAIL_FROM",
                  "PIP_AUTH_SECRET", "PIP_DEFAULT_BOOKS", "PIP_REVIEW_EMAIL", "PIP_REVIEW_CODE", "PIP_EMAIL_DAILY_CAP"):
         monkeypatch.delenv(name, raising=False)

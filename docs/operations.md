@@ -350,6 +350,101 @@ curl -X POST -H "Authorization: Bearer $PIP_ADMIN_KEY" -H "Content-Type: applica
 
 The app reads the rules each time the Grown-ups corner opens, so changes apply right away.
 
+## App versions and forced updates
+
+Several app builds are out at once: the App Store version, older App Store versions on devices that haven't
+updated, and TestFlight builds. The server and Milo must keep working for all of them, and the owner can make
+builds that are too old update.
+
+**Which build is calling.** From 1.1, every request the app makes (token, Milo warm-up, coins, account, stars,
+content manifest) sends `X-App-Version` (e.g. `1.1`), `X-App-Build` (e.g. `20261101.0930`) and `X-App-Channel`
+(`appstore`, `testflight` or `debug`). A request without `X-App-Version` is a **legacy** client: the 1.0 build.
+`/token` passes the build to Milo in the dispatch metadata (`app_version`, `app_build`, `app_channel`; absent for
+1.0), Milo logs it, and `tools/devices.py versions` counts the devices on each build.
+
+**The update pop-up (1.1 and later).** At launch and whenever it comes back to the foreground, the app calls
+`GET /app/version` (no access key) and gets
+`{"status": "ok"|"recommended"|"required", "update_url", "min_version", "recommended_version", "client"}`.
+
+- `required`: a full-screen "Time for an update!" screen the child can't close. Milo and narration stop.
+- `recommended`: a "A new version is ready" sheet with "Maybe later", which hides it for 3 days.
+- Update opens the parent gate, then the App Store (TestFlight builds open the TestFlight app).
+- If the check fails (offline, server down, an unknown answer) the app carries on; it never blocks the child
+  because of a failed check. A screen already shown as required stays until a check says otherwise.
+- The app also shows the required screen when any API call comes back `426 upgrade_required` (see `enforce`).
+
+**The policy.** Admin overrides win over env vars (Render), which win over the defaults. Overrides apply within
+30 seconds, with no deploy. If the database is down the server uses the env vars.
+
+| Setting | Env var | Admin field | CLI key | Default |
+| --- | --- | --- | --- | --- |
+| Builds below this must update | `PIP_APP_MIN_VERSION` | `min_version` | `min` | none |
+| Builds below this see "Maybe later" | `PIP_APP_RECOMMENDED_VERSION` | `recommended_version` | `recommended` | none |
+| TestFlight builds below this build number must update | `PIP_APP_TESTFLIGHT_MIN_BUILD` | `testflight_min_build` | `testflight-build` | none |
+| App Store link | `PIP_APP_STORE_URL` | `store_url` | `store` | none (the app finds its own page) |
+| TestFlight link | `PIP_APP_TESTFLIGHT_URL` | `testflight_url` | `testflight` | `itms-beta://` |
+| Refuse API calls from builds that must update | `PIP_APP_ENFORCE` | `enforce` | `enforce` | `off` |
+
+`enforce` decides whether the server also turns too-old builds away, on top of the pop-up:
+
+- `off` (default): the server only tells the app. Every build keeps working.
+- `versioned`: app API calls (`/token`, `/milo/warm`, `/coins`, `/account`, `/auth/*`, the app's `/stars`
+  restore) from builds that sent a version below the minimum get `426 {"error": "upgrade_required"}`, which shows
+  the required screen. 1.0 isn't affected. Content, `/healthz`, `/app/version`, `/admin/*` and Milo's reports are
+  never refused.
+- `all`: also refuses legacy clients, so it counts 1.0 as below any minimum above 1.0.
+
+> **Warning:** 1.0 has no update pop-up. With `enforce=all` and a minimum above 1.0, the 1.0 app just breaks:
+> Milo, sign-in and coins fail with a generic error, and nothing tells the family to update. Use it only after
+> almost no device runs 1.0 (check `tools/devices.py versions`), and never while 1.0 is the only App Store version.
+
+**Raise the minimum version** (e.g. after 1.2 is live on the App Store):
+
+```bash
+cd server
+uv run python tools/devices.py versions                    # the policy, and how many devices run each build
+uv run python tools/devices.py versions recommended=1.2    # first, a gentle prompt for older builds
+uv run python tools/devices.py versions min=1.2            # later, builds below 1.2 must update (1.1 and later)
+uv run python tools/devices.py versions testflight-build=20261101.0930   # older TestFlight builds must update
+uv run python tools/devices.py versions enforce=versioned  # also refuse too-old builds' API calls
+uv run python tools/devices.py versions store=https://apps.apple.com/app/id<Apple ID>
+uv run python tools/devices.py versions min=default        # back to the env var or default; "reset" clears all
+curl -H "Authorization: Bearer $PIP_ADMIN_KEY" https://little-explorer-pip.onrender.com/admin/app-versions
+curl -X POST -H "Authorization: Bearer $PIP_ADMIN_KEY" -H "Content-Type: application/json" \
+  -d '{"min_version": "1.2"}' https://little-explorer-pip.onrender.com/admin/app-versions   # null clears a field
+curl -H "X-App-Version: 1.1" -H "X-App-Channel: appstore" https://little-explorer-pip.onrender.com/app/version
+```
+
+Only raise `min_version` to a version that is **live on the App Store**; otherwise families are told to update to
+a version they can't get. TestFlight builds share version numbers, so they go by `testflight-build` (the build
+number is the date and time, see `scripts/testflight.sh`).
+
+**Release checklist.**
+
+1. Bump `MARKETING_VERSION` in the Xcode project for each App Store version (TestFlight builds of the same
+   version only get a new build number).
+2. Keep the server and Milo backward compatible (below). Server changes deploy before the app ships, so the old
+   app must keep working with the new server.
+3. When a version goes to the App Store, add its contract: copy `server/tests/contracts/app-1.0.json` to
+   `app-X.Y.json` with the requests that version sends and the response fields it reads, and replay it in
+   `test_client_compat.py`.
+4. After it's live, set `recommended`, and later `min`, as above.
+
+**Keeping old builds working.**
+
+- `server/tests/test_client_compat.py` replays what the 1.0 build sends (`contracts/app-1.0.json`) and checks the
+  status codes and response fields it reads, plus Milo's wire format (the data-channel topics, the
+  participant attributes and the star message). It runs with every server test run (`server-tests.yml` on
+  pull requests, and before every deploy). If it fails, the change would break an app build that's already out.
+- Changes to requests and responses are **additive**: add optional fields with defaults, never rename or remove a
+  field, change its type, or make a new field required. Old builds ignore new fields.
+- Gate new behavior that old builds can't handle on the build: `ClientInfo.from_headers(request.headers)` in the
+  server, `ClientInfo.from_metadata(metadata)` in Milo, then `client.at_least("1.2")` (false for 1.0).
+- Retire an old version by raising the minimum, not by removing what it uses. Remove server code for a version
+  only after `min_version` and `enforce` have kept it away for a while, and `tools/devices.py versions` shows no device on it.
+
+`-demoUpgrade required|recommended` in a DEBUG build shows the two screens.
+
 ## Deploy
 
 Two free-tier pieces. The app only talks to the first; LiveKit dispatches the second.
@@ -431,7 +526,8 @@ celebration; `-demoBadges seen` without it, `-demoBadges reading` or another gro
 sign-in's email or code step), `-demoParent` (the Grown-ups corner) and `-demoMilo
 signin|talk|talk-consent|off|turn-on` (the Milo consent screen after sign-in, the gate and consent when Talk to Milo
 is tapped before Milo is allowed, the corner with Milo off, and the consent its switch shows when turned on).
-`-demoShelf grown-ups` scrolls to the Grown-ups button.
+`-demoShelf grown-ups` scrolls to the Grown-ups button. `-demoUpgrade required|recommended` shows the
+[update screens](#app-versions-and-forced-updates).
 
 ### Install on an iPhone or iPad (TestFlight)
 
