@@ -381,7 +381,7 @@ content manifest) sends `X-App-Version` (e.g. `1.1`), `X-App-Build` (e.g. `20261
 | Builds below this must update | `PIP_APP_MIN_VERSION` | `min_version` | `min` | none |
 | Builds below this see "Maybe later" | `PIP_APP_RECOMMENDED_VERSION` | `recommended_version` | `recommended` | none |
 | TestFlight builds below this build number must update | `PIP_APP_TESTFLIGHT_MIN_BUILD` | `testflight_min_build` | `testflight-build` | none |
-| App Store link | `PIP_APP_STORE_URL` | `store_url` | `store` | none (the app finds its own page) |
+| App Store link | `PIP_APP_STORE_URL` | `store_url` | `store` | `https://apps.apple.com/app/id6823828609` |
 | TestFlight link | `PIP_APP_TESTFLIGHT_URL` | `testflight_url` | `testflight` | `itms-beta://` |
 | Refuse API calls from builds that must update | `PIP_APP_ENFORCE` | `enforce` | `enforce` | `off` |
 
@@ -407,7 +407,7 @@ uv run python tools/devices.py versions recommended=1.2    # first, a gentle pro
 uv run python tools/devices.py versions min=1.2            # later, builds below 1.2 must update (1.1 and later)
 uv run python tools/devices.py versions testflight-build=20261101.0930   # older TestFlight builds must update
 uv run python tools/devices.py versions enforce=versioned  # also refuse too-old builds' API calls
-uv run python tools/devices.py versions store=https://apps.apple.com/app/id<Apple ID>
+uv run python tools/devices.py versions store=itms-apps://apps.apple.com/app/id6823828609   # a different link
 uv run python tools/devices.py versions min=default        # back to the env var or default; "reset" clears all
 curl -H "Authorization: Bearer $PIP_ADMIN_KEY" https://little-explorer-pip.onrender.com/admin/app-versions
 curl -X POST -H "Authorization: Bearer $PIP_ADMIN_KEY" -H "Content-Type: application/json" \

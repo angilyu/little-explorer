@@ -180,16 +180,12 @@ final class UpgradeTests: XCTestCase {
         await waitFor { checker.isRequired }
     }
 
-    func testUpdateGoesToTheServersLinkElseTestFlightElseTheStore() async {
+    func testUpdateGoesToTheServersLinkElseTestFlightElseTheStore() {
         let link = URL(string: "https://apps.apple.com/app/id1")!
-        let given = await UpgradeChecker.destination(link, channel: .appstore) { nil }
-        XCTAssertEqual(given, link)
-        let beta = await UpgradeChecker.destination(nil, channel: .testflight) { nil }
-        XCTAssertEqual(beta.scheme, "itms-beta")
-        let page = await UpgradeChecker.destination(nil, channel: .appstore) { 1234567890 }
-        XCTAssertEqual(page.absoluteString, "https://apps.apple.com/app/id1234567890")
-        let search = await UpgradeChecker.destination(nil, channel: .appstore) { nil }
-        XCTAssertEqual(search.host, "apps.apple.com")
+        XCTAssertEqual(UpgradeChecker.destination(link, channel: .appstore), link)
+        XCTAssertEqual(UpgradeChecker.destination(nil, channel: .testflight).scheme, "itms-beta")
+        XCTAssertEqual(UpgradeChecker.destination(nil, channel: .appstore).absoluteString,
+                       "https://apps.apple.com/app/id6823828609")
     }
 
     func testDemoArguments() {

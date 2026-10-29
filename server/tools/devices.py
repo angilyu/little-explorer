@@ -397,7 +397,7 @@ def show_versions(data: dict[str, Any], devices: list[dict[str, Any]] | None = N
         f"Must update below: {s['min_version'] or 'nothing (every version works)'}",
         f"Asked to update below: {s['recommended_version'] or 'nothing'}",
         f"TestFlight builds must update below build: {s['testflight_min_build'] or 'nothing'}",
-        f"App Store link: {s['store_url'] or '(none: the app searches the App Store)'}",
+        f"App Store link: {s['store_url'] or '(none: the app opens its own App Store page)'}",
         f"TestFlight link: {s['testflight_url']}",
         f"Server refuses too-old builds: {s['enforce']}",
     ]

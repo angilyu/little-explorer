@@ -6,7 +6,13 @@ from pathlib import Path
 
 import pytest
 
-from little_explorer_agent.app_versions import ClientInfo, VersionPolicy, VersionSettings, parse_version
+from little_explorer_agent.app_versions import (
+    DEFAULT_STORE_URL,
+    ClientInfo,
+    VersionPolicy,
+    VersionSettings,
+    parse_version,
+)
 from little_explorer_agent.devices import DeviceStore
 from little_explorer_agent.modes import job_metadata, parse_job_metadata
 
@@ -89,7 +95,8 @@ def test_policy_validation_and_env():
 
     env = {"PIP_APP_MIN_VERSION": "1.1", "PIP_APP_ENFORCE": "versioned", "PIP_APP_STORE_URL": " "}
     policy = VersionPolicy.from_env(env)
-    assert policy.min_version == "1.1" and policy.enforce == "versioned" and policy.store_url == ""
+    assert policy.min_version == "1.1" and policy.enforce == "versioned"
+    assert policy.store_url == DEFAULT_STORE_URL == "https://apps.apple.com/app/id6823828609"
     with pytest.raises(ValueError):
         VersionPolicy.from_env({"PIP_APP_ENFORCE": "yes"})
 

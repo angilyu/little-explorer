@@ -167,7 +167,8 @@ async def test_app_version_endpoint(store, mailer, livekit):
         resp = await client.get("/app/version", headers={"X-App-Version": "1.0.1", "X-App-Channel": "appstore"})
         assert resp.status == 200
         data = await resp.json()
-        assert data["status"] == "required" and data["min_version"] == "1.1" and data["update_url"] is None
+        assert data["status"] == "required" and data["min_version"] == "1.1"
+        assert data["update_url"] == "https://apps.apple.com/app/id6823828609"
         assert data["client"] == {"version": "1.0.1", "build": None, "channel": "appstore", "legacy": False}
         resp = await client.get("/app/version", headers={"X-App-Version": "1.1"})
         assert (await resp.json())["status"] == "recommended"

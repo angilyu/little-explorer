@@ -62,7 +62,7 @@ struct UpgradeView: View {
         .sheet(isPresented: $gate) {
             ParentGateView(onPass: {
                 gate = false
-                Task { openURL(await UpgradeChecker.destination(url)) }
+                openURL(UpgradeChecker.destination(url))
             }, note: Self.gateNote)
         }
     }

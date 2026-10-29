@@ -45,9 +45,8 @@ CHANNEL_HEADER = "X-App-Channel"
 LEGACY_VERSION = "1.0"
 CHANNELS = ("appstore", "testflight", "debug")
 ENFORCE_MODES = ("off", "versioned", "all")
-# Set PIP_APP_STORE_URL to https://apps.apple.com/app/id<Apple ID> once the app is live; until then the
-# app opens an App Store search for itself.
-DEFAULT_STORE_URL = ""
+# Little Explorer: City Books (Apple ID 6823828609, bundle com.angilyu.littleexplorer).
+DEFAULT_STORE_URL = "https://apps.apple.com/app/id6823828609"
 DEFAULT_TESTFLIGHT_URL = "itms-beta://"
 SETTING_PREFIX = "app."
 CACHE_S = 30.0

@@ -1,5 +1,4 @@
 import Foundation
-import StoreKit
 
 /// The app build talking to the server. From 1.1 every request says which build it is in `X-App-*` headers (1.0 sent
 /// nothing, and the server treats a request without them as 1.0), so the server and Milo can keep older builds
@@ -207,20 +206,13 @@ final class UpgradeChecker {
     /// For screenshots (`-demoUpgrade required|recommended`).
     func show(_ prompt: Prompt) { self.prompt = prompt }
 
-    /// Where Update goes: the server's link, else this app's App Store page (which App Store builds know), else a
-    /// search for the app. TestFlight builds open TestFlight.
-    static func destination(
-        _ url: URL?, channel: ClientVersion.Channel = ClientVersion.current.channel,
-        appStoreID: () async -> UInt64? = appStoreID
-    ) async -> URL {
+    /// Little Explorer: City Books on the App Store (Apple ID 6823828609).
+    static let appStoreURL = URL(string: "https://apps.apple.com/app/id6823828609")!
+
+    /// Where Update goes: the server's link, else TestFlight for TestFlight builds, else the App Store page.
+    static func destination(_ url: URL?, channel: ClientVersion.Channel = ClientVersion.current.channel) -> URL {
         if let url { return url }
         if channel == .testflight { return URL(string: "itms-beta://")! }
-        if let id = await appStoreID() { return URL(string: "https://apps.apple.com/app/id\(id)")! }
-        return URL(string: "https://apps.apple.com/search?term=Little%20Explorer%20City%20Books")!
-    }
-
-    static func appStoreID() async -> UInt64? {
-        guard case .verified(let transaction)? = try? await AppTransaction.shared else { return nil }
-        return transaction.appID
+        return appStoreURL
     }
 }
