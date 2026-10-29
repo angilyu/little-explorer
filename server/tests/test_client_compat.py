@@ -244,3 +244,26 @@ async def test_token_passes_the_build_to_the_agent_and_the_device(store, mailer,
         assert store.get("ipad-1").app_version == "1.0"
         devices = await (await client.get("/admin/devices", headers=ADMIN)).json()
         assert devices["devices"][0]["app_version"] == "1.0"
+
+
+async def test_the_beta_app_is_a_testflight_build(store, mailer, livekit):
+    """The beta app (``com.angilyu.littleexplorer.beta``) is the App Store app's code under another
+    bundle ID; it says ``testflight``, so TestFlight's rules and link apply to it."""
+    beta = {"X-App-Version": "1.1", "X-App-Build": "20261102.1015", "X-App-Channel": "testflight"}
+    app = make_app(store, mailer, PIP_APP_TESTFLIGHT_MIN_BUILD="20261103.0000", PIP_APP_ENFORCE="versioned")
+    device = {"id": "beta-iphone", "name": "iPhone", "model": "iPhone18,1"}
+    async with TestClient(TestServer(app)) as client:
+        data = await (await client.get("/app/version", headers=beta)).json()
+        assert data["status"] == "required" and data["update_url"].startswith("itms-beta://")
+        assert data["client"] == {"version": "1.1", "build": "20261102.1015", "channel": "testflight", "legacy": False}
+        assert (await client.post("/token", json={"device": device}, headers={**APP, **beta})).status == 426
+        newer = {**beta, "X-App-Build": "20261103.0900"}
+        assert (await (await client.get("/app/version", headers=newer)).json())["status"] == "ok"
+        resp = await client.post("/token", json={"device": device}, headers={**APP, **newer})
+        assert resp.status == 200
+        meta = parse_job_metadata(claims((await resp.json())["participantToken"])["roomConfig"]["agents"][0]["metadata"])
+        assert meta["app_channel"] == "testflight" and meta["app_build"] == "20261103.0900"
+        assert store.get("beta-iphone").app_version == "1.1 (20261103.0900, testflight)"
+        # The same build number from the App Store app isn't held to TestFlight's minimum.
+        store_app = {**beta, "X-App-Channel": "appstore"}
+        assert (await (await client.get("/app/version", headers=store_app)).json())["status"] == "ok"

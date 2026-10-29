@@ -416,13 +416,14 @@ curl -H "X-App-Version: 1.1" -H "X-App-Channel: appstore" https://little-explore
 ```
 
 Only raise `min_version` to a version that is **live on the App Store**; otherwise families are told to update to
-a version they can't get. TestFlight builds share version numbers, so they go by `testflight-build` (the build
-number is the date and time, see `scripts/testflight.sh`).
+a version they can't get. TestFlight builds (the beta app, and App Store builds installed through TestFlight) go by
+`testflight-build`, the build number, which is the date and time (see [Release the app](#release-the-app-beta-and-app-store)).
 
 **Release checklist.**
 
-1. Bump `MARKETING_VERSION` in the Xcode project for each App Store version (TestFlight builds of the same
-   version only get a new build number).
+1. Bump `MARKETING_VERSION` in the Xcode project for **every release of new code**, beta included: a version
+   number always means one commit, and `scripts/release.sh` refuses a version that was released from a different
+   commit. Beta-only rounds can use patch versions (1.1.1, 1.1.2); the App Store gets whichever one passes.
 2. Keep the server and Milo backward compatible (below). Server changes deploy before the app ships, so the old
    app must keep working with the new server.
 3. When a version goes to the App Store, add its contract: copy `server/tests/contracts/app-1.0.json` to
@@ -529,24 +530,59 @@ is tapped before Milo is allowed, the corner with Milo off, and the consent its 
 `-demoShelf grown-ups` scrolls to the Grown-ups button. `-demoUpgrade required|recommended` shows the
 [update screens](#app-versions-and-forced-updates).
 
-### Install on an iPhone or iPad (TestFlight)
+### Release the app (beta and App Store)
 
-The app is "Little Explorer: City Books" in App Store Connect, and every build goes to the internal TestFlight group
-"Family". Install **TestFlight** from the App Store on the device, sign in with the developer Apple ID, accept the
-invite, and turn on Automatic Updates for the app. New builds then install themselves; no cable is needed.
+There are two apps, built from the same code by the same target:
+
+| | App Store app | Beta app |
+| --- | --- | --- |
+| Name on the home screen | Little Explorer | Little Explorer (beta) |
+| Bundle ID | `com.angilyu.littleexplorer` | `com.angilyu.littleexplorer.beta` |
+| Build configuration | Release | Beta (`Config/Beta.xcconfig`: bundle ID, name, icon) |
+| Icon | `AppIcon` | `AppIcon-Beta`, with a purple "BETA" ribbon (`scripts/make_app_icon.py`) |
+| Goes to | App Store Connect, then App Review (you submit it) | TestFlight only (internal group "Family") |
+| `X-App-Channel` | `appstore` (`testflight` when installed through TestFlight) | always `testflight` |
+
+The beta installs next to the App Store app. It has its own keychain, so it's a separate device to the server, with
+its own device ID, stars and sign-in. Both read the same server, books and Milo.
+
+**Same version, same code.** `scripts/release.sh` builds both apps from one commit with the same `MARKETING_VERSION`
+and the same build number (the date and time), puts the commit's SHA in Info.plist as `GitCommit`, and tags the
+commit `v<version>-<build>` (e.g. `v1.1-20261102.1015`) once the first upload succeeds. Before it builds anything it
+refuses to:
+
+- run with uncommitted or untracked changes;
+- run on a commit that isn't pushed, or isn't on `origin/main` (`--allow-branch` allows a pushed branch);
+- release a version that a different commit was already released as (a `v<version>` or `v<version>-*` tag on
+  another commit): bump `MARKETING_VERSION`;
+- run when the project's `MARKETING_VERSION`s disagree.
 
 ```sh
-scripts/testflight.sh               # archive, sign for App Store distribution, upload, and wait for Apple's processing
-scripts/testflight.sh --app-store   # the same, but the build can also be submitted for App Review
+scripts/release.sh check             # the checks, and the version, build and tag it would release
+scripts/release.sh beta --dry-run    # archive both apps and check their Info.plists; no upload, no tag
+scripts/release.sh beta              # Little Explorer (beta) -> TestFlight
+scripts/release.sh prod              # Little Explorer -> App Store Connect (uploaded, not submitted)
+scripts/release.sh both              # both, with the same build number
 ```
 
-By default the build is for internal testing only, and App Store Connect won't attach it to an App Store version. Use
-`--app-store` for a build you plan to submit for review; it still goes to "Family" as usual.
+Release `prod` after `beta` from the same commit and it reuses the beta's build number, so "1.2 (20261102.1015)"
+is the same code in both apps. `--new-build` takes a new build number for the same commit (e.g. when Apple rejected
+the upload), and `--build N` sets one. A prod build is only uploaded: in App Store Connect, attach it to the App
+Store version and submit it for review yourself. It also shows in the App Store app's TestFlight.
+`scripts/testflight.sh` still works: it runs `release.sh beta` (`--app-store`: `release.sh prod`).
 
-It needs an App Store Connect API key (Admin role): the `.p8` in `~/.appstoreconnect/private_keys/`, and
-`ASC_KEY_ID` and `ASC_ISSUER_ID` in the environment or `~/.config/little-explorer/asc.env`. The build number is
-the date and time. `PIP_ACCESS_KEY` from `Config/Local.xcconfig` is built in, so keep TestFlight to internal
-testers. Book changes don't need a new build (see [Update books without an app update](content.md#update-books-without-an-app-update)).
+To try a beta, install **TestFlight** from the App Store on the device, sign in with the developer Apple ID, accept
+the "Family" invite for "Little Explorer (beta)", and turn on Automatic Updates. New builds then install themselves;
+no cable is needed.
+
+Setup: the beta needs its own App Store Connect app record for `com.angilyu.littleexplorer.beta` (created by hand
+in App Store Connect; the API can't create apps). Uploading needs an App Store Connect API key (Admin role): the
+`.p8` in `~/.appstoreconnect/private_keys/`, and `ASC_KEY_ID` and `ASC_ISSUER_ID` in the environment or
+`~/.config/little-explorer/asc.env`. `PIP_ACCESS_KEY` from `Config/Local.xcconfig` is built in, so keep TestFlight
+to internal testers. Book changes don't need a new build (see [Update books without an app update](content.md#update-books-without-an-app-update)).
+
+The `Release checks` workflow (`.github/workflows/release-checks.yml`, `scripts/tests/test_release.py`) tests
+these checks and the Beta configuration on pull requests that touch them.
 
 > **Simulator note:** the iOS 26.2/26.3 simulators draw every emoji as a "?" box. Real devices are fine.
 >

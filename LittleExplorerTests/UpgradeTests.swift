@@ -67,9 +67,18 @@ final class UpgradeTests: XCTestCase {
     }
 
     func testChannelFromTheReceipt() {
-        XCTAssertEqual(ClientVersion.channel(receiptName: "sandboxReceipt"), .testflight)
-        XCTAssertEqual(ClientVersion.channel(receiptName: "receipt"), .appstore)
-        XCTAssertEqual(ClientVersion.channel(receiptName: nil), .appstore)
+        let app = "com.angilyu.littleexplorer"
+        XCTAssertEqual(ClientVersion.channel(bundleID: app, receiptName: "sandboxReceipt"), .testflight)
+        XCTAssertEqual(ClientVersion.channel(bundleID: app, receiptName: "receipt"), .appstore)
+        XCTAssertEqual(ClientVersion.channel(bundleID: app, receiptName: nil), .appstore)
+        XCTAssertEqual(ClientVersion.channel(bundleID: nil, receiptName: nil), .appstore)
+    }
+
+    func testTheBetaAppIsAlwaysTestFlight() {
+        let beta = "com.angilyu.littleexplorer.beta"
+        XCTAssertEqual(ClientVersion.channel(bundleID: beta, receiptName: "sandboxReceipt"), .testflight)
+        XCTAssertEqual(ClientVersion.channel(bundleID: beta, receiptName: "receipt"), .testflight)
+        XCTAssertEqual(ClientVersion.channel(bundleID: beta, receiptName: nil), .testflight)
     }
 
     func testThisBuildSaysItsVersion() {

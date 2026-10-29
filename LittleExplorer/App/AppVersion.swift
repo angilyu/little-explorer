@@ -30,13 +30,17 @@ struct ClientVersion: Equatable, Sendable {
         #if DEBUG
         channel = .debug
         #else
-        channel = Self.channel(receiptName: bundle.appStoreReceiptURL?.lastPathComponent)
+        channel = Self.channel(bundleID: bundle.bundleIdentifier,
+                               receiptName: bundle.appStoreReceiptURL?.lastPathComponent)
         #endif
     }
 
-    /// TestFlight (and Xcode) installs have a sandbox receipt; App Store installs have a real one.
-    static func channel(receiptName: String?) -> Channel {
-        receiptName == "sandboxReceipt" ? .testflight : .appstore
+    /// The beta app (`com.angilyu.littleexplorer.beta`, built with the Beta configuration from the same code) only
+    /// ships through TestFlight. For the App Store app, TestFlight (and Xcode) installs have a sandbox receipt and
+    /// App Store installs have a real one.
+    static func channel(bundleID: String?, receiptName: String?) -> Channel {
+        if bundleID?.hasSuffix(".beta") == true { return .testflight }
+        return receiptName == "sandboxReceipt" ? .testflight : .appstore
     }
 
     var headers: [String: String] {

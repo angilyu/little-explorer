@@ -182,4 +182,4 @@ xcodebuild -project LittleExplorer.xcodeproj -scheme LittleExplorer \
 - [Milo, the voice buddy](docs/milo.md): engine details and tuning knobs, the e2e harness, session costs, naps, and
   the star, Passport and badge rules.
 - [Running Little Explorer](docs/operations.md): the parent gate, accounts and email sign-in, Milo time limits,
-  coins, badges, app versions and forced updates, admin tools, deploy, and TestFlight.
+  coins, badges, app versions and forced updates, admin tools, deploy, and releasing the beta and App Store apps.
