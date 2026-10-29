@@ -18,7 +18,7 @@ from little_explorer_agent.bookgen import moderation, narration, writer
 from little_explorer_agent.bookgen.config import BookgenConfig, R2Config
 from little_explorer_agent.bookgen.cost import CostLog
 from little_explorer_agent.bookgen.oai import Moderation, OpenAIError, TextResult
-from little_explorer_agent.bookgen.photos import Photo, acceptable, license_of, to_jpeg
+from little_explorer_agent.bookgen.photos import BadPhoto, Commons, Photo, PhotoError, acceptable, license_of, to_jpeg
 from little_explorer_agent.bookgen.runner import LeaseLost, Runner, page_paths, r2_key
 from little_explorer_agent.bookgen.service import BookgenService
 from little_explorer_agent.bookgen.storage import MemoryStorage, R2Storage
@@ -96,20 +96,26 @@ class FakeOpenAI:
             data = {"safe": self.safe, "reason": "" if self.safe else "Too scary.", "fixes": self.fixes}
         return TextResult(data, 2000, 3000, 2 if web_search else 0)
 
-    async def moderate(self, items, *, model="omni-moderation-latest"):
+    async def moderate(self, input, *, model="omni-moderation-latest"):
+        # Like the real API: a list of strings gets one result per string, but a list of multimodal items
+        # ({"type": "text"} / {"type": "image_url"}) is one input and gets ONE combined result.
         self.calls.append("moderate")
         if self.moderation_down:
             raise OpenAIError("moderation is down")
-        out = []
-        for item in items:
-            flagged = False
+        if all(isinstance(item, str) for item in input):
+            return [self._flag(bool(self.flag_word and self.flag_word in text)) for text in input]
+        flagged = False
+        for item in input:
             if item["type"] == "text" and self.flag_word and self.flag_word in item["text"]:
                 flagged = True
             if item["type"] == "image_url" and self.flag_images > 0:
                 self.flag_images -= 1
                 flagged = True
-            out.append(Moderation(flagged, ["violence"] if flagged else []))
-        return out
+        return [self._flag(flagged)]
+
+    @staticmethod
+    def _flag(flagged):
+        return Moderation(flagged, ["violence"] if flagged else [])
 
     async def close(self):
         pass
@@ -274,6 +280,126 @@ async def test_moderation_rejects_and_fails_closed():
         await moderation.check_texts(Short(), CONFIG, ["one", "two"], "book")
 
 
+async def test_check_texts_sends_plain_strings_for_one_result_each():
+    """The real API gives a multimodal array ONE combined result, so texts must go as plain strings
+    (sending them as {"type": "text"} items failed every made book with "wrong number of results")."""
+    sent = []
+
+    class Spy(FakeOpenAI):
+        async def moderate(self, input, *, model=""):
+            sent.append(input)
+            return await super().moderate(input, model=model)
+
+    texts = [f"page {i}" for i in range(40)] + ["", "  "]
+    await moderation.check_texts(Spy(), CONFIG, texts, "book")
+    assert [len(batch) for batch in sent] == [32, 8]
+    assert all(isinstance(t, str) for batch in sent for t in batch)
+    with pytest.raises(moderation.Rejected):
+        await moderation.check_texts(FakeOpenAI(flag_word="page 39"), CONFIG, texts, "book")
+    # The fake answers like the API: a multimodal array is one input.
+    combined = await FakeOpenAI().moderate([{"type": "text", "text": "a"}, {"type": "text", "text": "b"}])
+    assert len(combined) == 1
+
+
+async def test_image_moderation_sends_one_image_item():
+    sent = []
+
+    class Spy(FakeOpenAI):
+        async def moderate(self, input, *, model=""):
+            sent.append(input)
+            return await super().moderate(input, model=model)
+
+    assert await moderation.image_ok(Spy(), CONFIG, tiny_jpeg())
+    assert len(sent[0]) == 1 and sent[0][0]["type"] == "image_url"
+    assert sent[0][0]["image_url"]["url"].startswith("data:image/jpeg;base64,")
+    assert not await moderation.image_ok(FakeOpenAI(flag_images=1), CONFIG, tiny_jpeg())
+
+
+async def test_a_childs_name_on_the_shelf_is_fine():
+    request = {"title": "Dinosaur", "section": "For Matt", "level": 1,
+               "about": "Little dinosaur meeting friends, each friend is a different type of dinosaur"}
+    client = FakeOpenAI(1)
+    await moderation.check_request(client, CONFIG, request, CostLog([]))
+    assert client.calls == ["moderate", "request_check"]
+    assert "For Matt" in moderation._CLASSIFY_INSTRUCTIONS and "Matt is 5" in moderation._CLASSIFY_INSTRUCTIONS
+    assert "For Matt" in writer.writing_instructions(1)
+
+
+# -- the OpenAI client against the real response shapes ----------------------------------------------
+
+
+class Canned:
+    """Stands in for OpenAIClient._post with bodies shaped like the real API's."""
+
+    def __init__(self, *bodies):
+        self.bodies = list(bodies)
+        self.sent = []
+
+    async def __call__(self, path, *, json_body=None, data=None, content_type="application/json"):
+        self.sent.append((path, json_body))
+        return json.dumps(self.bodies.pop(0)).encode()
+
+
+def client_with(*bodies):
+    from little_explorer_agent.bookgen.oai import OpenAIClient
+
+    client = OpenAIClient("sk-test")
+    client._post = Canned(*bodies)
+    return client
+
+
+async def test_client_parses_a_responses_api_answer():
+    # Raw REST has no "output_text" (that's an SDK helper): reasoning, web searches, then the message.
+    body = {
+        "status": "completed",
+        "output": [
+            {"type": "reasoning", "id": "rs_1", "summary": []},
+            {"type": "web_search_call", "id": "ws_1", "status": "completed", "action": {"type": "search", "query": "x"}},
+            {"type": "web_search_call", "id": "ws_2", "status": "completed", "action": {"type": "search", "query": "y"}},
+            {"type": "message", "id": "msg_1", "role": "assistant", "status": "completed",
+             "content": [{"type": "output_text", "text": "{\"safe\": true, ", "annotations": []},
+                         {"type": "output_text", "text": "\"reason\": \"\", \"fixes\": []}", "annotations": []}]},
+        ],
+        "usage": {"input_tokens": 1200, "output_tokens": 340, "total_tokens": 1540},
+    }
+    client = client_with(body)
+    result = await client.structured(model="gpt-5.4-mini", instructions="i", input="x", schema_name="fact_check",
+                                     schema=writer.CHECK_SCHEMA, web_search=True, reasoning="low")
+    assert result.data == {"safe": True, "reason": "", "fixes": []}
+    assert (result.input_tokens, result.output_tokens, result.web_searches) == (1200, 340, 2)
+    sent = client._post.sent[0][1]
+    assert sent["tools"] == [{"type": "web_search"}] and sent["text"]["format"]["strict"] is True
+
+    refused = {"status": "completed", "output": [{"type": "message", "content": [{"type": "refusal", "refusal": "no"}]}]}
+    with pytest.raises(OpenAIError):
+        await client_with(refused).structured(model="m", instructions="i", input="x", schema_name="s", schema={})
+    with pytest.raises(OpenAIError):
+        await client_with({"status": "incomplete", "incomplete_details": {"reason": "max_output_tokens"}, "output": []}) \
+            .structured(model="m", instructions="i", input="x", schema_name="s", schema={})
+
+
+async def test_client_parses_moderation_answers():
+    def result(flagged, *cats):
+        return {"flagged": flagged, "categories": {"violence": "violence" in cats, "sexual": "sexual" in cats},
+                "category_scores": {"violence": 0.9 if flagged else 0.0, "sexual": 0.0}}
+
+    client = client_with({"id": "modr-1", "model": "omni-moderation-latest",
+                          "results": [result(False), result(True, "violence"), result(False)]})
+    out = await client.moderate(["a", "b", "c"])
+    assert [m.flagged for m in out] == [False, True, False] and out[1].categories == ["violence"]
+    assert client._post.sent[0][1]["input"] == ["a", "b", "c"]
+    with pytest.raises(OpenAIError):
+        await client_with({"results": []}).moderate(["a"])
+
+
+async def test_client_returns_whisper_word_timestamps():
+    body = {"task": "transcribe", "language": "english", "duration": 2.1, "text": "Look! A big tower.",
+            "words": [{"word": "Look", "start": 0.0, "end": 0.4}, {"word": "A", "start": 0.6, "end": 0.7}]}
+    result = await client_with(body).transcribe(b"mp3", "Look! A big tower.")
+    words, _ = narration.align("Look! A big tower.", result["words"], float(result["duration"]))
+    assert len(words) == 4 and words[0]["start"] == 0.0
+
+
 # -- photos and narration --------------------------------------------------------------------------
 
 
@@ -297,6 +423,20 @@ def test_photo_licenses():
     assert not acceptable({"title": "File:Hunting rifle.jpg", "imageinfo": [info()]}, set())[0]
     small = {"title": "File:S.jpg", "imageinfo": [{**info(), "width": 400, "height": 300}]}
     assert not acceptable(small, set())[0]
+
+
+def test_photos_must_match_the_search():
+    # Real Commons results for "stegosaurus fossil" included this courtyard with an elephant statue.
+    hotel = {"title": "File:London Apex Temple Court Hotel-20130714-RM-211919.jpg",
+             "imageinfo": [info(Categories="Sculptures of elephants in the United Kingdom|Quality images",
+                                ImageDescription="Courtyard of the Apex Temple Court Hotel, London")]}
+    assert acceptable(hotel, set())[0]
+    assert acceptable(hotel, set(), "stegosaurus fossil") == (False, "nothing in it matches the search")
+    trex = {"title": "File:Esqueleto T-Rex, Expo Dinosaurios 2023.jpg", "imageinfo": [info()]}
+    assert acceptable(trex, set(), "tyrannosaurus rex skeleton")[0]
+    bees = {"title": "File:P1.jpg", "imageinfo": [info(Categories="Apis mellifera|Bees on flowers")]}
+    assert acceptable(bees, set(), "bees on a flower")[0]
+    assert acceptable(bees, set(), "big photo")[0]
 
 
 def test_to_jpeg_flattens_and_shrinks():
@@ -678,6 +818,54 @@ async def test_cancelled_job_stops_at_the_next_step(store, clock, fake_narrate):
     await make_runner(books, storage=storage, commons=CancelDuringPhotos()).run_once()
     assert books.job(job.id).status == "failed" and books.book(row.id).status == "failed"
     assert storage.objects == {} and books.assets(row.id) == {}
+
+
+async def test_commons_reads_the_whole_photo_even_when_it_arrives_in_pieces():
+    # Real downloads arrive in chunks; content.read(n) would hand back only the first piece.
+    from aiohttp import web
+    from PIL import Image
+
+    out = io.BytesIO()
+    Image.effect_noise((1400, 900), 64).convert("RGB").save(out, "JPEG", quality=95)
+    photo = out.getvalue()
+
+    async def slow(request):
+        resp = web.StreamResponse()
+        resp.content_length = len(photo)
+        await resp.prepare(request)
+        for start in range(0, len(photo), 16 * 1024):
+            await resp.write(photo[start:start + 16 * 1024])
+            await asyncio.sleep(0.001)
+        return resp
+
+    app = web.Application()
+    app.router.add_get("/photo.jpg", slow)
+    async with TestServer(app) as server:
+        commons = Commons(pause=0)
+        try:
+            assert await commons._get(str(server.make_url("/photo.jpg"))) == photo
+            with pytest.raises(PhotoError, match="too big"):
+                await commons._get(str(server.make_url("/photo.jpg")), limit=len(photo) // 2)
+        finally:
+            await commons.close()
+    assert len(to_jpeg(photo)) > 0
+
+
+async def test_a_photo_that_wont_open_is_skipped(store, clock, fake_narrate):
+    books = make_books(store, clock)
+    job, row = books.queue("acct", REQUEST)
+
+    class OneBroken(FakeCommons):
+        async def download(self, page):
+            if self.downloads == 0:
+                self.downloads += 1
+                raise BadPhoto(f"{page['title']}: OSError: image file is truncated")
+            return await super().download(page)
+
+    await make_runner(books, storage=MemoryStorage(), commons=OneBroken()).run_once()
+    assert books.job(job.id).status == "done"
+    first = books.book(row.id).json["pages"][0]["photo"]["commonsTitle"]
+    assert first.endswith(" 1.jpg")
 
 
 # -- the manifest ----------------------------------------------------------------------------------

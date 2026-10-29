@@ -27,7 +27,7 @@ from . import moderation, narration, writer
 from .config import BookgenConfig
 from .cost import CostLog
 from .moderation import Rejected
-from .photos import MODERATION_WIDTH, Commons, to_jpeg
+from .photos import MODERATION_WIDTH, BadPhoto, Commons, to_jpeg
 from .store import Asset, BookStore, Job
 from .writer import BookError
 
@@ -282,7 +282,11 @@ class Runner:
         queries = [page["photo"].get("query", "")] + list(page["photo"].get("alternates") or [])
         queries = [q for q in queries if q]
         for candidate in await self.commons.candidates(queries, used):
-            photo = await self.commons.download(candidate)
+            try:
+                photo = await self.commons.download(candidate)
+            except BadPhoto as exc:
+                log.info("job %s: %s; trying the next one", job.id, exc)
+                continue
             small = await asyncio.to_thread(to_jpeg, photo.data, MODERATION_WIDTH, 80)
             if not await moderation.image_ok(self.client, self.config, small):
                 log.info("job %s: photo %s flagged; trying the next one", job.id, candidate.get("title"))
