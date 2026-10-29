@@ -32,10 +32,15 @@ UNSUITABLE = re.compile(
     r"nud(e|ity)|naked|erotic|\bsex|porn|lingerie|corpse|dead bod|blood|\bgore\b|violence|weapon|\bguns?\b|rifle|"
     r"execution|war crime|wounded|injur|slaughter|hunting|drug|cigar|alcohol|beer|wine", re.I
 )
+GENERIC = {"the", "and", "with", "for", "photo", "picture", "image", "close", "view", "big", "small", "little"}
 
 
 class PhotoError(RuntimeError):
     """Commons couldn't be reached (retry later)."""
+
+
+class BadPhoto(ValueError):
+    """This one file couldn't be opened as an image (try the next candidate)."""
 
 
 @dataclass
@@ -92,7 +97,19 @@ def license_of(info: dict[str, Any]) -> tuple[bool, str, str, str]:
     return True, label, url, ""
 
 
-def acceptable(page: dict[str, Any], used: set[str]) -> tuple[bool, str]:
+def relevant(page: dict[str, Any], query: str) -> bool:
+    """Commons' search also matches text we can't see, so a photo of an elephant can come back for
+    "stegosaurus fossil". Keep a candidate only if a word of the query is in its title, categories or description."""
+    words = [w for w in re.findall(r"[a-z]+", query.lower()) if len(w) >= 3 and w not in GENERIC]
+    if not words:
+        return True
+    info = (page.get("imageinfo") or [{}])[0]
+    text = " ".join([page.get("title", ""), _meta(info, "Categories"), _meta(info, "ImageDescription"),
+                     _meta(info, "ObjectName")]).lower()
+    return any((w[:-1] if len(w) > 4 and w.endswith("s") else w) in text for w in words)
+
+
+def acceptable(page: dict[str, Any], used: set[str], query: str = "") -> tuple[bool, str]:
     if page.get("title") in used:
         return False, "already used on another page"
     infos = page.get("imageinfo") or []
@@ -112,6 +129,8 @@ def acceptable(page: dict[str, Any], used: set[str]) -> tuple[bool, str]:
         return False, "awkward aspect ratio"
     if UNSUITABLE.search(f"{page.get('title', '')} {_meta(info, 'Categories')} {_meta(info, 'ImageDescription')}"):
         return False, "unsuitable subject"
+    if query and not relevant(page, query):
+        return False, "nothing in it matches the search"
     return True, ""
 
 
@@ -167,10 +186,13 @@ class Commons:
             try:
                 async with session.get(url, params=params) as resp:
                     if resp.status == 200:
-                        body = await resp.content.read(limit + 1)
-                        if len(body) > limit:
-                            raise PhotoError("photo is too big")
-                        return body
+                        # content.read(n) returns only what has arrived so far, so read to the end.
+                        body = bytearray()
+                        async for chunk in resp.content.iter_chunked(64 * 1024):
+                            body += chunk
+                            if len(body) > limit:
+                                raise PhotoError("photo is too big")
+                        return bytes(body)
                     if resp.status not in (429, 500, 502, 503, 504):
                         raise PhotoError(f"Commons answered {resp.status}")
             except PhotoError:
@@ -198,7 +220,7 @@ class Commons:
         for quality in (True, False):
             for query in queries:
                 for page in await self.search(query, quality):
-                    if acceptable(page, seen)[0]:
+                    if acceptable(page, seen, query)[0]:
                         found.append(page)
                         seen.add(page["title"])
                 if len(found) >= 3:
@@ -208,7 +230,10 @@ class Commons:
     async def download(self, page: dict[str, Any]) -> Photo:
         info = page["imageinfo"][0]
         raw = await self._get(info.get("thumburl") or info["url"])
-        data = await asyncio.to_thread(to_jpeg, raw)
+        try:
+            data = await asyncio.to_thread(to_jpeg, raw)
+        except Exception as exc:  # noqa: BLE001 - Pillow raises many kinds; this file just can't be used
+            raise BadPhoto(f"{page.get('title')}: {type(exc).__name__}: {exc}") from None
         del raw
         _, label, url, _ = license_of(info)
         return Photo(data, page["title"], author_of(info), label, url or None, info.get("descriptionurl"))

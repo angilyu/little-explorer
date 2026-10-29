@@ -124,10 +124,12 @@ class OpenAIClient:
         searches = sum(1 for item in raw.get("output") or [] if item.get("type") == "web_search_call")
         return TextResult(data, int(usage.get("input_tokens") or 0), int(usage.get("output_tokens") or 0), searches)
 
-    async def moderate(self, items: list[dict[str, Any]], *, model: str = "omni-moderation-latest") -> list[Moderation]:
-        """Moderate a batch of inputs: ``{"type": "text", "text": ...}`` or one image
-        ``{"type": "image_url", "image_url": {"url": "data:image/jpeg;base64,..."}}``."""
-        raw = json.loads(await self._post("/moderations", json_body={"model": model, "input": items}))
+    async def moderate(self, input: list[str] | list[dict[str, Any]], *,
+                       model: str = "omni-moderation-latest") -> list[Moderation]:
+        """Moderate ``input`` as the API does: a list of plain strings gets one result per string; a list of
+        multimodal items (``{"type": "text", ...}`` / ``{"type": "image_url", ...}``) is ONE input and gets one
+        combined result. So texts go as strings and each image goes alone as one ``image_url`` item."""
+        raw = json.loads(await self._post("/moderations", json_body={"model": model, "input": input}))
         results = raw.get("results")
         if not isinstance(results, list) or not results:
             raise OpenAIError("moderation returned no results")

@@ -18,14 +18,18 @@ struct MakeJob: Decodable, Identifiable, Equatable, Sendable {
     let page: String?
     /// Why it wasn't made, for a grown-up.
     let message: String?
+    /// When it stopped being made (done, failed or rejected).
+    let finishedAt: Date?
 
     enum CodingKeys: String, CodingKey {
         case id, kind, status, step, progress, title, section, level, page, message
         case bookId = "book_id"
+        case finishedAt = "finished_at"
     }
 
     init(id: String, bookId: String, kind: String = "book", status: String, step: String? = nil, progress: String? = nil,
-         title: String, section: String, level: Int? = nil, page: String? = nil, message: String? = nil) {
+         title: String, section: String, level: Int? = nil, page: String? = nil, message: String? = nil,
+         finishedAt: Date? = nil) {
         self.id = id
         self.bookId = bookId
         self.kind = kind
@@ -37,6 +41,7 @@ struct MakeJob: Decodable, Identifiable, Equatable, Sendable {
         self.level = level
         self.page = page
         self.message = message
+        self.finishedAt = finishedAt
     }
 
     init(from decoder: Decoder) throws {
@@ -52,9 +57,12 @@ struct MakeJob: Decodable, Identifiable, Equatable, Sendable {
         level = try c.decodeIfPresent(Int.self, forKey: .level)
         page = try c.decodeIfPresent(String.self, forKey: .page)
         message = try c.decodeIfPresent(String.self, forKey: .message)
+        finishedAt = (try? c.decodeIfPresent(String.self, forKey: .finishedAt)).flatMap { $0 }
+            .flatMap { ISO8601DateFormatter().date(from: $0) }
     }
 
     var isActive: Bool { status == "queued" || status == "running" }
+    var didFail: Bool { status == "failed" || status == "rejected" }
     var isPage: Bool { kind == "page" }
     /// What shows under a placeholder cover.
     var progressText: String { progress ?? "Getting ready…" }
@@ -311,6 +319,9 @@ final class BookMaker {
     @ObservationIgnored var pollInterval: Duration = .seconds(4)
     /// Called when a book or page is ready, to download it.
     @ObservationIgnored var onReady: (() async -> Void)?
+    @ObservationIgnored var now: () -> Date = Date.init
+    /// How long a book that couldn't be made keeps its note, when the app wasn't open to see it end.
+    static let failureShownFor: TimeInterval = 3 * 24 * 3600
 
     init(enabled: Bool = true, service: @escaping () -> BookMakerService, token: @escaping () -> String?) {
         self.enabled = enabled
@@ -334,8 +345,17 @@ final class BookMaker {
         let running = status.jobs.filter(\.isActive) + [status.active].compactMap { $0 }
         var seen = Set<String>()
         active = running.filter { seen.insert($0.id).inserted }
+        lastFailure = recentFailure(in: status.jobs)
         if let books = try? await service().books(token: token) { ownBooks = Set(books.map(\.id)) }
         updatePolling()
+    }
+
+    /// The account's newest job, if it ended without a book not long ago. Books are made on the server,
+    /// so one can fail while the app is closed; without this its placeholder would just disappear.
+    private func recentFailure(in jobs: [MakeJob]) -> MakeJob? {
+        guard let newest = jobs.first, newest.didFail, newest.message != nil else { return nil }
+        if let finished = newest.finishedAt, now().timeIntervalSince(finished) > Self.failureShownFor { return nil }
+        return newest
     }
 
     /// Starts making a book. Throws a ``MakeError`` with words for the grown-up when the server refuses.

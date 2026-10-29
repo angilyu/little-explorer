@@ -226,6 +226,35 @@ final class MakeBookTests: XCTestCase {
         XCTAssertFalse(maker.ownBooks.contains("the-tall-tower-a1b2c3"))
     }
 
+    func testABookThatFailedWhileTheAppWasClosedStillShowsWhy() async throws {
+        // Made-book jobs retry for ~15 minutes on the server, so the app is often closed when one fails.
+        let finished = "2026-10-29T08:00:00-07:00"
+        let failed = #"{"id":"job-2","book_id":"dinosaur-79b8ae","kind":"book","status":"failed","title":"Dinosaur","section":"For Matt","level":1,"message":"Something went wrong while making this book. It didn't count toward your limit. Please try again.","finished_at":"\#(finished)"}"#
+        let older = #"{"id":"job-1","book_id":"the-tall-tower-a1b2c3","kind":"book","status":"done","title":"The Tall Tower","section":"Paris","level":1,"message":null,"finished_at":"2026-10-20T08:00:00-07:00"}"#
+        let maker = maker()
+        maker.setForeground(false)
+        let then = try XCTUnwrap(ISO8601DateFormatter().date(from: finished))
+        maker.now = { then.addingTimeInterval(3600) }
+
+        StubMakeServer.reply("/account/bookgen", json: #"{"can_generate":true,"ready":true,"usage":\#(usage),"jobs":[\#(failed),\#(older)]}"#)
+        await maker.refresh()
+        XCTAssertTrue(maker.active.isEmpty)
+        XCTAssertEqual(maker.lastFailure?.id, "job-2")
+        XCTAssertEqual(maker.lastFailure?.finishedAt, then)
+        XCTAssertTrue(maker.lastFailure?.message?.contains("didn't count") == true)
+
+        maker.now = { then.addingTimeInterval(BookMaker.failureShownFor + 60) }
+        await maker.refresh()
+        XCTAssertNil(maker.lastFailure, "an old failure isn't shown forever")
+
+        maker.now = { then.addingTimeInterval(3600) }
+        StubMakeServer.routes = [:]
+        StubMakeServer.reply("/account/bookgen", json: #"{"can_generate":true,"ready":true,"usage":\#(usage),"jobs":[\#(job("queued")),\#(failed)]}"#)
+        await maker.refresh()
+        XCTAssertNil(maker.lastFailure, "a newer book replaces the note")
+        XCTAssertEqual(maker.placeholders.map(\.id), ["job-1"])
+    }
+
     func testARefusedBookThrowsTheServersWords() async {
         StubMakeServer.reply("POST /account/books", 429, json: #"{"error":"day_limit","message":"You've made 3 books today. You can make more tomorrow."}"#)
         let maker = maker()
