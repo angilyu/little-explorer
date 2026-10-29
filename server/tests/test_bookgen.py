@@ -2,6 +2,7 @@
 manifest and the owner endpoints. No network, no OpenAI spend."""
 
 import asyncio
+import hashlib
 import io
 import json
 import shutil
@@ -29,6 +30,9 @@ from little_explorer_agent.token_server import create_app
 
 APP = {"Authorization": "Bearer app-key"}
 ADMIN = {"Authorization": "Bearer admin-secret"}
+# The first app that shows made books (app_versions.MADE_BOOKS_VERSION); 1.0 sends no headers.
+APP_1_2 = {"X-App-Version": "1.2", "X-App-Build": "60", "X-App-Channel": "testflight"}
+APP_1_1 = {"X-App-Version": "1.1", "X-App-Build": "50", "X-App-Channel": "appstore"}
 REQUEST = {"title": "The Tall Tower", "section": "Paris", "level": 2, "about": "The Eiffel Tower"}
 
 
@@ -802,7 +806,7 @@ async def test_generate_endpoint(server, accounts):
 
     for _ in range(200):  # the runner started with the app; wait for it
         job = await (await c.get(f"/admin/jobs/{job_id}", headers=ADMIN)).json()
-        order = (await (await c.get("/content/manifest.json")).json())["order"]
+        order = (await (await c.get("/content/manifest.json", headers=APP_1_2)).json())["order"]
         if job["status"] == "done" and job["book_id"] in order:  # on_publish refreshes just after
             break
         await asyncio.sleep(0.02)
@@ -814,10 +818,17 @@ async def test_generate_endpoint(server, accounts):
     full = await (await c.get(f"/admin/books/{book_id}", headers=ADMIN)).json()
     assert full["book"]["level"] == 2 and len(full["narration"]) == 10
 
-    manifest = await (await c.get("/content/manifest.json")).json()
+    manifest = await (await c.get("/content/manifest.json", headers=APP_1_2)).json()
     assert manifest["order"][-1] == book_id
-    library = await (await c.get("/content/library.json")).json()
+    library = await (await c.get("/content/library.json", headers=APP_1_2)).json()
     assert library["order"] == manifest["order"]
+    # The 1.0 and 1.1 apps (which download files without headers) keep the hand-made catalog, files included.
+    for old in ({}, APP_1_1):
+        resp = await c.get("/content/manifest.json", headers=old)
+        assert await resp.json() == service.static and resp.headers["ETag"] == f'"{service.static["version"]}"'
+        for rel in ("library.json", "Narration/narration.json"):
+            body = await (await c.get(f"/content/{rel}", headers=old)).read()
+            assert hashlib.sha256(body).hexdigest() == service.static["files"][rel]["sha256"]
     resp = await c.get(f"/content/Books/{book_id}.json")
     assert resp.status == 200 and (await resp.json())["id"] == book_id
     resp = await c.get(f"/content/Photos/{book_id}-p01.jpg", allow_redirects=False)
@@ -835,7 +846,7 @@ async def test_generate_endpoint(server, accounts):
 
     resp = await c.post(f"/admin/books/{book_id}/unpublish", headers=ADMIN)
     assert resp.status == 200 and (await resp.json())["status"] == "unpublished"
-    assert book_id not in (await (await c.get("/content/manifest.json")).json())["order"]
+    assert book_id not in (await (await c.get("/content/manifest.json", headers=APP_1_2)).json())["order"]
     assert (await c.get(f"/content/Books/{book_id}.json")).status == 404
     assert (await c.post(f"/admin/books/{book_id}/frobnicate", headers=ADMIN)).status == 404
     resp = await c.post(f"/admin/books/{book_id}/delete", headers=ADMIN)
@@ -886,10 +897,10 @@ async def _make_book_for(c, service, email, title):
     raise AssertionError(service.books.job(job_id))
 
 
-async def _app_account(c, accounts, email, device):
+async def _app_account(c, accounts, email, device, client=APP_1_2):
     code, _ = accounts.start(email)
     token, _, _ = accounts.verify(email, code, (device, "iPad", "iPad13,1"))
-    return (await (await c.get("/account", headers={**APP, "X-Pip-Session": token})).json())["account"]
+    return (await (await c.get("/account", headers={**APP, **client, "X-Pip-Session": token})).json())["account"]
 
 
 async def test_all_books_accounts_only_see_their_own_made_books(server, accounts, clock):
@@ -907,6 +918,11 @@ async def test_all_books_accounts_only_see_their_own_made_books(server, accounts
     assert shelf["all_books"] is False
     assert shelf["books"] == catalog + [mine]  # every hand-made book, its own made book, not B's
     assert theirs not in shelf["books"]
+    # The 1.0 and 1.1 apps can't label made books, so their shelf is the hand-made catalog only.
+    for i, old in enumerate(({}, APP_1_1)):
+        clock.t += 120  # the next sign-in code
+        device = f"BDFF5D95-6EBF-47BC-AA79-5FE554F0502{i}"
+        assert (await _app_account(c, accounts, a.email, device, old))["books"] == catalog
     assert accounts.get(a.email).may_read(mine) and not accounts.get(a.email).may_read(theirs)
     assert accounts.get(a.email).may_read("chengdu")  # a hidden hand-made book
     assert accounts.get(b.email).may_read(theirs) and not accounts.get(b.email).may_read(mine)
@@ -923,12 +939,15 @@ async def test_all_books_accounts_only_see_their_own_made_books(server, accounts
     assert theirs not in detail["account"]["books"]
 
 
-async def test_accounts_without_all_books_see_only_their_grants(server, accounts):
+async def test_accounts_without_all_books_see_only_their_grants(server, accounts, clock):
     c, service = server
     a, _ = accounts.create("angilyu@gmail.com")
     mine = await _make_book_for(c, service, a.email, "Tall Towers")
     shelf = await _app_account(c, accounts, a.email, "BDFF5D95-6EBF-47BC-AA79-5FE554F0502B")
     assert shelf["all_books"] is False and shelf["books"] == sorted([*accounts.default_books, mine])
+    clock.t += 120  # the next sign-in code
+    old = await _app_account(c, accounts, a.email, "BDFF5D95-6EBF-47BC-AA79-5FE554F05021", APP_1_1)
+    assert old["books"] == sorted(accounts.default_books)
 
 
 async def test_account_delete_removes_made_books(server, accounts, clock):

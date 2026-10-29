@@ -436,6 +436,16 @@ The server's `may_read` checks follow the same rule. The admin endpoints and `to
 `all_books` flag and grants. The 1.0 app reads `all_books: true` as "every manifest book", so this keeps made books
 off other families' shelves without an app update.
 
+**Only 1.2 and later see made books** (`MADE_BOOKS_VERSION` in `app_versions.py`). Apps 1.0 and 1.1 can't show the
+"Made with AI" label or the menu to hide, delete or report a book. A request below 1.2 gets this treatment, and so does
+one with no `X-App-Version` header, which includes every content download from 1.0 and 1.1:
+- The bundled manifest and its ETag.
+- The bundled `library.json` and `narration.json`.
+- A `books` list without made books.
+
+So a parent with a 1.2 device and an older one on the same account sees made books only on the 1.2 device. 1.2 sends
+its headers on content downloads too.
+
 **Moderation fails closed.** If moderation can't be reached, the job is retried later and never publishes unchecked
 text. A rejected request or page ends the job as `rejected` and deletes its files. Rejected and failed jobs don't
 count against the account's quota.
@@ -581,15 +591,17 @@ a version they can't get. TestFlight builds (the beta app, and App Store builds 
 2. Keep the server and Milo backward compatible (below). Server changes deploy before the app ships, so the old
    app must keep working with the new server.
 3. When a version goes to the App Store, add its contract: copy `server/tests/contracts/app-1.0.json` to
-   `app-X.Y.json` with the requests that version sends and the response fields it reads, and replay it in
-   `test_client_compat.py`.
+   `app-X.Y.json` with the requests that version sends, the response fields it reads, and its `headers` and
+   `channels`. The compat tests pick up every `contracts/app-*.json`.
 4. After it's live, set `recommended`, and later `min`, as above.
 
 **Keeping old builds working.**
 
-- `server/tests/test_client_compat.py` replays what the 1.0 build sends (`contracts/app-1.0.json`) and checks the
-  status codes and response fields it reads, plus Milo's wire format (the data-channel topics, the
-  participant attributes and the star message). It runs with every server test run (`server-tests.yml` on
+- `server/tests/test_client_compat.py` replays what each shipped build sends (`contracts/app-1.0.json`,
+  `contracts/app-1.1.json`) and checks the status codes and response fields it reads, plus Milo's wire format (the
+  data-channel topics, the participant attributes and the star message). A contract with `headers` (1.1 on) is
+  also replayed with that build's own headers on each of its `channels` by `test_client_compat_1_1.py`, including
+  the 426 its update screen reads. It runs with every server test run (`server-tests.yml` on
   pull requests, and before every deploy). If it fails, the change would break an app build that's already out.
 - Changes to requests and responses are **additive**: add optional fields with defaults, never rename or remove a
   field, change its type, or make a new field required. Old builds ignore new fields.

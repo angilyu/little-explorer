@@ -97,8 +97,8 @@ from typing import Any
 from aiohttp import web
 
 from . import agent_name
-from .accounts import Accounts, AuthError, Session, normalize_email, valid_book_id
-from .app_versions import ClientInfo, VersionSettings
+from .accounts import Account, Accounts, AuthError, Session, normalize_email, valid_book_id
+from .app_versions import MADE_BOOKS_VERSION, ClientInfo, VersionSettings
 from .bookgen.service import BookgenService
 from .bookgen.store import Asset, LimitError
 from .bookgen.writer import validate_request
@@ -668,14 +668,14 @@ async def handle_auth_verify(request: web.Request) -> web.Response:
     except AuthError as exc:
         return _refusal(exc)
     log.info("device %s signed in to account %s (claimed: %s)", device[0], account.id, claimed)
-    return web.json_response({"token": token, "account": account.app_json(), "claimed_device": claimed})
+    return web.json_response({"token": token, "account": _app_account(request, account), "claimed_device": claimed})
 
 
 async def handle_account(request: web.Request) -> web.Response:
     session = await _session(request)
     if isinstance(session, web.Response):
         return session
-    return web.json_response({"account": session.account.app_json()})
+    return web.json_response({"account": _app_account(request, session.account)})
 
 
 async def handle_sign_out(request: web.Request) -> web.Response:
@@ -714,7 +714,7 @@ async def handle_account_milo_consent(request: web.Request) -> web.Response:
         account = await asyncio.to_thread(request.app[ACCOUNTS].set_milo_consent, session.account.id, body["allow"])
     except LookupError:
         return _signed_out()
-    return web.json_response({"account": account.app_json()})
+    return web.json_response({"account": _app_account(request, account)})
 
 
 async def handle_account_stars(request: web.Request) -> web.Response:
@@ -1075,10 +1075,25 @@ async def handle_health(request: web.Request) -> web.Response:
     return web.json_response({"ok": True, "commit": commit, "content": content, "bundled": bundled})
 
 
+def _sees_made_books(request: web.Request) -> bool:
+    """Whether the calling app can show made books (see ``MADE_BOOKS_VERSION``). The 1.0 and 1.1 apps can't
+    label them or let a grown-up hide or report them, so they keep the hand-made catalog only."""
+    return ClientInfo.from_headers(request.headers).at_least(MADE_BOOKS_VERSION)
+
+
+def _app_account(request: web.Request, account: Account) -> dict[str, Any]:
+    data = account.app_json()
+    if not _sees_made_books(request):
+        catalog = set(request.app[BOOKGEN].static["order"])
+        data["books"] = [b for b in data["books"] if b in catalog]
+    return data
+
+
 async def handle_manifest(request: web.Request) -> web.Response:
     # The app asks on launch and when it comes back to the front: user traffic, which may wake the database.
-    request.app[BOOKGEN].maybe_refresh()
-    manifest = request.app[MANIFEST]
+    bookgen = request.app[BOOKGEN]
+    bookgen.maybe_refresh()
+    manifest = request.app[MANIFEST] if _sees_made_books(request) else bookgen.static
     headers = {"Cache-Control": "no-cache", "ETag": f'"{manifest["version"]}"'}
     if request.headers.get("If-None-Match") == headers["ETag"]:
         return web.Response(status=304, headers=headers)
@@ -1089,6 +1104,10 @@ async def handle_content_file(request: web.Request) -> web.StreamResponse:
     rel = request.match_info["path"]
     bookgen = request.app[BOOKGEN]
     made = bookgen.extra.get(rel)
+    if rel in request.app[FILES] and not _sees_made_books(request):
+        # library.json and narration.json list made books too; older apps get the hand-made catalog's copies,
+        # which their manifest lists. (A made book's own files are only in the newer apps' manifest.)
+        made = None
     if isinstance(made, bytes):
         return web.Response(body=made, content_type="application/json", headers={"Cache-Control": "no-cache"})
     if isinstance(made, Asset):

@@ -1,0 +1,439 @@
+{
+  "about": "What the 1.1 build (tag v1.1-20261028.2041, commit f238116) sends and relies on: the TestFlight beta (com.angilyu.littleexplorer.beta, channel testflight) and the same code on the App Store (channel appstore). On top of 1.0 it asks GET /app/version, sends reading events and asks for reading progress, and warms Milo (POST /milo/warm). Every request carries `headers` (X-App-Version/Build/Channel, from addClientHeaders) except content file downloads, which carry none. test_client_compat.py replays these requests without headers and with 1.1 App Store headers; test_client_compat_1_1.py replays them with this build's own headers on both channels. Responses may gain fields; never remove or retype one, and never change a status. Add a new file for the next release instead of editing this one.",
+  "app": "1.1",
+  "commit": "f238116",
+  "headers": {
+    "X-App-Version": "1.1",
+    "X-App-Build": "20261028.2041",
+    "X-App-Channel": "testflight"
+  },
+  "channels": [
+    "testflight",
+    "appstore"
+  ],
+  "requests": [
+    {
+      "name": "update check",
+      "method": "GET",
+      "path": "/app/version",
+      "status": 200,
+      "shape": {
+        "status": "str",
+        "update_url": "str?",
+        "min_version": "str?",
+        "recommended_version": "str?"
+      }
+    },
+    {
+      "name": "manifest",
+      "method": "GET",
+      "path": "/content/manifest.json",
+      "status": 200,
+      "shape": {
+        "format": "int",
+        "version": "str",
+        "order": "list",
+        "files": "dict"
+      }
+    },
+    {
+      "name": "download library.json (no headers in 1.1)",
+      "method": "GET",
+      "path": "/content/library.json",
+      "status": 200,
+      "shape": {
+        "order": "list"
+      }
+    },
+    {
+      "name": "sign-in code",
+      "method": "POST",
+      "path": "/auth/start",
+      "body": {
+        "email": "family@example.com",
+        "purpose": "sign_in"
+      },
+      "status": 200,
+      "shape": {
+        "resend_after_s": "int"
+      }
+    },
+    {
+      "name": "wrong code",
+      "method": "POST",
+      "path": "/auth/verify",
+      "body": {
+        "email": "family@example.com",
+        "code": "000000",
+        "device": {
+          "id": "BDFF5D95-6EBF-47BC-AA79-5FE554F0502B",
+          "name": "Leo's iPad",
+          "model": "iPad13,18"
+        }
+      },
+      "status": 400,
+      "shape": {
+        "error": "str",
+        "tries_left": "int"
+      }
+    },
+    {
+      "name": "sign in",
+      "method": "POST",
+      "path": "/auth/verify",
+      "body": {
+        "email": "family@example.com",
+        "code": "<code>",
+        "device": {
+          "id": "BDFF5D95-6EBF-47BC-AA79-5FE554F0502B",
+          "name": "Leo's iPad",
+          "model": "iPad13,18"
+        }
+      },
+      "status": 200,
+      "save_token": true,
+      "shape": {
+        "token": "str",
+        "account": {
+          "id": "str",
+          "email": "str",
+          "books": "list",
+          "all_books": "bool",
+          "milo_consent": "bool?"
+        },
+        "claimed_device": "bool"
+      }
+    },
+    {
+      "name": "account",
+      "method": "GET",
+      "path": "/account",
+      "session": true,
+      "status": 200,
+      "shape": {
+        "account": {
+          "id": "str",
+          "email": "str",
+          "books": "list",
+          "all_books": "bool",
+          "milo_consent": "bool?"
+        }
+      }
+    },
+    {
+      "name": "Milo consent",
+      "method": "POST",
+      "path": "/account/milo-consent",
+      "session": true,
+      "body": {
+        "allow": true
+      },
+      "status": 200,
+      "shape": {
+        "account": {
+          "id": "str",
+          "email": "str",
+          "books": "list",
+          "all_books": "bool",
+          "milo_consent": "bool?"
+        }
+      }
+    },
+    {
+      "name": "reading progress",
+      "method": "GET",
+      "path": "/account/reading",
+      "session": true,
+      "status": 200,
+      "shape": {
+        "progress": {
+          "pages": "list",
+          "listened": "list",
+          "milo_pages": "list",
+          "days": "list"
+        }
+      }
+    },
+    {
+      "name": "reading events",
+      "method": "POST",
+      "path": "/account/reading",
+      "session": true,
+      "body": {
+        "events": [
+          {
+            "id": "9F0C1D2E-0001-4000-8000-000000000001",
+            "kind": "app_open",
+            "at": "2026-10-29T08:00:00-07:00"
+          },
+          {
+            "id": "9F0C1D2E-0002-4000-8000-000000000002",
+            "kind": "page_view",
+            "at": "2026-10-29T08:00:05-07:00",
+            "book": "paris",
+            "page": "bonjour",
+            "page_index": 1,
+            "seconds": 12.5,
+            "milo": false
+          },
+          {
+            "id": "9F0C1D2E-0003-4000-8000-000000000003",
+            "kind": "read_aloud",
+            "at": "2026-10-29T08:00:20-07:00",
+            "book": "paris",
+            "page": "bonjour",
+            "page_index": 1,
+            "outcome": "finished",
+            "mode": "clip"
+          }
+        ]
+      },
+      "status": 200,
+      "shape": {}
+    },
+    {
+      "name": "Milo token",
+      "method": "POST",
+      "path": "/token",
+      "session": true,
+      "body": {
+        "context": {
+          "book": "paris",
+          "page": "paris-eiffel-tower",
+          "page_number": "2",
+          "city": "Paris",
+          "page_text": "The Eiffel Tower"
+        },
+        "device": {
+          "id": "BDFF5D95-6EBF-47BC-AA79-5FE554F0502B",
+          "name": "Leo's iPad",
+          "model": "iPad13,18"
+        },
+        "intro": "app",
+        "tz": "America/Los_Angeles"
+      },
+      "status": 200,
+      "shape": {
+        "serverUrl": "str",
+        "participantToken": "str",
+        "roomName": "str"
+      },
+      "agent_metadata": [
+        "account_id",
+        "device_id",
+        "intro",
+        "remaining_s",
+        "tz"
+      ],
+      "attributes": {
+        "book": "paris",
+        "page": "paris-eiffel-tower",
+        "page_number": "2",
+        "city": "Paris",
+        "page_text": "The Eiffel Tower"
+      }
+    },
+    {
+      "name": "Milo warm-up (right after a talk: skipped)",
+      "method": "POST",
+      "path": "/milo/warm",
+      "session": true,
+      "body": {
+        "device": {
+          "id": "BDFF5D95-6EBF-47BC-AA79-5FE554F0502B",
+          "name": "Leo's iPad",
+          "model": "iPad13,18"
+        }
+      },
+      "status": 200,
+      "shape": {
+        "warmed": "bool"
+      }
+    },
+    {
+      "name": "account stars",
+      "method": "GET",
+      "path": "/account/stars",
+      "session": true,
+      "status": 200,
+      "shape": {
+        "stars": "list",
+        "total": "int"
+      }
+    },
+    {
+      "name": "account coins",
+      "method": "GET",
+      "path": "/account/coins",
+      "session": true,
+      "status": 200,
+      "shape": {
+        "enabled": "bool",
+        "stars_per_coin": "int",
+        "min_coins": "int",
+        "max_coins": "int",
+        "stars_earned": "int",
+        "stars_spent": "int",
+        "stars": "int",
+        "coins": "int",
+        "can_convert": "int",
+        "leftover_stars": "int"
+      }
+    },
+    {
+      "name": "account convert (not enough stars)",
+      "method": "POST",
+      "path": "/account/coins/convert",
+      "session": true,
+      "body": {
+        "device": "BDFF5D95-6EBF-47BC-AA79-5FE554F0502B",
+        "id": "c0ffee00-1111-4222-8333-444455556666",
+        "coins": 1,
+        "stars_per_coin": 10
+      },
+      "status": 409,
+      "shape": {
+        "error": "str",
+        "message": "str"
+      }
+    },
+    {
+      "name": "import device stars",
+      "method": "POST",
+      "path": "/account/import",
+      "session": true,
+      "body": {
+        "stars": [
+          {
+            "id": "star-0001-aaaa",
+            "awarded_at": "2026-10-20T10:00:00-07:00",
+            "book": "paris",
+            "page": "paris-eiffel-tower",
+            "city": "Paris",
+            "kind": "question",
+            "long": false,
+            "why_how": true,
+            "followup": false,
+            "stars": 1,
+            "words": 6,
+            "reason": "asked why"
+          }
+        ]
+      },
+      "status": 200,
+      "shape": {}
+    },
+    {
+      "name": "device stars (signed-out builds)",
+      "method": "GET",
+      "path": "/stars?device=BDFF5D95-6EBF-47BC-AA79-5FE554F0502B",
+      "status": 200,
+      "shape": {
+        "stars": "list",
+        "total": "int"
+      }
+    },
+    {
+      "name": "device coins",
+      "method": "GET",
+      "path": "/coins?device=BDFF5D95-6EBF-47BC-AA79-5FE554F0502B",
+      "status": 200,
+      "shape": {
+        "enabled": "bool",
+        "stars_per_coin": "int",
+        "min_coins": "int",
+        "max_coins": "int",
+        "stars_earned": "int",
+        "stars_spent": "int",
+        "stars": "int",
+        "coins": "int",
+        "can_convert": "int",
+        "leftover_stars": "int"
+      }
+    },
+    {
+      "name": "device convert (not enough stars)",
+      "method": "POST",
+      "path": "/coins/convert",
+      "body": {
+        "device": "BDFF5D95-6EBF-47BC-AA79-5FE554F0502B",
+        "id": "c0ffee00-1111-4222-8333-444455556667",
+        "coins": 1,
+        "stars_per_coin": 10
+      },
+      "status": 409,
+      "shape": {
+        "error": "str",
+        "message": "str"
+      }
+    },
+    {
+      "name": "delete with a wrong code",
+      "method": "POST",
+      "path": "/account/delete",
+      "session": true,
+      "body": {
+        "code": "000000"
+      },
+      "status": 400,
+      "shape": {
+        "error": "str"
+      }
+    },
+    {
+      "name": "sign out",
+      "method": "POST",
+      "path": "/auth/signout",
+      "session": true,
+      "body": {},
+      "status": 200,
+      "shape": {}
+    },
+    {
+      "name": "token after signing out",
+      "method": "POST",
+      "path": "/token",
+      "session": true,
+      "body": {
+        "device": {
+          "id": "BDFF5D95-6EBF-47BC-AA79-5FE554F0502B",
+          "name": "Leo's iPad",
+          "model": "iPad13,18"
+        },
+        "tz": "America/Los_Angeles"
+      },
+      "status": 401,
+      "shape": {
+        "error": "str"
+      },
+      "error": "signed_out"
+    }
+  ],
+  "agent": {
+    "context_topic": "context",
+    "star_topic": "milo.star",
+    "ended_attribute": "milo.ended",
+    "page_attributes": [
+      "book",
+      "page",
+      "page_number",
+      "city",
+      "page_text"
+    ],
+    "star_message": {
+      "id": "str",
+      "awarded_at": "str",
+      "book": "str",
+      "page": "str",
+      "city": "str",
+      "kind": "str",
+      "long": "bool",
+      "why_how": "bool",
+      "followup": "bool",
+      "stars": "int",
+      "words": "int",
+      "reason": "str",
+      "session_total": "int"
+    }
+  }
+}
