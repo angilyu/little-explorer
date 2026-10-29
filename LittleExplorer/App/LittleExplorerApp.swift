@@ -9,6 +9,7 @@ struct LittleExplorerApp: App {
     @State private var coins = CoinStore.live()
     @State private var account: AccountStore
     @State private var reading: ReadingActivity
+    @State private var library: LibraryStore
     @State private var upgrade = UpgradeChecker()
     @Environment(\.scenePhase) private var scenePhase
 
@@ -20,6 +21,7 @@ struct LittleExplorerApp: App {
         voice.onMiloOff = { Task { await account.refresh() } }
         _account = State(initialValue: account)
         _reading = State(initialValue: ReadingActivity.live(account: account))
+        _library = State(initialValue: LibraryStore.live(account: account))
         _voice = State(initialValue: voice)
     }
 
@@ -38,7 +40,8 @@ struct LittleExplorerApp: App {
                             .ignoresSafeArea()
                     )
                 } else if account.isSignedIn {
-                    LibraryView(books: account.shelf(content.books))
+                    let shelf = DemoLaunch.current?.leveled(account.shelf(content.books)) ?? account.shelf(content.books)
+                    LibraryView(books: library.visible(shelf), allBooks: library.arranged(shelf))
                 } else {
                     WelcomeView(books: content.books)
                 }
@@ -50,6 +53,7 @@ struct LittleExplorerApp: App {
                 .environment(stars)
                 .environment(coins)
                 .environment(reading)
+                .environment(library)
                 .sheet(isPresented: recommendsUpdate) {
                     if let prompt = upgrade.prompt {
                         UpgradeView(prompt: prompt) { upgrade.snoozeRecommended() }
@@ -64,9 +68,13 @@ struct LittleExplorerApp: App {
                     voice.onStar = { [stars] award in stars.receive(award) }
                     stars.onCelebrate = { StarChime.play() }
                     if let demo = DemoLaunch.current?.upgrade { upgrade.show(demo == .required ? .required(nil) : .recommended(nil)) }
-                    guard DemoLaunch.current == nil else { return }
+                    if let demo = DemoLaunch.current {
+                        library.switchAccount(account.account?.id)
+                        library.seedDemo(demo.library)
+                        return
+                    }
                     Task { await upgrade.check() }
-                    let sync = AccountSync(account: account, stars: stars, coins: coins, reading: reading)
+                    let sync = AccountSync(account: account, stars: stars, coins: coins, reading: reading, library: library)
                     sync.start()
                     reading.appOpened()
                     voice.warmUp()
@@ -80,6 +88,7 @@ struct LittleExplorerApp: App {
                     while !Task.isCancelled {
                         try? await Task.sleep(for: .seconds(60))
                         await reading.flush()
+                        if library.dirty { await library.sync() }
                     }
                 }
                 .onChange(of: account.account?.id) { _, id in
@@ -93,7 +102,7 @@ struct LittleExplorerApp: App {
                     voice.warmUp()
                     Task { await reading.flush() }
                     Task { await content.refresh() }
-                    Task { await AccountSync(account: account, stars: stars, coins: coins, reading: reading).refresh() }
+                    Task { await AccountSync(account: account, stars: stars, coins: coins, reading: reading, library: library).refresh() }
                 }
         }
     }

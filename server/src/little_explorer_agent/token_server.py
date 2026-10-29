@@ -53,6 +53,9 @@ choice about Milo for the account (the account JSON carries it as ``milo_consent
 read-aloud use, a daily app open; see :mod:`.reading`) for the session's account and device, and
 ``GET /account/reading`` returns the account's reading progress for the badges (``{"progress": {"pages",
 "milo_pages", "listened", "days"}}``).
+``GET /account/library`` returns how a grown-up arranged the account's shelf (hidden books, the order
+of the sections and of the books in each; see :mod:`.library`) as ``{"library": {...}}`` and
+``PUT /account/library`` merges a device's changes into it and returns the result.
 Errors are ``{"error": "bad_email" | "bad_code" | "expired" | "too_many" |
 "signed_out" | "email_off" | "email_failed", ...}``. The owner manages accounts with
 ``/admin/accounts...`` and saves everything with ``GET /admin/backup``.
@@ -110,6 +113,7 @@ from .devices import ANONYMOUS, REST_MESSAGE, STATUSES, Decision, DeviceStore, S
 from .levels import levels_json
 from .mail import Mailer, MailError, compose
 from .modes import PipMode, job_metadata, parse_intro, parse_mode, parse_tz
+from .library import LibraryError, LibraryPrefs
 from .reading import ReadingError, ReadingLog
 from .warm import Warmer
 
@@ -811,6 +815,23 @@ async def handle_account_reading(request: web.Request) -> web.Response:
     return web.json_response({"ok": True, **counts})
 
 
+async def handle_account_library(request: web.Request) -> web.Response:
+    session = await _session(request)
+    if isinstance(session, web.Response):
+        return session
+    prefs = request.app[LIBRARY]
+    if request.method == "GET":
+        return web.json_response({"library": await asyncio.to_thread(prefs.get, session.account.id)})
+    body = await _json_body(request)
+    if body is None:
+        return web.json_response({"error": "bad body"}, status=400)
+    try:
+        library = await asyncio.to_thread(prefs.put, session.account.id, body)
+    except LibraryError as exc:
+        return web.json_response(exc.as_json(), status=exc.status)
+    return web.json_response({"library": library})
+
+
 # -- owner: accounts ---------------------------------------------------------------------------------
 
 
@@ -1151,6 +1172,7 @@ FILES = web.AppKey("files", dict)
 ACCOUNTS = web.AppKey("accounts", Accounts)
 MAILER = web.AppKey("mailer", Mailer)
 READING = web.AppKey("reading_log", ReadingLog)
+LIBRARY = web.AppKey("library_prefs", LibraryPrefs)
 BOOKGEN = web.AppKey("bookgen", BookgenService)
 WARMER = web.AppKey("warmer", Warmer)
 VERSIONS = web.AppKey("app_versions", VersionSettings)
@@ -1167,6 +1189,7 @@ def create_app(
     accounts: Accounts | None = None,
     mailer: Mailer | None = None,
     reading: ReadingLog | None = None,
+    library: LibraryPrefs | None = None,
     bookgen: BookgenService | None = None,
     warmer: Warmer | None = None,
     versions: VersionSettings | None = None,
@@ -1180,6 +1203,7 @@ def create_app(
     app[ACCOUNTS] = accounts or Accounts.from_env(app[STORE])
     app[MAILER] = mailer or Mailer.from_env()
     app[READING] = reading or ReadingLog(app[STORE])
+    app[LIBRARY] = library or LibraryPrefs(app[STORE])
     app[WARMER] = warmer or Warmer()
     app[VERSIONS] = versions or VersionSettings.from_env(app[STORE])
     root = content_root or resources_dir()
@@ -1224,6 +1248,8 @@ def create_app(
     app.router.add_post("/account/import", handle_account_import)
     app.router.add_get("/account/reading", handle_account_reading)
     app.router.add_post("/account/reading", handle_account_reading)
+    app.router.add_get("/account/library", handle_account_library)
+    app.router.add_put("/account/library", handle_account_library)
     app.router.add_get("/admin/accounts", handle_admin_accounts)
     app.router.add_post("/admin/accounts", handle_admin_accounts)
     app.router.add_get("/admin/accounts/{ref}", handle_admin_account)

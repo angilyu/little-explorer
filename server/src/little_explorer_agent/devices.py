@@ -25,7 +25,8 @@ database, because Render's free disk is wiped on every deploy and restart), othe
 ``PIP_DEVICES_DB`` (``~/.config/little-explorer/devices.sqlite3``) for local runs and tests.
 Star awards (see :mod:`.stars`) are kept here too, so a reinstall can restore them, and so are the
 coin ledger and the owner's coin rules (see :mod:`.coins`).
-So are a signed-in family's reading events (see :mod:`.reading`).
+So are a signed-in family's reading events (see :mod:`.reading`) and how it arranged its shelf
+(see :mod:`.library`).
 Only ids, names, models, timings, book ids, costs and star and coin counts are stored; never transcripts or audio.
 
 Accounts (see :mod:`.accounts`) add a grown-up's email. A device signed in to an account is *linked*
@@ -181,6 +182,13 @@ SCHEMA = (
     )""",
     "CREATE INDEX IF NOT EXISTS reading_events_account ON reading_events (account_id, received_s)",
     "CREATE INDEX IF NOT EXISTS reading_events_day ON reading_events (day)",
+    # How a family arranged its shelf (see :mod:`.library`): hidden books and the order of sections and books.
+    """CREATE TABLE IF NOT EXISTS account_library_prefs (
+        account_id TEXT PRIMARY KEY,
+        prefs TEXT NOT NULL,
+        version INTEGER NOT NULL DEFAULT 0,
+        updated_at TEXT NOT NULL
+    )""",
     # Books made in the cloud (see bookgen/): one job per book, run one at a time by the in-process
     # runner, which holds a lease (epoch seconds) it renews at every step.
     """CREATE TABLE IF NOT EXISTS generation_jobs (
@@ -265,7 +273,7 @@ DOGFOOD_EMAILS = ("angilyu@gmail.com", "hfevers@gmail.com")
 TABLES = (
     "devices", "sessions", "stars", "coin_conversions", "settings",
     "accounts", "account_books", "email_codes", "auth_sessions", "hearts", "reading_events",
-    "generation_jobs", "books", "book_assets",
+    "generation_jobs", "books", "book_assets", "account_library_prefs",
 )
 
 STAR_ID = re.compile(r"^[A-Za-z0-9-]{8,64}$")

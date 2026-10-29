@@ -13,9 +13,12 @@ struct Book: Codable, Identifiable, Hashable {
     var theme: String? = nil
     /// "travel" for general travel books (the Travel shelf) that aren't about one place; nil for city books.
     var kind: String? = nil
+    /// Reading level 1-3 (see server/src/little_explorer_agent/levels.py); older books have none and read as 2.
+    var level: BookLevel? = nil
     let pages: [BookPage]
 
     var isTravel: Bool { kind == "travel" }
+    var readingLevel: Int { level?.value ?? BookLevel.standard }
 
     var coverPage: BookPage { pages[0] }
     /// "Paris: Yummy Paris" style name for lists; just the city when there is no theme.
@@ -23,6 +26,35 @@ struct Book: Codable, Identifiable, Hashable {
     /// Big title on the shelf cover: the theme, or the city for a city's only book.
     var coverTitle: String { theme ?? city }
     var openLabel: String { theme.map { "Open the \($0) book about \(city)" } ?? "Open the \(city) book" }
+}
+
+/// A book's reading level. Decoding never fails: a number outside 1-3, a numeric string or anything else
+/// becomes the standard level 2, so one odd value can't hide a whole book.
+struct BookLevel: Codable, Hashable {
+    static let range = 1...3
+    static let standard = 2
+
+    let value: Int
+
+    init(_ value: Int) {
+        self.value = Self.range.contains(value) ? value : Self.standard
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        if let number = try? container.decode(Int.self) {
+            self.init(number)
+        } else if let text = try? container.decode(String.self), let number = Int(text.trimmingCharacters(in: .whitespaces)) {
+            self.init(number)
+        } else {
+            self.init(Self.standard)
+        }
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(value)
+    }
 }
 
 struct BookPage: Codable, Identifiable, Hashable {

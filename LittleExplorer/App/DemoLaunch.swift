@@ -25,6 +25,10 @@ import Foundation
 /// `-demoMilo talk-consent` shows the consent screen after it; `-demoMilo off` is an account whose grown-up
 /// turned Milo off (with `-demoParent`, the Grown-ups corner's Milo switch is off); `-demoMilo turn-on` opens
 /// the Grown-ups corner with Milo off and the consent its switch shows. Other demos have Milo allowed.
+/// `-demoHide paris-french,london` hides those books; `-demoSections Tahoe,Paris` puts those sections first;
+/// `-demoOrder Paris:paris-food,paris` orders a section's books (repeat the flag for more sections).
+/// `-demoArrange` opens the grown-ups corner at "Arrange library" (with `-demoShelf`, scrolled to that book). `-demoLevels paris:1,london:3` sets those
+/// books' reading levels (the bundled ones are all level 2).
 /// `-demoUpgrade required` shows the update screen for a build that's no longer supported; `-demoUpgrade
 /// recommended` shows the "Maybe later" update prompt.
 struct DemoLaunch: Equatable {
@@ -70,6 +74,30 @@ struct DemoLaunch: Equatable {
     var accountScreen: AccountScreen?
     var milo: Milo?
     var upgrade: Upgrade?
+    var hiddenBooks: [String] = []
+    var sectionOrder: [String] = []
+    var bookOrders: [String: [String]] = [:]
+    var openArrange = false
+    var levels: [String: Int] = [:]
+
+    /// `books` with the demo's reading levels.
+    func leveled(_ books: [Book]) -> [Book] {
+        guard !levels.isEmpty else { return books }
+        return books.map { book in
+            var book = book
+            if let level = levels[book.id] { book.level = BookLevel(level) }
+            return book
+        }
+    }
+
+    /// The shelf arrangement the demo starts with.
+    var library: LibraryPrefs {
+        var prefs = LibraryPrefs()
+        for id in hiddenBooks { prefs.setHidden(id, true, at: 1) }
+        if !sectionOrder.isEmpty { prefs.setSectionOrder(sectionOrder, at: 1) }
+        for (section, order) in bookOrders { prefs.setBookOrder(order, in: section, at: 1) }
+        return prefs
+    }
 
     /// Who the demo is signed in as: nobody on the welcome and sign-in screens.
     var account: Account? {
@@ -108,6 +136,25 @@ struct DemoLaunch: Equatable {
         if let coins = value(after: "-demoCoins").flatMap(Int.init) { demo.seedCoins = max(0, coins); found = true }
         if arguments.contains("-demoGate") { demo.openGate = true; found = true }
         if arguments.contains("-demoParent") { demo.openParent = true; found = true }
+        func list(_ text: String) -> [String] {
+            text.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
+        }
+        if let hide = value(after: "-demoHide") { demo.hiddenBooks = list(hide); found = true }
+        if let sections = value(after: "-demoSections") { demo.sectionOrder = list(sections); found = true }
+        for (index, flag) in arguments.enumerated() where flag == "-demoOrder" && index + 1 < arguments.count {
+            let parts = arguments[index + 1].split(separator: ":", maxSplits: 1).map(String.init)
+            guard parts.count == 2 else { continue }
+            demo.bookOrders[parts[0]] = list(parts[1])
+            found = true
+        }
+        if let levels = value(after: "-demoLevels") {
+            for pair in list(levels) {
+                let parts = pair.split(separator: ":").map(String.init)
+                if parts.count == 2, let level = Int(parts[1]) { demo.levels[parts[0]] = level }
+            }
+            found = true
+        }
+        if arguments.contains("-demoArrange") { demo.openArrange = true; demo.openParent = true; found = true }
         if let screen = value(after: "-demoAccount").flatMap(AccountScreen.init(rawValue:)) {
             demo.accountScreen = screen; found = true
         }

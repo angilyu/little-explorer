@@ -8,7 +8,7 @@ enum AccountKeys {
     }
 }
 
-/// Keeps the stars, coins and reading progress (for the badges) on screen in step with who is signed in.
+/// Keeps the stars, coins, reading progress (for the badges) and the arranged shelf on screen in step with who is signed in.
 /// The server keeps the account's; this device keeps a copy per account so they show offline.
 ///
 /// When an account claims this device (its first account, e.g. Francis's family account on his iPad),
@@ -20,6 +20,7 @@ struct AccountSync {
     let stars: StarStore
     let coins: CoinStore
     var reading: ReadingActivity?
+    var library: LibraryStore?
     var defaults: UserDefaults = .standard
     var baseURL: () -> URL = { VoiceSettings.tokenServerURL() }
     var deviceId: () -> String = { DeviceIdentity.current().id }
@@ -44,7 +45,7 @@ struct AccountSync {
         if !legacyStars.isEmpty { defaults.set(true, forKey: importKey(id)) }
     }
 
-    /// Checks the sign-in and fetches the account's books, stars, coins and reading progress.
+    /// Checks the sign-in and fetches the account's books, stars, coins, reading progress and shelf arrangement.
     func refresh() async {
         await account.refresh()
         guard let id = account.account?.id, let token = account.token else { return }
@@ -57,7 +58,8 @@ struct AccountSync {
         }
         async let saved: Void = stars.restore(from: StarBackup(baseURL: baseURL(), deviceId: deviceId(), session: session, token: token))
         async let balance: Bool = coins.refresh(using: CoinService(baseURL: baseURL(), deviceId: deviceId(), session: session, token: token))
-        _ = await (saved, balance)
+        async let arranged: Void = library?.sync() ?? ()
+        _ = await (saved, balance, arranged)
         await reading?.restore(using: ReadingService(baseURL: baseURL(), session: session), token: token)
     }
 
@@ -66,6 +68,7 @@ struct AccountSync {
         stars.forgetAccount(accountId)
         coins.forgetAccount(accountId)
         reading?.forgetAccount(accountId)
+        library?.forgetAccount(accountId)
         defaults.removeObject(forKey: importKey(accountId))
     }
 
@@ -73,6 +76,7 @@ struct AccountSync {
         stars.switchAccount(accountId)
         coins.switchAccount(accountId)
         reading?.switchAccount(accountId)
+        library?.switchAccount(accountId)
     }
 
     private func importKey(_ accountId: String) -> String { "account.\(accountId).importPending" }

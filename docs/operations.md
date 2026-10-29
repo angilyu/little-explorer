@@ -33,8 +33,8 @@ and iPhone signed in with that email. The only personal data is the grown-up's e
   before #38) can still start Milo for an account that never said `yes`.
 - **Signed in**, the shelf shows the account's books. **Sign out** and **Delete account…** are in the Grown-ups
   corner (behind the gate). Signing out keeps everything on the server. Deleting asks for a new code sent to
-  the account's email, then removes the email, books list, stars, coins, reading activity (and any hearts from
-  older builds) from the server and signs out every device (Apple requires apps with accounts to offer this).
+  the account's email, then removes the email, books list, stars, coins, reading activity, library arrangement
+  (and any hearts from older builds) from the server and signs out every device (Apple requires apps with accounts to offer this).
 - Each account's copy of the stars and coins is saved on the device per account, so they show offline,
   and is removed on sign-out. What the device saved before accounts stays under its old keys and is never deleted.
 - **Reading activity** (signed in only, never in demo launches): the app records each page view (book, page,
@@ -47,6 +47,9 @@ and iPhone signed in with that email. The only personal data is the grown-up's e
   [Reading activity](#reading-activity).
 - Milo's daily time is the account's too: every device signed in to it shares the minutes (see
   [Milo time limits per account](#milo-time-limits-per-account)).
+- **Arrange library** (Grown-ups corner, signed in): a grown-up can hide or show books, drag the sections into a
+  new order and drag the books within a section. Hidden books leave the child's shelf. The arrangement belongs to
+  the account, so every device signed in to it shows the same shelf (see [Library arrangement](#library-arrangement)).
 
 **Devices from before accounts.** Stars and coins used to belong to a device id. The first account a device
 signs in to claims them (`legacy_account_id`), and the app sends that account what it kept only on the device:
@@ -98,7 +101,8 @@ Without an email provider, `POST /auth/start` answers `503 email_off`.
 `POST /auth/start {email, purpose?}`, `POST /auth/verify {email, code, device}` (returns `token`, `account`,
 `claimed_device`), `POST /auth/signout`, `GET /account`, `POST /account/delete {code}`, `GET /account/stars`,
 `GET /account/coins`, `POST /account/coins/convert`, `POST /account/import {stars}` and
-`POST /account/reading {events}` (returns `stored`, `duplicates`, `rejected`). The app used to have
+`POST /account/reading {events}` (returns `stored`, `duplicates`, `rejected`) and `GET`/`PUT /account/library`
+(see [Library arrangement](#library-arrangement)). The app used to have
 a heart button for pages the child loved; it's gone, but the server still answers `GET`/`POST /account/hearts
 {loved, unloved}` and takes `hearts` in `/account/import` so older builds keep working, and keeps the hearts
 already saved (deleting the account removes them). Errors: `bad_email`, `bad_code` (with `tries_left`), `expired`,
@@ -240,6 +244,40 @@ its events on every device: `{"progress": {"pages": [...], "milo_pages": [...], 
 `pages` are the `book/page` ids with a page view, `milo_pages` those viewed with Milo on, `listened` those whose
 read-aloud finished, and `days` the devices' dates with a page view. The app merges it into its own copy on launch
 and when it comes back to the foreground.
+
+## Library arrangement
+
+The Grown-ups corner's **Arrange library** screen hides books and changes the order of the sections and of the
+books in each section. The server keeps one document per account in `account_library_prefs`
+([`library.py`](../server/src/little_explorer_agent/library.py)):
+
+```json
+{"v": 7, "updated_at": "2026-...",
+ "sections": {"order": ["Lake Tahoe", "Paris"], "t": 1767225600000},
+ "books": {"Paris": {"order": ["paris-fun", "paris"], "t": 1767225600000}},
+ "hidden": {"london": {"on": true, "t": 1767225600000}}}
+```
+
+`GET /account/library` returns it (an account that never arranged anything gets `v: 0` and empty fields).
+`PUT /account/library` takes only what changed, in the same shape, and returns the merged document. Each section
+order, book order and hidden flag carries `t`, the device's time in milliseconds when a grown-up changed it. The
+server keeps the newer one per key (the later write wins a tie) and clamps `t` to its own clock, so a device whose
+clock is far ahead can't pin a value. Putting the order back to the default saves an empty `order`, and showing a
+book saves `on: false`, so a device that was offline can't bring back the old setting later.
+
+Book ids and section names aren't checked against the catalog. The app ignores ids it doesn't know and puts
+sections and books that aren't in an order in their usual place after the ordered ones, so new books show up in
+their usual spot. Limits: 200 sections, 500 ids per book order, 1,000 hidden flags, names and ids up to 80
+characters (`400 bad_library`, or `413 too_big` with `max`). If a merge goes over a limit, entries set back to the
+default go first, then the oldest.
+
+The app keeps the account's copy on the device (removed on sign-out) and applies it offline. It syncs on launch,
+when it comes back to the foreground and after each change; a change that fails to send waits on the device and is
+retried every minute. Demo launches keep changes in memory only. The table is in `/admin/backup` and restore, and
+deleting an account deletes it.
+
+**Hidden books still count** for the Passport badges and the stars total: hiding a book takes it off the shelf but
+doesn't take back what the child earned with it.
 
 ## Badges
 
@@ -690,11 +728,13 @@ DEBUG builds accept launch arguments for screenshots: `-demoBook paris-food -dem
 some earned and some not, from 40 stars, an early-morning star and a few weeks of reading, with the "New badge!"
 celebration; `-demoBadges seen` without it, `-demoBadges reading` or another group id to open that group), `-demoCoins 2`,
 `-demoGate` (the parent gate on the shelf), `-demoAccount welcome|email|code` (the signed-out welcome screen and
-sign-in's email or code step), `-demoParent` (the Grown-ups corner) and `-demoMilo
+sign-in's email or code step), `-demoParent` (the Grown-ups corner), `-demoArrange` (its Arrange library screen),
+`-demoHide paris-food,london` (hidden books), `-demoSections "Lake Tahoe,Paris"` (section order), `-demoOrder
+"Paris:paris-fun,paris"` (a section's book order; repeatable), `-demoLevels paris:1,paris-fun:3` (cover levels) and `-demoMilo
 signin|talk|talk-consent|off|turn-on` (the Milo consent screen after sign-in, the gate and consent when Talk to Milo
 is tapped before Milo is allowed, the corner with Milo off, and the consent its switch shows when turned on).
-`-demoShelf grown-ups` scrolls to the Grown-ups button. `-demoUpgrade required|recommended` shows the
-[update screens](#app-versions-and-forced-updates).
+`-demoShelf grown-ups` scrolls to the Grown-ups button; with `-demoArrange`, `-demoShelf <book>` scrolls to that book.
+`-demoUpgrade required|recommended` shows the [update screens](#app-versions-and-forced-updates).
 
 ### Release the app (beta and App Store)
 

@@ -625,6 +625,7 @@ class Accounts:
             ("account_books", "account_id"),
             ("auth_sessions", "account_id"),
             ("reading_events", "account_id"),
+            ("account_library_prefs", "account_id"),
         ):
             counts[table] = ex(cur, f"DELETE FROM {table} WHERE {column} = ?", (account_id,)).rowcount
         # Books the account made (their R2 objects are removed by the caller, see bookgen.BookStore).
