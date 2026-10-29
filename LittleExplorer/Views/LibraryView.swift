@@ -278,11 +278,7 @@ struct BookCoverView: View {
                     .padding(regular ? 12 : 8)
                     .accessibilityHidden(true)
                 }
-                .overlay(alignment: .topLeading) {
-                    LevelBadge(level: book.readingLevel, regular: regular)
-                        .padding(.leading, regular ? 24 : 15)
-                        .padding(.top, regular ? 12 : 8)
-                }
+                .coverLevelBadge(level: book.readingLevel, regular: regular)
                 .overlay(alignment: .bottomTrailing) {
                     if book.isMade {
                         VStack(alignment: .trailing, spacing: 4) {
@@ -324,60 +320,5 @@ struct BookCoverView: View {
         }
         .shadow(color: .black.opacity(0.18), radius: 12, x: 0, y: 8)
         .contentShape(Rectangle())
-    }
-}
-
-/// The reading level on a cover: a candy-striped pill in the level's color saying "Level 2". VoiceOver reads the
-/// level with the cover ("Level 2"), so the badge itself is hidden from it.
-struct LevelBadge: View {
-    let level: Int
-    var regular = true
-
-    static func color(_ level: Int) -> Color {
-        switch level {
-        case 1: Color(hex: "#1E8449")
-        case 3: Color(hex: "#6A3FC7")
-        default: Color(hex: "#1565C0")
-        }
-    }
-
-    var body: some View {
-        Text("Level \(level)")
-            .font(.system(size: regular ? 19 : 14, weight: .black, design: .rounded))
-            .foregroundStyle(.white)
-            .shadow(color: .black.opacity(0.35), radius: 0.5, x: 0, y: 1)
-            .lineLimit(1)
-            .padding(.horizontal, regular ? 14 : 9)
-            .padding(.vertical, regular ? 6 : 4)
-            .background {
-                ZStack {
-                    Self.color(level)
-                    DiagonalStripes(stripe: regular ? 6 : 4).fill(.white.opacity(0.22))
-                }
-                .clipShape(Capsule())
-            }
-            .overlay(Capsule().strokeBorder(.white, lineWidth: regular ? 2.5 : 2))
-            .shadow(color: .black.opacity(0.2), radius: 3, x: 0, y: 1)
-            .fixedSize()
-            .accessibilityHidden(true)
-    }
-}
-
-/// Parallel stripes leaning right, `stripe` points wide with equal gaps.
-private struct DiagonalStripes: Shape {
-    var stripe: CGFloat
-
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-        var x = rect.minX - rect.height
-        while x < rect.maxX {
-            path.move(to: CGPoint(x: x, y: rect.maxY))
-            path.addLine(to: CGPoint(x: x + rect.height, y: rect.minY))
-            path.addLine(to: CGPoint(x: x + rect.height + stripe, y: rect.minY))
-            path.addLine(to: CGPoint(x: x + stripe, y: rect.maxY))
-            path.closeSubpath()
-            x += stripe * 2
-        }
-        return path
     }
 }
