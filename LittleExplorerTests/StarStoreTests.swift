@@ -288,9 +288,11 @@ final class StarStoreTests: XCTestCase {
         XCTAssertLessThanOrEqual(perPage.values.max() ?? 0, 5, "at most 5 stars per page")
     }
 
-    func testBookCoverReadsItsStars() {
+    func testBookCoverReadsItsLevelAndStars() {
+        // The level badge is hidden from VoiceOver, so the cover's value must say the level.
         XCTAssertEqual(BookCoverView.accessibilityValue(level: 2, starCount: 0), "Level 2")
         XCTAssertEqual(BookCoverView.accessibilityValue(level: 1, starCount: 1), "Level 1, 1 star")
         XCTAssertEqual(BookCoverView.accessibilityValue(level: 3, starCount: 7), "Level 3, 7 stars")
+        XCTAssertEqual(BookCoverView.accessibilityValue(level: 1, starCount: 0, made: true), "Level 1, made with AI")
     }
 }

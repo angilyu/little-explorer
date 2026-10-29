@@ -164,7 +164,7 @@ struct MakeBookView: View {
         } header: {
             Text("Reading level")
         } footer: {
-            Text("Pick the level your child reads at. The number shows on the book's cover.")
+            Text("Pick the level your child reads at. The level shows on the book's cover.")
         }
     }
 
