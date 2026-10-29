@@ -141,6 +141,15 @@ publishes a SHA-256 manifest. The app downloads only the changed files, verifies
 one step, falling back to the bundled books. Photos come from Wikimedia Commons, and a script checks each license
 through the Commons API.
 
+### Books written on demand, at the child's reading level
+
+The server can write a whole new book in the cloud: text, real Commons photos and word-timed narration. The text
+is written at one of three reading levels (ages 4–5, 5–7, 7–9) and fact-checked with web search. Everything is
+moderated, and moderation fails closed. It runs for free inside the existing web service: one job at a time, with
+a Postgres lease so a restart picks up where it stopped. Files are stored in a private R2 bucket. A book costs
+about $0.13. Milo's talk rules follow the book's level. It is dogfood-only for now; see
+[Made books](docs/operations.md#made-books-cloud-generation).
+
 ### Testing a voice agent end to end
 
 `server/tools/e2e_smoke.py` joins a real LiveKit room the way the app does. It plays synthesized speech into the

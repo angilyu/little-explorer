@@ -63,6 +63,8 @@ struct ContentUpdater {
     private func download(_ path: String, entry: ContentManifest.Entry, to target: URL) async throws {
         var request = URLRequest(url: baseURL.appendingPathComponent(path))
         request.timeoutInterval = 60
+        // The server picks the shared files (library.json, narration.json) by version, like the manifest.
+        request.addClientHeaders()
         let (data, response) = try await session.data(for: request)
         guard (response as? HTTPURLResponse)?.statusCode == 200 else { throw ContentUpdateError.badDownload(path) }
         try data.write(to: target, options: .atomic)

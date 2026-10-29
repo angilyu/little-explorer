@@ -50,6 +50,9 @@ DEFAULT_STORE_URL = "https://apps.apple.com/app/id6823828609"
 DEFAULT_TESTFLIGHT_URL = "itms-beta://"
 SETTING_PREFIX = "app."
 CACHE_S = 30.0
+# The first app that labels made (AI-written) books and lets a grown-up hide or report them. Older builds never
+# get made books: not in the manifest, not on the account's shelf.
+MADE_BOOKS_VERSION = "1.2"
 
 Status = Literal["ok", "recommended", "required"]
 _PART = re.compile(r"^\d{1,9}$")

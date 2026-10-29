@@ -8,6 +8,7 @@
   "theme": "Pack Your Bag",
   "coverColor": "#7C3AED",
   "tagline": "Socks, toothbrush and a favorite toy",
+  "level": 2,
   "pages": [
     {
       "id": "welcome",

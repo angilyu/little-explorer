@@ -27,6 +27,7 @@ from __future__ import annotations
 
 import hashlib
 import hmac
+import json
 import logging
 import os
 import re
@@ -37,9 +38,12 @@ from collections.abc import Callable, Iterable, Mapping, Sequence
 from dataclasses import dataclass
 from typing import Any
 
-from .devices import STAR_ID, STARS_PER_AWARD, DeviceStore, Scope, limit_min, valid_device_id
+from .devices import DOGFOOD_EMAILS, STAR_ID, STARS_PER_AWARD, DeviceStore, Scope, limit_min, valid_device_id
 
 log = logging.getLogger("little_explorer.accounts")
+
+# Settings key: book making is on for every account ("on"/"off"), see set_bookgen_everyone.
+BOOKGEN_EVERYONE = "bookgen.everyone"
 
 DEFAULT_BOOKS = (
     "paris",
@@ -108,18 +112,61 @@ class Account:
     created_at: str
     # Whether a grown-up allowed Milo for the account (True), turned it off (False) or was never asked (None).
     milo_consent: bool | None = None
+    # May make books in the cloud: the account's own flag, or book making is on for everyone.
+    can_generate: bool = False
+    # The hand-made books ``all_books`` stands for (the shelf order of the bundled library). Made books are
+    # never part of it: an account only reads the made books it was granted (its own are granted when published).
+    catalog: tuple[str, ...] = ()
+
+    @property
+    def shelf(self) -> tuple[str, ...]:
+        """Every book the account may read: its grants, plus every hand-made book if it has ``all_books``."""
+        if not self.all_books:
+            return self.books
+        catalog = set(self.catalog)
+        return self.catalog + tuple(b for b in self.books if b not in catalog)
 
     def as_json(self) -> dict[str, Any]:
+        """For the owner: the real ``all_books`` flag and the account's own grants."""
         return {
             "id": self.id,
             "email": self.email,
             "all_books": self.all_books,
             "books": list(self.books),
             "milo_consent": self.milo_consent,
+            "can_generate": self.can_generate,
         }
 
+    def app_json(self) -> dict[str, Any]:
+        """For the app: always an explicit shelf. The 1.0 app reads ``all_books: true`` as "every book in the
+        manifest", which would include other families' made books, so it is never sent to the app."""
+        return {**self.as_json(), "all_books": False, "books": list(self.shelf)}
+
     def may_read(self, book_id: str) -> bool:
-        return self.all_books or book_id in self.books
+        return book_id in self.shelf
+
+
+def bundled_catalog() -> tuple[str, ...]:
+    """The bundled library's book ids in shelf order (``library.json``)."""
+    from .catalog import LIBRARY_FILE, resources_dir
+
+    try:
+        order = json.loads((resources_dir() / LIBRARY_FILE).read_text(encoding="utf-8")).get("order") or []
+    except (OSError, ValueError) as exc:
+        log.warning("could not read the bundled library: %s", exc)
+        return ()
+    return tuple(b for b in order if isinstance(b, str))
+
+
+def _cached(load: Callable[[], tuple[str, ...]]) -> Callable[[], tuple[str, ...]]:
+    value: list[tuple[str, ...]] = []
+
+    def get() -> tuple[str, ...]:
+        if not value:
+            value.append(load())
+        return value[0]
+
+    return get
 
 
 @dataclass(frozen=True)
@@ -145,6 +192,7 @@ class Accounts:
         review_code: str = "",
         daily_cap: int = DAILY_CAP,
         clock: Callable[[], float] = time.time,
+        bookgen_everyone: bool = False,
     ) -> None:
         self.store = store
         if not secret:
@@ -156,6 +204,9 @@ class Accounts:
         self.review_code = review_code.strip() if re.fullmatch(r"\d{6}", review_code.strip()) else ""
         self.daily_cap = daily_cap
         self.clock = clock
+        self.bookgen_everyone = bookgen_everyone
+        # Where all_books accounts get their hand-made books; the web app points it at the served catalog.
+        self.catalog: Callable[[], Iterable[str]] = _cached(bundled_catalog)
 
     @classmethod
     def from_env(cls, store: DeviceStore, env: Mapping[str, str] | None = None) -> Accounts:
@@ -168,6 +219,7 @@ class Accounts:
             review_email=env.get("PIP_REVIEW_EMAIL", ""),
             review_code=env.get("PIP_REVIEW_CODE", ""),
             daily_cap=int(env.get("PIP_EMAIL_DAILY_CAP", "").strip() or DAILY_CAP),
+            bookgen_everyone=env.get("BOOKGEN_EVERYONE", "").strip().lower() in ("1", "true", "yes", "on"),
         )
 
     def _hmac(self, *parts: str) -> str:
@@ -180,7 +232,9 @@ class Accounts:
 
     def _account(self, cur: Any, column: str, value: str) -> Account | None:
         row = self.store._exec(
-            cur, f"SELECT id, email, all_books, created_at, milo_consent FROM accounts WHERE {column} = ?", (value,)
+            cur,
+            f"SELECT id, email, all_books, created_at, milo_consent, can_generate FROM accounts WHERE {column} = ?",
+            (value,),
         ).fetchone()
         if not row:
             return None
@@ -188,7 +242,47 @@ class Accounts:
             cur, "SELECT book_id FROM account_books WHERE account_id = ? ORDER BY book_id", (row[0],)
         ).fetchall()
         consent = {"yes": True, "no": False}.get(row[4])
-        return Account(row[0], row[1], bool(row[2]), tuple(b[0] for b in books), row[3], consent)
+        can_generate = bool(row[5]) or self._bookgen_everyone(cur)
+        catalog = tuple(self.catalog()) if row[2] else ()
+        return Account(row[0], row[1], bool(row[2]), tuple(b[0] for b in books), row[3], consent, can_generate, catalog)
+
+    def _bookgen_everyone(self, cur: Any) -> bool:
+        if self.bookgen_everyone:
+            return True
+        row = self.store._exec(cur, "SELECT value FROM settings WHERE key = ?", (BOOKGEN_EVERYONE,)).fetchone()
+        return bool(row) and row[0] == "on"
+
+    def bookgen_everyone_on(self) -> bool:
+        """Book making is on for every account (``BOOKGEN_EVERYONE`` or the owner's setting)."""
+        return self.store._run(self._bookgen_everyone)
+
+    def set_bookgen_everyone(self, on: bool) -> bool:
+        def run(cur: Any) -> None:
+            self.store._exec(cur, "DELETE FROM settings WHERE key = ?", (BOOKGEN_EVERYONE,))
+            self.store._exec(
+                cur, "INSERT INTO settings (key, value, updated_at) VALUES (?, ?, ?)",
+                (BOOKGEN_EVERYONE, "on" if on else "off", self._stamp()),
+            )
+
+        self.store.transaction(run)
+        log.warning("owner turned book making %s for everyone", "on" if on else "off")
+        return self.bookgen_everyone_on()
+
+    def set_can_generate(self, ref: str, allow: bool) -> Account:
+        """Let one account (by email or id) make books, or stop it."""
+
+        def run(cur: Any) -> Account:
+            account = self._by_ref(cur, ref)
+            if not account:
+                raise LookupError(ref)
+            self.store._exec(cur, "UPDATE accounts SET can_generate = ? WHERE id = ?", (int(allow), account.id))
+            fresh = self._account(cur, "id", account.id)
+            assert fresh is not None
+            return fresh
+
+        account = self.store.transaction(run)
+        log.info("account %s may make books: %s", account.id, allow)
+        return account
 
     def _by_ref(self, cur: Any, ref: str) -> Account | None:
         email = normalize_email(ref)
@@ -203,8 +297,8 @@ class Accounts:
         account_id = uuid.uuid4().hex
         self.store._exec(
             cur,
-            "INSERT INTO accounts (id, email, all_books, created_at, last_seen) VALUES (?, ?, ?, ?, ?)",
-            (account_id, email, int(all_books), stamp, stamp),
+            "INSERT INTO accounts (id, email, all_books, created_at, last_seen, can_generate) VALUES (?, ?, ?, ?, ?, ?)",
+            (account_id, email, int(all_books), stamp, stamp, int(email in DOGFOOD_EMAILS)),
         )
         for book in self.default_books:
             self.store._exec(
@@ -533,6 +627,20 @@ class Accounts:
             ("reading_events", "account_id"),
         ):
             counts[table] = ex(cur, f"DELETE FROM {table} WHERE {column} = ?", (account_id,)).rowcount
+        # Books the account made (their R2 objects are removed by the caller, see bookgen.BookStore).
+        counts["book_assets"] = ex(
+            cur, "DELETE FROM book_assets WHERE book_id IN (SELECT id FROM books WHERE account_id = ?)", (account_id,)
+        ).rowcount
+        counts["books"] = ex(cur, "DELETE FROM books WHERE account_id = ?", (account_id,)).rowcount
+        # Its jobs lose everything about the account but keep their day and cost, so the global daily spend
+        # cap still counts money already spent; a job still going stops at its next step.
+        counts["generation_jobs"] = ex(
+            cur,
+            """UPDATE generation_jobs SET account_id = '', input = '{}', error = '',
+                status = CASE WHEN status IN ('queued', 'running') THEN 'failed' ELSE status END, lease_until = 0
+               WHERE account_id = ?""",
+            (account_id,),
+        ).rowcount
         ex(cur, "DELETE FROM email_codes WHERE email = ?", (email,))
         # Session minutes stay as the device's (they're how much Milo was used, not the account's).
         ex(cur, "UPDATE sessions SET account_id = NULL WHERE account_id = ?", (account_id,))
@@ -669,7 +777,7 @@ class Accounts:
                     (SELECT COUNT(*) FROM hearts h WHERE h.account_id = a.id),
                     a.milo_status, a.daily_limit_min,
                     (SELECT COALESCE(SUM(m.duration_s), 0) FROM sessions m WHERE m.account_id = a.id AND m.day = ?),
-                    a.milo_consent
+                    a.milo_consent, a.can_generate
                 FROM accounts a ORDER BY a.created_at""",
                 (day,),
             ).fetchall()
@@ -692,6 +800,7 @@ class Accounts:
                 "limit_min": 0.0 if r[11] == "blocked" else limit_min(r[11], r[12], limits),
                 "today_min": round(float(r[13] or 0) / 60, 1),
                 "milo_consent": {"yes": True, "no": False}.get(r[14]),
+                "can_generate": bool(r[15]),
             }
             for r in self.store._run(run)
         ]

@@ -77,7 +77,7 @@ async def test_health_reports_commit_and_content_version(client, monkeypatch):
     monkeypatch.setenv("RENDER_GIT_COMMIT", "abc123")
     health = await (await client.get("/healthz")).json()
     manifest = await (await client.get("/content/manifest.json")).json()
-    assert health == {"ok": True, "commit": "abc123", "content": manifest["version"]}
+    assert health == {"ok": True, "commit": "abc123", "content": manifest["version"], "bundled": manifest["version"]}
     monkeypatch.delenv("RENDER_GIT_COMMIT")
     assert (await (await client.get("/healthz")).json())["commit"] is None
 

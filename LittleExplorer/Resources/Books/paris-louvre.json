@@ -7,6 +7,7 @@
   "theme": "Louvre Museum",
   "coverColor": "#B5475E",
   "tagline": "A glass pyramid and a tiny Mona Lisa",
+  "level": 2,
   "pages": [
     {
       "id": "welcome",

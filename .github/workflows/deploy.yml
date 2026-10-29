@@ -122,7 +122,9 @@ jobs:
             health=$(curl -fsS --max-time 60 "$SERVER_URL/healthz" 2>/dev/null || true)
             commit=$(jq -r '.commit // empty' <<<"$health" 2>/dev/null || true)
             if [[ "$commit" == "$GITHUB_SHA" ]]; then
-              live=$(curl -fsS --max-time 60 "$SERVER_URL/content/manifest.json" | jq -r .version)
+              # Generated books change the live manifest's version; "bundled" is this commit's own books.
+              live=$(jq -r '.bundled // empty' <<<"$health")
+              [[ -n "$live" ]] || live=$(curl -fsS --max-time 60 "$SERVER_URL/content/manifest.json" | jq -r .version)
               if [[ "$live" == "$WANT_CONTENT" ]]; then
                 echo "Live: commit $commit, content $live"
                 exit 0

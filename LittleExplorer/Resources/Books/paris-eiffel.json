@@ -7,6 +7,7 @@
   "theme": "Eiffel Tower",
   "coverColor": "#8A5A44",
   "tagline": "Stairs, sparkles and a secret room",
+  "level": 2,
   "pages": [
     {
       "id": "welcome",

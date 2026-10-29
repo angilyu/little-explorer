@@ -7,6 +7,7 @@
   "theme": "Big Ben",
   "coverColor": "#1D3F6E",
   "tagline": "Bongs, bells and a giant clock",
+  "level": 2,
   "pages": [
     {
       "id": "welcome",

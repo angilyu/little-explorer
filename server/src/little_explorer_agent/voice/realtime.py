@@ -528,5 +528,5 @@ async def start_realtime_session(
                 log.info("forced commit: cancelled a second reply to the same turn's silence")
                 rt.send_event({"type": "response.cancel", "response_id": response_id})
     if greeting:
-        session.generate_reply(instructions=f'Greet him by saying exactly: "{greeting}"')
+        session.generate_reply(instructions=f'Greet the child by saying exactly: "{greeting}"')
     return session

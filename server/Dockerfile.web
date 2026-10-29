@@ -1,6 +1,8 @@
 # Token + book-content server for Render (build context: the repo root).
 # Env: LIVEKIT_URL, LIVEKIT_API_KEY, LIVEKIT_API_SECRET, PIP_ACCESS_KEY, KEEPALIVE_SECONDS,
 # DATABASE_URL (device usage), PIP_ADMIN_KEY, PIP_REPORT_KEY. Render sets PORT.
+# Book making (optional): BOOKGEN_OPENAI_API_KEY, R2_ACCOUNT_ID, R2_BUCKET, R2_ENDPOINT, R2_ACCESS_KEY_ID,
+# R2_SECRET_ACCESS_KEY (+ BOOKGEN_* knobs, docs/operations.md). ffmpeg + Pillow are for narration and photos.
 FROM python:3.12-slim
 
 ENV PYTHONUNBUFFERED=1 \
@@ -8,8 +10,10 @@ ENV PYTHONUNBUFFERED=1 \
     CONTENT_ROOT=/app/content
 
 WORKDIR /app
+RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
 RUN pip install --no-cache-dir aiohttp==3.14.3 livekit-api==1.2.1 python-dotenv==1.2.3 \
-        "psycopg[binary]==3.3.6" \
+        "psycopg[binary]==3.3.6" pillow==13.0.0 \
     && useradd --create-home --uid 10001 web
 
 COPY server/src ./src
