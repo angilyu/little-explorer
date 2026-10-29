@@ -289,10 +289,17 @@ final class StarStoreTests: XCTestCase {
     }
 
     func testBookCoverReadsItsLevelAndStars() {
-        // The level badge is hidden from VoiceOver, so the cover's value must say the level.
+        // The level sash is hidden from VoiceOver, so the cover's value must say the level.
         XCTAssertEqual(BookCoverView.accessibilityValue(level: 2, starCount: 0), "Level 2")
         XCTAssertEqual(BookCoverView.accessibilityValue(level: 1, starCount: 1), "Level 1, 1 star")
         XCTAssertEqual(BookCoverView.accessibilityValue(level: 3, starCount: 7), "Level 3, 7 stars")
         XCTAssertEqual(BookCoverView.accessibilityValue(level: 1, starCount: 0, made: true), "Level 1, made with AI")
+    }
+
+    func testLevelRibbonSaysTheLevelInItsOwnColor() {
+        XCTAssertEqual(LevelRibbon.label(1), "LEVEL 1")
+        XCTAssertEqual(LevelRibbon.label(3), "LEVEL 3")
+        XCTAssertEqual(Set(BookLevel.range.map { "\(LevelRibbon.color($0))" }).count, BookLevel.range.count,
+                       "each level has its own color")
     }
 }

@@ -112,7 +112,7 @@ struct ArrangeLibraryView: View {
                     .foregroundStyle(hidden ? .secondary : .primary)
                     .lineLimit(1)
                 HStack(spacing: 6) {
-                    LevelBadge(level: book.readingLevel, regular: false)
+                    LevelBadge(level: book.readingLevel)
                         .saturation(hidden ? 0 : 1)
                         .opacity(hidden ? 0.6 : 1)
                     if hidden {

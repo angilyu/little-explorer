@@ -153,9 +153,10 @@ progress on the shelf, and the finished book carries a small "Made with AI" labe
 per-account manifest, so no other family (and no 1.0 app) ever downloads them. It is dogfood-only for now; see
 [Made books](docs/operations.md#made-books-cloud-generation).
 
-Each cover shows its level as a small candy-striped "Level 1" pill in the level's color. In the Grown-ups corner,
-**Arrange library** lets a parent hide books and reorder the sections and the books in them; the arrangement is
-saved with the account and synced to its other devices ([Library arrangement](docs/operations.md#library-arrangement)).
+Each cover shows its level as a slim candy-striped "LEVEL 1" sash across its top-left corner, in the level's color.
+In the Grown-ups corner, **Arrange library** lets a parent hide books and reorder the sections and the books in them;
+the arrangement is saved with the account and synced to its other devices
+([Library arrangement](docs/operations.md#library-arrangement)).
 
 ### Testing a voice agent end to end
 

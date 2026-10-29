@@ -137,7 +137,7 @@ struct MakeBookView: View {
                     level = choice.level
                 } label: {
                     HStack(alignment: .top, spacing: 12) {
-                        LevelBadge(level: choice.level, regular: false)
+                        LevelBadge(level: choice.level)
                         VStack(alignment: .leading, spacing: 4) {
                             Text(choice.title)
                                 .font(.headline)

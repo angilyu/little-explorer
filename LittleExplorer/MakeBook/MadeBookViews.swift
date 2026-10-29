@@ -46,11 +46,7 @@ struct PlaceholderCoverView: View {
             }
             .frame(height: regular ? 210 : 100)
             .frame(maxWidth: .infinity)
-            .overlay(alignment: .topLeading) {
-                LevelBadge(level: book.readingLevel, regular: regular)
-                    .padding(.leading, regular ? 24 : 15)
-                    .padding(.top, regular ? 12 : 8)
-            }
+            .coverLevelBadge(level: book.readingLevel, regular: regular)
             VStack(alignment: .leading, spacing: 4) {
                 Text(book.coverTitle)
                     .font(.system(size: regular ? 30 : 21, weight: .heavy, design: .rounded))
