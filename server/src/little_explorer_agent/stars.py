@@ -1,30 +1,38 @@
-"""Stars for answering Milo: the rules that decide when an answer earns one.
+"""Stars for talking with Milo: the rules that decide when a turn earns one.
 
 Milo ends his replies with one easy, open question. The child earns a star by answering it in a
-whole sentence of his own. Nothing the model says can hand out a star; :class:`StarKeeper` checks
-every answered turn against what was actually heard (the input transcription, the guard's decision
-and what Milo said last) and against the limits:
+whole sentence of his own, or by asking Milo a real question of his own (curiosity counts too).
+Nothing the model says can hand out a star; :class:`StarKeeper` checks every answered turn against
+what was actually heard (the input transcription, the guard's decision and what Milo said last) and
+against the limits:
 
-* Milo's last reply asked a question (it has a ``?``), and this turn is the child's reply to it;
 * the turn was meant for Milo (the guard said RESPOND: not noise or grown-ups talking), is not the
-  page sentence read aloud, not small talk like "hi Milo", and not a question of his own;
-* it has at least ``min_words`` (5, ``PIP_STAR_MIN_WORDS``) words;
+  page sentence read aloud and not small talk like "hi Milo" or "how are you";
+* **an answer** (kind ``answer``): Milo's last reply asked a question (it has a ``?``), this turn is
+  the child's reply to it, and it has at least ``min_words`` (5, ``PIP_STAR_MIN_WORDS``) words;
+* **a question of his own** (kind ``question``): it is a question (it ends with ``?`` or starts like
+  one: "why", "what's", "how", "can you", "I wonder"...), it is not asking Milo to repeat himself
+  ("what did you say?"), and it has at least ``question_min_words`` (3,
+  ``PIP_STAR_QUESTION_MIN_WORDS``) words after any "hi"/"Milo" at the start, so "why?" earns
+  nothing but "what's this tower?" does. Milo doesn't need to have asked anything first;
 * each heard turn earns at most one award;
 * up to :data:`STARS_PER_PAGE` (5) stars per page per device each day, counting every session that
-  day: each star-worthy answer on a page earns one until the page has 5, then that page earns
-  nothing more until tomorrow. The day is the device's local day (the app sends its time zone with
-  the token request; awards are stamped in it, so the Passport calendar shows the same day).
-  Stars from earlier sessions come from the token server (``GET /stars``) when the session starts
-  (:func:`fetch_page_stars`), and the token server refuses a sixth one itself.
+  day and both kinds together: each star-worthy turn on a page earns one until the page has 5, then
+  that page earns nothing more until tomorrow. The day is the device's local day (the app sends its
+  time zone with the token request; awards are stamped in it, so the Passport calendar shows the
+  same day). Stars from earlier sessions come from the token server (``GET /stars``) when the
+  session starts (:func:`fetch_page_stars`), and the token server refuses a sixth one itself.
 
 An award is always 1 star. ``long`` (``long_words``, 8+ words) and ``why_how`` (he explained with
 "because") are recorded for the Passport's badges but add nothing.
 
 Awards hold counts and labels only (book, page, kind, flags, word count);
 never the transcript. They are sent to the app on the ``milo.star`` data topic and backed up to the
-token server (``POST /stars``) so a reinstall can restore them.
+token server (``POST /stars``) so a reinstall can restore them. Both already accept ``question``
+(the kind stars had before the answer rule), so older app builds show these stars as usual.
 
-Settings: ``PIP_STAR_MIN_WORDS``, ``PIP_STAR_COOLDOWN_S`` (0: off), ``PIP_STAR_LONG_WORDS``.
+Settings: ``PIP_STAR_MIN_WORDS``, ``PIP_STAR_QUESTION_MIN_WORDS``, ``PIP_STAR_COOLDOWN_S`` (0: off),
+``PIP_STAR_LONG_WORDS``.
 """
 
 from __future__ import annotations
@@ -63,8 +71,13 @@ _BECAUSE = frozenset({"because", "cause", "'cause"})
 READING_OVERLAP = 0.6
 _GREETING_WORDS = NAME_WORDS | frozenset({"hi", "hello", "hey", "ok", "okay", "um", "uh", "so"})
 _SMALL_TALK = re.compile(
-    r"^(how are you( doing| today)?|what('s| is) your name|are you (there|listening|real|a robot)|"
+    r"^(how are you( doing)?( today)?|what('s| is) your name|are you (there|listening|real|a robot)|"
     r"can you hear me|do you hear me|what are you doing|who are you)$"
+)
+# Asking Milo to say it again is not curiosity.
+_REPEAT = re.compile(
+    r"^((sorry|pardon) )?(what|huh|pardon|sorry|what did you say|what was that|what do you mean|"
+    r"(can|could) you (say|repeat) (that|it)( again)?|say (that|it) again)$"
 )
 
 
@@ -72,10 +85,12 @@ _SMALL_TALK = re.compile(
 class StarRules:
     # Off by default: Milo says his star line before the app has judged the answer, so a star refused
     # for being too soon would make him promise one that never comes. Turn-taking already paces
-    # stars: each needs a new question from Milo and a whole-sentence answer.
+    # stars: each needs a new turn from him (a whole-sentence answer or a real question) and a reply.
     cooldown_s: float = 0.0
     long_words: int = 8
     min_words: int = 5
+    # His own question needs at least this many words ("what's this tower?"), so "why?" earns nothing.
+    question_min_words: int = 3
     # A transcript older than this cannot earn a star any more.
     fresh_s: float = 20.0
 
@@ -91,6 +106,7 @@ class StarRules:
             cooldown_s=num("PIP_STAR_COOLDOWN_S", cls.cooldown_s),
             long_words=int(num("PIP_STAR_LONG_WORDS", cls.long_words)),
             min_words=max(int(num("PIP_STAR_MIN_WORDS", cls.min_words)), 1),
+            question_min_words=max(int(num("PIP_STAR_QUESTION_MIN_WORDS", cls.question_min_words)), 1),
         )
 
 
@@ -148,12 +164,21 @@ def is_small_talk(text: str) -> bool:
     return not words or bool(_SMALL_TALK.match(" ".join(words)))
 
 
-def asks_milo(text: str) -> bool:
-    """He asked something himself ("Milo, why is it brown?"), so this turn is not an answer."""
+def _without_greeting(text: str) -> list[str]:
     words = _words(text)
     while words and words[0] in _GREETING_WORDS:
         words.pop(0)
-    return (text or "").strip().endswith("?") or bool(_ASKING.match(" ".join(words)))
+    return words
+
+
+def asks_milo(text: str) -> bool:
+    """He asked something himself ("Milo, why is it brown?"), so this turn is not an answer."""
+    return (text or "").strip().endswith("?") or bool(_ASKING.match(" ".join(_without_greeting(text))))
+
+
+def asks_to_repeat(text: str) -> bool:
+    """"What did you say?": he wants Milo to say it again, not to know something new."""
+    return bool(_REPEAT.match(" ".join(_without_greeting(text))))
 
 
 def milo_asked(history: Sequence[tuple[str, str]]) -> bool:
@@ -234,17 +259,23 @@ class StarKeeper:
             return "no new answer heard"
         if turn.decision is not TurnDecision.RESPOND:
             return "that was reading or not meant for Milo"
-        if not turn.milo_asked:
-            return "Milo didn't ask a question"
         if is_reading(turn.text, turn.context):
             return "that was reading the page"
         if is_small_talk(turn.text):
             return "small talk"
-        if asks_milo(turn.text):
-            return "a question, not an answer"
         words = _words(turn.text)
-        if len(words) < self.rules.min_words:
-            return "answer too short"
+        if asks_milo(turn.text):
+            kind = "question"
+            if len(_without_greeting(turn.text)) < self.rules.question_min_words:
+                return "question too short"
+            if asks_to_repeat(turn.text):
+                return "asking Milo to say it again"
+        else:
+            kind = "answer"
+            if not turn.milo_asked:
+                return "Milo didn't ask a question"
+            if len(words) < self.rules.min_words:
+                return "answer too short"
         book, page = str(turn.context.get(BOOK_KEY) or ""), str(turn.context.get(PAGE_KEY) or "")
         if not book or not page:
             return "no book open"
@@ -266,7 +297,7 @@ class StarKeeper:
             book=book,
             page=page,
             city=str(turn.context.get(CITY_KEY) or ""),
-            kind="answer",
+            kind=kind,
             long=long,
             why_how=why_how,
             followup=False,
@@ -283,7 +314,8 @@ class StarKeeper:
             return "Stars right now: this page's stars are all taken for today. Don't mention stars on this page."
         return (
             "Stars right now: this page still has stars waiting. Each answer to your question of at "
-            f"least {self.rules.min_words} words earns one."
+            f"least {self.rules.min_words} words earns one, and so does each real question of his own "
+            f"of at least {self.rules.question_min_words} words."
         )
 
 

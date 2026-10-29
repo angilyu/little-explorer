@@ -29,8 +29,11 @@ import Foundation
 /// `-demoOrder Paris:paris-food,paris` orders a section's books (repeat the flag for more sections).
 /// `-demoArrange` opens the grown-ups corner at "Arrange library" (with `-demoShelf`, scrolled to that book). `-demoLevels paris:1,london:3` sets those
 /// books' reading levels (the bundled ones are all level 2).
+/// `-demoUpgrade required` shows the update screen for a build that's no longer supported; `-demoUpgrade
+/// recommended` shows the "Maybe later" update prompt.
 struct DemoLaunch: Equatable {
     enum AccountScreen: String { case welcome, email, code, new }
+    enum Upgrade: String { case required, recommended }
     enum Milo: String {
         case signin, talk, off
         case talkConsent = "talk-consent"
@@ -70,6 +73,7 @@ struct DemoLaunch: Equatable {
     var badgeCategory: String?
     var accountScreen: AccountScreen?
     var milo: Milo?
+    var upgrade: Upgrade?
     var hiddenBooks: [String] = []
     var sectionOrder: [String] = []
     var bookOrders: [String: [String]] = [:]
@@ -159,6 +163,9 @@ struct DemoLaunch: Equatable {
             if milo == .signin, demo.accountScreen == nil { demo.accountScreen = .new }
             if milo == .turnOn { demo.openParent = true }
             found = true
+        }
+        if let upgrade = value(after: "-demoUpgrade").flatMap(Upgrade.init(rawValue:)) {
+            demo.upgrade = upgrade; found = true
         }
         if arguments.contains("-demoCalendar") {
             demo.showCalendar = true

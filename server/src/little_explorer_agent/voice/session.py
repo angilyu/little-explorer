@@ -242,11 +242,13 @@ async def start_graph_session(
     tts: Any = None,
     vad: Any = None,
     parallel_gate: TurnGate | None = None,
+    record: bool = False,
 ) -> AgentSession:
     """Connect, follow the app's page context, and start an ``AgentSession`` driven by ``graph``.
 
     The graph receives ``{"messages": [...]}`` and streams the spoken reply with
     ``get_stream_writer()``. ``stt``/``tts`` replace the preset's LiveKit Inference models.
+    ``record`` lets LiveKit Cloud keep the session's audio, transcript, traces and logs (off by default).
     """
     from livekit.plugins import langchain
 
@@ -269,7 +271,8 @@ async def start_graph_session(
         context_message=context_message,
         on_decision=on_decision,
     )
-    await session.start(agent=agent, room=ctx.room, room_options=_room_options(preset))
+    # Passed explicitly so LiveKit Cloud's project-wide observability setting never applies on its own.
+    await session.start(agent=agent, room=ctx.room, room_options=_room_options(preset), record=record)
     if greeting:
         session.say(greeting)
     return session

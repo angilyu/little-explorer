@@ -64,6 +64,7 @@ struct TokenService {
         var request = URLRequest(url: baseURL.appendingPathComponent("token"))
         request.httpMethod = "POST"
         request.timeoutInterval = 30
+        request.addClientHeaders()
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         if let accessKey { request.setValue("Bearer \(accessKey)", forHTTPHeaderField: "Authorization") }
         if let token = sessionToken() { request.setValue(token, forHTTPHeaderField: AccountService.sessionHeader) }
@@ -73,6 +74,7 @@ struct TokenService {
         ))
         let (data, response) = try await session.data(for: request)
         let status = (response as? HTTPURLResponse)?.statusCode ?? 0
+        UpgradeSignal.check(status: status, data: data)
         // 403 milo_off = a grown-up turned Milo off; other 403 = blocked account, 429 = used up today's
         // minutes, 401 = the sign-in expired.
         if status == 403, Self.errorCode(data) == "milo_off" { throw VoiceError.miloOff }
@@ -80,6 +82,20 @@ struct TokenService {
         if status == 401, AccountService.error(status: status, data: data) == .signedOut { throw VoiceError.signedOut }
         guard (200..<300).contains(status) else { throw VoiceError.tokenServer(status: status) }
         return try JSONDecoder().decode(VoiceCredentials.self, from: data)
+    }
+
+    /// Asks the server to wake Milo's agent ahead of a likely tap (see ``MiloWarmer``). Signed-in only.
+    func warm() async throws {
+        guard let token = sessionToken() else { return }
+        var request = URLRequest(url: baseURL.appendingPathComponent("milo/warm"))
+        request.httpMethod = "POST"
+        request.timeoutInterval = 10
+        request.addClientHeaders()
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        if let accessKey { request.setValue("Bearer \(accessKey)", forHTTPHeaderField: "Authorization") }
+        request.setValue(token, forHTTPHeaderField: AccountService.sessionHeader)
+        request.httpBody = try JSONEncoder().encode(TokenRequest(context: nil, device: device))
+        _ = try await session.data(for: request)
     }
 
     static func errorCode(_ data: Data) -> String? {

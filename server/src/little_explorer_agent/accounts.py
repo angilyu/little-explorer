@@ -556,7 +556,8 @@ class Accounts:
                 (attempts, int(attempts >= CODE_TRIES), row[0]),
             )
 
-    def session(self, token: str) -> Session | None:
+    def session(self, token: str, *, touch: bool = True) -> Session | None:
+        """The signed-in session; ``touch=False`` only reads (no ``last_seen`` stamp)."""
         if not token or len(token) > 200:
             return None
 
@@ -570,7 +571,7 @@ class Accounts:
             if not account:
                 return None
             stamp = self._stamp()
-            if row[2][:13] != stamp[:13]:  # at most once an hour
+            if touch and row[2][:13] != stamp[:13]:  # at most once an hour
                 self.store._exec(
                     cur, "UPDATE auth_sessions SET last_seen = ? WHERE token_hash = ?", (stamp, _sha256(token))
                 )

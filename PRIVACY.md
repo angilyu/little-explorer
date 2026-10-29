@@ -10,9 +10,9 @@ child reads, listens and, if the grown-up turns it on, talks with Milo, a voice 
 - **The grown-up's email address.** It is the only personal information we ask for. We never ask for the
   child's name, age, photo or anything else about the child.
 - **The family's progress:** which books the account can see, and the stars and coins earned in the app. A
-  star records the book, the page, when it was earned, and a short note from Milo about the answer (a few
-  words, not a recording). Earlier versions of the app also saved the pages the child marked with a heart
-  ("hearts"). The app doesn't do that anymore; hearts already saved stay with the account until it is deleted.
+  star records the book, the page, when it was earned, whether it was for an answer or a question, and a
+  short note from Milo about it (a few words, not a recording). Earlier versions of the app also saved the
+  pages the child marked with a heart ("hearts"). The app doesn't do that anymore; hearts already saved stay with the account until it is deleted.
 - **Milo time:** how many minutes each iPad or iPhone talked with Milo each day, and which account it was
   signed in to, so we can apply the account's daily time limit (shared by its devices) and see what the voice
   service costs. Each device is known by a random id, its name and model.
@@ -50,6 +50,8 @@ then the same explanation, so a child can't turn Milo on alone. Reading and read
 While Milo is on and the child has tapped **Talk to Milo**, the child's speech and the page being read are
 streamed through [LiveKit](https://livekit.io) (the voice connection) to [OpenAI](https://openai.com) (the AI)
 so Milo can understand and answer. The app doesn't record or keep the audio, and it doesn't save conversations.
+Milo also tells LiveKit not to record its sessions, so LiveKit keeps no audio, transcripts or session traces. The only
+sessions it records are on our own test accounts.
 The voice service may keep short text of what was said in its logs for a limited time to fix problems. OpenAI
 handles the audio under its own API terms, which say API data isn't used to train its models by default. When
 Milo is off, nothing is streamed.

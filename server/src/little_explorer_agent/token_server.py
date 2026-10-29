@@ -25,6 +25,10 @@ account says yes. Requests without a device count as the
 shared ``anonymous`` device. The app also sends ``"tz"``
 (its IANA time zone), which the agent uses to count stars per local day.
 
+``POST /milo/warm {"device"}`` (access key and ``X-Pip-Session``) wakes the agent before a likely
+tap, for a signed-in account that said yes to Milo and may still talk today (see :mod:`.warm`). It
+only reads the database and answers ``202 {"warmed": true}`` or ``200 {"warmed": false, "reason"}``.
+
 Stars (see :mod:`.stars`): the agent backs each award up with ``POST /stars`` (report key), stamped
 with the account, and reads the account's list with ``GET /stars?account=<id>`` (report key) when a
 session starts, to keep the 5-stars-per-page daily limit across sessions. Old builds restore a
@@ -56,6 +60,14 @@ Errors are ``{"error": "bad_email" | "bad_code" | "expired" | "too_many" |
 "signed_out" | "email_off" | "email_failed", ...}``. The owner manages accounts with
 ``/admin/accounts...`` and saves everything with ``GET /admin/backup``.
 
+App versions (see :mod:`.app_versions`): from 1.1 the app sends ``X-App-Version``, ``X-App-Build`` and
+``X-App-Channel``; requests without them are legacy (1.0) and are served exactly as before. Unauthenticated
+``GET /app/version`` answers ``{"status": "ok" | "recommended" | "required", "update_url", ...}`` for the
+calling build, which the app checks at launch and on foreground to show its update pop-up. The owner sets
+the policy with ``GET/POST /admin/app-versions`` (``tools/devices.py versions``); with ``enforce`` on, app
+API calls from builds below the minimum get ``426 {"error": "upgrade_required"}``. ``/token`` passes the
+build to the agent in the dispatch metadata and notes it on the device.
+
 It also serves the book content (see :mod:`.catalog`): ``GET /content/manifest.json`` and
 ``GET /content/<path>`` for each file in it, so books and the Passport badges (``badges.json``, see
 :mod:`.badges`) can change without an app update.
@@ -83,11 +95,13 @@ import uuid
 from collections.abc import AsyncIterator
 from datetime import timedelta
 from pathlib import Path
+from typing import Any
 
 from aiohttp import web
 
 from . import agent_name
-from .accounts import Accounts, AuthError, Session, normalize_email, valid_book_id
+from .accounts import Account, Accounts, AuthError, Session, normalize_email, valid_book_id
+from .app_versions import MADE_BOOKS_VERSION, ClientInfo, VersionSettings
 from .bookgen.service import BookgenService
 from .bookgen.store import Asset, LimitError
 from .bookgen.writer import validate_request
@@ -101,6 +115,7 @@ from .mail import Mailer, MailError, compose
 from .modes import PipMode, job_metadata, parse_intro, parse_mode, parse_tz
 from .library import LibraryError, LibraryPrefs
 from .reading import ReadingError, ReadingLog
+from .warm import Warmer
 
 log = logging.getLogger("little_explorer.tokens")
 
@@ -108,6 +123,7 @@ TOKEN_TTL = timedelta(minutes=15)
 MILO_OFF_MESSAGE = "A grown-up turned Milo off. Ask a grown-up to turn Milo on in the Grown-ups corner."
 CONTEXT_KEYS = (BOOK_KEY, PAGE_KEY, PAGE_NUMBER_KEY, CITY_KEY, PAGE_TEXT_KEY)
 MAX_CONTEXT_VALUE = 400
+UPGRADE_MESSAGE = "There's a new version of Little Explorer! Ask a grown-up to update the app."
 
 
 def clean_context(raw: object) -> dict[str, str]:
@@ -174,6 +190,7 @@ async def handle_token(request: web.Request) -> web.Response:
     if device is None:
         return web.json_response({"error": "bad device"}, status=400)
     device_id, name, model = device
+    client = ClientInfo.from_headers(request.headers)
     account_id = None
     consent: bool | None = None
     if token := request.headers.get(SESSION_HEADER, "").strip():
@@ -188,7 +205,7 @@ async def handle_token(request: web.Request) -> web.Response:
             consent = session.account.milo_consent
     if consent is False:
         return _milo_off(device_id, account_id)
-    decision = await check_device(request.app[STORE], device_id, name, model, account_id)
+    decision = await check_device(request.app[STORE], device_id, name, model, account_id, client.describe())
     if not decision.allowed:
         log.info("refused device %s (account %s): %s", device_id, decision.account_id, decision.reason)
         status = 403 if decision.reason == "blocked" else 429
@@ -215,14 +232,16 @@ async def handle_token(request: web.Request) -> web.Response:
                 parse_intro(body.get("intro")),
                 parse_tz(body.get("tz")),
                 decision.account_id,
+                client.metadata(),
             ),
         )
     except RuntimeError as exc:
         log.error("%s", exc)
         return web.json_response({"error": "token server is not configured"}, status=500)
+    request.app[WARMER].agent_busy()
     log.info(
-        "token for room %s, device %s, account %s, %.0f s left today",
-        payload["roomName"], device_id, decision.account_id, decision.remaining_s,
+        "token for room %s, device %s, account %s, app %s, %.0f s left today",
+        payload["roomName"], device_id, decision.account_id, client.describe(), decision.remaining_s,
     )
     return web.json_response(payload)
 
@@ -230,6 +249,45 @@ async def handle_token(request: web.Request) -> web.Response:
 def _milo_off(device_id: str, account_id: str | None) -> web.Response:
     log.info("refused device %s: a grown-up turned Milo off for account %s", device_id, account_id)
     return web.json_response({"error": "milo_off", "message": MILO_OFF_MESSAGE}, status=403)
+
+
+async def handle_warm(request: web.Request) -> web.Response:
+    """Start a Milo replica ahead of a likely tap (see ``warm.py``). Only reads the database."""
+    if not authorized(request, request.app[ACCESS_KEY]):
+        return web.json_response({"error": "unauthorized"}, status=401)
+    body = await _json_body(request) if request.can_read_body else None
+    device = parse_device((body or {}).get("device"))
+    if device is None or device[0] == ANONYMOUS:
+        return web.json_response({"error": "bad device"}, status=400)
+    token = request.headers.get(SESSION_HEADER, "").strip()
+    if not token:
+        return _signed_out()
+    device_id, name, model = device
+    warmer = request.app[WARMER]
+    if reason := warmer.skip_reason(device_id):
+        return web.json_response({"warmed": False, "reason": reason})
+    warmer.claim(device_id)
+    try:
+        session = await asyncio.to_thread(request.app[ACCOUNTS].session, token, touch=False)
+        if session is None:
+            return _signed_out()
+        if session.account.milo_consent is not True:
+            return web.json_response({"error": "milo_off"}, status=403)
+        decision = await asyncio.to_thread(
+            lambda: request.app[STORE].check(device_id, name, model, account_id=session.account.id, record=False)
+        )
+    except Exception:
+        log.exception("warm-up check failed for device %s", device_id)
+        return web.json_response({"warmed": False, "reason": "error"})
+    if not decision.allowed:
+        return web.json_response({"error": decision.reason}, status=403 if decision.reason == "blocked" else 429)
+    try:
+        room = await warmer.warm()
+    except Exception:
+        log.exception("warm-up dispatch failed")
+        return web.json_response({"warmed": False, "reason": "dispatch"}, status=502)
+    log.info("warming Milo for device %s in room %s", device_id, room)
+    return web.json_response({"warmed": True}, status=202)
 
 
 def parse_device(raw: object) -> tuple[str, str, str] | None:
@@ -243,10 +301,17 @@ def parse_device(raw: object) -> tuple[str, str, str] | None:
 
 
 async def check_device(
-    store: DeviceStore, device_id: str, name: str, model: str, account_id: str | None = None
+    store: DeviceStore,
+    device_id: str,
+    name: str,
+    model: str,
+    account_id: str | None = None,
+    app_version: str | None = None,
 ) -> Decision:
     try:
-        return await asyncio.to_thread(lambda: store.check(device_id, name, model, account_id=account_id))
+        return await asyncio.to_thread(
+            lambda: store.check(device_id, name, model, account_id=account_id, app_version=app_version)
+        )
     except Exception:
         # Fail open so a database hiccup doesn't silence Milo, but only for a new account's day.
         log.exception("device check failed; allowing a short session")
@@ -271,6 +336,7 @@ async def handle_usage(request: web.Request) -> web.Response:
         device = await asyncio.to_thread(request.app[STORE].record_session, body)
     except ValueError as exc:
         return web.json_response({"error": str(exc)}, status=400)
+    request.app[WARMER].agent_busy()
     log.info("usage: room %s, device %s, %.0f s", body.get("room"), device.id, float(body.get("duration_s") or 0))
     return web.json_response({"ok": True, "device_status": device.status})
 
@@ -443,6 +509,88 @@ async def handle_admin_coins(request: web.Request) -> web.Response:
     return web.json_response(settings)
 
 
+async def handle_admin_app_versions(request: web.Request) -> web.Response:
+    """``GET``: the app version policy in force, the env defaults and the overrides. ``POST``: change
+    it, e.g. ``{"min_version": "1.1"}``, ``{"recommended_version": null}`` (back to the env default)
+    or ``{"reset": true}`` (every override)."""
+    if denied := _admin(request):
+        return denied
+    versions = request.app[VERSIONS]
+    if request.method == "GET":
+        return web.json_response(await asyncio.to_thread(versions.settings))
+    body = await _json_body(request)
+    if body is None:
+        return web.json_response({"error": "bad body"}, status=400)
+    reset = body.pop("reset", False) is True
+    try:
+        settings = await asyncio.to_thread(versions.update, body, reset=reset)
+    except ValueError as exc:
+        return web.json_response({"error": str(exc)}, status=400)
+    log.warning("app version policy now %s", settings["settings"])
+    return web.json_response(settings)
+
+
+# -- app versions ----------------------------------------------------------------------------------
+
+
+def _client(request: web.Request) -> ClientInfo:
+    """The calling build from its headers, or ``?version=&build=&channel=`` (handy with curl)."""
+    client = ClientInfo.from_headers(request.headers)
+    if client.legacy and "version" in request.query:
+        q = request.query
+        client = ClientInfo.from_values(q.get("version"), q.get("build"), q.get("channel"))
+    return client
+
+
+async def handle_app_version(request: web.Request) -> web.Response:
+    """Whether this build is still supported, for the app's update pop-up. No key needed, so even
+    a build with an old access key can learn it must update."""
+    policy = await asyncio.to_thread(request.app[VERSIONS].policy)
+    return web.json_response(policy.answer(_client(request)), headers={"Cache-Control": "no-store"})
+
+
+def enforced(request: web.Request) -> bool:
+    """The app's own API calls, which ``enforce`` may refuse. Never the agent's reports (it sends no
+    version), content, health, admin or ``/app/version`` itself. Milo reads a device's stars with the
+    report key, so that read isn't the app's."""
+    path = request.path
+    if path == "/stars":
+        return (
+            request.method == "GET"
+            and "device" in request.query
+            and not authorized(request, request.app[REPORT_KEY], required=True)
+        )
+    return (
+        path in ("/token", "/milo/warm", "/coins", "/coins/convert", "/account")
+        or path.startswith(("/auth/", "/account/"))
+    )
+
+
+@web.middleware
+async def version_gate(request: web.Request, handler: Any) -> web.StreamResponse:
+    """Turn away builds the owner no longer supports, if the policy says so (off by default)."""
+    if enforced(request):
+        try:
+            policy = await asyncio.to_thread(request.app[VERSIONS].policy)
+            client = ClientInfo.from_headers(request.headers)
+            refused = policy.refuses(client)
+        except Exception:
+            log.exception("version check failed; letting the request through")
+            refused = False
+        if refused:
+            log.info("refused app %s on %s: below %s", client.describe(), request.path, policy.min_version)
+            return web.json_response(
+                {
+                    "error": "upgrade_required",
+                    "message": UPGRADE_MESSAGE,
+                    "update_url": policy.update_url(client) or None,
+                    "min_version": policy.min_version or None,
+                },
+                status=426,
+            )
+    return await handler(request)
+
+
 # -- accounts --------------------------------------------------------------------------------------
 
 SESSION_HEADER = "X-Pip-Session"
@@ -524,14 +672,14 @@ async def handle_auth_verify(request: web.Request) -> web.Response:
     except AuthError as exc:
         return _refusal(exc)
     log.info("device %s signed in to account %s (claimed: %s)", device[0], account.id, claimed)
-    return web.json_response({"token": token, "account": account.app_json(), "claimed_device": claimed})
+    return web.json_response({"token": token, "account": _app_account(request, account), "claimed_device": claimed})
 
 
 async def handle_account(request: web.Request) -> web.Response:
     session = await _session(request)
     if isinstance(session, web.Response):
         return session
-    return web.json_response({"account": session.account.app_json()})
+    return web.json_response({"account": _app_account(request, session.account)})
 
 
 async def handle_sign_out(request: web.Request) -> web.Response:
@@ -570,7 +718,7 @@ async def handle_account_milo_consent(request: web.Request) -> web.Response:
         account = await asyncio.to_thread(request.app[ACCOUNTS].set_milo_consent, session.account.id, body["allow"])
     except LookupError:
         return _signed_out()
-    return web.json_response({"account": account.app_json()})
+    return web.json_response({"account": _app_account(request, account)})
 
 
 async def handle_account_stars(request: web.Request) -> web.Response:
@@ -948,10 +1096,25 @@ async def handle_health(request: web.Request) -> web.Response:
     return web.json_response({"ok": True, "commit": commit, "content": content, "bundled": bundled})
 
 
+def _sees_made_books(request: web.Request) -> bool:
+    """Whether the calling app can show made books (see ``MADE_BOOKS_VERSION``). The 1.0 and 1.1 apps can't
+    label them or let a grown-up hide or report them, so they keep the hand-made catalog only."""
+    return ClientInfo.from_headers(request.headers).at_least(MADE_BOOKS_VERSION)
+
+
+def _app_account(request: web.Request, account: Account) -> dict[str, Any]:
+    data = account.app_json()
+    if not _sees_made_books(request):
+        catalog = set(request.app[BOOKGEN].static["order"])
+        data["books"] = [b for b in data["books"] if b in catalog]
+    return data
+
+
 async def handle_manifest(request: web.Request) -> web.Response:
     # The app asks on launch and when it comes back to the front: user traffic, which may wake the database.
-    request.app[BOOKGEN].maybe_refresh()
-    manifest = request.app[MANIFEST]
+    bookgen = request.app[BOOKGEN]
+    bookgen.maybe_refresh()
+    manifest = request.app[MANIFEST] if _sees_made_books(request) else bookgen.static
     headers = {"Cache-Control": "no-cache", "ETag": f'"{manifest["version"]}"'}
     if request.headers.get("If-None-Match") == headers["ETag"]:
         return web.Response(status=304, headers=headers)
@@ -962,6 +1125,10 @@ async def handle_content_file(request: web.Request) -> web.StreamResponse:
     rel = request.match_info["path"]
     bookgen = request.app[BOOKGEN]
     made = bookgen.extra.get(rel)
+    if rel in request.app[FILES] and not _sees_made_books(request):
+        # library.json and narration.json list made books too; older apps get the hand-made catalog's copies,
+        # which their manifest lists. (A made book's own files are only in the newer apps' manifest.)
+        made = None
     if isinstance(made, bytes):
         return web.Response(body=made, content_type="application/json", headers={"Cache-Control": "no-cache"})
     if isinstance(made, Asset):
@@ -1007,6 +1174,8 @@ MAILER = web.AppKey("mailer", Mailer)
 READING = web.AppKey("reading_log", ReadingLog)
 LIBRARY = web.AppKey("library_prefs", LibraryPrefs)
 BOOKGEN = web.AppKey("bookgen", BookgenService)
+WARMER = web.AppKey("warmer", Warmer)
+VERSIONS = web.AppKey("app_versions", VersionSettings)
 
 
 def create_app(
@@ -1022,8 +1191,10 @@ def create_app(
     reading: ReadingLog | None = None,
     library: LibraryPrefs | None = None,
     bookgen: BookgenService | None = None,
+    warmer: Warmer | None = None,
+    versions: VersionSettings | None = None,
 ) -> web.Application:
-    app = web.Application()
+    app = web.Application(middlewares=[version_gate])
     app[ACCESS_KEY] = (os.environ.get("PIP_ACCESS_KEY", "") if access_key is None else access_key).strip()
     app[ADMIN_KEY] = (os.environ.get("PIP_ADMIN_KEY", "") if admin_key is None else admin_key).strip()
     app[REPORT_KEY] = (os.environ.get("PIP_REPORT_KEY", "") if report_key is None else report_key).strip()
@@ -1033,6 +1204,8 @@ def create_app(
     app[MAILER] = mailer or Mailer.from_env()
     app[READING] = reading or ReadingLog(app[STORE])
     app[LIBRARY] = library or LibraryPrefs(app[STORE])
+    app[WARMER] = warmer or Warmer()
+    app[VERSIONS] = versions or VersionSettings.from_env(app[STORE])
     root = content_root or resources_dir()
     if bookgen is None:
         bookgen = BookgenService(app[STORE], static_manifest=build_manifest(root), static_files=content_files(root))
@@ -1043,7 +1216,9 @@ def create_app(
     app[MANIFEST] = bookgen.manifest
     app[FILES] = bookgen.static_files
     app.router.add_post("/token", handle_token)
+    app.router.add_post("/milo/warm", handle_warm)
     app.router.add_get("/healthz", handle_health)
+    app.router.add_get("/app/version", handle_app_version)
     app.router.add_get("/content/manifest.json", handle_manifest)
     app.router.add_get("/content/{path:.+}", handle_content_file)
     app.router.add_post("/usage", handle_usage)
@@ -1057,6 +1232,8 @@ def create_app(
     app.router.add_post("/admin/devices/{ref}", handle_admin_update)
     app.router.add_get("/admin/coins", handle_admin_coins)
     app.router.add_post("/admin/coins", handle_admin_coins)
+    app.router.add_get("/admin/app-versions", handle_admin_app_versions)
+    app.router.add_post("/admin/app-versions", handle_admin_app_versions)
     app.router.add_post("/auth/start", handle_auth_start)
     app.router.add_post("/auth/verify", handle_auth_verify)
     app.router.add_post("/auth/signout", handle_sign_out)
@@ -1125,6 +1302,7 @@ def main() -> None:
         log.info("book generation: on (%s), limits %s", app[BOOKGEN].config.text_model, app[BOOKGEN].config.limits_json())
     else:
         log.info("book generation: off (needs BOOKGEN_OPENAI_API_KEY and R2_* settings)")
+    log.info("app version defaults (env): %s", app[VERSIONS].defaults)
     log.info("sign-in email: %s; new accounts get %d books", app[MAILER].describe(), len(app[ACCOUNTS].default_books))
     if not app[ADMIN_KEY] or not app[REPORT_KEY]:
         log.warning("PIP_ADMIN_KEY or PIP_REPORT_KEY is not set: /admin or /usage is turned off")
