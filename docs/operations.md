@@ -556,6 +556,7 @@ refuses to:
 - release a version that a different commit was already released as (a `v<version>` or `v<version>-*` tag on
   another commit): bump `MARKETING_VERSION`;
 - run when the project's `MARKETING_VERSION`s disagree.
+- upload a build without `PIP_ACCESS_KEY` in `Config/Local.xcconfig` (gitignored; Milo couldn't connect).
 
 ```sh
 scripts/release.sh check             # the checks, and the version, build and tag it would release

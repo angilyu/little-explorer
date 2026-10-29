@@ -109,7 +109,7 @@ if ! $dry_run; then
 fi
 TEAM="${DEVELOPMENT_TEAM:-NMJBY8WL8T}"
 grep -qE '^PIP_ACCESS_KEY *= *[^ ]' Config/Local.xcconfig 2>/dev/null \
-  || echo "warning: Config/Local.xcconfig has no PIP_ACCESS_KEY; Milo won't be able to connect" >&2
+  || refuse "Config/Local.xcconfig has no PIP_ACCESS_KEY, so Milo couldn't connect in this build"
 
 work="$(mktemp -d)"
 trap 'rm -rf "$work"' EXIT
