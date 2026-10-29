@@ -8,8 +8,8 @@ passes ``remaining_s``). Either way he sets his ``milo.ended`` attribute to ``id
 the app can switch its toggle off with the right message, then leaves the room. Each session's
 length and cost is reported to the token server for per-device usage (see :mod:`.usage`).
 
-Answering Milo earns stars (see :mod:`.stars`): when the guard lets the child's answer to Milo's
-question through and Milo replies, :class:`StarKeeper` checks it against what was heard, and
+Answering Milo, or asking him a real question, earns stars (see :mod:`.stars`): when the guard lets
+the child's turn through and Milo replies, :class:`StarKeeper` checks it against what was heard, and
 :class:`StarGame` sends each award to the app (``milo.star`` data topic) and backs it up on the token
 server.
 """
@@ -32,6 +32,7 @@ from typing import Any  # noqa: E402
 from livekit.agents import AgentServer, AgentSession, JobContext, cli, function_tool, llm  # noqa: E402
 
 from . import agent_name  # noqa: E402
+from .app_versions import ClientInfo  # noqa: E402
 from .buddy import (  # noqa: E402
     GREETING,
     PERSONA,
@@ -66,6 +67,7 @@ from .voice.turns import is_noise  # noqa: E402
 from .voice.realtime import RealtimeConfig, start_realtime_session  # noqa: E402
 from .voice.session import attach_room_context, start_graph_session  # noqa: E402
 from .voice.timing import TurnTimer  # noqa: E402
+from .warm import is_warm  # noqa: E402
 
 log = logging.getLogger("little_explorer.agent")
 
@@ -172,7 +174,7 @@ def _shared_graph():
 
 
 def _log_decision(turn: UserTurn, decision: TurnDecision) -> None:
-    # Transcripts only go to the local log for debugging; no audio is recorded or stored.
+    # Transcripts only go to the local log for debugging; no audio is recorded or stored (except PIP_RECORD_ACCOUNTS).
     log.info("turn %s page=%s: %r", decision.name, turn.context.get("page"), turn.text[:120])
 
 
@@ -385,7 +387,9 @@ def make_realtime_guard(tracker: ReadingTracker, topic_gate: TopicGate | None) -
     return guard
 
 
-async def _pipeline(ctx: JobContext, game: StarGame, timer: TurnTimer, greeting: str | None) -> AgentSession:
+async def _pipeline(
+    ctx: JobContext, game: StarGame, timer: TurnTimer, greeting: str | None, record: bool = False
+) -> AgentSession:
     tracker = ReadingTracker()
     preset, speech = speech_setup(agent_preset())
     return await start_graph_session(
@@ -399,11 +403,14 @@ async def _pipeline(ctx: JobContext, game: StarGame, timer: TurnTimer, greeting:
         context_message=make_context_note(tracker),
         on_decision=game.pipeline_decision,
         greeting=greeting,
+        record=record,
         **speech,
     )
 
 
-async def _realtime(ctx: JobContext, game: StarGame, timer: TurnTimer, greeting: str | None) -> AgentSession:
+async def _realtime(
+    ctx: JobContext, game: StarGame, timer: TurnTimer, greeting: str | None, record: bool = False
+) -> AgentSession:
     store = ContextStore()
     config = realtime_config()
     if config.turns == "server" and config.barge_in == "vad":
@@ -425,6 +432,7 @@ async def _realtime(ctx: JobContext, game: StarGame, timer: TurnTimer, greeting:
         context_store=store,
         on_interrupt=timer.note_interrupt,
         on_commit=timer.committed,
+        record=record,
     )
 
     def refresh() -> None:
@@ -439,6 +447,14 @@ def session_model(mode: str, env: dict[str, str] | None = None) -> str:
     if mode == "realtime":
         return realtime_config(env).model
     return REPLY_MODEL.split(":", 1)[-1].split("@", 1)[0]
+
+
+def records_account(account_id: str, env: Mapping[str, str] | None = None) -> bool:
+    """Whether LiveKit Cloud may record this account's sessions: only accounts listed in
+    ``PIP_RECORD_ACCOUNTS`` (comma-separated account ids). None by default, and never without an account."""
+    env = os.environ if env is None else env
+    listed = {part.strip() for part in env.get("PIP_RECORD_ACCOUNTS", "").split(",")}
+    return bool(account_id) and account_id in listed
 
 
 def remaining_seconds(meta: Mapping[str, object]) -> float | None:
@@ -461,14 +477,26 @@ async def participant_joined(ctx: Any, timeout: float = PARTICIPANT_WAIT_S) -> b
 
 
 async def entrypoint(ctx: JobContext) -> None:
-    mode = resolve_mode(ctx.job.metadata)
     meta = parse_job_metadata(ctx.job.metadata)
+    if is_warm(meta):
+        # A warm-up (see warm.py) only wakes this replica: never join the room, so LiveKit meters
+        # nothing, and no OpenAI, usage or stars.
+        log.info("warm-up job in room %s: replica is ready", ctx.job.room.name)
+        ctx.shutdown(reason="warm")
+        return
+    mode = resolve_mode(ctx.job.metadata)
     device_id = str(meta.get("device_id") or "")
     # The signed-in account whose minutes and stars these are (old apps: none; the server falls back
     # to the device's link).
     account_id = str(meta.get("account_id") or "")
     remaining_s = remaining_seconds(meta)
-    log.info("Milo mode: %s, device %s, account %s, %s s left today", mode, device_id or "?", account_id or "?", remaining_s)
+    # The app build (legacy 1.0 apps send none). Gate anything an old app can't handle on
+    # client.at_least("x.y"), so older builds keep getting what they always did.
+    client = ClientInfo.from_metadata(meta)
+    log.info(
+        "Milo mode: %s, device %s, account %s, app %s, %s s left today",
+        mode, device_id or "?", account_id or "?", client.describe(), remaining_s,
+    )
     meter = UsageMeter(
         mode=mode, model=session_model(mode), room=ctx.job.room.name, device_id=device_id, account_id=account_id
     )
@@ -501,7 +529,10 @@ async def entrypoint(ctx: JobContext) -> None:
     # New apps play the recorded intro on tap; only older ones still need the spoken greeting.
     greeting = None if app_plays_intro(meta) else GREETING
     log.info("intro: %s", "played by the app" if greeting is None else "spoken by Milo")
-    session = await (_realtime if mode == "realtime" else _pipeline)(ctx, game, timer, greeting)
+    record = records_account(account_id)
+    if record:
+        log.info("LiveKit Cloud records this session (account %s is in PIP_RECORD_ACCOUNTS)", account_id)
+    session = await (_realtime if mode == "realtime" else _pipeline)(ctx, game, timer, greeting, record=record)
     game.watch(session)
     meter.bind(session)
     timer.attach(session)
@@ -536,14 +567,21 @@ PREWARM_MODULES = (
 
 
 def prewarm(_proc: Any = None) -> None:
-    """Import the heavy, lazily loaded modules while the idle process waits for a job."""
+    """Import the heavy, lazily loaded modules and read the books while the idle process waits for
+    a job (reading them in the job's loop blocked it for ~0.5 s)."""
     import importlib
+
+    from .content import load_books
 
     for name in PREWARM_MODULES:
         try:
             importlib.import_module(name)
         except Exception:  # an optional extra may be missing; the session imports what it needs
             log.debug("prewarm: could not import %s", name)
+    try:
+        load_books()
+    except Exception:  # the session reads them again if this fails
+        log.warning("prewarm: could not load the books", exc_info=True)
 
 
 def create_server() -> AgentServer:

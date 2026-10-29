@@ -9,6 +9,44 @@ buddy who listens while they read and talks with them about the places in the bo
 
 iPad versions are in [`docs/screenshots`](docs/screenshots).
 
+## 🎧 Hear Milo
+
+Milo is the app's AI voice buddy, a friendly reading pal who sits on every page with your kid. Milo stays quiet while
+they read aloud, answers their "why" questions about the book, and asks easy follow-ups that get them talking in full
+sentences. Thoughtful answers and curious questions earn stars.
+
+Here's a real chat on the first page of the Tibidabo book: "Tibidabo is a fun park on top of a mountain!"
+
+https://github.com/user-attachments/assets/282edd4a-194c-458f-aef0-22287a4b968e
+
+<sub>1:30 · Oct 20, 2026 · captioned · quiet gaps trimmed, words unedited · 🎧 <a href="docs/media/milo-and-francis.m4a">Audio only</a></sub>
+
+> [!NOTE]
+> The kid's voice is my son, Francis. Milo's voice is AI. The quiet gaps were shortened; the words weren't changed.
+
+### Transcript
+
+**Francis:** Why did they make this a theme park on a mountain?
+
+**Milo:** That's a great question! They built the fun park on the mountain so people could see amazing views of the
+whole city below. Also, it made the park feel extra special, like a magical place in the clouds. What do you think it
+would feel like to ride up high on that mountaintop?
+
+**Francis:** Like, I can see the whole view and a lot of rides there.
+
+**Milo:** Ooh, you can see the whole view and a lot of rides there? Great answer! That's a star! It must feel like
+you're floating above the whole world. If you were standing up there, what would you want to look at first?
+
+**Francis:** Maybe look at another city.
+
+**Milo:** Maybe look at the city? That sounds exciting! You could say, "I would look at the city because it's so big
+and bright."
+
+**Francis:** I would look at the city because it looks pretty cool and I've not really seen these kinds of cities.
+
+**Milo:** Star for you! That's a fantastic reason! The city from up there must look like a big shining puzzle. What
+do you think you might hear at the top of the mountain?
+
 ## What it does for your kid
 
 - **Opens up the world.** 39 books and 502 pages about Paris, London, Barcelona, Beijing, Shanghai, Chengdu,
@@ -20,7 +58,7 @@ iPad versions are in [`docs/screenshots`](docs/screenshots).
 - **Gets them talking, not just tapping.** Milo stays quiet while your kid reads the page aloud, then cheers them
   on. Milo answers their questions about the book and asks easy, open follow-ups. When they answer in two words
   ("the boat"), Milo hands them a sentence to finish ("You could say, I would ride the boat because...").
-- **Rewards real effort.** Thoughtful answers earn stars, cities earn Passport stamps, and a star calendar fills up.
+- **Rewards real effort.** Thoughtful answers and curious questions earn stars, cities earn Passport stamps, and a star calendar fills up.
   Badges for pages and books read, read-aloud, reading days in a row, Milo stars and places visited are grouped in
   the Passport, and the server can change them without an app update. A grown-up can trade stars for coins.
 - **Safe by design.** No ads, no in-app purchases, no tracking. The only personal information is a grown-up's email:
@@ -71,7 +109,7 @@ and talks over the TV. Milo stacks several checks to handle that:
 - **Forced commit.** `semantic_vad` at low eagerness doesn't cut off slow readers, but it sometimes waits up to about
   8 s on a finished question. After 2.5 s of silence (5 s if the kid was just reading), the agent commits the turn
   itself.
-- **Instant hello.** A recorded 5 s intro plays the moment the button is tapped, while the token, room and agent connect
+- **Instant hello.** A recorded 5.2 s intro plays the moment the button is tapped, while the token, room and agent connect
   behind it. Anything said before the agent joins is kept with LiveKit pre-connect audio.
 
 ### Two swappable voice engines
@@ -84,7 +122,7 @@ appends its tokens and estimated cost to a local CSV, and `tools/usage_report.py
 ### The model can't hand out stars
 
 Stars are checked in code (`stars.py`), not decided by the LLM. A star needs an answer to Milo's own question, at least
-5 words long, with at most 5 stars per page per day. The server enforces the same limit. There's deliberately no
+5 words long, or a real question of the child's own, at least 3 words long, with at most 5 stars per page per day. The server enforces the same limit. There's deliberately no
 "give star" tool: a tool call made `gpt-realtime` answer in a second response, so the check runs off the voice path
 instead.
 
@@ -160,4 +198,4 @@ xcodebuild -project LittleExplorer.xcodeproj -scheme LittleExplorer \
 - [Milo, the voice buddy](docs/milo.md): engine details and tuning knobs, the e2e harness, session costs, naps, and
   the star, Passport and badge rules.
 - [Running Little Explorer](docs/operations.md): the parent gate, accounts and email sign-in, Milo time limits,
-  coins, badges, admin tools, deploy, and TestFlight.
+  coins, badges, app versions and forced updates, admin tools, deploy, and releasing the beta and App Store apps.

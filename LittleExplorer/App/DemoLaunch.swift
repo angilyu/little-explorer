@@ -33,9 +33,12 @@ import Foundation
 /// section picker, with the first-time note, with an error, or at the daily limit); `-demoMake placeholder`
 /// shows a book being made on the shelf; `-demoMake made` shows a finished made book on the shelf; `-demoMake
 /// menu` opens a made book's grown-up menu. The account may make books, and nothing is sent to the server.
+/// `-demoUpgrade required` shows the update screen for a build that's no longer supported; `-demoUpgrade
+/// recommended` shows the "Maybe later" update prompt.
 struct DemoLaunch: Equatable {
     enum AccountScreen: String { case welcome, email, code, new }
     enum Make: String { case form, sections, note, error, limit, placeholder, made, menu }
+    enum Upgrade: String { case required, recommended }
     enum Milo: String {
         case signin, talk, off
         case talkConsent = "talk-consent"
@@ -75,6 +78,7 @@ struct DemoLaunch: Equatable {
     var badgeCategory: String?
     var accountScreen: AccountScreen?
     var milo: Milo?
+    var upgrade: Upgrade?
     var hiddenBooks: [String] = []
     var sectionOrder: [String] = []
     var bookOrders: [String: [String]] = [:]
@@ -174,6 +178,9 @@ struct DemoLaunch: Equatable {
             if milo == .signin, demo.accountScreen == nil { demo.accountScreen = .new }
             if milo == .turnOn { demo.openParent = true }
             found = true
+        }
+        if let upgrade = value(after: "-demoUpgrade").flatMap(Upgrade.init(rawValue:)) {
+            demo.upgrade = upgrade; found = true
         }
         if arguments.contains("-demoCalendar") {
             demo.showCalendar = true

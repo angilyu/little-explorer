@@ -30,6 +30,7 @@ chmod 600 "$secrets"
   [[ -n "${PIP_REPORT_KEY:-}" ]] && echo "PIP_REPORT_KEY=$PIP_REPORT_KEY"
   [[ -n "${PIP_IDLE_TIMEOUT_S:-}" ]] && echo "PIP_IDLE_TIMEOUT_S=$PIP_IDLE_TIMEOUT_S"
   [[ -n "${PIP_TIMEZONE:-}" ]] && echo "PIP_TIMEZONE=$PIP_TIMEZONE"
+  [[ -n "${PIP_RECORD_ACCOUNTS:-}" ]] && echo "PIP_RECORD_ACCOUNTS=$PIP_RECORD_ACCOUNTS"
   true
 } > "$secrets"
 

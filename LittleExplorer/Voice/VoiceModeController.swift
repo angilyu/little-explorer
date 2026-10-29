@@ -57,6 +57,8 @@ final class VoiceModeController {
     @ObservationIgnored var mayTalk: @MainActor () -> Bool = { true }
     /// Milo's server said a grown-up turned Milo off on another device, so the account should refresh.
     @ObservationIgnored var onMiloOff: (@MainActor () -> Void)?
+    /// Wakes Milo's agent ahead of a likely tap (live builds only).
+    @ObservationIgnored var warmer: MiloWarmer?
 
     init(
         makeTransport: @escaping @MainActor () -> VoiceTransport,
@@ -138,6 +140,7 @@ final class VoiceModeController {
             }
             transportReady = true
             microphoneOn = microphone
+            warmer?.miloWasUsed()
             if state == .connecting { state = .waitingForBuddy }
             await syncMicrophone()
             if let currentPage, currentPage != openingPage { try await transport.updatePage(currentPage) }
@@ -163,11 +166,18 @@ final class VoiceModeController {
         notice = nil
         generation += 1
         stopIntro()
+        if transportReady { warmer?.miloWasUsed() }
         transportReady = false
         let transport = self.transport
         self.transport = nil
         state = .off
         await transport?.disconnect()
+    }
+
+    /// A book is open (or back on screen) and Milo may be tapped soon: wake his agent if it helps.
+    func warmUp() {
+        guard state == .off, mayTalk() else { return }
+        warmer?.warmIfUseful()
     }
 
     func retry() async {
@@ -245,10 +255,12 @@ final class VoiceModeController {
             mark(milestone)
         case .disconnected(let reason):
             stopIntro()
+            warmer?.miloWasUsed()
             transport = nil
             state = .failed(reason ?? "Milo fell asleep. Tap to wake Milo up.")
         case .ended(let reason):
             stopIntro()
+            warmer?.miloWasUsed()
             let transport = self.transport
             self.transport = nil
             generation += 1
@@ -284,6 +296,8 @@ extension VoiceModeController {
             return VoiceModeController { DemoVoiceTransport(activity: activity, endReason: demo.voiceEnd, givesStar: demo.voiceStar) }
         }
         #endif
-        return VoiceModeController(makeTransport: { makeLiveVoiceTransport() }, introPlayer: ClipIntroPlayer())
+        let voice = VoiceModeController(makeTransport: { makeLiveVoiceTransport() }, introPlayer: ClipIntroPlayer())
+        voice.warmer = .live()
+        return voice
     }
 }

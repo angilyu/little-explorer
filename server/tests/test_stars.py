@@ -1,4 +1,5 @@
-"""Stars for answering Milo: the validation rules, awarding answers Milo replied to, storage and endpoints."""
+"""Stars for answering Milo and asking him questions: the validation rules, awarding turns Milo replied to,
+storage and endpoints."""
 
 import asyncio
 import json
@@ -15,6 +16,7 @@ from little_explorer_agent.stars import (
     StarKeeper,
     StarRules,
     asks_milo,
+    asks_to_repeat,
     count_page_stars,
     device_clock,
     fetch_page_stars,
@@ -102,15 +104,110 @@ def test_four_words_is_too_short(keeper, clock):
         "What is inside the tower at the very top",
         "Can you tell me about the tower lights please",
         "I wonder who built this big brown tower",
+        "Hey, what's this tower?",
+        "what's this tower",
+        "Why did they make this a theme park on a mountain?",
     ],
 )
-def test_his_own_questions_earn_nothing(keeper, clock, text):
+def test_his_own_question_earns_a_star(keeper, clock, text):
+    hear(keeper, text, clock=clock, milo="The Eiffel Tower is very tall.")  # Milo didn't ask anything
+    award = keeper.judge("asked about the tower")
+    assert isinstance(award, StarAward)
+    assert (award.stars, award.kind, award.book, award.page) == (1, "question", "paris", "eiffel")
+    assert keeper.total() == 1
+
+
+def test_a_question_also_earns_a_star_after_milo_asked(keeper, clock):
+    hear(keeper, "Why is the tower brown?", clock=clock)
+    assert keeper.judge().kind == "question"
+
+
+@pytest.mark.parametrize("text", ["Why?", "what?", "Milo, why?", "What's that?", "Hi Milo, how come?", "Is it?"])
+def test_a_short_question_earns_nothing(keeper, clock, text):
     hear(keeper, text, clock=clock)
-    assert keeper.judge() == "a question, not an answer"
+    assert keeper.judge() == "question too short"
     assert keeper.total() == 0
 
 
-def test_no_star_unless_milo_asked_a_question(keeper, clock):
+@pytest.mark.parametrize("text", ["What did you say?", "Milo, can you say that again?", "What do you mean?", "Sorry, what was that?"])
+def test_asking_milo_to_repeat_earns_nothing(keeper, clock, text):
+    hear(keeper, text, clock=clock)
+    assert keeper.judge() == "asking Milo to say it again"
+    assert keeper.total() == 0
+
+
+@pytest.mark.parametrize(
+    ("text", "decision", "reason"),
+    [
+        ("Mom, what are we having for dinner tonight?", TurnDecision.IGNORE, "that was reading or not meant for Milo"),
+        ("Why is the TV so loud in here?", TurnDecision.IGNORE, "that was reading or not meant for Milo"),
+        ("What is that tall tower over there?", TurnDecision.LISTEN, "that was reading or not meant for Milo"),
+        ("Milo, are you there?", TurnDecision.RESPOND, "small talk"),
+        ("Hi Milo, what's your name?", TurnDecision.RESPOND, "small talk"),
+        ("How are you doing today?", TurnDecision.RESPOND, "small talk"),
+    ],
+)
+def test_questions_to_grown_ups_noise_or_small_talk_earn_nothing(keeper, clock, text, decision, reason):
+    hear(keeper, text, decision, clock=clock)
+    assert keeper.judge() == reason
+    assert keeper.total() == 0
+
+
+def test_reading_a_question_on_the_page_aloud_earns_nothing(keeper, clock):
+    page = {**PAGE, "page_text": "Can you see the tower from the river?"}
+    hear(keeper, "Can you see the tower from the river?", context=page, clock=clock)
+    assert keeper.judge() == "that was reading the page"
+
+
+def test_questions_and_answers_share_the_page_limit(keeper, clock):
+    for i in range(5):
+        if i % 2:
+            hear(keeper, ANSWER, clock=clock)
+        else:
+            hear(keeper, "Why is the tower so tall?", clock=clock)
+        assert keeper.judge().stars == 1
+    assert [a.kind for a in keeper.awards] == ["question", "answer", "question", "answer", "question"]
+    hear(keeper, "How did they build the tower?", clock=clock)
+    assert keeper.judge() == "this page's stars are all taken"
+    hear(keeper, "Who paints the tower every year?", context=OTHER_PAGE, clock=clock)
+    assert keeper.judge().kind == "question"  # a new page has its own stars
+
+
+def test_a_question_respects_earlier_sessions_and_the_cooldown(clock):
+    keeper = StarKeeper(clock=clock, wall=Wall(), earlier={("paris", "eiffel", "2026-10-19"): 5})
+    hear(keeper, "Why is the tower so tall?", clock=clock)
+    assert keeper.judge() == "this page's stars are all taken"
+    keeper = StarKeeper(clock=clock, rules=StarRules(cooldown_s=8.0))
+    hear(keeper, "Why is the tower so tall?", clock=clock)
+    assert keeper.judge().kind == "question"
+    hear(keeper, "How did they build the tower?", context=OTHER_PAGE, clock=clock, gap=2.0)
+    assert keeper.judge() == "too soon after the last star"
+
+
+def test_one_award_per_question(keeper, clock):
+    hear(keeper, "Why is the tower so tall?", clock=clock)
+    assert isinstance(keeper.judge(), StarAward)
+    assert keeper.judge() == "no new answer heard"
+
+
+def test_question_min_words_is_configurable(clock):
+    keeper = StarKeeper(clock=clock, rules=StarRules(question_min_words=2))
+    hear(keeper, "What's that?", clock=clock)
+    assert keeper.judge().kind == "question"
+    keeper = StarKeeper(clock=clock, rules=StarRules(question_min_words=5))
+    hear(keeper, "Why is it brown?", clock=clock)
+    assert keeper.judge() == "question too short"
+
+
+def test_a_question_star_is_backed_up_as_a_question(store, keeper, clock):
+    hear(keeper, "Why is the tower so tall?", clock=clock)
+    award = keeper.judge()
+    assert store.record_star(award.to_dict()) is True
+    assert [s["kind"] for s in store.stars_for("ipad-1")] == ["question"]
+    assert json.loads(star_payload(award, 1))["kind"] == "question"
+
+
+def test_an_answer_still_needs_milos_question(keeper, clock):
     hear(keeper, ANSWER, clock=clock, milo="The tower is very tall. It was built long ago.")
     assert keeper.judge() == "Milo didn't ask a question"
     hear(keeper, ANSWER, clock=clock, milo=None)
@@ -311,6 +408,11 @@ def test_asks_milo():
     assert not asks_milo("Because the paint is brown")
 
 
+def test_asks_to_repeat():
+    assert asks_to_repeat("Milo, what did you say?") and asks_to_repeat("say it again")
+    assert not asks_to_repeat("What did they build first?")
+
+
 def test_reasons_are_short_and_single_line(keeper, clock):
     hear(keeper, ANSWER, clock=clock)
     award = keeper.judge("a\nvery " + "long " * 40)
@@ -318,10 +420,12 @@ def test_reasons_are_short_and_single_line(keeper, clock):
 
 
 def test_rules_from_env():
-    rules = StarRules.from_env({"PIP_STAR_COOLDOWN_S": "3", "PIP_STAR_LONG_WORDS": "10", "PIP_STAR_MIN_WORDS": "4"})
-    assert (rules.cooldown_s, rules.long_words, rules.min_words) == (3.0, 10, 4)
+    rules = StarRules.from_env(
+        {"PIP_STAR_COOLDOWN_S": "3", "PIP_STAR_LONG_WORDS": "10", "PIP_STAR_MIN_WORDS": "4", "PIP_STAR_QUESTION_MIN_WORDS": "2"}
+    )
+    assert (rules.cooldown_s, rules.long_words, rules.min_words, rules.question_min_words) == (3.0, 10, 4, 2)
     assert StarRules.from_env({}) == StarRules()
-    assert StarRules().cooldown_s == 0 and StarRules().min_words == 5
+    assert StarRules().cooldown_s == 0 and StarRules().min_words == 5 and StarRules().question_min_words == 3
 
 
 def test_min_words_is_configurable(clock):
@@ -333,7 +437,8 @@ def test_min_words_is_configurable(clock):
 
 
 def test_status_line_and_instructions(keeper, clock):
-    assert "stars waiting" in keeper.status_line(PAGE) and "at least 5 words" in keeper.status_line(PAGE)
+    line = keeper.status_line(PAGE)
+    assert "stars waiting" in line and "at least 5 words" in line and "question of his own of at least 3 words" in line
     for _ in range(4):
         hear(keeper, ANSWER, clock=clock)
         keeper.judge()
@@ -345,7 +450,7 @@ def test_status_line_and_instructions(keeper, clock):
     assert "Don't mention stars" in keeper.status_line({})
     text = realtime_instructions(PAGE, stars=keeper.status_line(PAGE))
     assert STAR_RULES in text and "Great answer, that's a star!" in text and "up to five stars" in text
-    assert "Great question" not in text
+    assert "Great question, that's a star!" in text and "what did you say?" in text
     assert "fewer than 5 words" in text and "at most once per question" in text and "never sound like a correction" in text
     full = realtime_instructions(OTHER_PAGE, stars="Stars right now: this page's stars are all taken for today.")
     assert "fewer than 5 words" in full  # he is still invited to say more once the stars are taken
@@ -513,9 +618,17 @@ async def test_realtime_newer_answer_wins(clock):
     assert len(game.keeper.awards) == 1 and game.keeper.awards[0].words == 9
 
 
-async def test_realtime_his_question_earns_nothing(clock):
+async def test_realtime_his_question_earns_a_star(clock):
     _, game = new_game(clock)
     ask(game, clock, "Why do they paint the tower brown every time?")
+    game.milo_started_speaking()
+    await game.drain()
+    assert [a.kind for a in game.keeper.awards] == ["question"]
+
+
+async def test_realtime_short_question_earns_nothing(clock):
+    _, game = new_game(clock)
+    ask(game, clock, "Why?")
     game.milo_started_speaking()
     await game.drain()
     assert game.keeper.awards == []
@@ -530,7 +643,7 @@ async def test_stars_can_be_turned_off(clock):
     assert game.keeper.awards == []
 
 
-async def test_pipeline_awards_answers_directly(clock):
+async def test_pipeline_awards_answers_and_questions_directly(clock):
     ctx = FakeCtx()
 
     async def report(award):
@@ -542,8 +655,10 @@ async def test_pipeline_awards_answers_directly(clock):
     game.pipeline_decision(turn("The tower is brown."), TurnDecision.LISTEN)
     game.pipeline_decision(turn("I would look at the river and the boats"), TurnDecision.RESPOND)
     game.pipeline_decision(turn("Why is the tower brown?"), TurnDecision.RESPOND)
+    game.pipeline_decision(turn("Why?"), TurnDecision.RESPOND)
     await game.drain()
-    assert game.keeper.total() == 2 and len(ctx.room.local_participant.sent) == 2
+    assert game.keeper.total() == 3 and len(ctx.room.local_participant.sent) == 3
+    assert [a.kind for a in game.keeper.awards] == ["answer", "answer", "question"]
 
 
 async def test_watch_tracks_who_is_speaking(clock):

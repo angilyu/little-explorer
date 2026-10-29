@@ -1,5 +1,6 @@
 # Server tests. Runs on pull requests that touch the server or the books (no secrets), and is called by
-# deploy.yml before anything ships.
+# deploy.yml before anything ships. Includes test_client_compat.py, which replays what each shipped app
+# build sends (tests/contracts/app-*.json), so a change that would break an older app fails here.
 name: Server tests
 
 on:

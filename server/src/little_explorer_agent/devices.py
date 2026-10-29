@@ -270,6 +270,9 @@ COLUMNS = (
     ("accounts", "can_generate", "INTEGER NOT NULL DEFAULT 0"),
     # 'book' (a new book, counted against the quota) or 'page' (a grown-up asked for one page again).
     ("generation_jobs", "kind", "TEXT NOT NULL DEFAULT 'book'"),
+    # The app build that last asked for a Milo token, e.g. "1.1 (20261101.0930, testflight)"; "1.0" for
+    # builds that don't say (see app_versions.py). NULL until the device asks again.
+    ("devices", "app_version", "TEXT"),
 )
 INDEXES = (
     "CREATE INDEX IF NOT EXISTS stars_account ON stars (account_id)",
@@ -366,6 +369,7 @@ class Device:
     unblocked_on: str = ""
     first_seen: str = ""
     last_seen: str = ""
+    app_version: str | None = None
 
     @property
     def display_name(self) -> str:
@@ -409,7 +413,7 @@ class Decision:
     account_id: str | None = None
 
 
-_DEVICE_COLUMNS = "id, name, model, label, status, daily_limit_min, unblocked_on, first_seen, last_seen"
+_DEVICE_COLUMNS = "id, name, model, label, status, daily_limit_min, unblocked_on, first_seen, last_seen, app_version"
 
 
 class DeviceStore:
@@ -691,20 +695,30 @@ class DeviceStore:
         model: str = "",
         now: datetime | None = None,
         account_id: str | None = None,
+        record: bool = True,
+        app_version: str | None = None,
     ) -> Decision:
         """Record that ``device_id`` asked to talk, and decide whether it may: on ``account_id``'s
-        minutes (the signed-in account), else its linked account's, else its own (see module docs)."""
+        minutes (the signed-in account), else its linked account's, else its own (see module docs).
+        ``record=False`` only reads (a Milo warm-up): no device row, no auto-block. ``app_version``
+        (when recording) is noted on the device so the owner can see who still runs an old build."""
         now = now or self.now()
         day = self.day_of(now)
 
         def run(cur: Any) -> tuple[Device, str | None, str, float, float]:
-            device = self._touch(cur, device_id, _text(name), _text(model), now)
+            if record:
+                device = self._touch(cur, device_id, _text(name), _text(model), now)
+                if app_version:
+                    device.app_version = _text(app_version)
+                    self._exec(cur, "UPDATE devices SET app_version = ? WHERE id = ?", (device.app_version, device_id))
+            else:
+                device = self._get(cur, device_id) or Device(device_id)
             account = self._whose(cur, account_id, device_id)
             if account:
                 used = self._account_used_s(cur, account.id, day)
                 return device, account.id, account.status, used, account.limit_min(self.limits) * 60
             used, limit = self._over_limit(cur, device, day)
-            if device.status != "blocked" and limit - used < self.limits.min_start_s:
+            if record and device.status != "blocked" and limit - used < self.limits.min_start_s:
                 device = self._auto_block(cur, device, day, max(used, limit), limit)
             return device, None, device.status, used, limit
 

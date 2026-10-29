@@ -10,7 +10,7 @@ On every page turn the app sends the current page (book, page, sentence) to the 
 **Instant hello:** the app plays Milo's recorded intro ("Hi, I'm Milo. You can read the page to me, or ask me
 anything you wonder about.", `Resources/Narration/milo-intro.m4a`, also served from `/content`) the moment the button is
 tapped, and connects in the background. The token request sends `"intro": "app"`, so the agent doesn't greet again;
-older builds leave it out and the agent still says the greeting. The mic stays off while the 5 s intro plays (so
+older builds leave it out and the agent still says the greeting. The mic stays off while the 5.2 s intro plays (so
 Milo doesn't hear himself), and the button shows "Waking Milo up…" until the intro is over and Milo is listening. After
 the intro, what the child says before the agent has joined (a cold start) is kept with LiveKit pre-connect audio and handed
 to Milo when he arrives. Each step is timed from the tap in the device log (category `voice-timing`, e.g.
@@ -82,6 +82,50 @@ report key) and finds their pages, `about` notes and level like any other book. 
 the catalog and talks about the page from what the app sends. Made books are kept in the worker's memory by their
 random id, so one family's book is never looked up for another's session.
 
+## Waking Milo up (cold starts)
+
+Milo's agent runs on LiveKit Cloud's free Build plan, where a deployed agent scales to zero once its sessions end and
+the next session has to wait while LiveKit starts a replica
+([cold start](https://docs.livekit.io/deploy/agents/managing-deployments/#cold-start)). Measured on 2026-10-24, a cold
+start took about 16 s from `/token` to the job: ~11 s for LiveKit to schedule the container, ~5 s for it to boot and
+register. Then Milo joins about 2 s after the job, so tap→listening is ~18 s cold. The recorded intro (5.2 s) covers
+only the start; after that the child waits for "Waking Milo up…". With a running replica the job arrives as the device
+joins and Milo is in the room ~2 s after the tap, before the intro ends, so the intro length is the floor on
+tap→listening (~5.2 s). Once Milo has joined, his first reply takes under a second.
+
+**Warm on intent.** When the app opens or comes back to the foreground, and when a book opens, the app sends `POST /milo/warm` (`MiloWarmer`,
+fire and forget: it never blocks the reader and failures are ignored). The token server dispatches the agent into an
+empty `milo-warm-…` room with `{"warm": true}` metadata, so LiveKit starts a replica while the child picks a book and looks at the page.
+The agent sees the flag and ends the job without joining the room: no OpenAI connection, no usage row, no stars. When
+the child taps a little later, the replica is up and Milo joins about 2 s after the tap, as in the timing example above. Nothing else about a session changes,
+and older builds never warm. The agent's idle process also reads the books before a job now (reading them when a
+session started blocked its audio for ~0.5 s).
+
+To save LiveKit minutes, warm-ups are rare:
+
+- **App:** only when signed in, a grown-up said yes to Milo, Milo is asleep, and this device talked to Milo in the last
+  7 days but not in the last 5 minutes (the replica that served it is probably still up); at most once per 10 minutes.
+  A device with no recorded talk yet (new, or just updated from a build before warm-ups) warms for 7 days from its
+  first try (`milo.warmFirstSeenAt`), then stops until Milo is used.
+- **Server:** the same access key and sign-in as `/token`; the account must have said yes, not be blocked and have
+  minutes left today. At most one warm-up per device per 10 minutes (`PIP_WARM_DEVICE_GAP_S`, seconds), and none within
+  5 minutes (`PIP_WARM_FRESH_S`) of any token, finished session or other warm-up. One replica serves every device, so
+  that also caps warm-ups at 12 an hour overall. `PIP_WARM=0` turns them off. A warm-up only reads the database (no rows,
+  no `last_seen` stamp), and an idle server still never touches it, so the free Neon database can sleep.
+
+**What it costs.** LiveKit meters agent session time per second, with a 10 s minimum per session, and "if an agent
+receives a job but never connects to the room, no metering occurs"
+([billing](https://docs.livekit.io/deploy/admin/billing/),
+[per-second metering](https://livekit.com/blog/introducing-per-second-metering-for-livekit)). A warm-up never
+connects, so it should use none of the Build plan's 1,000 agent session minutes a month, and the empty room has no
+participants. In a local test worker, a warm-up job ended 15 ms after it arrived. Even if each warm-up were billed the 10 s minimum, a family opening books 6 times a day would add about
+6 × 10 s × 30 ≈ 30 minutes a month. Check the agent session minutes on the LiveKit dashboard after a release.
+
+**Tradeoff.** LiveKit's Ship plan (about $50 a month) avoids cold starts; we stay on the free plan and warm on intent
+instead. A warm-up only helps fully when it comes ~16 s before the tap, so a child who taps straight away still waits,
+though less. The warm-up request itself can take ~3 s on the server when the database is waking up. LiveKit doesn't say how long an idle replica stays up; on 2026-10-23 one was still running 18 minutes after
+its last session. To compare, the `voice-timing` line's `agent joined` drops from ~18 s to ~2 s after a warm-up.
+
 ## What a session costs
 
 When a Milo session ends (the child closes the book, the app drops off, or the worker stops), the agent appends one row to
@@ -103,11 +147,12 @@ counts as talking. Tapping **Talk to Milo** starts a fresh session.
 
 ## Stars and the Passport
 
-The child earns stars for answering Milo, not for talking a lot: up to 5 stars on each page each day. Milo ends its
-replies with one easy, open question, and each answer of 5 words or more earns a star until the page has 5
-for the day. Asking Milo a question doesn't earn a star (Milo still answers it). The first star on a page starts Milo's reply with
-"Great answer, that's a star!"; later ones get a short, varied cheer ("Another star!", "Ooh, star!") and the
-rest follows right away. Milo never counts stars or says how many are left, and once a page has all 5 for
+The child earns stars for answering Milo and for asking Milo real questions, not for talking a lot: up to 5 stars
+on each page each day. Milo ends its replies with one easy, open question, and each answer of 5 words or more earns
+a star; each question of the child's own with 3 words or more ("What's this tower?") earns one too, until the page
+has 5 for the day (answers and questions share the 5). The first star on a page starts Milo's reply with
+"Great answer, that's a star!" (or "Great question, that's a star!"); later ones get a short, varied cheer
+("Another star!", "Ooh, good question, star!") and the rest follows right away. Milo never counts stars or says how many are left, and once a page has all 5 for
 the day Milo doesn't mention stars there. When the child answers Milo's question in fewer than 5 words ("the boat"), Milo
 (realtime mode) gently asks for more and gives them a sentence start to finish from their own words ("Ooh, the boat! Can
 you tell me more? You could say, I would ride the boat because..."), never mentioning words or stars. Milo does this at
@@ -116,16 +161,21 @@ are all taken, and never for reading the page aloud, small talk, noise or the ch
 sentence earns the star as usual. The agent (`stars.py`) checks every award before it counts, using the input
 transcription and what Milo said last; nothing the model says can hand out a star:
 
-- 1 star per real answer: Milo's last reply asked a question, and the answer has at least 5 words
-  (`PIP_STAR_MIN_WORDS`). Reading the page aloud, the child's own question, "hi Milo" or other small talk,
-  grown-ups or noise earn nothing. Each star needs a new question from Milo and a new answer.
+- 1 star per real answer (`kind` `answer`): Milo's last reply asked a question, and the answer has at least 5
+  words (`PIP_STAR_MIN_WORDS`). Each answer star needs a new question from Milo and a new answer.
+- 1 star per real question of the child's own (`kind` `question`): it ends with "?" or starts like a question
+  ("why", "what's", "how", "can you", "I wonder"...) and has at least 3 words after any "hi"/"Milo"
+  (`PIP_STAR_QUESTION_MIN_WORDS`), so "Why?" or "What's that?" earn nothing but "What's this tower?" does. Milo
+  doesn't need to have asked anything first. Asking Milo to repeat himself ("What did you say?") doesn't count.
+- Both need the turn to be meant for Milo (the guard said RESPOND). Reading the page aloud, "hi Milo", "how are
+  you" or other small talk, grown-ups or noise earn nothing, and each heard turn earns at most one star.
 - The 5 per page count across every session on that account (or unlinked device) that day, so reconnecting doesn't start a page
   over, but favorite books earn again tomorrow. The day is the child's local day: the app sends its time zone
   (`"tz"`) with `/token`, the agent stamps each award's `awarded_at` in it (older apps fall back to
   `PIP_TIMEZONE`), and a star's day is the date in its own `awarded_at`, the same day the star calendar
   shows. When a session starts, the agent loads the account's earlier stars per page and day from
   `GET /stars?account=<id>` (report key; `?device=<id>` for an old build) in the background, off the voice path; if that fails it counts this session only.
-- Long (8+ words, `PIP_STAR_LONG_WORDS`) answers and ones that explain with "because" are noted for the badges
+- Long (8+ words, `PIP_STAR_LONG_WORDS`) answers or questions and ones that explain with "because" are noted for the badges
   but earn no extra stars. `PIP_STAR_COOLDOWN_S` can add a pause between stars (off by default: turn-taking
   already paces them, and a cooldown could make Milo cheer for a star that is then refused).
 - The token server enforces the same limit, so an older agent can't go over it: `POST /stars` refuses an award
@@ -142,8 +192,9 @@ locally and, on launch, merges back the server's copy (`GET /account/stars`; `GE
 builds), so stars survive a reinstall. Only counts, kinds, book, page and time are stored, never what the child said.
 
 The library's top corner shows the child's total; tapping it opens the Passport: a stamp for each city where they have
-earned a star (not the Travel shelf), the badges, then the star calendar. Stars earned before the answer rule were for
-questions (`kind` `question`); new ones are `answer`, and the badges count both.
+earned a star (not the Travel shelf), the badges, then the star calendar. Stars for answers are `kind` `answer`;
+stars for the child's own questions are `question` (the kind stars had before the answer rule, so every app build and
+the token server already accept it), and the badges count both.
 
 The badges come from the badge catalog (`badges.json`), which the server can change without an app update (see
 [Badges](operations.md#badges)). They are grouped, and each group is one card in the Passport (one column on iPhone,

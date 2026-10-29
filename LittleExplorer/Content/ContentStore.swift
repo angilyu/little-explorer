@@ -60,6 +60,7 @@ struct ContentUpdater {
         var request = authorize(URLRequest(url: baseURL.appendingPathComponent("manifest.json")))
         request.timeoutInterval = 30
         request.cachePolicy = .reloadIgnoringLocalCacheData
+        request.addClientHeaders()
         let (data, response) = try await session.data(for: request)
         let status = (response as? HTTPURLResponse)?.statusCode ?? 0
         guard status == 200 else { throw ContentUpdateError.server(status: status) }
@@ -67,10 +68,13 @@ struct ContentUpdater {
     }
 
     private func download(_ path: String, entry: ContentManifest.Entry, to target: URL) async throws {
-        var request = if let link = entry.url.flatMap(URL.init(string:)) {
-            URLRequest(url: link)
+        var request: URLRequest
+        if let link = entry.url.flatMap(URL.init(string:)) {
+            request = URLRequest(url: link)
         } else {
-            authorize(URLRequest(url: baseURL.appendingPathComponent(path)))
+            request = authorize(URLRequest(url: baseURL.appendingPathComponent(path)))
+            // Like the manifest request, so the server knows the build (not sent to presigned R2 links).
+            request.addClientHeaders()
         }
         request.timeoutInterval = 60
         let (data, response) = try await session.data(for: request)
