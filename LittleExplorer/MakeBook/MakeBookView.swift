@@ -337,7 +337,7 @@ struct FirstTimeNoteView: View {
                 .font(.body)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
-            Text("Made books show a small \u{201C}Made with AI\u{201D} label and are only on this account's shelf.")
+            Text("Made books are only on this account's shelf. You can hide, report or delete one in the Grown-ups corner.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)

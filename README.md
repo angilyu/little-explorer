@@ -60,7 +60,7 @@ do you think you might hear at the top of the mountain?
   ("the boat"), Milo hands them a sentence to finish ("You could say, I would ride the boat because...").
 - **Rewards real effort.** Thoughtful answers and curious questions earn stars, cities earn Passport stamps, and a star calendar fills up.
   Badges for pages and books read, read-aloud, reading days in a row, Milo stars and places visited are grouped in
-  the Passport, and the server can change them without an app update. A grown-up can trade stars for coins.
+  the Passport (with a Super Explorer group of bigger goals), and the server can change them without an app update. A grown-up can trade stars for coins.
 - **Safe by design.** No ads, no in-app purchases, no tracking. The only personal information is a grown-up's email:
   nothing about your child is asked for. Milo is told to keep things kind and kid-appropriate and never to ask for
   personal details. Milo stays off until a grown-up allows it (asked at sign-in and behind the grown-up check, and can be
@@ -149,9 +149,9 @@ moderated, and moderation fails closed. It runs for free inside the existing web
 a Postgres lease so a restart picks up where it stopped. Files are stored in a private R2 bucket. A book costs
 about $0.13. Milo's talk rules follow the book's level. A grown-up asks for one from **Make a book** in the
 Grown-ups corner (level, section, name and an optional "what should it be about?"); a placeholder cover shows the
-progress on the shelf, and the finished book carries a small "Made with AI" label. Made books are served from a
-per-account manifest, so no other family (and no 1.0 app) ever downloads them. It is dogfood-only for now; see
-[Made books](docs/operations.md#made-books-cloud-generation).
+progress on the shelf, and the finished book looks like any other; the Grown-ups corner lists made books, each with
+a menu to hide, report or delete it. Made books are served from a per-account manifest, so no other family (and no
+1.0 app) ever downloads them. It is dogfood-only for now; see [Made books](docs/operations.md#made-books-cloud-generation).
 
 Each cover shows its level as a slim candy-striped "LEVEL 1" sash across its top-left corner, in the level's color.
 In the Grown-ups corner, **Arrange library** lets a parent hide books and reorder the sections and the books in them;

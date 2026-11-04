@@ -36,17 +36,20 @@ final class BadgeCatalogTests: XCTestCase {
 
     func testBundledCatalogUsesOnlyKnownMetricsAndKeepsOldIds() {
         let bundled = BadgeCatalog.bundled
-        XCTAssertEqual(bundled.categories.map(\.id), ["reading", "days", "milo", "places"])
+        XCTAssertEqual(bundled.categories.map(\.id), ["reading", "days", "milo", "places", "super"])
         let ids = Set(bundled.badges.map(\.id))
         for old in ["curious-cat", "big-talker", "why-wizard", "star-shower", "come-back-kid", "early-bird",
                     "night-owl", "bookworm", "globe-trotter", "super-star", "expert-{city}"] {
             XCTAssertTrue(ids.contains(old), old)
         }
         for new in ["first-book", "page-turner", "good-listener", "book-stack", "super-reader", "story-time",
-                    "book-buddy", "on-a-roll", "super-week", "reading-champ", "milo-pal", "city-hopper", "world-traveler"] {
+                    "book-buddy", "on-a-roll", "super-week", "reading-champ", "milo-pal", "city-hopper", "world-traveler",
+                    "star-collector", "mega-star", "page-champion", "page-superstar", "super-listener", "story-lover",
+                    "book-tower", "city-explorer", "milo-buddy", "milo-best-friend", "chatterbox", "because-champ",
+                    "shining-days", "two-week-wonder", "reading-hero", "morning-sunshine", "moon-explorer"] {
             XCTAssertTrue(ids.contains(new), new)
         }
-        XCTAssertEqual(bundled.badges.count, 24)
+        XCTAssertEqual(bundled.badges.count, 41)
         for badge in bundled.badges {
             XCTAssertLessThanOrEqual(badge.title.count, 20, badge.id)
             XCTAssertNotNil(UIImage(systemName: badge.icon), badge.id)

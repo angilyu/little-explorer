@@ -123,7 +123,7 @@ struct LibraryView: View {
             }
             .buttonStyle(.plain)
             .accessibilityLabel(book.openLabel)
-            .accessibilityValue(BookCoverView.accessibilityValue(level: book.readingLevel, starCount: stars.stars(inBook: book.id), made: book.isMade))
+            .accessibilityValue(BookCoverView.accessibilityValue(level: book.readingLevel, starCount: stars.stars(inBook: book.id)))
             .id(book.id)
         }
     }
@@ -241,14 +241,13 @@ struct BookCoverView: View {
     /// A page of this made book being made again ("Writing…"), shown on the cover.
     var remaking: String? = nil
 
-    /// What VoiceOver adds after "Open the Paris book", e.g. "Level 2, 7 stars" ("…, made with AI").
-    static func accessibilityValue(level: Int, starCount: Int, made: Bool = false) -> String {
-        let value = switch starCount {
+    /// What VoiceOver adds after "Open the Paris book", e.g. "Level 2, 7 stars".
+    static func accessibilityValue(level: Int, starCount: Int) -> String {
+        switch starCount {
         case ..<1: "Level \(level)"
         case 1: "Level \(level), 1 star"
         default: "Level \(level), \(starCount) stars"
         }
-        return made ? value + ", made with AI" : value
     }
 
     var body: some View {
@@ -280,21 +279,16 @@ struct BookCoverView: View {
                 }
                 .coverLevelBadge(level: book.readingLevel, regular: regular)
                 .overlay(alignment: .bottomTrailing) {
-                    if book.isMade {
-                        VStack(alignment: .trailing, spacing: 4) {
-                            if let remaking {
-                                Label(remaking, systemImage: "arrow.triangle.2.circlepath")
-                                    .font(.system(size: regular ? 14 : 10, weight: .bold, design: .rounded))
-                                    .foregroundStyle(.white)
-                                    .padding(.horizontal, regular ? 10 : 7)
-                                    .padding(.vertical, regular ? 5 : 3)
-                                    .background(Capsule().fill(Color.orange))
-                                    .fixedSize()
-                            }
-                            MadeWithAILabel(regular: regular)
-                        }
-                        .padding(regular ? 10 : 6)
-                        .accessibilityHidden(true)
+                    if book.isMade, let remaking {
+                        Label(remaking, systemImage: "arrow.triangle.2.circlepath")
+                            .font(.system(size: regular ? 14 : 10, weight: .bold, design: .rounded))
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, regular ? 10 : 7)
+                            .padding(.vertical, regular ? 5 : 3)
+                            .background(Capsule().fill(Color.orange))
+                            .fixedSize()
+                            .padding(regular ? 10 : 6)
+                            .accessibilityHidden(true)
                     }
                 }
             VStack(alignment: .leading, spacing: 4) {

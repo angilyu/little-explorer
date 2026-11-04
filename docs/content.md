@@ -70,9 +70,9 @@ differences:
   `Narration/<id>.narration.json` (same `{"clips": …}` shape), merged with the bundled ones when it is read aloud.
 
 In the app (1.1 and later) a made book is a normal book on the shelf: its level badge, Arrange library (hide, order,
-its own section), read-aloud with word highlighting, stars, badges, Passport stamps and Milo all work the same. It
-also shows a small "Made with AI" label on the cover. While one is being made, a dashed placeholder cover sits on
-its section's shelf with the progress ("Writing…", "Finding photos…", "Recording…") and can't be opened. The app
+its own section), read-aloud with word highlighting, stars, badges, Passport stamps and Milo all work the same, and
+its cover looks like any other. The Grown-ups corner lists made books under **Made books**, each with a menu to hide,
+report or delete it. While one is being made, a dashed placeholder cover sits on its section's shelf with the progress ("Writing…", "Finding photos…", "Recording…") and can't be opened. The app
 asks for the job's status every few seconds only while a job is active and the app is in the foreground.
 
 ## Photos

@@ -4,7 +4,8 @@
     {"id": "reading", "title": "Reading", "icon": "book.fill", "tint": "#2E9E44"},
     {"id": "days", "title": "Every Day", "icon": "calendar", "tint": "#F28C28"},
     {"id": "milo", "title": "Milo Stars", "icon": "star.fill", "tint": "#3A86FF"},
-    {"id": "places", "title": "Places", "icon": "globe.americas.fill", "tint": "#1E88E5"}
+    {"id": "places", "title": "Places", "icon": "globe.americas.fill", "tint": "#1E88E5"},
+    {"id": "super", "title": "Super Explorer", "icon": "mountain.2.fill", "tint": "#7B2CBF"}
   ],
   "badges": [
     {"id": "first-book", "category": "reading", "title": "First Book", "icon": "book.closed.fill", "tint": "#2E9E44",
@@ -57,6 +58,41 @@
     {"id": "world-traveler", "category": "places", "title": "World Traveler", "icon": "airplane", "tint": "#264653",
      "metric": "countries_read", "goal": 4, "hint": "Read books from {goal} countries", "done": "Books from {goal} countries!"},
     {"id": "expert-{city}", "category": "places", "title": "{city} Expert", "icon": "medal.fill", "tint": "#D4A017",
-     "metric": "city_books_starred", "each": "city", "goal": "all", "hint": "Earn a star in every {city} book", "done": "A star in every {city} book!"}
+     "metric": "city_books_starred", "each": "city", "goal": "all", "hint": "Earn a star in every {city} book", "done": "A star in every {city} book!"},
+
+    {"id": "star-collector", "category": "super", "title": "Star Collector", "icon": "star.circle.fill", "tint": "#FFB703",
+     "metric": "stars", "goal": 200, "hint": "Earn {goal} stars", "done": "You collected {goal} stars!"},
+    {"id": "mega-star", "category": "super", "title": "Mega Star", "icon": "trophy.circle.fill", "tint": "#FB5607",
+     "metric": "stars", "goal": 300, "hint": "Earn {goal} stars", "done": "{goal} stars! You are a mega star!"},
+    {"id": "page-champion", "category": "super", "title": "Page Champion", "icon": "book.pages.fill", "tint": "#2A9134",
+     "metric": "pages_read", "goal": 200, "hint": "Read {goal} pages", "done": "Wow, {goal} pages read!"},
+    {"id": "page-superstar", "category": "super", "title": "Page Superstar", "icon": "book.circle.fill", "tint": "#3A5A40",
+     "metric": "pages_read", "goal": 300, "hint": "Read {goal} pages", "done": "{goal} pages! What a reader!"},
+    {"id": "super-listener", "category": "super", "title": "Super Listener", "icon": "headphones.circle.fill", "tint": "#7209B7",
+     "metric": "pages_listened", "goal": 100, "hint": "Listen to {goal} pages read aloud", "done": "{goal} pages listened to the end!"},
+    {"id": "story-lover", "category": "super", "title": "Story Lover", "icon": "heart.text.square.fill", "tint": "#D81159",
+     "metric": "pages_listened", "goal": 150, "hint": "Listen to {goal} pages read aloud", "done": "You heard {goal} story pages!"},
+    {"id": "book-tower", "category": "super", "title": "Book Tower", "icon": "books.vertical.circle.fill", "tint": "#6A994E",
+     "metric": "books_finished", "goal": 10, "hint": "Read {goal} whole books", "done": "{goal} whole books! A book tower!"},
+    {"id": "city-explorer", "category": "super", "title": "City Explorer", "icon": "building.columns.fill", "tint": "#118AB2",
+     "metric": "cities_read", "goal": 8, "hint": "Read books about {goal} cities", "done": "Books about {goal} cities!"},
+    {"id": "milo-buddy", "category": "super", "title": "Milo Buddy", "icon": "person.2.fill", "tint": "#0077B6",
+     "metric": "milo_pages", "goal": 50, "hint": "Read {goal} pages with Milo", "done": "{goal} pages with Milo!"},
+    {"id": "milo-best-friend", "category": "super", "title": "Milo\u2019s Best Friend", "icon": "heart.circle.fill", "tint": "#FF5D8F",
+     "metric": "milo_pages", "goal": 100, "hint": "Read {goal} pages with Milo", "done": "{goal} pages with your pal Milo!"},
+    {"id": "chatterbox", "category": "super", "title": "Chatterbox", "icon": "bubble.left.and.text.bubble.right.fill", "tint": "#B5179E",
+     "metric": "long_answers", "goal": 100, "hint": "Give {goal} long answers", "done": "{goal} long answers! What a talker!"},
+    {"id": "because-champ", "category": "super", "title": "Because Champ", "icon": "lightbulb.max.fill", "tint": "#06D6A0",
+     "metric": "because_answers", "goal": 50, "hint": "Answer with \u201Cbecause\u201D {goal} times", "done": "{goal} great \u201Cbecause\u201D answers!"},
+    {"id": "shining-days", "category": "super", "title": "Shining Days", "icon": "sun.max.circle.fill", "tint": "#FFA62B",
+     "metric": "star_days", "goal": 20, "hint": "Earn stars on {goal} different days", "done": "Stars on {goal} different days!"},
+    {"id": "two-week-wonder", "category": "super", "title": "Two-Week Wonder", "icon": "flame.circle.fill", "tint": "#E85D04",
+     "metric": "reading_streak", "goal": 14, "hint": "Read {goal} days in a row", "done": "{goal} days in a row! Amazing!"},
+    {"id": "reading-hero", "category": "super", "title": "Reading Hero", "icon": "calendar.badge.checkmark", "tint": "#6A4C93",
+     "metric": "reading_days", "goal": 30, "hint": "Read on {goal} different days", "done": "You read on {goal} days!"},
+    {"id": "morning-sunshine", "category": "super", "title": "Morning Sunshine", "icon": "sunrise.fill", "tint": "#FF7F51",
+     "metric": "morning_stars", "goal": 5, "hint": "Earn {goal} stars early in the morning", "done": "{goal} stars before 9 am!"},
+    {"id": "moon-explorer", "category": "super", "title": "Moon Explorer", "icon": "moon.circle.fill", "tint": "#3D348B",
+     "metric": "bedtime_stars", "goal": 150, "hint": "Earn {goal} stars at bedtime", "done": "{goal} bedtime stars!"}
   ]
 }

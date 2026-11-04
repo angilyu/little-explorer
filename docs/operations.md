@@ -519,9 +519,8 @@ lasts an hour; the app downloads them from there and checks their SHA-256, like 
 made books in their own folder, separate from the catalog, and forgets them when it signs out or switches account.
 A book whose id or file names would clash with the catalog is left out (and logged).
 
-**Only 1.2 and later see made books** (`MADE_BOOKS_VERSION` in `app_versions.py`). Apps 1.0 and 1.1 can't show the
-"Made with AI" label or the menu to hide, delete or report a book. For a request below 1.2, including one with no
-`X-App-Version` header:
+**Only 1.2 and later see made books** (`MADE_BOOKS_VERSION` in `app_versions.py`). Apps 1.0 and 1.1 don't have the
+menu to hide, delete or report a book. For a request below 1.2, including one with no `X-App-Version` header:
 - The account's `books` list leaves made books out.
 - `/account/content/manifest.json` is empty, and the database isn't read for it.
 

@@ -198,9 +198,10 @@ the token server already accept it), and the badges count both.
 
 The badges come from the badge catalog (`badges.json`), which the server can change without an app update (see
 [Badges](operations.md#badges)). They are grouped, and each group is one card in the Passport (one column on iPhone,
-two on iPad) with its earned medals, how many it has ("3 of 6 badges") and the badge closest to being earned ("Next:
-Book Stack, 3/5"). Tapping a card opens the group: "You earned" medals first, then "Still to find" with a hint and a
-progress bar each, closest first. The bundled catalog:
+two on iPad) with its earned medals (as many as fit, then "+3"), how many it has ("3 of 6 badges") and the badge
+closest to being earned ("Next: Book Stack, 3/5"). Tapping a card opens the group: "You earned" medals first, then
+"Still to find" with a hint and a progress bar each, closest first. Super Explorer is the next level: bigger goals for
+a child who has the first four groups. The bundled catalog:
 
 | Group | Badge | How to earn it | Counts |
 |---|---|---|---|
@@ -228,6 +229,23 @@ progress bar each, closest first. The bundled catalog:
 | Places | Globe Trotter | stamps from 3 cities | stars, shelves |
 | Places | World Traveler | read books from 4 countries | reading progress, shelves |
 | Places | *City* Expert | a star in every book of a city with several books, e.g. Paris Expert (the medal shows the city's flag) | stars, shelves |
+| Super Explorer | Star Collector | 200 stars | stars |
+| Super Explorer | Mega Star | 300 stars | stars |
+| Super Explorer | Page Champion | read 200 different pages | reading progress |
+| Super Explorer | Page Superstar | read 300 different pages | reading progress |
+| Super Explorer | Super Listener | listen to 100 pages read aloud to the end | reading progress |
+| Super Explorer | Story Lover | listen to 150 pages read aloud to the end | reading progress |
+| Super Explorer | Book Tower | read 10 whole books | reading progress, shelves |
+| Super Explorer | City Explorer | read a page in books about 8 cities (fewer if the shelves have fewer) | reading progress, shelves |
+| Super Explorer | Milo Buddy | read 50 pages with Milo on | reading progress |
+| Super Explorer | Milo’s Best Friend | read 100 pages with Milo on | reading progress |
+| Super Explorer | Chatterbox | 100 long answers | stars |
+| Super Explorer | Because Champ | 50 answers that explain with "because" | stars |
+| Super Explorer | Shining Days | stars on 20 different days | stars |
+| Super Explorer | Two-Week Wonder | read 14 days in a row | reading progress |
+| Super Explorer | Reading Hero | read on 30 different days | reading progress |
+| Super Explorer | Morning Sunshine | 5 stars before 9 am | stars |
+| Super Explorer | Moon Explorer | 150 stars at 7 pm or later | stars |
 
 A page counts as read when it was on screen for a second or more, and as listened to when read-aloud played to the
 end. Goals that depend on the shelves are lowered to what the shelves have (with 3 cities, City Hopper needs 3).
