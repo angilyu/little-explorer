@@ -103,19 +103,29 @@ struct BadgeCategoryCard: View {
                 .font(.system(size: regular ? 17 : 15, weight: .semibold, design: .rounded))
                 .opacity(0.7)
         } else {
-            let size: CGFloat = regular ? 52 : 46
-            let shown = earned.count > maxMedals ? maxMedals - 1 : earned.count
-            HStack(spacing: regular ? 10 : 8) {
-                ForEach(earned.prefix(shown)) { badge in
-                    BadgeMedal(badge: badge, size: size, wiggle: newBadges.contains(badge.id))
-                }
-                if earned.count > shown {
-                    Text("+\(earned.count - shown)")
-                        .font(.system(size: size * 0.36, weight: .heavy, design: .rounded))
-                        .foregroundStyle(tint)
-                        .frame(width: size, height: size)
-                        .background(Circle().fill(tint.opacity(0.14)))
-                }
+            // As many medals as the card has room for (a narrow iPad column fits fewer), the rest as "+N".
+            ViewThatFits(in: .horizontal) {
+                medalRow(slots: maxMedals)
+                medalRow(slots: maxMedals - 1)
+                medalRow(slots: maxMedals - 2)
+                medalRow(slots: 3)
+            }
+        }
+    }
+
+    private func medalRow(slots: Int) -> some View {
+        let size: CGFloat = regular ? 52 : 46
+        let shown = earned.count > slots ? slots - 1 : earned.count
+        return HStack(spacing: regular ? 10 : 8) {
+            ForEach(earned.prefix(shown)) { badge in
+                BadgeMedal(badge: badge, size: size, wiggle: newBadges.contains(badge.id))
+            }
+            if earned.count > shown {
+                Text("+\(earned.count - shown)")
+                    .font(.system(size: size * 0.36, weight: .heavy, design: .rounded))
+                    .foregroundStyle(tint)
+                    .frame(width: size, height: size)
+                    .background(Circle().fill(tint.opacity(0.14)))
             }
         }
     }

@@ -60,7 +60,7 @@ do you think you might hear at the top of the mountain?
   ("the boat"), Milo hands them a sentence to finish ("You could say, I would ride the boat because...").
 - **Rewards real effort.** Thoughtful answers and curious questions earn stars, cities earn Passport stamps, and a star calendar fills up.
   Badges for pages and books read, read-aloud, reading days in a row, Milo stars and places visited are grouped in
-  the Passport, and the server can change them without an app update. A grown-up can trade stars for coins.
+  the Passport (with a Super Explorer group of bigger goals), and the server can change them without an app update. A grown-up can trade stars for coins.
 - **Safe by design.** No ads, no in-app purchases, no tracking. The only personal information is a grown-up's email:
   nothing about your child is asked for. Milo is told to keep things kind and kid-appropriate and never to ask for
   personal details. Milo stays off until a grown-up allows it (asked at sign-in and behind the grown-up check, and can be
