@@ -85,7 +85,7 @@ The book's text and the grown-up's request are kept on our server. Its photos an
 [Cloudflare R2](https://www.cloudflare.com/developer-platform/r2/) storage bucket. They stay until the book or the
 account is deleted. A made book is sent only to devices signed in to the account it was made for (and any account the
 owner grants it to), never in the app's shared book list, and its photos and recordings are fetched through links
-that expire after an hour. Made books show a small "Made with AI" label.
+that expire after an hour. Made books are written by AI and checked automatically; the Grown-ups corner lists them.
 
 A grown-up can hide a made book, make one page again, report a problem with it, or delete it from the Grown-ups
 corner. Deleting removes the book and its files from our server and from every shelf right away. A report (what's

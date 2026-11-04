@@ -1,22 +1,5 @@
 import SwiftUI
 
-/// The small "Made with AI" label on a made book's cover.
-struct MadeWithAILabel: View {
-    var regular = true
-
-    var body: some View {
-        Label("Made with AI", systemImage: "sparkles")
-            .font(.system(size: regular ? 14 : 10, weight: .bold, design: .rounded))
-            .labelStyle(.titleAndIcon)
-            .foregroundStyle(.white)
-            .padding(.horizontal, regular ? 10 : 7)
-            .padding(.vertical, regular ? 5 : 3)
-            .background(Capsule().fill(.black.opacity(0.6)))
-            .lineLimit(1)
-            .fixedSize()
-    }
-}
-
 /// The cover a book being made shows on the shelf until it's ready: its name and how far along it is.
 struct PlaceholderCoverView: View {
     let book: Book
@@ -137,7 +120,7 @@ struct MadeBooksSection: View {
             } header: {
                 Text("Made books")
             } footer: {
-                Text("Books you make are written by AI, checked automatically and illustrated with real, licensed photos. They're on this account's shelf only, with a \u{201C}Made with AI\u{201D} label.")
+                Text("Books you make are written by AI, checked automatically and illustrated with real, licensed photos. They're on this account's shelf only. Open one here to hide it, report a problem or delete it.")
             }
         }
     }

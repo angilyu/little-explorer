@@ -15,7 +15,7 @@ struct Book: Codable, Identifiable, Hashable {
     var kind: String? = nil
     /// Reading level 1-3 (see server/src/little_explorer_agent/levels.py); older books have none and read as 2.
     var level: BookLevel? = nil
-    /// True for a book a grown-up made in the app ("Make a book"): written by AI, shown with a "Made with AI" label.
+    /// True for a book a grown-up made in the app ("Make a book"): written by AI and checked automatically.
     var generated: Bool? = nil
     let pages: [BookPage]
 

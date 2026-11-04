@@ -149,9 +149,9 @@ moderated, and moderation fails closed. It runs for free inside the existing web
 a Postgres lease so a restart picks up where it stopped. Files are stored in a private R2 bucket. A book costs
 about $0.13. Milo's talk rules follow the book's level. A grown-up asks for one from **Make a book** in the
 Grown-ups corner (level, section, name and an optional "what should it be about?"); a placeholder cover shows the
-progress on the shelf, and the finished book carries a small "Made with AI" label. Made books are served from a
-per-account manifest, so no other family (and no 1.0 app) ever downloads them. It is dogfood-only for now; see
-[Made books](docs/operations.md#made-books-cloud-generation).
+progress on the shelf, and the finished book looks like any other; the Grown-ups corner lists made books, each with
+a menu to hide, report or delete it. Made books are served from a per-account manifest, so no other family (and no
+1.0 app) ever downloads them. It is dogfood-only for now; see [Made books](docs/operations.md#made-books-cloud-generation).
 
 Each cover shows its level as a slim candy-striped "LEVEL 1" sash across its top-left corner, in the level's color.
 In the Grown-ups corner, **Arrange library** lets a parent hide books and reorder the sections and the books in them;
