@@ -35,6 +35,8 @@ struct PageView: View {
                 }
             }
         }
+        // A plain `.sheet`: this page lives in PageCurlView's own UIHostingController, outside the app's
+        // environment, so `appSheet` couldn't read the stores here, and the credit sheet needs none.
         .sheet(isPresented: $showCredit) {
             PhotoCreditSheet(photo: page.photo)
         }

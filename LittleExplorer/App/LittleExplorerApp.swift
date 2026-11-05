@@ -43,6 +43,13 @@ struct LittleExplorerApp: App {
     /// Books being made show on the shelf as placeholder covers, in their section.
     private var placeholders: [Book] { maker.placeholders.map(BookMaker.placeholder(for:)) }
 
+    private var stores: AppStores {
+        AppStores(
+            account: account, voice: voice, readAloud: readAloud, content: content, stars: stars,
+            coins: coins, reading: reading, library: library, made: made, maker: maker
+        )
+    }
+
     private var sync: AccountSync {
         AccountSync(account: account, stars: stars, coins: coins, reading: reading, library: library, made: made, maker: maker)
     }
@@ -67,21 +74,13 @@ struct LittleExplorerApp: App {
                     WelcomeView(books: content.books)
                 }
             }
-                .environment(account)
-                .environment(voice)
-                .environment(readAloud)
-                .environment(content)
-                .environment(stars)
-                .environment(coins)
-                .environment(reading)
-                .environment(library)
-                .environment(made)
-                .environment(maker)
-                .sheet(isPresented: recommendsUpdate) {
+                // Inside `appStores` below, so it can read the stores it passes on.
+                .appSheet(isPresented: recommendsUpdate) {
                     if let prompt = upgrade.prompt {
                         UpgradeView(prompt: prompt) { upgrade.snoozeRecommended() }
                     }
                 }
+                .appStores(stores)
                 .onChange(of: upgrade.isRequired) { _, required in
                     guard required else { return }
                     readAloud.stop()

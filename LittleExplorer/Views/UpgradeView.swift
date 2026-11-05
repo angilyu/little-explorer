@@ -59,7 +59,7 @@ struct UpgradeView: View {
             LinearGradient(colors: [Theme.sky, Theme.paper], startPoint: .top, endPoint: .bottom).ignoresSafeArea()
         )
         .interactiveDismissDisabled(required)
-        .sheet(isPresented: $gate) {
+        .appSheet(isPresented: $gate) {
             ParentGateView(onPass: {
                 gate = false
                 openURL(UpgradeChecker.destination(url))

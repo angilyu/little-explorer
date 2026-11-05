@@ -7,7 +7,6 @@ struct LibraryView: View {
     /// these (hiding a book doesn't take away what he earned), and the grown-ups corner lists them.
     var allBooks: [Book]? = nil
 
-    @Environment(VoiceModeController.self) private var voice
     @Environment(StarStore.self) private var stars
     @Environment(CoinStore.self) private var coins
     @Environment(AccountStore.self) private var account
@@ -51,32 +50,21 @@ struct LibraryView: View {
             )
             .toolbar(.hidden, for: .navigationBar)
         }
-        .fullScreenCover(item: $openBook) { open in
+        .appFullScreenCover(item: $openBook) { open in
             BookReaderView(book: open.book, startPage: open.startPage)
-                .environment(voice)
-                .environment(stars)
-                .environment(coins)
-                .environment(account)
-                .environment(reading)
         }
-        .sheet(isPresented: $showPassport) {
+        .appSheet(isPresented: $showPassport) {
             PassportView(shelves: BookLibrary.shelves(everyBook), catalog: content.badges)
-                .environment(stars)
-                .environment(coins)
-                .environment(reading)
                 .passportSizing()
         }
-        .sheet(isPresented: $showGate) {
+        .appSheet(isPresented: $showGate) {
             ParentGateView {
                 showGate = false
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { showParentCorner = true }
             }
         }
-        .sheet(isPresented: $showParentCorner) {
+        .appSheet(isPresented: $showParentCorner) {
             ParentCornerView(books: everyBook)
-                .environment(account)
-                .environment(voice)
-                .environment(coins)
         }
         .onAppear(perform: applyDemoLaunch)
     }

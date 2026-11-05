@@ -104,8 +104,8 @@ struct ParentCornerView: View {
             } footer: {
                 Text("Every iPad and iPhone signed in with this email shares the same books, stars, coins and Milo's daily talk time. The owner can add more books to the account.")
             }
-            .sheet(isPresented: $showDelete) {
-                DeleteAccountView().environment(account)
+            .appSheet(isPresented: $showDelete) {
+                DeleteAccountView()
             }
         }
     }
@@ -154,9 +154,8 @@ struct ParentCornerView: View {
                      ? "On: while Milo is on, your child's voice and the page being read go to OpenAI through LiveKit. Turning Milo off counts on every device signed in with this email."
                      : "Off: Milo can't talk, and nothing is sent. Reading and read-aloud still work. Turn Milo on to read what Milo sends and allow it.")
             }
-            .sheet(isPresented: Binding(get: { miloConsent != nil }, set: { if !$0 { miloConsent = nil } })) {
+            .appSheet(isPresented: Binding(get: { miloConsent != nil }, set: { if !$0 { miloConsent = nil } })) {
                 MiloConsentView(purpose: miloConsent ?? .about) { miloConsent = nil }
-                    .environment(account)
                     .presentationDetents([.large])
                     .passportSizing()
             }
