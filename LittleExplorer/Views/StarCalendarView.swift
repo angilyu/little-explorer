@@ -129,15 +129,50 @@ private struct CountStar: View {
 }
 
 private extension View {
-    /// Pages left/right on a sideways swipe, leaving up/down for the Passport's scroll.
+    /// Pages left/right on a sideways swipe, leaving up/down for the Passport's scroll. On iOS 18 and later a
+    /// SwiftUI drag here, even a simultaneous one, stops the Passport scrolling when a drag starts on the
+    /// calendar. At the end of the Passport in landscape the calendar fills the screen, so he couldn't scroll
+    /// back up and the page just bounced. UIKit swipes run alongside the scroll instead.
+    @ViewBuilder
     func pageSwipe(_ move: @escaping (Int) -> Void) -> some View {
-        simultaneousGesture(
-            DragGesture(minimumDistance: 24).onEnded { value in
-                let dx = value.translation.width
-                guard abs(dx) > 50, abs(dx) > abs(value.translation.height) * 1.5 else { return }
-                move(dx < 0 ? 1 : -1)
-            }
-        )
+        if #available(iOS 18.0, *) {
+            gesture(SideSwipe(direction: .left) { move(1) })
+                .gesture(SideSwipe(direction: .right) { move(-1) })
+        } else {
+            simultaneousGesture(
+                DragGesture(minimumDistance: 24).onEnded { value in
+                    let dx = value.translation.width
+                    guard abs(dx) > 50, abs(dx) > abs(value.translation.height) * 1.5 else { return }
+                    move(dx < 0 ? 1 : -1)
+                }
+            )
+        }
+    }
+}
+
+/// A sideways swipe that never holds up the scroll view it sits in.
+@available(iOS 18.0, *)
+private struct SideSwipe: UIGestureRecognizerRepresentable {
+    let direction: UISwipeGestureRecognizer.Direction
+    let action: () -> Void
+
+    func makeCoordinator(converter: CoordinateSpaceConverter) -> Coordinator { Coordinator() }
+
+    func makeUIGestureRecognizer(context: Context) -> UISwipeGestureRecognizer {
+        let swipe = UISwipeGestureRecognizer()
+        swipe.direction = direction
+        swipe.delegate = context.coordinator
+        return swipe
+    }
+
+    func handleUIGestureRecognizerAction(_ recognizer: UISwipeGestureRecognizer, context: Context) {
+        if recognizer.state == .ended { action() }
+    }
+
+    final class Coordinator: NSObject, UIGestureRecognizerDelegate {
+        func gestureRecognizer(_: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith _: UIGestureRecognizer) -> Bool {
+            true
+        }
     }
 }
 
