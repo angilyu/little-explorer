@@ -10,7 +10,6 @@ struct BookReaderView: View {
     @Environment(ReadAloudController.self) private var readAloud
     @Environment(StarStore.self) private var stars
     @Environment(CoinStore.self) private var coins
-    @Environment(AccountStore.self) private var account
     @Environment(ReadingActivity.self) private var reading
 
     @State private var pageIndex: Int
@@ -79,12 +78,11 @@ struct BookReaderView: View {
                 voice.warmUp()
             }
         }
-        .sheet(isPresented: Binding(
+        .appSheet(isPresented: Binding(
             get: { voice.needsConsent },
             set: { shown in if !shown { Task { await voice.consentHandled() } } }
         )) {
             MiloPermissionSheet(passedGate: DemoLaunch.current?.milo == .talkConsent)
-                .environment(account)
         }
         .onDisappear {
             readAloud.stop()

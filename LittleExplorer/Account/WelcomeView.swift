@@ -73,9 +73,8 @@ struct WelcomeView: View {
         .background(background)
         // The sky-and-paper look (like the shelf) needs dark text, even in Dark Mode.
         .environment(\.colorScheme, .light)
-        .sheet(isPresented: $showSignIn) {
+        .appSheet(isPresented: $showSignIn) {
             SignInView()
-                .environment(account)
         }
         .task {
             guard let demo = DemoLaunch.current else { return }

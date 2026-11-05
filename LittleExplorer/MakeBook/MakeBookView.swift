@@ -115,7 +115,7 @@ struct MakeBookView: View {
         .navigationDestination(isPresented: $pickingSection) {
             SectionPickerView(sections: sections, section: $section, maxLength: fields.sectionMax)
         }
-        .sheet(isPresented: $showNote) {
+        .appSheet(isPresented: $showNote) {
             FirstTimeNoteView {
                 UserDefaults.standard.set(true, forKey: Self.noteSeenKey)
                 showNote = false
