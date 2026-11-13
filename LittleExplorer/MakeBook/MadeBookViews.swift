@@ -149,6 +149,7 @@ struct MadeBookMenuView: View {
     @State private var confirmDelete = false
     @State private var deleting = false
     @State private var message: String?
+    @State private var showCredits = DemoLaunch.current?.make == .credits
 
     private var own: Bool { maker.ownBooks.contains(book.id) }
 
@@ -166,6 +167,11 @@ struct MadeBookMenuView: View {
                 LabeledContent("Section", value: book.city)
                 LabeledContent("Level", value: MakeBookLevel.all.first { $0.level == book.readingLevel }?.title ?? "Level \(book.readingLevel)")
                 LabeledContent("Pages", value: "\(book.pages.count)")
+                NavigationLink {
+                    MadeBookCreditsView(book: book)
+                } label: {
+                    Label("Photo credits", systemImage: "photo.on.rectangle")
+                }
             }
             Section {
                 if let job = maker.remaking(book.id) {
@@ -214,6 +220,7 @@ struct MadeBookMenuView: View {
         }
         .navigationTitle(book.coverTitle)
         .navigationBarTitleDisplayMode(.inline)
+        .navigationDestination(isPresented: $showCredits) { MadeBookCreditsView(book: book) }
         .confirmationDialog("Delete \u{201C}\(book.coverTitle)\u{201D}?", isPresented: $confirmDelete, titleVisibility: .visible) {
             Button("Delete book", role: .destructive) { Task { await delete() } }
             Button("Cancel", role: .cancel) {}
@@ -234,6 +241,31 @@ struct MadeBookMenuView: View {
         } catch {
             message = MakeError.offline.message
         }
+    }
+}
+
+/// Every photo in a made book with its full credit and working links. Made-book pages show the credit only
+/// behind a small "i", so this keeps every attribution (which CC BY and BY-SA require) in one place.
+struct MadeBookCreditsView: View {
+    let book: Book
+
+    var body: some View {
+        List {
+            ForEach(Array(book.pages.enumerated()), id: \.element.id) { index, page in
+                if page.photo.file != nil || page.photo.commonsTitle != nil {
+                    Section("Page \(index + 1)") {
+                        PhotoCreditRows(photo: page.photo, opensLinks: true)
+                    }
+                }
+            }
+            Section {
+                EmptyView()
+            } footer: {
+                Text("The photos come from Wikimedia Commons and are used under their licenses. Each one was resized to fit the page.")
+            }
+        }
+        .navigationTitle("Photo credits")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

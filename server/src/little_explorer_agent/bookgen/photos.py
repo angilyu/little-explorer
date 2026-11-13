@@ -1,10 +1,13 @@
 """Real, freely licensed photos from Wikimedia Commons for made books (a port of
 ``scripts/fetch_photos.py``; no AI images).
 
-Each page has a couple of search queries. Candidates must have a free license that allows commercial
-use and changes (CC0, public domain, CC BY, CC BY-SA), be big enough and roughly landscape, not be
-in a category a child shouldn't see, and pass image moderation. The chosen photo is resized to
-1400 px wide and saved as a JPEG; the author and license go into the page for the credits screen.
+Each page has a couple of search queries. Candidates must have a license that allows changes (CC0,
+public domain, CC BY, CC BY-SA, and the non-commercial CC BY-NC and CC BY-NC-SA: the app is free with no
+ads), be big enough and roughly landscape, not be in a category a child shouldn't see, and pass image
+moderation. No-derivatives (ND) licenses are never used, because every photo is cropped and resized;
+neither are fair-use, copyrighted or trademark/personality-restricted files. The chosen photo is resized
+to 1400 px wide and saved as a JPEG; the title, author, license and source go into the page for the
+app's photo credits.
 """
 
 from __future__ import annotations
@@ -26,8 +29,11 @@ JPEG_QUALITY = 72
 MAX_DOWNLOAD = 15 * 1024 * 1024
 MIMES = ("image/jpeg", "image/png", "image/svg+xml", "image/webp", "image/tiff")
 
-ALLOWED = re.compile(r"^(public domain|pd\b|cc0|cc[- ]by( |-)?(sa)?[- ]?\d|cc[- ]by(-sa)?$|cc by-sa|cc by \d)", re.I)
-REJECT = re.compile(r"\b(nc|nd)\b|non-?commercial|no ?deriv|fair use|copyrighted", re.I)
+# Made books are free with no ads, so non-commercial (NC) licenses are fine. ND is not: photos are cropped.
+ALLOWED = re.compile(
+    r"^(public domain|pd\b|cc0|cc[- ]by([- ]nc)?([- ]sa)?([- ]?\d|$)|cc[- ]by[- ]nc[- ]sa|cc by-sa|cc by \d)", re.I
+)
+REJECT = re.compile(r"\bnd\b|no ?deriv|fair use|copyrighted", re.I)
 UNSUITABLE = re.compile(
     r"nud(e|ity)|naked|erotic|\bsex|porn|lingerie|corpse|dead bod|blood|\bgore\b|violence|weapon|\bguns?\b|rifle|"
     r"execution|war crime|wounded|injur|slaughter|hunting|drug|cigar|alcohol|beer|wine", re.I
@@ -87,7 +93,7 @@ def license_of(info: dict[str, Any]) -> tuple[bool, str, str, str]:
     if not label:
         return False, label, url, "no license metadata"
     if REJECT.search(label) or REJECT.search(code):
-        return False, label, url, "NC/ND or not free"
+        return False, label, url, "no derivatives (ND), fair use or not free"
     if "trademark" in restrictions or "personality" in restrictions:
         return False, label, url, f"restricted: {restrictions}"
     if not (ALLOWED.search(label) or ALLOWED.search(code) or code.lower().startswith(("cc-by", "cc0", "pd"))):

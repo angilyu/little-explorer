@@ -136,7 +136,43 @@ final class ContentTests: XCTestCase {
         XCTAssertEqual(context.attributes["page_text"], paris.pages[4].text)
     }
 
+    func testPhotoCreditDetails() throws {
+        let photo = PhotoInfo(file: "pup.jpg", commonsTitle: "File:Dalmatian_puppy at the park.JPG", query: "dalmatian",
+                              author: "leo gonzales", license: "CC BY-NC 2.0",
+                              licenseUrl: "https://creativecommons.org/licenses/by-nc/2.0", sourceUrl: nil, verified: true)
+        XCTAssertEqual(photo.displayTitle, "Dalmatian puppy at the park")
+        XCTAssertEqual(photo.licenseLink?.absoluteString, "https://creativecommons.org/licenses/by-nc/2.0")
+        XCTAssertEqual(photo.source?.host(), "commons.wikimedia.org")
+        XCTAssertEqual(photo.creditLine, "Photo: leo gonzales · CC BY-NC 2.0 · Wikimedia Commons")
+        let bare = PhotoInfo(file: nil, commonsTitle: nil, query: nil, author: nil, license: nil,
+                             licenseUrl: "javascript:alert(1)", sourceUrl: nil, verified: nil)
+        XCTAssertNil(bare.displayTitle)
+        XCTAssertNil(bare.licenseLink)
+        XCTAssertNil(bare.source)
+    }
+
+    func testMadeBooksShowTheCreditBehindAButtonAndListEveryPhoto() throws {
+        let page = try String(contentsOf: Self.appFile("Views/PageView.swift"), encoding: .utf8)
+        XCTAssertTrue(page.contains("if book.isMade, page.photo.commonsTitle != nil { creditButton }"))
+        XCTAssertTrue(page.contains("if !book.isMade {"), "bundled books keep the credit line under the photo")
+        XCTAssertTrue(page.contains("\"info.circle\"") && page.contains(".accessibilityLabel(\"Photo credit\")"))
+        let made = try String(contentsOf: Self.appFile("MakeBook/MadeBookViews.swift"), encoding: .utf8)
+        XCTAssertTrue(made.contains("MadeBookCreditsView(book: book)"), "the made book's menu lists every photo credit")
+        XCTAssertTrue(made.contains("PhotoCreditRows(photo: page.photo, opensLinks: true)"))
+    }
+
+    private static func appFile(_ path: String) -> URL {
+        URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
+            .appendingPathComponent("LittleExplorer").appendingPathComponent(path)
+    }
+
     func testDemoLaunchParsing() throws {
+        let credit = try XCTUnwrap(DemoLaunch.parse(["app", "-demoMake", "made", "-demoBook", MakeDemo.bookId, "-demoPage", "3", "-demoCredit"]))
+        XCTAssertEqual(credit.showCredit, true)
+        XCTAssertEqual(credit.pageIndex, 2)
+        let credits = try XCTUnwrap(DemoLaunch.parse(["app", "-demoMake", "credits"]))
+        XCTAssertEqual(credits.make, .credits)
+        XCTAssertEqual(credits.openParent, true)
         XCTAssertNil(DemoLaunch.parse(["app"]))
         let demo = DemoLaunch.parse(["app", "-demoBook", "london", "-demoPage", "4", "-demoVoice", "speaking"])
         XCTAssertEqual(demo, DemoLaunch(bookId: "london", pageIndex: 3, voiceActivity: .speaking))

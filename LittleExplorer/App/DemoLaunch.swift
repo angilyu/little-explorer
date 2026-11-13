@@ -32,12 +32,13 @@ import Foundation
 /// `-demoMake form|sections|note|error|limit` opens the Grown-ups corner at "Make a book" (filled in, at the
 /// section picker, with the first-time note, with an error, or at the daily limit); `-demoMake placeholder`
 /// shows a book being made on the shelf; `-demoMake made` shows a finished made book on the shelf; `-demoMake
-/// menu` opens a made book's grown-up menu. The account may make books, and nothing is sent to the server.
+/// menu` opens a made book's grown-up menu and `-demoMake credits` its photo credits. The account may make books,
+/// and nothing is sent to the server. `-demoCredit` (with `-demoBook` of a made book) opens the page's photo credit.
 /// `-demoUpgrade required` shows the update screen for a build that's no longer supported; `-demoUpgrade
 /// recommended` shows the "Maybe later" update prompt.
 struct DemoLaunch: Equatable {
     enum AccountScreen: String { case welcome, email, code, new }
-    enum Make: String { case form, sections, note, error, limit, placeholder, made, menu }
+    enum Make: String { case form, sections, note, error, limit, placeholder, made, menu, credits }
     enum Upgrade: String { case required, recommended }
     enum Milo: String {
         case signin, talk, off
@@ -63,6 +64,8 @@ struct DemoLaunch: Equatable {
     var voiceEnd: String?
     var liveVoice = false
     var readAloud = false
+    /// Opens the photo credit of the demo page (made books only).
+    var showCredit = false
     var voiceStar = false
     var seedStars = 0
     var openPassport = false
@@ -136,6 +139,7 @@ struct DemoLaunch: Equatable {
         if let book = value(after: "-demoBook") { demo.bookId = book; found = true }
         if let page = value(after: "-demoPage").flatMap(Int.init) { demo.pageIndex = max(0, page - 1); found = true }
         if arguments.contains("-demoRead") { demo.readAloud = true; found = true }
+        if arguments.contains("-demoCredit") { demo.showCredit = true; found = true }
         if let stars = value(after: "-demoStars").flatMap(Int.init) { demo.seedStars = max(0, stars); found = true }
         if arguments.contains("-demoPassport") { demo.openPassport = true; found = true }
         if let book = value(after: "-demoShelf") { demo.shelfBook = book; found = true }

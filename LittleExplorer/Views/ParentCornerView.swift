@@ -23,7 +23,7 @@ struct ParentCornerView: View {
     @State private var converting = false
     @State private var coinMessage: String?
     @State private var makingBook = [.form, .sections, .note, .error, .limit].contains(DemoLaunch.current?.make)
-    @State private var madeBookMenu = DemoLaunch.current?.make == .menu ? MakeDemo.book() : nil
+    @State private var madeBookMenu = [.menu, .credits].contains(DemoLaunch.current?.make) ? MakeDemo.book() : nil
 
     var body: some View {
         NavigationStack {
