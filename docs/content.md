@@ -77,8 +77,14 @@ asks for the job's status every few seconds only while a job is active and the a
 
 ## Photos
 
-All photos come from Wikimedia Commons under free licenses (public domain, CC0, CC BY, CC BY-SA).
+All photos in the bundled books come from Wikimedia Commons under free licenses (public domain, CC0, CC BY, CC BY-SA).
 The credit (author · license · Commons) is shown under each photo. No photo is used twice.
+
+Made books (["Make a book"](operations.md#made-books-cloud-generation)) also allow the non-commercial CC BY-NC and
+CC BY-NC-SA licenses (the app is free with no ads), but never no-derivatives (ND) ones, since every photo is cropped and
+resized, nor fair-use, copyrighted or trademark/personality-restricted files. Their pages show no credit line: a small
+(i) in the photo's corner opens the photo's full credit (title, author, license and its link, Commons source), and
+the made book's menu in the Grown-ups corner lists every photo's credit with working links.
 [`scripts/fetch_photos.py`](../scripts/fetch_photos.py) checks each license through the Commons API and bundles a resized copy:
 
 ```sh

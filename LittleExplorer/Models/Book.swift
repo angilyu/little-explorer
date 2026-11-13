@@ -103,7 +103,23 @@ struct PhotoInfo: Codable, Hashable {
         return URL(string: "https://commons.wikimedia.org/wiki/" + (path.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? path))
     }
 
-    /// One-line credit shown under every photo.
+    /// The Commons file's name without "File:" and its extension, e.g. "Tour Eiffel Wikimedia Commons".
+    var displayTitle: String? {
+        guard var name = commonsTitle?.trimmingCharacters(in: .whitespaces), !name.isEmpty else { return nil }
+        if name.hasPrefix("File:") { name.removeFirst(5) }
+        if let dot = name.lastIndex(of: "."), name.distance(from: dot, to: name.endIndex) <= 5, dot > name.startIndex {
+            name = String(name[..<dot])
+        }
+        return name.replacingOccurrences(of: "_", with: " ")
+    }
+
+    /// The license's deed (e.g. creativecommons.org/licenses/by/2.0), when it has one.
+    var licenseLink: URL? {
+        guard let licenseUrl, let url = URL(string: licenseUrl), url.scheme?.hasPrefix("http") == true else { return nil }
+        return url
+    }
+
+    /// One-line credit shown under every photo of a bundled book (made books show it behind an "i" button).
     var creditLine: String {
         let who = author?.isEmpty == false ? author! : "Unknown author"
         let what = license?.isEmpty == false ? license! : "license pending"

@@ -20,6 +20,7 @@ struct LibraryView: View {
     @State private var showParentCorner = false
     @State private var showPassport = false
     @State private var didApplyDemo = false
+    @State private var didOpenDemoBook = false
 
     private var regular: Bool { sizeClass == .regular }
     private var everyBook: [Book] { allBooks ?? books }
@@ -67,6 +68,8 @@ struct LibraryView: View {
             ParentCornerView(books: everyBook)
         }
         .onAppear(perform: applyDemoLaunch)
+        // Demo made books are seeded just after the shelf appears.
+        .onChange(of: books.map(\.id)) { _, _ in openDemoBook() }
     }
 
     private var columns: Int { regular ? 3 : 2 }
@@ -190,7 +193,13 @@ struct LibraryView: View {
         if demo.openPassport { showPassport = true }
         if demo.openGate { showGate = true }
         if demo.openParent { showParentCorner = true }
-        guard let id = demo.bookId, let book = books.first(where: { $0.id == id }) else { return }
+        openDemoBook()
+    }
+
+    private func openDemoBook() {
+        guard didApplyDemo, !didOpenDemoBook, let demo = DemoLaunch.current,
+              let id = demo.bookId, let book = books.first(where: { $0.id == id }) else { return }
+        didOpenDemoBook = true
         let index = min(demo.pageIndex, book.pages.count - 1)
         openBook = OpenBook(book: book, startPage: index)
     }

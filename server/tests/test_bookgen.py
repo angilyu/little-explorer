@@ -84,8 +84,8 @@ class FakeOpenAI:
                          max_output_tokens=None, reasoning=None):
         self.calls.append(schema_name)
         if schema_name == "request_check":
-            data = {"ok": self.request_ok, "problems": [] if self.request_ok else ["brand"],
-                    "reason": "" if self.request_ok else "Books can't be about toy brands."}
+            data = {"ok": self.request_ok, "problems": [] if self.request_ok else ["scary"],
+                    "reason": "" if self.request_ok else "Books can't be about scary things."}
         elif schema_name == "picture_book":
             data = self.drafts.pop(0) if self.drafts else draft(self.level)
         elif schema_name == "picture_page":
@@ -268,7 +268,7 @@ async def test_moderation_rejects_and_fails_closed():
         await moderation.check_request(FakeOpenAI(flag_word="Tower"), CONFIG, REQUEST, CostLog([]))
     with pytest.raises(moderation.Rejected) as exc:
         await moderation.check_request(FakeOpenAI(request_ok=False), CONFIG, REQUEST, CostLog([]))
-    assert "brand" in exc.value.reason
+    assert "scary" in exc.value.reason
     with pytest.raises(OpenAIError):
         await moderation.check_request(FakeOpenAI(moderation_down=True), CONFIG, REQUEST, CostLog([]))
 
@@ -313,6 +313,43 @@ async def test_image_moderation_sends_one_image_item():
     assert len(sent[0]) == 1 and sent[0][0]["type"] == "image_url"
     assert sent[0][0]["image_url"]["url"].startswith("data:image/jpeg;base64,")
     assert not await moderation.image_ok(FakeOpenAI(flag_images=1), CONFIG, tiny_jpeg())
+
+
+async def test_a_character_the_child_loves_is_fine():
+    """Families make books for themselves, so a beloved character, toy or game isn't rejected as a brand;
+    the other checks (scary, personal, instructions...) still are."""
+    assert "brand" not in moderation.REQUEST_PROBLEMS
+    assert set(moderation.REQUEST_PROBLEMS) == {"instructions", "personal", "living_person", "scary", "adult", "nonsense"}
+    assert "Paw Patrol" in moderation._CLASSIFY_INSTRUCTIONS and "Pokémon" in moderation._CLASSIFY_INSTRUCTIONS
+    assert "- brand:" not in moderation._CLASSIFY_INSTRUCTIONS
+    enum = moderation._CLASSIFY_SCHEMA["properties"]["problems"]["items"]["enum"]
+    assert "brand" not in enum and "scary" in enum and "personal" in enum
+
+    seen = []
+
+    class Classifier(FakeOpenAI):
+        async def structured(self, **kwargs):
+            seen.append(kwargs["input"])
+            return await super().structured(**kwargs)
+
+    for title, about in [("Paw Patrol", "the pups and their rescue trucks"), ("Pokémon", "Pikachu and friends")]:
+        request = {"title": title, "section": "For Matt", "level": 2, "about": about}
+        await moderation.check_request(Classifier(), CONFIG, request, CostLog([]))
+    assert "title: Paw Patrol" in seen[0] and "title: Pokémon" in seen[1]
+    # A scary or personal request about a character is still rejected.
+    scary = {"title": "Pokémon battles", "section": "For Matt", "level": 2, "about": "monsters fighting to the death"}
+    with pytest.raises(moderation.Rejected):
+        await moderation.check_request(FakeOpenAI(request_ok=False), CONFIG, scary, CostLog([]))
+    with pytest.raises(moderation.Rejected):
+        await moderation.check_request(FakeOpenAI(flag_word="death"), CONFIG, scary, CostLog([]))
+
+    # The writer may write about it, factually and in its own words; the fact-checker doesn't reject it.
+    rules = writer.writing_instructions(2)
+    assert "no brands" not in rules and "owned characters" not in rules
+    assert "character, show, toy, game or brand the child loves" in rules
+    assert "Never copy song lyrics" in rules and "search for the real things" in rules
+    check = writer.check_instructions(2)
+    assert "a brand," not in check and "song lyrics" in check and "real living person" in check
 
 
 async def test_a_childs_name_on_the_shelf_is_fine():
@@ -413,7 +450,26 @@ def info(license_short="CC BY-SA 4.0", code="cc-by-sa-4.0", **extra):
 def test_photo_licenses():
     assert license_of(info())[0]
     assert license_of(info("Public domain", "pd"))[1] == "Public domain"
-    assert not license_of(info("CC BY-NC-SA 4.0", "cc-by-nc-sa-4.0"))[0]
+    # Non-commercial is fine (the app is free with no ads), and its name is kept for the credits.
+    assert license_of(info("CC BY-NC 2.0", "cc-by-nc-2.0"))[:2] == (True, "CC BY-NC 2.0")
+    assert license_of(info("CC BY-NC-SA 4.0", "cc-by-nc-sa-4.0"))[:2] == (True, "CC BY-NC-SA 4.0")
+    assert license_of(info("CC BY-NC", "cc-by-nc"))[0]
+    # No derivatives is never fine: every photo is cropped and resized.
+    assert not license_of(info("CC BY-ND 4.0", "cc-by-nd-4.0"))[0]
+    assert not license_of(info("CC BY-NC-ND 4.0", "cc-by-nc-nd-4.0"))[0]
+    assert not license_of(info("CC BY-NC-ND 3.0", "cc-by-nc-nd-3.0"))[0]
+    assert not license_of(info("CC BY 2.0", "cc-by-nd-2.0"))[0]
+    assert not license_of(info("Fair use", "fair use"))[0]
+    assert not license_of(info("Copyrighted", "copyrighted"))[0]
+    assert not license_of(info("CC BY-NC 2.0", "cc-by-nc-2.0", Restrictions="trademarked"))[0]
+    assert not license_of(info("CC BY-NC 2.0", "cc-by-nc-2.0", Restrictions="personality"))[0]
+    nc = {"title": "File:Pup.jpg", "imageinfo": [info("CC BY-NC-SA 2.0", "cc-by-nc-sa-2.0")]}
+    assert acceptable(nc, set())[0]
+    assert not acceptable({"title": "File:Pup.jpg", "imageinfo": [info("CC BY-NC-ND 2.0", "cc-by-nc-nd-2.0")]}, set())[0]
+    credits = Photo(b"", "File:Pup.jpg", "leo gonzales", "CC BY-NC 2.0", "https://creativecommons.org/licenses/by-nc/2.0",
+                    "https://commons.wikimedia.org/wiki/File:Pup.jpg").credits("pup.jpg", "dalmatian")
+    assert credits["license"] == "CC BY-NC 2.0" and credits["author"] == "leo gonzales"
+    assert credits["sourceUrl"] and credits["licenseUrl"] and credits["commonsTitle"] == "File:Pup.jpg"
     assert not license_of(info("CC BY-SA 4.0", "cc-by-sa-4.0", Restrictions="trademarked"))[0]
     assert not license_of(info("CC BY-SA 4.0", "cc-by-sa-4.0", NonFree="true"))[0]
     assert not license_of(info("All rights reserved", "arr"))[0]
@@ -1188,7 +1244,7 @@ def test_tries_cap_and_failed_attempts_dont_count(store, clock):
 
 
 def test_friendly_errors():
-    assert "didn't count" in friendly_error("rejected", "Books can't be about toy brands.")
+    assert "didn't count" in friendly_error("rejected", "Books can't be about real people.")
     assert friendly_error("rejected", "Too scary.").startswith("This book couldn't be made: Too scary.")
     assert "free photos" in friendly_error("failed", "found free photos for only 3 of 10 pages")
     assert friendly_error("failed", "RuntimeError: boom").startswith("Something went wrong")

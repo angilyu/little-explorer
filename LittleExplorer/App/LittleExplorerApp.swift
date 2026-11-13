@@ -94,7 +94,7 @@ struct LittleExplorerApp: App {
                         library.switchAccount(account.account?.id)
                         library.seedDemo(demo.library)
                         if let make = demo.make {
-                            if [.placeholder, .made, .menu].contains(make) { made.seedDemo([MakeDemo.book()].compactMap { $0 }) }
+                            if [.placeholder, .made, .menu, .credits].contains(make) { made.seedDemo([MakeDemo.book()].compactMap { $0 }) }
                             maker.seedDemo(status: MakeDemo.status(make), ownBooks: [MakeDemo.bookId])
                         }
                         return

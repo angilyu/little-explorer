@@ -293,7 +293,7 @@ class Runner:
                 continue
             credits = photo.credits(file, queries[0] if queries else "")
             try:
-                # The credit line is shown under the photo, and Commons authors write their own.
+                # The credits are shown in the app, and Commons authors write their own.
                 await moderation.check_texts(self.client, self.config, writer.credit_texts(credits), "photo credit")
             except Rejected:
                 log.info("job %s: photo %s credit flagged; trying the next one", job.id, candidate.get("title"))

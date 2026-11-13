@@ -7,7 +7,16 @@ struct PageView: View {
     let readAloud: ReadAloudController
 
     @Environment(\.horizontalSizeClass) private var sizeClass
-    @State private var showCredit = false
+    @State private var showCredit: Bool
+
+    init(book: Book, page: BookPage, pageNumber: Int, readAloud: ReadAloudController) {
+        self.book = book
+        self.page = page
+        self.pageNumber = pageNumber
+        self.readAloud = readAloud
+        let demo = DemoLaunch.current
+        _showCredit = State(initialValue: demo?.showCredit == true && book.isMade && demo?.pageIndex == pageNumber - 1)
+    }
 
     private var regular: Bool { sizeClass == .regular }
     private var tint: Color { Color(hex: book.coverColor) }
@@ -50,19 +59,44 @@ struct PageView: View {
                     RoundedRectangle(cornerRadius: 24, style: .continuous)
                         .strokeBorder(.white, lineWidth: 6)
                 )
+                .overlay(alignment: .bottomTrailing) {
+                    // Made books keep the page clean: the credit is one tap away (and listed in the Grown-ups corner).
+                    if book.isMade, page.photo.commonsTitle != nil { creditButton }
+                }
                 .shadow(color: .black.opacity(0.12), radius: 8, x: 0, y: 4)
-            Button {
-                showCredit = true
-            } label: {
-                Text(page.photo.creditLine)
-                    .font(.system(size: regular ? 13 : 11, weight: .medium))
-                    .foregroundStyle(Theme.ink.opacity(0.55))
-                    .lineLimit(1)
-                    .truncationMode(.middle)
+            if !book.isMade {
+                Button {
+                    showCredit = true
+                } label: {
+                    Text(page.photo.creditLine)
+                        .font(.system(size: regular ? 13 : 11, weight: .medium))
+                        .foregroundStyle(Theme.ink.opacity(0.55))
+                        .lineLimit(1)
+                        .truncationMode(.middle)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Photo credit. \(page.photo.creditLine)")
             }
-            .buttonStyle(.plain)
-            .accessibilityLabel("Photo credit. \(page.photo.creditLine)")
         }
+    }
+
+    /// A small "i" in the photo's corner (where the photo is usually its blurred fill) that opens the credit.
+    private var creditButton: some View {
+        Button {
+            showCredit = true
+        } label: {
+            Image(systemName: "info.circle")
+                .font(.system(size: regular ? 20 : 17, weight: .semibold))
+                .foregroundStyle(Theme.ink.opacity(0.7))
+                .frame(width: regular ? 32 : 28, height: regular ? 32 : 28)
+                .background(Circle().fill(.white.opacity(0.75)))
+                .frame(width: 44, height: 44)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .padding(regular ? 8 : 6)
+        .accessibilityLabel("Photo credit")
+        .accessibilityHint(page.photo.creditLine)
     }
 
     private var textBlock: some View {
@@ -178,16 +212,7 @@ struct PhotoCreditSheet: View {
         NavigationStack {
             List {
                 Section("Photo") {
-                    LabeledContent("By", value: photo.author ?? "Unknown")
-                    LabeledContent("License", value: photo.license ?? "Pending")
-                    if let title = photo.commonsTitle {
-                        LabeledContent("File", value: title)
-                    }
-                    if let source = photo.source {
-                        Text(source.absoluteString)
-                            .font(.footnote)
-                            .textSelection(.enabled)
-                    }
+                    PhotoCreditRows(photo: photo, opensLinks: false)
                 }
                 Section {
                     Text("Photos come from Wikimedia Commons and are shared under free licenses. Links open in the grown-ups corner.")
@@ -201,6 +226,48 @@ struct PhotoCreditSheet: View {
                 ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } }
             }
         }
-        .presentationDetents([.medium])
+        .presentationDetents([.medium, .large])
+    }
+}
+
+/// One photo's full credit: its title, who took it, the license (with its link) and where it's from.
+/// Links are tappable only behind the parent gate (`opensLinks`); on a child's page they're just shown.
+struct PhotoCreditRows: View {
+    let photo: PhotoInfo
+    let opensLinks: Bool
+
+    var body: some View {
+        if let title = photo.displayTitle {
+            LabeledContent("Title", value: title)
+        }
+        LabeledContent("By", value: photo.author?.isEmpty == false ? photo.author! : "Unknown author")
+        LabeledContent("License", value: photo.license?.isEmpty == false ? photo.license! : "License pending")
+        if let license = photo.licenseLink {
+            link("License", license)
+        }
+        if let source = photo.source {
+            link("Wikimedia Commons", source)
+        }
+    }
+
+    @ViewBuilder
+    private func link(_ label: String, _ url: URL) -> some View {
+        if opensLinks {
+            Link(destination: url) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(label)
+                    Text(url.absoluteString).font(.caption).lineLimit(1).truncationMode(.middle)
+                }
+            }
+            .accessibilityHint("Opens \(url.host() ?? "the page") in Safari")
+        } else {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(label).foregroundStyle(.secondary)
+                Text(url.absoluteString)
+                    .font(.footnote)
+                    .textSelection(.enabled)
+            }
+            .accessibilityElement(children: .combine)
+        }
     }
 }

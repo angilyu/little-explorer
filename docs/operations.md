@@ -477,16 +477,25 @@ Deleting a book doesn't give its slot back.
 `books` and `book_assets` tables for the rest), so a retry never pays twice for work already done:
 
 1. **Text:**
-   - OpenAI moderation checks the parent's title, section and note.
+   - OpenAI moderation checks the parent's title, section and note, then a small classifier rejects instructions aimed
+     at the model, personal details, real living people, scary or adult topics and nonsense. A character, show, toy,
+     game or brand the child loves is fine (a family makes the book for itself); the writer keeps it factual and
+     kid-safe, in its own words (no song lyrics or passages from the show), and searches Commons for the real
+     animals, vehicles and objects behind it, since Commons has almost no pictures of owned characters.
    - `gpt-5.4-mini` writes the pages at the requested level (8 at level 1, 10 at levels 2 and 3). Each page is checked against the level's sentence
      and word limits and rewritten if needed, up to 2 times.
    - A second pass with web search checks the facts and fixes or drops pages.
    - Every page is moderated again.
 2. **Photos:**
-   - Commons is searched with the page's query and alternates. Only free licenses are used, checked through the
-     Commons API like `scripts/fetch_photos.py`, and no photo is used twice.
+   - Commons is searched with the page's query and alternates. Licenses are checked through the Commons API like
+     `scripts/fetch_photos.py`: public domain, CC0, CC BY, CC BY-SA, and also the non-commercial CC BY-NC and
+     CC BY-NC-SA (the app is free with no ads). No-derivatives (ND, including NC-ND), fair-use, copyrighted and
+     trademark/personality-restricted files are never used, since every photo is cropped and resized. No photo is
+     used twice.
    - The first candidate whose image (checked at 512 px) and credit line both pass moderation is resized to a
-     JPEG and stored in R2.
+     JPEG and stored in R2. The page keeps its title, author, license (with its link) and Commons source. The app
+     shows them behind a small (i) on the photo, and the made book's **Photo credits** in the Grown-ups corner
+     lists them all.
    - At least 75% of the pages need a photo, or the job fails.
 3. **Narration:** `gpt-4o-mini-tts` (voice `coral`) at the level's pace, then `whisper-1` word timings and an ffmpeg
    level/encode to m4a, the same as `scripts/generate_narration.py`.
