@@ -252,7 +252,7 @@ struct MadeBookCreditsView: View {
     var body: some View {
         List {
             ForEach(Array(book.pages.enumerated()), id: \.element.id) { index, page in
-                if page.photo.file != nil || page.photo.commonsTitle != nil {
+                if page.photo.file != nil || page.photo.hasCredit {
                     Section("Page \(index + 1)") {
                         PhotoCreditRows(photo: page.photo, opensLinks: true)
                     }
@@ -261,7 +261,7 @@ struct MadeBookCreditsView: View {
             Section {
                 EmptyView()
             } footer: {
-                Text("The photos come from Wikimedia Commons and are used under their licenses. Each one was resized to fit the page.")
+                Text("The photos come from Wikimedia Commons, and through Openverse from Flickr and other sites, and are used under their licenses. Each one was resized to fit the page.")
             }
         }
         .navigationTitle("Photo credits")

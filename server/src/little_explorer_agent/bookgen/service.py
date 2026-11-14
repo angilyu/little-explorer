@@ -28,7 +28,7 @@ log = logging.getLogger(__name__)
 class BookgenService:
     def __init__(self, store: DeviceStore, *, static_manifest: dict[str, Any], static_files: dict[str, Path],
                  config: BookgenConfig | None = None, storage: Any = None, client: Any = None,
-                 commons: Any = None) -> None:
+                 photos: Any = None) -> None:
         self.config = config or BookgenConfig.from_env()
         self.books = BookStore(store, self.config)
         if storage is None and self.config.r2.ready:
@@ -46,7 +46,7 @@ class BookgenService:
                 from .oai import OpenAIClient
 
                 client = OpenAIClient(self.config.openai_key)
-            self.runner = Runner(self.books, self.config, client=client, storage=self.storage, commons=commons)
+            self.runner = Runner(self.books, self.config, client=client, storage=self.storage, photos=photos)
         self._tasks: list[asyncio.Task[Any]] = []
 
     @property
@@ -99,9 +99,9 @@ class BookgenService:
                 await asyncio.to_thread(self.books.drop_assets, job.book_id)
         return job
 
-    def queue_page(self, account_id: str, book_id: str, page_id: str) -> Job:
+    def queue_page(self, account_id: str, book_id: str, page_id: str, openverse: bool = False) -> Job:
         """Queue "make this page again" (blocking; call :meth:`wake` afterwards)."""
-        return self.books.queue_page(account_id, book_id, page_id)
+        return self.books.queue_page(account_id, book_id, page_id, openverse)
 
     async def set_published(self, book_id: str, published: bool) -> dict[str, Any]:
         book = await asyncio.to_thread(self.books.set_published, book_id, published)

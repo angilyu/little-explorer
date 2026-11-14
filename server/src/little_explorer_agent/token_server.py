@@ -110,7 +110,7 @@ from aiohttp import web
 
 from . import agent_name
 from .accounts import Account, Accounts, AuthError, Session, normalize_email, valid_book_id
-from .app_versions import MADE_BOOKS_VERSION, ClientInfo, VersionSettings
+from .app_versions import MADE_BOOKS_VERSION, OPENVERSE_PHOTOS_VERSION, ClientInfo, VersionSettings
 from .bookgen import manifest as made_files
 from .bookgen.service import BookgenService
 from .bookgen.store import ACTIVE, NOTE_MAX, REPORT_REASONS, LimitError
@@ -918,6 +918,7 @@ async def handle_account_books(request: web.Request) -> web.Response:
         book_request = validate_request(body)
     except ValueError as exc:
         return web.json_response({"error": "bad_request", "message": _request_problem(exc)}, status=400)
+    book_request["openverse"] = _credits_openverse(request)
     try:
         job = await asyncio.to_thread(bookgen.queue, account.id, book_request)
     except LimitError as exc:
@@ -966,7 +967,7 @@ async def handle_account_page_regenerate(request: web.Request) -> web.Response:
         return denied
     book_id, page = request.match_info["id"], request.match_info["page"]
     try:
-        job = await asyncio.to_thread(bookgen.queue_page, account.id, book_id, page)
+        job = await asyncio.to_thread(bookgen.queue_page, account.id, book_id, page, _credits_openverse(request))
     except LookupError:
         return _no_book()
     except ValueError as exc:
@@ -1232,6 +1233,8 @@ async def handle_admin_generate(request: web.Request) -> web.Response:
         return web.json_response({"error": "no such account"}, status=404)
     if not account.can_generate:
         return web.json_response({"error": "this account can't make books yet"}, status=403)
+    # The owner's tool: Openverse photos too unless {"openverse": false} (for an account on an app before 1.2.5).
+    book_request["openverse"] = body.get("openverse") is not False
     try:
         job = await asyncio.to_thread(bookgen.queue, account.id, book_request)
     except LimitError as exc:
@@ -1327,6 +1330,12 @@ def _sees_made_books(request: web.Request) -> bool:
     """Whether the calling app can show made books (see ``MADE_BOOKS_VERSION``). The 1.0 and 1.1 apps can't
     label them or let a grown-up hide or report them, so they keep the hand-made catalog only."""
     return ClientInfo.from_headers(request.headers).at_least(MADE_BOOKS_VERSION)
+
+
+def _credits_openverse(request: web.Request) -> bool:
+    """Whether the calling app names each photo's source (see ``OPENVERSE_PHOTOS_VERSION``), so the book it asks
+    for may use Openverse photos. Older apps credit every photo to Wikimedia Commons, so they get Commons only."""
+    return ClientInfo.from_headers(request.headers).at_least(OPENVERSE_PHOTOS_VERSION)
 
 
 def _app_account(request: web.Request, account: Account) -> dict[str, Any]:

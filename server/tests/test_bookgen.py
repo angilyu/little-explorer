@@ -18,7 +18,9 @@ from little_explorer_agent.bookgen import moderation, narration, writer
 from little_explorer_agent.bookgen.config import BookgenConfig, R2Config
 from little_explorer_agent.bookgen.cost import CostLog
 from little_explorer_agent.bookgen.oai import Moderation, OpenAIError, TextResult
-from little_explorer_agent.bookgen.photos import BadPhoto, Commons, Photo, PhotoError, acceptable, license_of, to_jpeg
+from little_explorer_agent.bookgen.photos import (BadPhoto, Candidate, Commons, Openverse, Photo, PhotoError, Photos,
+                                                  acceptable, license_of, openverse_acceptable, openverse_license,
+                                                  to_jpeg, used_keys)
 from little_explorer_agent.bookgen.runner import LeaseLost, Runner, page_paths, r2_key
 from little_explorer_agent.bookgen.service import BookgenService
 from little_explorer_agent.bookgen.storage import MemoryStorage, R2Storage
@@ -134,14 +136,21 @@ class FakeCommons:
         self.missing = missing
         self.downloads = 0
         self.authors = authors or {}
+        self.openverse = []
+        self.book_sources = []
 
-    async def candidates(self, queries, used):
+    async def candidates(self, queries, used, *, openverse=False, book_sources=None):
+        self.openverse.append(openverse)
+        self.book_sources.append(dict(book_sources or {}))
         if self.missing > 0:
             self.missing -= 1
             return []
-        return [{"title": f"File:{queries[0]} {n}.jpg"} for n in range(2) if f"File:{queries[0]} {n}.jpg" not in used]
+        titles = [f"File:{queries[0]} {n}.jpg" for n in range(2)]
+        return [Candidate("commons", t, "https://example.org/" + t, frozenset({t}), 1.0, queries[0], {"title": t})
+                for t in titles if t not in used]
 
-    async def download(self, page):
+    async def download(self, candidate):
+        page = candidate.item
         self.downloads += 1
         return Photo(tiny_jpeg(), page["title"], self.authors.get(page["title"], "A. Photographer"), "CC BY-SA 4.0",
                      "https://creativecommons.org/licenses/by-sa/4.0", "https://commons.wikimedia.org/wiki/" + page["title"])
@@ -186,7 +195,7 @@ def make_books(store, clock, **overrides):
 
 def make_runner(books, client=None, storage=None, commons=None):
     return Runner(books, books.config, client=client or FakeOpenAI(), storage=storage or MemoryStorage(),
-                  commons=commons or FakeCommons())
+                  photos=commons or FakeCommons())
 
 
 # -- requests and levels ---------------------------------------------------------------------------
@@ -915,7 +924,7 @@ async def test_a_photo_that_wont_open_is_skipped(store, clock, fake_narrate):
         async def download(self, page):
             if self.downloads == 0:
                 self.downloads += 1
-                raise BadPhoto(f"{page['title']}: OSError: image file is truncated")
+                raise BadPhoto(f"{page.title}: OSError: image file is truncated")
             return await super().download(page)
 
     await make_runner(books, storage=MemoryStorage(), commons=OneBroken()).run_once()
@@ -937,7 +946,7 @@ async def published_service(store, clock, static, fake_narrate):
     manifest, files = static
     storage = MemoryStorage()
     service = BookgenService(store, static_manifest=manifest, static_files=files, config=CONFIG, storage=storage,
-                             client=FakeOpenAI(), commons=FakeCommons())
+                             client=FakeOpenAI(), photos=FakeCommons())
     service.books.clock = clock
     service.runner.books.clock = clock
     job = service.queue("acct", REQUEST)
@@ -994,7 +1003,7 @@ async def server(store, clock, accounts, static, fake_narrate):
     manifest, files = static
     service = BookgenService(store, static_manifest=manifest, static_files=files,
                              config=BookgenConfig(**{**CONFIG.__dict__, "runner": True}),
-                             storage=MemoryStorage(), client=FakeOpenAI(), commons=FakeCommons())
+                             storage=MemoryStorage(), client=FakeOpenAI(), photos=FakeCommons())
     service.books.clock = clock
     async with await make_client(store, accounts, service) as c:
         yield c, service
@@ -1322,7 +1331,7 @@ async def test_page_redo_limit(store, clock, fake_narrate):
 async def test_failed_page_redo_keeps_the_book(store, clock, fake_narrate):
     books, runner, storage, book_id = await _published_book(store, clock, fake_narrate)
     before, keys = books.book(book_id), set(storage.objects)
-    runner.commons.missing = 1  # no photo for the new page
+    runner.photos.missing = 1  # no photo for the new page
     job = books.queue_page("acct", book_id, "p05")
     assert await runner.run_once()
     failed = books.job(job.id)
@@ -1523,3 +1532,322 @@ async def test_account_delete_removes_reports(server, accounts, clock):
     resp = await c.post("/account/delete", json={"code": code}, headers=headers)
     assert resp.status == 200, await resp.text()
     assert (await (await c.get("/admin/reports", headers=ADMIN)).json())["reports"] == []
+
+
+# -- Openverse (Flickr and other Creative Commons sites) -------------------------------------------
+
+
+def ov_item(n, license="by", version="2.0", **extra):
+    """An Openverse search result, like https://api.openverse.org/v1/images/?q=… returns."""
+    item = {
+        "id": f"ov-{n}", "title": f"Waikiki beach {n}", "creator": f"Jane Doe {n}",
+        "creator_url": f"https://www.flickr.com/photos/jane{n}", "license": license, "license_version": version,
+        "license_url": f"https://creativecommons.org/licenses/{license}/{version}/",
+        "foreign_landing_url": f"https://www.flickr.com/photos/jane{n}/5000000{n}",
+        "url": f"https://live.staticflickr.com/65535/ov-{n}.jpg", "provider": "flickr", "source": "flickr", "width": 1024, "height": 683,
+        "filesize": None, "filetype": "jpg", "mature": False, "tags": [{"name": "beach"}, {"name": "hawaii"}],
+        "unstable__sensitivity": [],
+    }
+    item.update(extra)
+    return item
+
+
+def test_openverse_licenses():
+    assert openverse_license(ov_item(1))[:2] == (True, "CC BY 2.0")
+    assert openverse_license(ov_item(1, "by-nc-sa", "2.0"))[:2] == (True, "CC BY-NC-SA 2.0")
+    assert openverse_license(ov_item(1, "by-nc", "4.0"))[:2] == (True, "CC BY-NC 4.0")
+    assert openverse_license(ov_item(1, "by-sa", "3.0"))[:2] == (True, "CC BY-SA 3.0")
+    assert openverse_license(ov_item(1, "cc0", "1.0"))[:2] == (True, "CC0 1.0")
+    assert openverse_license(ov_item(1, "pdm", "1.0", license_url="https://creativecommons.org/publicdomain/mark/1.0/"))[:2] \
+        == (True, "Public domain")
+    # Never no-derivatives (photos are cropped), sampling, or anything we don't know.
+    for code in ("by-nd", "by-nc-nd", "sampling+", "nc-sampling+", "", "all-rights-reserved", "cc-by"):
+        assert not openverse_license(ov_item(1, code))[0], code
+    assert not openverse_license(ov_item(1, license_url="https://creativecommons.org/licenses/by-nd/2.0/"))[0]
+    assert not openverse_license(ov_item(1, license_url=None))[0]
+    assert not openverse_acceptable(ov_item(1, "by-nd"), set())[0]
+    assert not openverse_acceptable(ov_item(1, "by-nc-nd"), set())[0]
+
+
+def test_openverse_filters_sensitive_personal_and_unsuitable_photos():
+    assert openverse_acceptable(ov_item(1), set(), "Waikiki beach") == (True, "")
+    assert openverse_acceptable(ov_item(1, mature=True), set())[1] == "marked sensitive"
+    assert openverse_acceptable(ov_item(1, unstable__sensitivity=["user_reported_sensitive"]), set())[1] == "marked sensitive"
+    assert openverse_acceptable(ov_item(1, title="Beer on the beach"), set())[1] == "unsuitable subject"
+    assert openverse_acceptable(ov_item(1, tags=[{"name": "hunting"}]), set())[1] == "unsuitable subject"
+    assert openverse_acceptable(ov_item(1, title="Selfie at Diamond Head"), set())[1] == "a personal photo of people"
+    assert openverse_acceptable(ov_item(1, tags=[{"name": "children"}]), set())[1] == "a personal photo of people"
+    assert not openverse_acceptable(ov_item(1, width=800), set())[0]
+    assert not openverse_acceptable(ov_item(1, width=None, height=None), set())[0]
+    assert not openverse_acceptable(ov_item(1, width=3000, height=600), set())[0]
+    assert not openverse_acceptable(ov_item(1, filetype="svg"), set())[0]
+    assert not openverse_acceptable(ov_item(1, filesize=50_000_000), set())[0]
+    assert not openverse_acceptable(ov_item(1, source="wikimedia", provider="wikimedia"), set())[0]
+    assert openverse_acceptable(ov_item(1), set(), "stegosaurus fossil") == (False, "nothing in it matches the search")
+    # Already on another page: the same Flickr photo, whether it came from Commons or Openverse.
+    assert not openverse_acceptable(ov_item(1), {"flickr:50000001"})[0]
+    assert not openverse_acceptable(ov_item(1), {"openverse:ov-1"})[0]
+
+
+class FakeSources:
+    """A fake Commons API and Openverse API (and the photo files) on one local server."""
+
+    def __init__(self, openverse_results=(), commons_pages=(), status=200, limits=None, token=False):
+        self.openverse_results = list(openverse_results)
+        self.commons_pages = list(commons_pages)
+        self.status = status
+        self.limits = limits or {}
+        self.token = token
+        self.searches = []
+        self.commons_searches = 0
+        self.tokens = 0
+
+    def app(self):
+        from aiohttp import web
+
+        from PIL import Image
+
+        out = io.BytesIO()
+        Image.new("RGB", (1024, 683), (30, 140, 200)).save(out, "JPEG")
+        photo = out.getvalue()
+
+        async def images(request):
+            self.searches.append((dict(request.query), request.headers.get("Authorization"),
+                                  request.headers.get("User-Agent")))
+            if self.status != 200:
+                return web.Response(status=self.status, headers=self.limits)
+            base = str(request.url.origin())
+            results = [{**r, "url": r["url"].replace("https://live.staticflickr.com/65535", base + "/files")}
+                       for r in self.openverse_results]
+            return web.json_response({"result_count": len(results), "results": results}, headers=self.limits)
+
+        async def token(request):
+            self.tokens += 1
+            form = await request.post()
+            assert form["grant_type"] == "client_credentials" and form["client_id"] == "id"
+            return web.json_response({"access_token": "tok", "expires_in": 36000})
+
+        async def commons(request):
+            self.commons_searches += 1
+            return web.json_response({"query": {"pages": self.commons_pages}})
+
+        async def file(request):
+            if request.match_info["name"] == "hotlink.jpg":
+                return web.Response(status=403)
+            if request.match_info["name"] == "broken.jpg":
+                return web.Response(body=b"not a jpeg")
+            return web.Response(body=photo, content_type="image/jpeg")
+
+        app = web.Application()
+        app.router.add_get("/v1/images/", images)
+        app.router.add_post("/v1/auth_tokens/token/", token)
+        app.router.add_get("/w/api.php", commons)
+        app.router.add_get("/files/{name}", file)
+        return app
+
+
+def commons_page(title, index=1, **meta):
+    return {"title": title, "index": index, "imageinfo": [{
+        **info(**meta), "url": "https://upload.wikimedia.org/x.jpg", "thumburl": "https://upload.wikimedia.org/x.jpg",
+        "descriptionurl": "https://commons.wikimedia.org/wiki/" + title.replace(" ", "_")}]}
+
+
+async def _sources(fake, **openverse):
+    server = TestServer(fake.app())
+    await server.start_server()
+    sleeps = []
+
+    async def no_sleep(s):
+        sleeps.append(s)
+
+    photos = Photos(Commons(pause=0, api=str(server.make_url("/w/api.php"))),
+                    Openverse(api=str(server.make_url("/v1")), sleep=no_sleep, **openverse))
+    return server, photos, sleeps
+
+
+async def test_openverse_and_commons_are_mixed_and_deduplicated():
+    fake = FakeSources(
+        openverse_results=[
+            ov_item(1, "by-nd"),  # never no-derivatives, even if the server sends one
+            ov_item(2, mature=True),
+            # The same Flickr photo as the Commons file below.
+            ov_item(3, foreign_landing_url="https://www.flickr.com/photos/someone/51872593291"),
+            ov_item(4, source="wikimedia", provider="wikimedia"),
+            ov_item(5, title="Waikiki beach at sunset, Honolulu"),
+            ov_item(6),
+        ],
+        commons_pages=[commons_page("File:Waikiki Beach (51872593291).jpg"),
+                       commons_page("File:Hotel lobby.jpg", 2)],
+    )
+    server, photos, _ = await _sources(fake)
+    try:
+        assert await photos.candidates(["Waikiki beach"], set()) and not fake.searches  # Openverse not asked
+        found = await photos.candidates(["Waikiki beach"], set(), openverse=True)
+        query, auth, agent = fake.searches[0]
+        assert query["q"] == "Waikiki beach" and query["mature"] == "false" and auth is None and "LittleExplorer" in agent
+        assert set(query["license"].split(",")) == {"cc0", "pdm", "by", "by-sa", "by-nc", "by-nc-sa"}
+        assert "wikimedia" in query["excluded_source"].split(",")
+        titles = [(c.source, c.title) for c in found]
+        # Openverse's copy of the Commons file is dropped, and the hotel (no "Waikiki"/"beach") never was a candidate.
+        assert sorted(titles) == [("commons", "File:Waikiki Beach (51872593291).jpg"),
+                                  ("openverse", "Waikiki beach 6"), ("openverse", "Waikiki beach at sunset, Honolulu")]
+        assert [c.score for c in found] == sorted((c.score for c in found), reverse=True)
+        assert {c.item["id"] for c in found if c.source == "openverse"} == {"ov-5", "ov-6"}
+        # A photo already on another page (by Flickr id) isn't offered again.
+        again = await photos.candidates(["Waikiki beach"], {"flickr:51872593291", "openverse:ov-5"}, openverse=True)
+        assert [c.item["id"] for c in again if c.source == "openverse"] == ["ov-6"]
+        assert all(c.source == "openverse" for c in again)
+
+        best = next(c for c in found if c.item.get("id") == "ov-5")
+        photo = await photos.download(best)
+        credits = photo.credits("hnl-p02.jpg", "Waikiki beach")
+        assert credits == {
+            "file": "hnl-p02.jpg", "title": "Waikiki beach at sunset, Honolulu", "query": "Waikiki beach",
+            "verified": True, "author": "Jane Doe 5", "license": "CC BY 2.0",
+            "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+            "sourceUrl": "https://www.flickr.com/photos/jane5/50000005", "sourceName": "Flickr (via Openverse)",
+            "authorUrl": "https://www.flickr.com/photos/jane5", "provider": "flickr", "openverseId": "ov-5",
+            "flickrId": "50000005",
+        }
+        assert "commonsTitle" not in credits and photo.data[:2] == b"\xff\xd8"
+        assert used_keys([{"photo": credits}]) >= {"flickr:50000005", "openverse:ov-5"}
+        assert writer.credit_texts(credits) == ["Jane Doe 5", "", "Waikiki beach at sunset, Honolulu", "CC BY 2.0",
+                                                "Flickr (via Openverse)"]
+
+        # Sites that refuse downloads, or files that aren't images, only rule out that photo.
+        for name in ("hotlink.jpg", "broken.jpg"):
+            item = {**best.item, "url": str(server.make_url(f"/files/{name}"))}
+            with pytest.raises(BadPhoto):
+                await photos.download(Candidate("openverse", "x", item["url"], frozenset(), 1, "q", item))
+    finally:
+        await photos.close()
+        await server.close()
+
+
+async def test_commons_photos_are_credited_to_commons():
+    photo = Photo(b"", "File:Pup (51872593291).jpg", "leo", "CC BY 2.0", "https://creativecommons.org/licenses/by/2.0",
+                  "https://commons.wikimedia.org/wiki/File:Pup_(51872593291).jpg", flickr_id="51872593291")
+    credits = photo.credits("pup.jpg", "dalmatian")
+    assert credits["commonsTitle"] == "File:Pup (51872593291).jpg" and credits["sourceName"] == "Wikimedia Commons"
+    assert "title" not in credits and "openverseId" not in credits
+    assert "flickr:51872593291" in used_keys([{"photo": credits}])
+    # Pages made before Openverse still keep their photos off other pages.
+    old = {"file": "a.jpg", "commonsTitle": "File:A.jpg", "sourceUrl": "https://commons.wikimedia.org/wiki/File:A.jpg"}
+    assert "File:A.jpg" in used_keys([{"photo": old}, {"photo": {"query": "no photo yet"}}])
+
+
+@pytest.mark.parametrize("status", [429, 500, 503])
+async def test_openverse_trouble_falls_back_to_commons(status):
+    fake = FakeSources(openverse_results=[ov_item(1)], commons_pages=[commons_page("File:Waikiki beach.jpg")],
+                       status=status, limits={"Retry-After": "120"} if status == 429 else {})
+    server, photos, sleeps = await _sources(fake)
+    try:
+        found = await photos.candidates(["Waikiki beach"], set(), openverse=True)
+        assert [c.source for c in found] == ["commons"]
+        assert not photos.openverse.available and photos.openverse.last_error
+        assert len(fake.searches) == (1 if status == 429 else 2)  # one quick retry for a server error, none for 429
+        before = len(fake.searches)
+        found = await photos.candidates(["Waikiki beach"], set(), openverse=True)
+        assert [c.source for c in found] == ["commons"] and len(fake.searches) == before  # resting: not asked
+    finally:
+        await photos.close()
+        await server.close()
+
+
+async def test_openverse_down_falls_back_to_commons():
+    fake = FakeSources(commons_pages=[commons_page("File:Waikiki beach.jpg")])
+    server, photos, _ = await _sources(fake)
+    photos.openverse = Openverse(api="http://127.0.0.1:9/v1", sleep=lambda s: asyncio.sleep(0))
+    try:
+        found = await photos.candidates(["Waikiki beach"], set(), openverse=True)
+        assert [c.source for c in found] == ["commons"] and not photos.openverse.available
+    finally:
+        await photos.close()
+        await server.close()
+
+
+async def test_openverse_rests_before_running_out_and_signs_in_when_registered():
+    fake = FakeSources(openverse_results=[ov_item(1)], commons_pages=[],
+                       limits={"X-RateLimit-Available-standard_burst": "0"})
+    server, photos, _ = await _sources(fake, client_id="id", client_secret="secret")
+    try:
+        found = await photos.candidates(["Waikiki beach"], set(), openverse=True)
+        assert [c.source for c in found] == ["openverse"]  # this answer still counts
+        assert fake.tokens == 1 and fake.searches[0][1] == "Bearer tok"
+        assert not photos.openverse.available and "standard_burst" in photos.openverse.last_error
+    finally:
+        await photos.close()
+        await server.close()
+
+
+async def test_only_apps_that_name_the_source_get_openverse_photos(server, accounts):
+    c, service = server
+    mom, _ = accounts.create("angilyu@gmail.com")
+    headers = await _signed_in(accounts, mom.email, MOM_DEVICE)
+    fake = service.runner.photos
+    resp = await c.post("/account/books", json=REQUEST, headers=headers)  # 1.2: credits every photo to Commons
+    job = await _wait_done(service, (await resp.json())["job"]["id"])
+    assert job.input["openverse"] is False and set(fake.openverse) == {False}
+    fake.openverse.clear()
+    newer = {**headers, "X-App-Version": "1.2.5"}
+    resp = await c.post(f"/account/books/{job.book_id}/pages/p02/regenerate", headers=newer)
+    assert resp.status == 202, await resp.text()
+    page_job = await _wait_done(service, (await resp.json())["job"]["id"])
+    assert page_job.input["openverse"] is True and fake.openverse == [True]
+
+
+async def test_runner_keeps_an_openverse_credit(store, clock, fake_narrate):
+    class FlickrToo(FakeCommons):
+        async def candidates(self, queries, used, *, openverse=False, book_sources=None):
+            found = await super().candidates(queries, used, openverse=openverse, book_sources=book_sources)
+            item = ov_item(queries[0].replace(" ", "-"), title=f"{queries[0]} on Flickr")
+            if openverse:
+                found.insert(0, Candidate("openverse", item["title"], item["url"], frozenset({f"openverse:{item['id']}"}),
+                                          2.0, queries[0], item))
+            return found
+
+        async def download(self, candidate):
+            if candidate.source != "openverse":
+                return await super().download(candidate)
+            self.downloads += 1
+            item = candidate.item
+            return Photo(tiny_jpeg(), item["title"], item["creator"], "CC BY 2.0", item["license_url"],
+                         item["foreign_landing_url"], source_name="Flickr (via Openverse)", provider="flickr",
+                         openverse_id=item["id"])
+
+    books = make_books(store, clock)
+    job, row = books.queue("acct", {**REQUEST, "openverse": True})
+    fake = FlickrToo()
+    await make_runner(books, commons=fake).run_once()
+    assert books.job(job.id).status == "done"
+    assert fake.openverse[0] is True and fake.book_sources[:3] == [{}, {"openverse": 1}, {"openverse": 2}]
+    photo = books.book(row.id).json["pages"][0]["photo"]
+    assert photo["sourceName"] == "Flickr (via Openverse)" and photo["title"].endswith("on Flickr")
+    assert photo["author"].startswith("Jane Doe") and photo["license"] == "CC BY 2.0" and photo["sourceUrl"]
+    assert "commonsTitle" not in photo
+
+
+async def test_the_source_the_book_used_less_gets_a_nudge():
+    fake = FakeSources(openverse_results=[ov_item(1)], commons_pages=[commons_page("File:Waikiki beach.jpg")])
+    server, photos, _ = await _sources(fake)
+    try:
+        found = await photos.candidates(["Waikiki beach"], set(), openverse=True, book_sources={"commons": 3})
+        assert found[0].source == "openverse"
+        found = await photos.candidates(["Waikiki beach"], set(), openverse=True, book_sources={"openverse": 3})
+        assert found[0].source == "commons"
+    finally:
+        await photos.close()
+        await server.close()
+
+
+async def test_openverse_is_asked_again_without_its_license_filter_after_an_empty_answer():
+    fake = FakeSources(openverse_results=[], commons_pages=[])
+    server, photos, sleeps = await _sources(fake)
+    try:
+        assert await photos.candidates(["Waikiki beach"], set(), openverse=True) == []
+        assert len(fake.searches) == 2 and photos.openverse.available  # nothing found isn't trouble
+        # Openverse's license filter sometimes finds nothing; the second try filters here instead.
+        assert "license" in fake.searches[0][0] and "license" not in fake.searches[1][0]
+    finally:
+        await photos.close()
+        await server.close()

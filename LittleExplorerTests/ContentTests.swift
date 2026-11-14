@@ -149,11 +149,32 @@ final class ContentTests: XCTestCase {
         XCTAssertNil(bare.displayTitle)
         XCTAssertNil(bare.licenseLink)
         XCTAssertNil(bare.source)
+        XCTAssertFalse(bare.hasCredit)
+    }
+
+    func testOpenversePhotoCreditNamesWhereItCameFrom() throws {
+        let json = """
+        {"file": "hnl-p02.jpg", "title": "Hawaiian Sea Turtle 2", "query": "Hawaiian sea turtle", "verified": true,
+         "author": "Edmund Garman", "license": "CC BY 2.0", "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+         "sourceUrl": "https://www.flickr.com/photos/40315625@N08/16188765882", "sourceName": "Flickr (via Openverse)",
+         "authorUrl": "https://www.flickr.com/photos/40315625@N08", "provider": "flickr", "openverseId": "abc"}
+        """
+        let photo = try JSONDecoder().decode(PhotoInfo.self, from: Data(json.utf8))
+        XCTAssertTrue(photo.hasCredit)
+        XCTAssertNil(photo.commonsTitle)
+        XCTAssertNil(photo.remoteURL, "an Openverse photo has no Commons file to fall back to")
+        XCTAssertEqual(photo.displayTitle, "Hawaiian Sea Turtle 2")
+        XCTAssertEqual(photo.sourceLabel, "Flickr (via Openverse)")
+        XCTAssertEqual(photo.source?.host(), "www.flickr.com")
+        XCTAssertEqual(photo.creditLine, "Photo: Edmund Garman · CC BY 2.0 · Flickr (via Openverse)")
+        let commons = try JSONDecoder().decode(PhotoInfo.self, from: Data(#"{"commonsTitle": "File:A.jpg"}"#.utf8))
+        XCTAssertEqual(commons.sourceLabel, "Wikimedia Commons")
+        XCTAssertTrue(commons.hasCredit)
     }
 
     func testMadeBooksShowTheCreditBehindAButtonAndListEveryPhoto() throws {
         let page = try String(contentsOf: Self.appFile("Views/PageView.swift"), encoding: .utf8)
-        XCTAssertTrue(page.contains("if book.isMade, page.photo.commonsTitle != nil { creditButton }"))
+        XCTAssertTrue(page.contains("if book.isMade, page.photo.hasCredit { creditButton }"))
         XCTAssertTrue(page.contains("if !book.isMade {"), "bundled books keep the credit line under the photo")
         XCTAssertTrue(page.contains("\"info.circle\"") && page.contains(".accessibilityLabel(\"Photo credit\")"))
         let made = try String(contentsOf: Self.appFile("MakeBook/MadeBookViews.swift"), encoding: .utf8)

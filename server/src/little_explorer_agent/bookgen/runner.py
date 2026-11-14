@@ -27,7 +27,7 @@ from . import moderation, narration, writer
 from .config import BookgenConfig
 from .cost import CostLog
 from .moderation import Rejected
-from .photos import MODERATION_WIDTH, BadPhoto, Commons, to_jpeg
+from .photos import MODERATION_WIDTH, BadPhoto, Openverse, Photos, credit_keys, source_of, to_jpeg, used_keys
 from .store import Asset, BookStore, Job
 from .writer import BookError
 
@@ -62,12 +62,14 @@ def r2_key(book_id: str, file: str, attempt: int) -> str:
 
 class Runner:
     def __init__(self, books: BookStore, config: BookgenConfig, *, client: Any, storage: Any,
-                 commons: Commons | None = None) -> None:
+                 photos: Photos | None = None) -> None:
         self.books = books
         self.config = config
         self.client = client
         self.storage = storage
-        self.commons = commons or Commons()
+        self.photos = photos or Photos(openverse=Openverse(
+            client_id=config.openverse_client_id, client_secret=config.openverse_client_secret,
+        ) if config.openverse else None)
         self._wake = asyncio.Event()
         # Set while the runner sleeps with no timer, until woken (no database access in the meantime).
         self.asleep = asyncio.Event()
@@ -78,7 +80,7 @@ class Runner:
         self._wake.set()
 
     async def close(self) -> None:
-        await self.commons.close()
+        await self.photos.close()
         close = getattr(self.client, "close", None)
         if close:
             await close()
@@ -256,8 +258,8 @@ class Runner:
         await moderation.check_texts(self.client, self.config, [page["text"], page["about"], page["emoji"]], "page")
 
         await self._renew(job, costs, "photos")
-        used = {p["photo"].get("commonsTitle") for p in book["pages"] if p["photo"].get("commonsTitle")}
-        if not await self._find_photo(job, page, photo_file, used):
+        used = used_keys(book["pages"])
+        if not await self._find_photo(job, page, photo_file, used, pages=book["pages"]):
             raise BookError("no photo for the new page")
 
         await self._renew(job, costs, "narration")
@@ -277,28 +279,36 @@ class Runner:
         log.info("job %s: remade page %s of %s for $%.4f", job.id, page_id, book["id"], costs.total)
 
     async def _find_photo(self, job: Job, page: dict[str, Any], file: str, used: set[str],
-                          book: dict[str, Any] | None = None) -> bool:
-        """Find a safe, credited Commons photo for ``page``, upload it as ``file`` and set the page's photo."""
+                          book: dict[str, Any] | None = None, pages: list[dict[str, Any]] | None = None) -> bool:
+        """Find a safe, credited photo for ``page``, upload it as ``file`` and set the page's photo. Openverse is
+        searched too when the app that asked can show where its photos come from (``openverse`` in the job)."""
         queries = [page["photo"].get("query", "")] + list(page["photo"].get("alternates") or [])
         queries = [q for q in queries if q]
-        for candidate in await self.commons.candidates(queries, used):
+        sources: dict[str, int] = {}
+        for other in pages if pages is not None else (book or {}).get("pages") or []:
+            if other.get("id") != page.get("id") and other["photo"].get("file"):
+                sources[source_of(other["photo"])] = sources.get(source_of(other["photo"]), 0) + 1
+        found = await self.photos.candidates(queries, used, openverse=bool(job.input.get("openverse")),
+                                             book_sources=sources)
+        for candidate in found:
             try:
-                photo = await self.commons.download(candidate)
+                photo = await self.photos.download(candidate)
             except BadPhoto as exc:
                 log.info("job %s: %s; trying the next one", job.id, exc)
                 continue
             small = await asyncio.to_thread(to_jpeg, photo.data, MODERATION_WIDTH, 80)
             if not await moderation.image_ok(self.client, self.config, small):
-                log.info("job %s: photo %s flagged; trying the next one", job.id, candidate.get("title"))
+                log.info("job %s: photo %s flagged; trying the next one", job.id, candidate.title)
                 continue
             credits = photo.credits(file, queries[0] if queries else "")
             try:
-                # The credits are shown in the app, and Commons authors write their own.
+                # The credits are shown in the app, and photographers write their own titles and names.
                 await moderation.check_texts(self.client, self.config, writer.credit_texts(credits), "photo credit")
             except Rejected:
-                log.info("job %s: photo %s credit flagged; trying the next one", job.id, candidate.get("title"))
+                log.info("job %s: photo %s credit flagged; trying the next one", job.id, candidate.title)
                 continue
-            used.add(photo.title)
+            used |= candidate.keys | credit_keys(credits)
+            log.info("job %s: page photo from %s: %s (score %.2f)", job.id, photo.source_name, photo.title, candidate.score)
             page["photo"] = credits
             await self._upload(job, f"Photos/{file}", photo.data, "image/jpeg", book=book)
             return True
@@ -306,7 +316,7 @@ class Runner:
 
     async def _photos(self, job: Job, book: dict[str, Any], costs: CostLog) -> None:
         assets = await asyncio.to_thread(self.books.assets, job.book_id)
-        used = {p["photo"].get("commonsTitle") for p in book["pages"] if p["photo"].get("commonsTitle")}
+        used = used_keys(book["pages"])
         for page in book["pages"]:
             file = f"{book['id']}-{page['id']}.jpg"
             if page["photo"].get("file") == file and f"Photos/{file}" in assets:

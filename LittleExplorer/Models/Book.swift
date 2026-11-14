@@ -83,8 +83,21 @@ struct PhotoInfo: Codable, Hashable {
     let sourceUrl: String?
     /// True once scripts/fetch_photos.py confirmed the license via the Commons API.
     let verified: Bool?
+    /// The title of a made book's photo that isn't on Commons (e.g. from Flickr, found through Openverse).
+    var title: String? = nil
+    /// Where the photo comes from, e.g. "Flickr (via Openverse)"; nil means Wikimedia Commons.
+    var sourceName: String? = nil
 
     var isVerified: Bool { verified ?? false }
+
+    /// The site the photo comes from, as the credits name it.
+    var sourceLabel: String {
+        if let name = sourceName?.trimmingCharacters(in: .whitespaces), !name.isEmpty { return name }
+        return "Wikimedia Commons"
+    }
+
+    /// The photo has a credit to show (a Commons file or another site's photo).
+    var hasCredit: Bool { commonsTitle != nil || title != nil }
 
     /// Commons redirect to a resized rendition; used only when the bundled copy is missing.
     var remoteURL: URL? {
@@ -103,8 +116,10 @@ struct PhotoInfo: Codable, Hashable {
         return URL(string: "https://commons.wikimedia.org/wiki/" + (path.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? path))
     }
 
-    /// The Commons file's name without "File:" and its extension, e.g. "Tour Eiffel Wikimedia Commons".
+    /// The photo's title: another site's title as it is, or the Commons file's name without "File:" and its
+    /// extension, e.g. "Tour Eiffel Wikimedia Commons".
     var displayTitle: String? {
+        if let title = title?.trimmingCharacters(in: .whitespaces), !title.isEmpty { return title }
         guard var name = commonsTitle?.trimmingCharacters(in: .whitespaces), !name.isEmpty else { return nil }
         if name.hasPrefix("File:") { name.removeFirst(5) }
         if let dot = name.lastIndex(of: "."), name.distance(from: dot, to: name.endIndex) <= 5, dot > name.startIndex {
@@ -123,7 +138,7 @@ struct PhotoInfo: Codable, Hashable {
     var creditLine: String {
         let who = author?.isEmpty == false ? author! : "Unknown author"
         let what = license?.isEmpty == false ? license! : "license pending"
-        return "Photo: \(who) · \(what) · Wikimedia Commons"
+        return "Photo: \(who) · \(what) · \(sourceLabel)"
     }
 }
 

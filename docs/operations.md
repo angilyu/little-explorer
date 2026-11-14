@@ -390,8 +390,8 @@ The app reads the rules each time the Grown-ups corner opens, so changes apply r
 
 ## Made books (cloud generation)
 
-The server can write a new book for an account: the text, real Wikimedia Commons photos and the read-aloud
-narration. Then it publishes the book into that account's own manifest (`/account/content/manifest.json`), never
+The server can write a new book for an account: the text, real photos (from Wikimedia Commons and, through
+[Openverse](https://openverse.org), Flickr and other Creative Commons sites) and the read-aloud narration. Then it publishes the book into that account's own manifest (`/account/content/manifest.json`), never
 the public one. A grown-up starts a book from **Make a book** in the app's Grown-ups corner (app 1.1 and later; see
 [Parent endpoints](#parent-endpoints)), and the owner can also start one through the admin endpoint below.
 The code is in [`server/src/little_explorer_agent/bookgen/`](../server/src/little_explorer_agent/bookgen).
@@ -480,22 +480,42 @@ Deleting a book doesn't give its slot back.
    - OpenAI moderation checks the parent's title, section and note, then a small classifier rejects instructions aimed
      at the model, personal details, real living people, scary or adult topics and nonsense. A character, show, toy,
      game or brand the child loves is fine (a family makes the book for itself); the writer keeps it factual and
-     kid-safe, in its own words (no song lyrics or passages from the show), and searches Commons for the real
-     animals, vehicles and objects behind it, since Commons has almost no pictures of owned characters.
+     kid-safe, in its own words (no song lyrics or passages from the show), and searches for photos of the real
+     animals, vehicles and objects behind it, since free photo sites have almost no pictures of owned characters.
    - `gpt-5.4-mini` writes the pages at the requested level (8 at level 1, 10 at levels 2 and 3). Each page is checked against the level's sentence
      and word limits and rewritten if needed, up to 2 times.
    - A second pass with web search checks the facts and fixes or drops pages.
    - Every page is moderated again.
 2. **Photos:**
-   - Commons is searched with the page's query and alternates. Licenses are checked through the Commons API like
-     `scripts/fetch_photos.py`: public domain, CC0, CC BY, CC BY-SA, and also the non-commercial CC BY-NC and
-     CC BY-NC-SA (the app is free with no ads). No-derivatives (ND, including NC-ND), fair-use, copyrighted and
-     trademark/personality-restricted files are never used, since every photo is cropped and resized. No photo is
-     used twice.
-   - The first candidate whose image (checked at 512 px) and credit line both pass moderation is resized to a
-     JPEG and stored in R2. The page keeps its title, author, license (with its link) and Commons source. The app
-     shows them behind a small (i) on the photo, and the made book's **Photo credits** in the Grown-ups corner
-     lists them all.
+   - Commons and, for books asked for from app 1.2.5 or later, [Openverse](https://api.openverse.org/v1/) (Flickr,
+     iNaturalist and other Creative Commons sites; `excluded_source` drops its copy of Commons) are searched together
+     with the page's query, then its alternates until there are about 6 candidates (in
+     [`photos.py`](../server/src/little_explorer_agent/bookgen/photos.py)). Older apps label every photo "Wikimedia
+     Commons", so their books (and page remakes) use Commons only; the job's input records `openverse`.
+   - The same license rules for both: public domain (and Openverse's public domain mark), CC0, CC BY, CC BY-SA,
+     and also the non-commercial CC BY-NC and CC BY-NC-SA (the app is free with no ads). Commons licenses are
+     checked through the Commons API like `scripts/fetch_photos.py`; Openverse is asked for those licenses only and
+     each result's license is checked again. No-derivatives (ND, including NC-ND), sampling, fair-use, copyrighted,
+     trademark/personality-restricted and unknown licenses are never used, since every photo is cropped and resized.
+   - Candidates must be at least 1000 px wide and roughly landscape, and match a word of the search in their title,
+     tags, categories or description. Openverse is asked for `mature=false`; results it marks sensitive, and titles
+     or tags about unsuitable subjects or personal snapshots of people (selfies, kids, weddings), are dropped.
+   - Candidates of both sources are scored together: the share of the search's words they match, a comfortable
+     landscape shape, their place in their own search results and (a little) Commons' "quality image" mark;
+     alternate queries count a bit less. The source the book has used less so far gets a small nudge, so when both
+     have a good match the book alternates between them.
+   - No photo is used twice in a book: not the same Commons file, Openverse result or source page, and not the
+     same Flickr photo found both on Flickr and as a copy on Commons.
+   - The best candidate whose image (checked at 512 px) and credit line both pass moderation is downloaded (an
+     Openverse photo from its own site, e.g. Flickr, up to 15 MB; one that won't download or open is skipped),
+     resized to a JPEG and stored in R2. The page keeps its title, author, license (with its link), source page
+     and where it came from (`sourceName`, e.g. "Wikimedia Commons" or "Flickr (via Openverse)"; Openverse photos
+     also keep `authorUrl`, `provider` and `openverseId`). The app shows them behind a small (i) on the photo,
+     and the made book's **Photo credits** in the Grown-ups corner lists them all.
+   - Openverse is a bonus. Anonymous use allows 20 searches a minute and 200 a day (about one or two a page). The
+     server spaces its searches, rests when the rate-limit headers say it's out or Openverse answers 429 (for its
+     `Retry-After`, or 10 minutes), and after errors or timeouts (5 minutes); meanwhile books use Commons alone and
+     never fail because of Openverse. Openverse is sent only the photo search words, never the grown-up's request.
    - At least 75% of the pages need a photo, or the job fails.
 3. **Narration:** `gpt-4o-mini-tts` (voice `coral`) at the level's pace, then `whisper-1` word timings and an ffmpeg
    level/encode to m4a, the same as `scripts/generate_narration.py`.
@@ -598,6 +618,13 @@ that spend.
     hour); it doesn't poll when idle
   - `BOOKGEN_RUNNER=0`, which serves made books but doesn't make new ones
   - `BOOKGEN_EVERYONE`
+  - `BOOKGEN_OPENVERSE=0`, which turns Openverse photos off (Commons only)
+  - `OPENVERSE_CLIENT_ID`, `OPENVERSE_CLIENT_SECRET`: a registered Openverse app for higher rate limits than
+    anonymous use. Register once with `curl -X POST https://api.openverse.org/v1/auth_tokens/register/ -H
+    "Content-Type: application/json" -d '{"name": "Little Explorer", "description": "Real photos for a free kids
+    picture-book app", "email": "<your email>"}'`, keep the `client_id` and `client_secret` it returns (they can't be
+    shown again), and click the link in the email Openverse sends (until then the app gets anonymous limits).
+    The server trades them for an access token and falls back to anonymous searches if that fails.
 
 Without the OpenAI key or R2, book generation is off. `/admin/books/generate` answers 503, and everything else works
 as before.

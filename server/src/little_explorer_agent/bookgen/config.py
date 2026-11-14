@@ -71,6 +71,10 @@ class BookgenConfig:
     runner: bool = True
     everyone: bool = False
     asset_url_ttl_s: int = 3600
+    # Openverse (Flickr and other Creative Commons sites) as a second photo source; see photos.py.
+    openverse: bool = True
+    openverse_client_id: str = ""
+    openverse_client_secret: str = ""
 
     @property
     def ready(self) -> bool:
@@ -93,6 +97,9 @@ class BookgenConfig:
             poll_s=_num(env, "BOOKGEN_POLL_SECONDS", cls.poll_s),
             runner=_flag(env, "BOOKGEN_RUNNER", True),
             everyone=_flag(env, "BOOKGEN_EVERYONE", False),
+            openverse=_flag(env, "BOOKGEN_OPENVERSE", True),
+            openverse_client_id=(env.get("OPENVERSE_CLIENT_ID") or "").strip(),
+            openverse_client_secret=(env.get("OPENVERSE_CLIENT_SECRET") or "").strip(),
         )
 
     def limits_json(self) -> dict[str, float | int]:

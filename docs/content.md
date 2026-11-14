@@ -82,9 +82,12 @@ The credit (author · license · Commons) is shown under each photo. No photo is
 
 Made books (["Make a book"](operations.md#made-books-cloud-generation)) also allow the non-commercial CC BY-NC and
 CC BY-NC-SA licenses (the app is free with no ads), but never no-derivatives (ND) ones, since every photo is cropped and
-resized, nor fair-use, copyrighted or trademark/personality-restricted files. Their pages show no credit line: a small
-(i) in the photo's corner opens the photo's full credit (title, author, license and its link, Commons source), and
-the made book's menu in the Grown-ups corner lists every photo's credit with working links.
+resized, nor sampling, fair-use, copyrighted, trademark/personality-restricted or unknown licenses. Besides Commons,
+their photos can come from Flickr and other Creative Commons sites through [Openverse](https://openverse.org) (for
+books asked for from app 1.2.5 on), under the same rules. Their pages show no credit line: a small (i) in the photo's
+corner opens the photo's full credit (title, author, license and its link, and its source page, named after where it
+came from, e.g. "Wikimedia Commons" or "Flickr (via Openverse)"), and the made book's menu in the Grown-ups corner
+lists every photo's credit with working links.
 [`scripts/fetch_photos.py`](../scripts/fetch_photos.py) checks each license through the Commons API and bundles a resized copy:
 
 ```sh
