@@ -89,6 +89,26 @@ def test_saves_each_part_and_counts_versions(prefs, clock):
     assert prefs.put("acct-1", {})["v"] == 1
 
 
+def test_keeps_sections_a_grown_up_typed_for_made_books(prefs, clock):
+    # Made books' sections aren't catalog cities: "Matt’s" (curly apostrophe), "Hawaii" with no Hawaii books.
+    t = clock.ms - 5000
+    saved = prefs.put(
+        "acct-1",
+        {
+            "sections": {"order": ["Matt’s", "Paris", "Hawaii", "Matt's"], "t": t},
+            "books": {
+                "Matt’s": {"order": ["dinosaur-2bb188"], "t": t},
+                "Hawaii": {"order": ["honolulu-6e37b6", "honolulu-046d4f"], "t": t},
+            },
+            "hidden": {"what-should-i-do-at-paris-d1a210": {"on": True, "t": t}},
+        },
+    )
+    assert saved["sections"]["order"] == ["Matt’s", "Paris", "Hawaii", "Matt's"]
+    assert saved["books"]["Matt’s"]["order"] == ["dinosaur-2bb188"]
+    assert saved["books"]["Hawaii"]["order"] == ["honolulu-6e37b6", "honolulu-046d4f"]
+    assert prefs.get("acct-1") == saved
+
+
 def test_merges_each_key_and_keeps_the_later_change(prefs, clock):
     t = clock.ms - 60_000
     prefs.put("acct-1", {"hidden": {"paris": {"on": True, "t": t}, "tokyo": {"on": True, "t": t}}})

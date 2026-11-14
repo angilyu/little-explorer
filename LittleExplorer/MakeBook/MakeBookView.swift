@@ -317,7 +317,8 @@ struct SectionPickerView: View {
     private func useNewName() {
         let name = newName.trimmingCharacters(in: .whitespaces)
         guard !name.isEmpty else { return }
-        section = name
+        // "paris" or "Matt's" typed again is the section already on the shelf.
+        section = sections.first { BookLibrary.sectionKey($0) == BookLibrary.sectionKey(name) } ?? name
         dismiss()
     }
 }

@@ -9,7 +9,9 @@ import SwiftUI
 /// from another device can't bring the old setting back.
 ///
 /// Applying it never drops or invents a book: ids and sections it doesn't know are skipped, and books
-/// it doesn't mention keep their default (catalog) place after the ones it orders.
+/// and sections it doesn't mention (a new catalog book, a section a grown-up made a book in) keep their
+/// default place after the ones it orders. Section names match by ``BookLibrary/sectionKey(_:)``, the
+/// same way the shelf groups them.
 struct LibraryPrefs: Codable, Equatable {
     struct Order: Codable, Equatable {
         var order: [String]
@@ -57,9 +59,23 @@ struct LibraryPrefs: Codable, Equatable {
 
     func arrangedShelves(_ books: [Book]) -> [CityShelf] {
         let shelves = BookLibrary.shelves(books)
-        return Self.ordered(shelves, by: sections?.order ?? [], key: \.city).map { shelf in
-            CityShelf(city: shelf.city, books: Self.ordered(shelf.books, by: self.books[shelf.city]?.order ?? [], key: \.id))
+        let bookOrders = bookOrdersBySection
+        let sectionOrder = (sections?.order ?? []).map(BookLibrary.sectionKey)
+        return Self.ordered(shelves, by: sectionOrder, key: { BookLibrary.sectionKey($0.city) }).map { shelf in
+            CityShelf(city: shelf.city, books: Self.ordered(shelf.books, by: bookOrders[BookLibrary.sectionKey(shelf.city)] ?? [], key: \.id))
         }
+    }
+
+    /// Each section's saved book order by ``BookLibrary/sectionKey(_:)``; when two saved names mean the
+    /// same section, the later change counts.
+    private var bookOrdersBySection: [String: [String]] {
+        var latest: [String: Order] = [:]
+        for (name, order) in books {
+            let key = BookLibrary.sectionKey(name)
+            if let saved = latest[key], saved.t > order.t { continue }
+            latest[key] = order
+        }
+        return latest.mapValues(\.order)
     }
 
     /// What the child sees: the arranged books without the hidden ones (a section with none left goes too).
@@ -67,11 +83,11 @@ struct LibraryPrefs: Codable, Equatable {
         arranged(books).filter { !isHidden($0.id) }
     }
 
-    private static func ordered<T>(_ items: [T], by saved: [String], key: KeyPath<T, String>) -> [T] {
+    private static func ordered<T>(_ items: [T], by saved: [String], key: (T) -> String) -> [T] {
         guard !saved.isEmpty else { return items }
         let rank = Dictionary(saved.enumerated().map { ($1, $0) }, uniquingKeysWith: { first, _ in first })
-        let listed = items.filter { rank[$0[keyPath: key]] != nil }.sorted { rank[$0[keyPath: key]]! < rank[$1[keyPath: key]]! }
-        return listed + items.filter { rank[$0[keyPath: key]] == nil }
+        let listed = items.filter { rank[key($0)] != nil }.sorted { rank[key($0)]! < rank[key($1)]! }
+        return listed + items.filter { rank[key($0)] == nil }
     }
 
     // MARK: - Changing

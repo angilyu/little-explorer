@@ -33,7 +33,8 @@ import Foundation
 /// section picker, with the first-time note, with an error, or at the daily limit); `-demoMake placeholder`
 /// shows a book being made on the shelf; `-demoMake made` shows a finished made book on the shelf; `-demoMake
 /// menu` opens a made book's grown-up menu and `-demoMake credits` its photo credits. The account may make books,
-/// and nothing is sent to the server. `-demoCredit` (with `-demoBook` of a made book) opens the page's photo credit.
+/// and nothing is sent to the server. `-demoMadeSection "Matt’s"` puts the demo made book in that shelf section
+/// (Paris otherwise). `-demoCredit` (with `-demoBook` of a made book) opens the page's photo credit.
 /// `-demoUpgrade required` shows the update screen for a build that's no longer supported; `-demoUpgrade
 /// recommended` shows the "Maybe later" update prompt.
 struct DemoLaunch: Equatable {
@@ -88,6 +89,8 @@ struct DemoLaunch: Equatable {
     var openArrange = false
     var levels: [String: Int] = [:]
     var make: Make?
+    /// The shelf section of the demo made book.
+    var madeSection: String?
 
     /// `books` with the demo's reading levels.
     func leveled(_ books: [Book]) -> [Book] {
@@ -173,6 +176,7 @@ struct DemoLaunch: Equatable {
             }
             found = true
         }
+        if let section = value(after: "-demoMadeSection") { demo.madeSection = section; found = true }
         if arguments.contains("-demoArrange") { demo.openArrange = true; demo.openParent = true; found = true }
         if let screen = value(after: "-demoAccount").flatMap(AccountScreen.init(rawValue:)) {
             demo.accountScreen = screen; found = true
@@ -227,11 +231,12 @@ enum MakeDemo {
     static let jobId = "demo-job"
     static var placeholderId: String { "making-\(jobId)" }
 
-    /// A made book: the bundled Eiffel Tower book, as if a grown-up had made it at level 1.
+    /// A made book: the bundled Eiffel Tower book, as if a grown-up had made it at level 1 (in Paris, or the
+    /// `-demoMadeSection`).
     static func book(_ files: ContentFiles = .shared) -> Book? {
         guard let data = files.data("paris-eiffel.json"), let source = try? BookLibrary.decode(data) else { return nil }
         return Book(
-            id: bookId, city: "Paris", country: source.country, flag: source.flag, flagImage: source.flagImage,
+            id: bookId, city: DemoLaunch.current?.madeSection ?? "Paris", country: source.country, flag: source.flag, flagImage: source.flagImage,
             coverColor: "#C0392B", tagline: "A very tall tower that sparkles at night", theme: "The Tall Tower",
             level: BookLevel(1), generated: true, pages: source.pages
         )

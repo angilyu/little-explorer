@@ -41,17 +41,48 @@ enum BookLibrary {
         }
     }
 
-    /// Books grouped by city for the shelf, in order of each city's first book.
+    /// Books grouped by section for the shelf, in order of each section's first book. Names with the
+    /// same ``sectionKey(_:)`` are one section, named after its first book.
     static func shelves(_ books: [Book]) -> [CityShelf] {
         var shelves: [CityShelf] = []
+        var index: [String: Int] = [:]
         for book in books {
-            if let i = shelves.firstIndex(where: { $0.city == book.city }) {
+            let key = sectionKey(book.city)
+            if let i = index[key] {
                 shelves[i].books.append(book)
             } else {
+                index[key] = shelves.count
                 shelves.append(CityShelf(city: book.city, books: [book]))
             }
         }
         return shelves
+    }
+
+    /// Which section a name means: names that differ only in case, spacing or the kind of apostrophe
+    /// ("Matt’s" and "matt's") are the same section.
+    static func sectionKey(_ name: String) -> String {
+        let text = String(name.precomposedStringWithCompatibilityMapping.map { apostrophes.contains($0) ? "'" : $0 })
+        return text.split(whereSeparator: \.isWhitespace).joined(separator: " ").lowercased()
+    }
+
+    private static let apostrophes: Set<Character> = ["\u{2019}", "\u{2018}", "\u{02BC}", "\u{2032}", "\u{00B4}", "`"]
+
+    /// Every book on an account's shelf: its catalog books, then its made books (the server already sent
+    /// only the ones on its shelf). A made book in a section the catalog has ("paris", "Matt's") takes the
+    /// catalog's name for it, so the shelf, "Arrange library" and the saved arrangement all agree.
+    static func shelfBooks(catalog: [Book], made: [Book]) -> [Book] {
+        let ids = Set(catalog.map(\.id))
+        var names: [String: String] = [:]
+        for book in catalog where names[sectionKey(book.city)] == nil {
+            names[sectionKey(book.city)] = book.city
+        }
+        let added = made.filter { !ids.contains($0.id) }.map { book in
+            var book = book
+            let key = sectionKey(book.city)
+            if let name = names[key] { book.city = name } else { names[key] = book.city }
+            return book
+        }
+        return catalog + added
     }
 
     /// Lays shelves out in rows of `columns` covers: a city with several books gets its own row(s),

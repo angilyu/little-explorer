@@ -134,8 +134,7 @@ struct MadeBooksSection: View {
 
     /// The shelf's sections in order, without repeats.
     static func sections(_ books: [Book]) -> [String] {
-        var seen = Set<String>()
-        return books.map(\.city).filter { seen.insert($0).inserted }
+        BookLibrary.shelves(books).map(\.city)
     }
 }
 

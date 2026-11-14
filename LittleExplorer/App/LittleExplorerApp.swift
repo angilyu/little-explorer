@@ -33,12 +33,7 @@ struct LittleExplorerApp: App {
     }
 
     /// The account's catalog books, then its made books (the server already sent only the ones on its shelf).
-    private var shelf: [Book] {
-        let catalog = account.shelf(content.books)
-        let ids = Set(catalog.map(\.id))
-        let all = catalog + made.books.filter { !ids.contains($0.id) }
-        return DemoLaunch.current?.leveled(all) ?? all
-    }
+    private var shelf: [Book] { account.shelf(content.books, made: made.books) }
 
     /// Books being made show on the shelf as placeholder covers, in their section.
     private var placeholders: [Book] { maker.placeholders.map(BookMaker.placeholder(for:)) }

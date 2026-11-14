@@ -342,3 +342,111 @@ final class LibraryDemoLaunchTests: XCTestCase {
         XCTAssertEqual(books.map(\.readingLevel), [1, 2, 2, 3, 2, 2, 2])
     }
 }
+
+/// Sections a grown-up made books in ("Make a book") show in "Arrange library" just as on the shelf.
+@MainActor
+final class MadeBookSectionsTests: XCTestCase {
+    private func made(_ id: String, _ section: String) -> Book {
+        var made = book(id, city: section)
+        made.generated = true
+        return made
+    }
+
+    /// The account's shelf: the catalog, then made books in "Matt’s" (curly apostrophe), Paris and Hawaii,
+    /// as on the account that reported the bug.
+    private var shelf: [Book] {
+        BookLibrary.shelfBooks(catalog: catalog, made: [
+            made("dinosaur-2bb188", "Matt’s"), made("what-should-i-do-at-paris-d1a210", "Paris"),
+            made("honolulu-046d4f", "Hawaii"), made("honolulu-6e37b6", "Hawaii"),
+        ])
+    }
+
+    private func sections(_ prefs: LibraryPrefs) -> [String] { prefs.arrangedShelves(shelf).map(\.city) }
+
+    func testAMadeBookSectionShowsInArrangeLikeOnTheShelf() {
+        let prefs = LibraryPrefs()
+        XCTAssertEqual(sections(prefs), ["Paris", "London", "Tahoe", "Travel", "Matt’s", "Hawaii"])
+        XCTAssertEqual(prefs.arrangedShelves(shelf).first { $0.city == "Matt’s" }?.books.map(\.id), ["dinosaur-2bb188"])
+        // The shelf groups the arranged books into the same sections.
+        XCTAssertEqual(BookLibrary.shelves(prefs.visible(shelf)).map(\.city), sections(prefs))
+    }
+
+    func testASavedOrderFromBeforeTheSectionExistedKeepsItWhereTheShelfShowsIt() throws {
+        // Saved by an earlier version, before any book was made: no "Matt’s" or "Hawaii".
+        let json = """
+        {"v": 2, "sections": {"order": ["Tahoe", "Paris"], "t": 1792000000000},
+         "books": {"Paris": {"order": ["paris-fun", "paris"], "t": 1792000000000}},
+         "hidden": {"london": {"on": true, "t": 1792000000000}}, "updated_at": "2026-10-23T10:00:00-07:00"}
+        """
+        let prefs = try JSONDecoder().decode(LibraryPrefs.self, from: Data(json.utf8))
+        XCTAssertEqual(sections(prefs), ["Tahoe", "Paris", "London", "Travel", "Matt’s", "Hawaii"])
+        let paris = prefs.arrangedShelves(shelf)[1]
+        XCTAssertEqual(paris.books.map(\.id), ["paris-fun", "paris", "paris-food", "what-should-i-do-at-paris-d1a210"])
+        XCTAssertEqual(BookLibrary.shelves(prefs.visible(shelf)).map(\.city), ["Tahoe", "Paris", "Travel", "Matt’s", "Hawaii"])
+    }
+
+    func testReorderingAndHidingAMadeSectionPersists() {
+        let suite = "MadeBookSectionsTests-\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suite)!
+        defer { defaults.removePersistentDomain(forName: suite) }
+        func store() -> LibraryStore {
+            LibraryStore(defaults: defaults, token: { nil }, send: { _, _ in LibraryPrefs() })
+        }
+        let arranging = store()
+        arranging.switchAccount("6623a9cd")
+        let onScreen = sections(arranging.prefs)
+        arranging.moveSections(onScreen, from: [onScreen.firstIndex(of: "Matt’s")!], to: 0)
+        let hawaii = arranging.prefs.arrangedShelves(shelf).first { $0.city == "Hawaii" }!
+        arranging.moveBooks(hawaii.books.map(\.id), in: hawaii.city, from: [1], to: 0)
+        arranging.setHidden("dinosaur-2bb188", true)
+
+        let relaunched = store()
+        relaunched.switchAccount("6623a9cd")
+        XCTAssertEqual(sections(relaunched.prefs), ["Matt’s", "Paris", "London", "Tahoe", "Travel", "Hawaii"])
+        XCTAssertEqual(relaunched.prefs.sections?.order.first, "Matt’s")
+        XCTAssertEqual(relaunched.prefs.arrangedShelves(shelf).last?.books.map(\.id), ["honolulu-6e37b6", "honolulu-046d4f"])
+        XCTAssertTrue(relaunched.prefs.isHidden("dinosaur-2bb188"))
+        // Hidden on the shelf (its section goes with it), still listed in Arrange to show again.
+        let visible = BookLibrary.shelves(relaunched.visible(shelf)).map(\.city)
+        XCTAssertEqual(visible, ["Paris", "London", "Tahoe", "Travel", "Hawaii"])
+        XCTAssertTrue(sections(relaunched.prefs).contains("Matt’s"))
+        // What goes to the server keeps the section's name as typed.
+        let body = relaunched.prefs.payload
+        XCTAssertEqual((body["sections"] as? [String: Any])?["order"] as? [String], sections(relaunched.prefs))
+        XCTAssertNotNil((body["books"] as? [String: Any])?["Hawaii"])
+    }
+
+    func testASectionNamedLikeACatalogCityMergesIntoIt() {
+        let books = BookLibrary.shelfBooks(catalog: catalog, made: [
+            made("paris-made", "Paris"), made("paris-typed", " paris "), made("tahoe-typed", "LAKE  tahoe"),
+            made("tahoe-made", "TAHOE"),
+        ])
+        XCTAssertEqual(books.filter(\.isMade).map(\.city), ["Paris", "Paris", "LAKE  tahoe", "Tahoe"])
+        let shelves = LibraryPrefs().arrangedShelves(books)
+        XCTAssertEqual(shelves.map(\.city), ["Paris", "London", "Tahoe", "Travel", "LAKE  tahoe"])
+        XCTAssertEqual(shelves[0].books.map(\.id), ["paris", "paris-food", "paris-fun", "paris-made", "paris-typed"])
+        XCTAssertEqual(shelves[2].books.map(\.id), ["tahoe", "tahoe-heavenly", "tahoe-made"])
+        // A catalog book already on the shelf isn't listed twice.
+        XCTAssertEqual(BookLibrary.shelfBooks(catalog: catalog, made: [made("paris", "Paris")]).count, catalog.count)
+    }
+
+    func testCurlyAndStraightApostrophesAreOneSection() {
+        XCTAssertEqual(BookLibrary.sectionKey("Matt’s"), BookLibrary.sectionKey("matt's"))
+        XCTAssertEqual(BookLibrary.sectionKey(" Matt\u{02BC}s  Trips "), "matt's trips")
+        XCTAssertNotEqual(BookLibrary.sectionKey("Matt’s"), BookLibrary.sectionKey("Matts"))
+
+        let books = BookLibrary.shelfBooks(catalog: catalog, made: [made("dino", "Matt’s"), made("rex", "Matt's")])
+        XCTAssertEqual(books.suffix(2).map(\.city), ["Matt’s", "Matt’s"])
+        // Orders saved under either spelling (say by another device) still apply.
+        var prefs = LibraryPrefs()
+        prefs.setSectionOrder(["Matt's", "Paris"], at: 1)
+        prefs.setBookOrder(["rex", "dino"], in: "matt’s", at: 1)
+        let shelves = prefs.arrangedShelves(books)
+        XCTAssertEqual(shelves.first?.city, "Matt’s")
+        XCTAssertEqual(shelves.first?.books.map(\.id), ["rex", "dino"])
+        // The later of two spellings' book orders counts.
+        prefs.setBookOrder(["dino", "rex"], in: "Matt’s", at: 2)
+        XCTAssertEqual(prefs.arrangedShelves(books).first?.books.map(\.id), ["dino", "rex"])
+        XCTAssertEqual(MadeBooksSection.sections(books + [made("x", "MATT’S")]), ["Paris", "London", "Tahoe", "Travel", "Matt’s"])
+    }
+}

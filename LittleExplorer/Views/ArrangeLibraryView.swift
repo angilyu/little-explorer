@@ -8,12 +8,13 @@ struct ArrangeLibraryView: View {
     @Environment(LibraryStore.self) private var library
     @Environment(AccountStore.self) private var account
     @Environment(ContentStore.self) private var content
+    @Environment(MadeBookLibrary.self) private var made
     @State private var confirmShowAll = false
     @State private var confirmRestore = false
 
+    /// The same books and sections as the shelf, made books and their sections too.
     private var shelves: [CityShelf] {
-        let books = account.shelf(content.books)
-        return library.prefs.arrangedShelves(DemoLaunch.current?.leveled(books) ?? books)
+        library.prefs.arrangedShelves(account.shelf(content.books, made: made.books))
     }
 
     var body: some View {

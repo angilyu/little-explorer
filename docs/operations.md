@@ -267,7 +267,11 @@ book saves `on: false`, so a device that was offline can't bring back the old se
 
 Book ids and section names aren't checked against the catalog. The app ignores ids it doesn't know and puts
 sections and books that aren't in an order in their usual place after the ordered ones, so new books show up in
-their usual spot. Limits: 200 sections, 500 ids per book order, 1,000 hidden flags, names and ids up to 80
+their usual spot. Arrange library lists the same books and sections as the shelf, made books and the sections a
+grown-up typed for them too (from app 1.2.6; earlier versions listed only catalog books, so a made book's own
+section was missing there). Section names that differ only in case, spacing or the kind of apostrophe ("Matt’s",
+"matt's") are one section, both on the shelf and in a saved order, and a made book in a catalog city's section
+("Paris", "paris") joins that city's. Limits: 200 sections, 500 ids per book order, 1,000 hidden flags, names and ids up to 80
 characters (`400 bad_library`, or `413 too_big` with `max`). If a merge goes over a limit, entries set back to the
 default go first, then the oldest.
 
@@ -838,6 +842,7 @@ sign-in's email or code step), `-demoParent` (the Grown-ups corner), `-demoArran
 signin|talk|talk-consent|off|turn-on` (the Milo consent screen after sign-in, the gate and consent when Talk to Milo
 is tapped before Milo is allowed, the corner with Milo off, and the consent its switch shows when turned on).
 `-demoShelf grown-ups` scrolls to the Grown-ups button; with `-demoArrange`, `-demoShelf <book>` scrolls to that book.
+`-demoMadeSection "Matt’s"` (with `-demoMake made|menu|credits`) puts the demo made book in that section.
 `-demoUpgrade required|recommended` shows the [update screens](#app-versions-and-forced-updates).
 
 ### Release the app (beta and App Store)
