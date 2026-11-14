@@ -61,7 +61,7 @@ struct PageView: View {
                 )
                 .overlay(alignment: .bottomTrailing) {
                     // Made books keep the page clean: the credit is one tap away (and listed in the Grown-ups corner).
-                    if book.isMade, page.photo.commonsTitle != nil { creditButton }
+                    if book.isMade, page.photo.hasCredit { creditButton }
                 }
                 .shadow(color: .black.opacity(0.12), radius: 8, x: 0, y: 4)
             if !book.isMade {
@@ -215,7 +215,7 @@ struct PhotoCreditSheet: View {
                     PhotoCreditRows(photo: photo, opensLinks: false)
                 }
                 Section {
-                    Text("Photos come from Wikimedia Commons and are shared under free licenses. Links open in the grown-ups corner.")
+                    Text("Photos come from Wikimedia Commons, Flickr and other sites that share photos under free licenses. Links open in the grown-ups corner.")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
@@ -246,7 +246,7 @@ struct PhotoCreditRows: View {
             link("License", license)
         }
         if let source = photo.source {
-            link("Wikimedia Commons", source)
+            link(photo.sourceLabel, source)
         }
     }
 

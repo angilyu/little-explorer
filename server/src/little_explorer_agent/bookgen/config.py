@@ -63,7 +63,7 @@ class BookgenConfig:
     tries_per_day: int = 8
     # "Make this page again" a day; these don't use up a book from the quota.
     page_redos_per_day: int = 5
-    daily_usd_cap: float = 2.0
+    daily_usd_cap: float = 5.0
     job_usd_cap: float = 0.75
     max_attempts: int = 4
     lease_s: float = 300.0
@@ -71,6 +71,14 @@ class BookgenConfig:
     runner: bool = True
     everyone: bool = False
     asset_url_ttl_s: int = 3600
+    # Openverse (Flickr and other Creative Commons sites) as a second photo source; see photos.py.
+    openverse: bool = True
+    openverse_client_id: str = ""
+    openverse_client_secret: str = ""
+    # The vision judge that picks a page's most beautiful photo (quality.py). gpt-5.4 spots watermarks, clutter and
+    # off-topic photos that gpt-5.4-mini misses (about 10-14 cents a book against 3-4); "" means text_model.
+    photo_judge: bool = True
+    judge_model: str = "gpt-5.4"
 
     @property
     def ready(self) -> bool:
@@ -93,6 +101,11 @@ class BookgenConfig:
             poll_s=_num(env, "BOOKGEN_POLL_SECONDS", cls.poll_s),
             runner=_flag(env, "BOOKGEN_RUNNER", True),
             everyone=_flag(env, "BOOKGEN_EVERYONE", False),
+            openverse=_flag(env, "BOOKGEN_OPENVERSE", True),
+            openverse_client_id=(env.get("OPENVERSE_CLIENT_ID") or "").strip(),
+            openverse_client_secret=(env.get("OPENVERSE_CLIENT_SECRET") or "").strip(),
+            photo_judge=_flag(env, "BOOKGEN_PHOTO_JUDGE", True),
+            judge_model=(env.get("BOOKGEN_JUDGE_MODEL") or "").strip() or cls.judge_model,
         )
 
     def limits_json(self) -> dict[str, float | int]:

@@ -77,9 +77,12 @@ write the book. Photos are real, licensed photos. The text is written by AI and 
 - That request is sent to [OpenAI](https://openai.com), along with the book's text as it is written. OpenAI writes
   the text, checks its facts with web search, checks that everything is suitable for a child, and records the
   read-aloud voice.
-- Photos come from [Wikimedia Commons](https://commons.wikimedia.org) under free licenses (some only for
-  non-commercial use; the app is free with no ads). Each photo's credit opens from the small (i) on it, and the
-  book's **Photo credits** in the Grown-ups corner lists them all.
+- Photos come from [Wikimedia Commons](https://commons.wikimedia.org) and, through
+  [Openverse](https://openverse.org), from Flickr and other sites that share photos under free licenses (some only
+  for non-commercial use; the app is free with no ads). To find them, our server sends Wikimedia Commons and
+  Openverse only the short photo search words written for each page (like "Waikiki beach"): not the grown-up's
+  request or note, and nothing about the account, the device or the child. Each photo's credit opens from the
+  small (i) on it, and the book's **Photo credits** in the Grown-ups corner lists them all.
 - Nothing about the child is sent. Please don't put names or other personal details in the title or note.
 
 The book's text and the grown-up's request are kept on our server. Its photos and recordings are kept in a private

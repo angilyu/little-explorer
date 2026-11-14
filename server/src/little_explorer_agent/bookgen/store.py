@@ -297,7 +297,7 @@ class BookStore:
 
         return self.store.transaction(run)
 
-    def queue_page(self, account_id: str, book_id: str, page_id: str) -> Job:
+    def queue_page(self, account_id: str, book_id: str, page_id: str, openverse: bool = False) -> Job:
         """Queue "make this page again" for a published book the account made. It doesn't use a book from the
         quota (it's a tenth of the work); it has its own daily limit and shares the one-at-a-time rule and the
         spending cap."""
@@ -319,7 +319,8 @@ class BookStore:
             stamp = self._stamp()
             job_id = uuid.uuid4().hex
             request = {"title": book.title, "section": book.section, "level": book.level,
-                       "about": str(self._input_of(cur, book.job_id).get("about") or ""), "page": page_id}
+                       "about": str(self._input_of(cur, book.job_id).get("about") or ""), "page": page_id,
+                       "openverse": openverse}
             self._ex(
                 cur,
                 """INSERT INTO generation_jobs (id, account_id, book_id, status, step, input, day, month, created_at,

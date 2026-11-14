@@ -51,7 +51,7 @@ struct ParentCornerView: View {
                             ForEach(book.pages) { page in
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text(page.photo.author ?? "Unknown author").font(.subheadline.bold())
-                                    Text(page.photo.license ?? "License pending").font(.caption)
+                                    Text("\(page.photo.license ?? "License pending") · \(page.photo.sourceLabel)").font(.caption)
                                     if let source = page.photo.source {
                                         Link(source.absoluteString, destination: source)
                                             .font(.caption)

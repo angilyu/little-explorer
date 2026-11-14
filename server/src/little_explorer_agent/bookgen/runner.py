@@ -23,11 +23,11 @@ import math
 from datetime import timedelta
 from typing import Any
 
-from . import moderation, narration, writer
+from . import moderation, narration, quality, writer
 from .config import BookgenConfig
 from .cost import CostLog
 from .moderation import Rejected
-from .photos import MODERATION_WIDTH, BadPhoto, Commons, to_jpeg
+from .photos import MODERATION_WIDTH, BadPhoto, Openverse, Photos, credit_keys, source_of, to_jpeg, used_keys
 from .store import Asset, BookStore, Job
 from .writer import BookError
 
@@ -62,12 +62,14 @@ def r2_key(book_id: str, file: str, attempt: int) -> str:
 
 class Runner:
     def __init__(self, books: BookStore, config: BookgenConfig, *, client: Any, storage: Any,
-                 commons: Commons | None = None) -> None:
+                 photos: Photos | None = None) -> None:
         self.books = books
         self.config = config
         self.client = client
         self.storage = storage
-        self.commons = commons or Commons()
+        self.photos = photos or Photos(openverse=Openverse(
+            client_id=config.openverse_client_id, client_secret=config.openverse_client_secret,
+        ) if config.openverse else None)
         self._wake = asyncio.Event()
         # Set while the runner sleeps with no timer, until woken (no database access in the meantime).
         self.asleep = asyncio.Event()
@@ -78,7 +80,7 @@ class Runner:
         self._wake.set()
 
     async def close(self) -> None:
-        await self.commons.close()
+        await self.photos.close()
         close = getattr(self.client, "close", None)
         if close:
             await close()
@@ -256,8 +258,8 @@ class Runner:
         await moderation.check_texts(self.client, self.config, [page["text"], page["about"], page["emoji"]], "page")
 
         await self._renew(job, costs, "photos")
-        used = {p["photo"].get("commonsTitle") for p in book["pages"] if p["photo"].get("commonsTitle")}
-        if not await self._find_photo(job, page, photo_file, used):
+        used = used_keys(book["pages"])
+        if not await self._find_photo(job, page, photo_file, used, costs, pages=book["pages"]):
             raise BookError("no photo for the new page")
 
         await self._renew(job, costs, "narration")
@@ -276,42 +278,125 @@ class Runner:
         await delete_keys(self.storage, keys)
         log.info("job %s: remade page %s of %s for $%.4f", job.id, page_id, book["id"], costs.total)
 
-    async def _find_photo(self, job: Job, page: dict[str, Any], file: str, used: set[str],
-                          book: dict[str, Any] | None = None) -> bool:
-        """Find a safe, credited Commons photo for ``page``, upload it as ``file`` and set the page's photo."""
+    async def _find_photo(self, job: Job, page: dict[str, Any], file: str, used: set[str], costs: CostLog,
+                          book: dict[str, Any] | None = None, pages: list[dict[str, Any]] | None = None) -> bool:
+        """Find a good, safe, credited photo for ``page``, upload it as ``file`` and set the page's photo. Openverse
+        is searched too when the app that asked can show where its photos come from (``openverse`` in the job).
+
+        Up to :data:`.quality.POOL` candidates are downloaded and checked for quality (:mod:`.quality`): the free
+        check drops blurry or unreadable ones, and the vision judge scores the best :data:`.quality.JUDGE_BATCH`
+        for artistic quality in one call. The most beautiful matching one that passes moderation wins; if none is
+        polished enough, the remaining candidates and the alternate queries get one more round, and then the best
+        acceptable one found is used."""
         queries = [page["photo"].get("query", "")] + list(page["photo"].get("alternates") or [])
         queries = [q for q in queries if q]
-        for candidate in await self.commons.candidates(queries, used):
+        sources: dict[str, int] = {}
+        for other in pages if pages is not None else (book or {}).get("pages") or []:
+            if other.get("id") != page.get("id") and other["photo"].get("file"):
+                sources[source_of(other["photo"])] = sources.get(source_of(other["photo"]), 0) + 1
+        openverse = bool(job.input.get("openverse"))
+        found = await self.photos.candidates(queries, used, openverse=openverse, book_sources=sources,
+                                             enough=quality.POOL)
+        tried: set[str] = set()
+        fallback: list[quality.Pick] = []
+        report: list[dict[str, Any]] = []
+        for round_ in range(2):
+            batch = await self._shortlist(job, found, tried, report)
+            if batch and self.config.photo_judge:
+                verdicts = await quality.judge(self.client, self.config.judge_model or self.config.text_model,
+                                               page.get("text", ""), [p.photo.data for p in batch], costs,
+                                               [p.candidate.query for p in batch])
+                for pick, verdict in zip(batch, verdicts or []):
+                    pick.verdict = verdict
+            for pick in batch:
+                pick.entry = pick.report(round_)
+                report.append(pick.entry)
+            for pick in sorted(batch, key=quality.Pick.rank, reverse=True):
+                if pick.verdict and (pick.verdict.blocked or pick.aesthetic() < quality.GOOD_SCORE):
+                    if not pick.verdict.blocked and pick.aesthetic() >= quality.MIN_SCORE:
+                        fallback.append(pick)
+                    continue
+                if await self._use_photo(job, page, file, used, pick, queries, book):
+                    self._log_choice(job, page, pick, report)
+                    return True
+            if round_:
+                break
+            found = [c for c in found if not c.keys & tried]
+            if len(found) < quality.JUDGE_BATCH and len(queries) > 1:
+                more = await self.photos.candidates(queries[1:], used | tried, openverse=openverse, book_sources=sources,
+                                                    enough=quality.POOL)
+                keys = {k for c in found for k in c.keys}
+                found += [c for c in more if not c.keys & keys]
+            if not found:
+                break
+        for pick in sorted(fallback, key=quality.Pick.rank, reverse=True):
+            if await self._use_photo(job, page, file, used, pick, queries, book):
+                self._log_choice(job, page, pick, report)
+                return True
+        self._log_choice(job, page, None, report)
+        return False
+
+    async def _shortlist(self, job: Job, found: list[Any], tried: set[str],
+                         report: list[dict[str, Any]]) -> list[quality.Pick]:
+        """Download up to :data:`.quality.POOL` candidates (taking turns between Commons and Openverse) and keep the
+        best :data:`.quality.JUDGE_BATCH` by the free check (:func:`.quality.shortlist`)."""
+        picks: list[quality.Pick] = []
+        for candidate in _alternate([c for c in found if not c.keys & tried], lambda c: c.source)[:quality.POOL]:
+            tried |= candidate.keys
             try:
-                photo = await self.commons.download(candidate)
+                photo = await self.photos.download(candidate)
             except BadPhoto as exc:
                 log.info("job %s: %s; trying the next one", job.id, exc)
+                report.append({"title": candidate.title, "source": candidate.source, "skipped": str(exc)[:200]})
                 continue
-            small = await asyncio.to_thread(to_jpeg, photo.data, MODERATION_WIDTH, 80)
-            if not await moderation.image_ok(self.client, self.config, small):
-                log.info("job %s: photo %s flagged; trying the next one", job.id, candidate.get("title"))
+            measured = await asyncio.to_thread(quality.measure, photo.data)
+            pick = quality.Pick(candidate, photo, measured)
+            if measured.reject:
+                report.append(pick.report(0))
                 continue
-            credits = photo.credits(file, queries[0] if queries else "")
-            try:
-                # The credits are shown in the app, and Commons authors write their own.
-                await moderation.check_texts(self.client, self.config, writer.credit_texts(credits), "photo credit")
-            except Rejected:
-                log.info("job %s: photo %s credit flagged; trying the next one", job.id, candidate.get("title"))
-                continue
-            used.add(photo.title)
-            page["photo"] = credits
-            await self._upload(job, f"Photos/{file}", photo.data, "image/jpeg", book=book)
-            return True
-        return False
+            picks.append(pick)
+        chosen = quality.shortlist(picks)
+        for extra in picks:
+            if extra not in chosen:
+                tried -= extra.candidate.keys  # not judged yet: it can be in the next round
+        return chosen
+
+    async def _use_photo(self, job: Job, page: dict[str, Any], file: str, used: set[str], pick: quality.Pick,
+                         queries: list[str], book: dict[str, Any] | None) -> bool:
+        photo, candidate = pick.photo, pick.candidate
+        small = await asyncio.to_thread(to_jpeg, photo.data, MODERATION_WIDTH, 80)
+        if not await moderation.image_ok(self.client, self.config, small):
+            log.info("job %s: photo %s flagged; trying the next one", job.id, candidate.title)
+            pick.entry["refused"] = "image moderation"
+            return False
+        credits = photo.credits(file, queries[0] if queries else "")
+        try:
+            # The credits are shown in the app, and photographers write their own titles and names.
+            await moderation.check_texts(self.client, self.config, writer.credit_texts(credits), "photo credit")
+        except Rejected:
+            log.info("job %s: photo %s credit flagged; trying the next one", job.id, candidate.title)
+            pick.entry["refused"] = "credit moderation"
+            return False
+        used |= candidate.keys | credit_keys(credits)
+        page["photo"] = credits
+        await self._upload(job, f"Photos/{file}", photo.data, "image/jpeg", book=book)
+        return True
+
+    @staticmethod
+    def _log_choice(job: Job, page: dict[str, Any], pick: quality.Pick | None, report: list[dict[str, Any]]) -> None:
+        chosen = f"{pick.photo.source_name}: {pick.photo.title} ({pick.describe()})" if pick else "none"
+        log.info("job %s: page %s photo %s", job.id, page.get("id"), chosen,
+                 extra={"photo_choice": {"page": page.get("id"), "text": page.get("text"),
+                                         "chosen": pick.report(0) if pick else None, "candidates": report}})
 
     async def _photos(self, job: Job, book: dict[str, Any], costs: CostLog) -> None:
         assets = await asyncio.to_thread(self.books.assets, job.book_id)
-        used = {p["photo"].get("commonsTitle") for p in book["pages"] if p["photo"].get("commonsTitle")}
+        used = used_keys(book["pages"])
         for page in book["pages"]:
             file = f"{book['id']}-{page['id']}.jpg"
             if page["photo"].get("file") == file and f"Photos/{file}" in assets:
                 continue
-            await self._find_photo(job, page, file, used, book=book)
+            await self._find_photo(job, page, file, used, costs, book=book)
             await self._renew(job, costs)
         have = sum(1 for p in book["pages"] if p["photo"].get("file"))
         if have < math.ceil(MIN_PHOTO_SHARE * len(book["pages"])):
@@ -343,6 +428,19 @@ class Runner:
         """Delete a failed or removed book's files from R2 (best effort) and forget them."""
         await delete_keys(self.storage, await asyncio.to_thread(self.books.asset_keys, book_id=book_id))
         await asyncio.to_thread(self.books.drop_assets, book_id)
+
+
+def _alternate(items: list[Any], source: Any) -> list[Any]:
+    """``items`` (best first) reordered to take turns between sources, each source keeping its own order."""
+    groups: dict[str, list[Any]] = {}
+    for item in items:
+        groups.setdefault(source(item), []).append(item)
+    out: list[Any] = []
+    while any(groups.values()):
+        for group in groups.values():
+            if group:
+                out.append(group.pop(0))
+    return out
 
 
 async def cleanup_page(books: BookStore, storage: Any, job: Job) -> None:

@@ -53,6 +53,9 @@ CACHE_S = 30.0
 # The first app that labels made (AI-written) books and lets a grown-up hide or report them. Older builds never
 # get made books: not on the account's shelf, and an empty /account/content/manifest.json.
 MADE_BOOKS_VERSION = "1.2"
+# The first app that says where each made-book photo comes from (e.g. "Flickr (via Openverse)"); older builds
+# label every photo "Wikimedia Commons", so books they ask for use Commons photos only.
+OPENVERSE_PHOTOS_VERSION = "1.2.5"
 
 Status = Literal["ok", "recommended", "required"]
 _PART = re.compile(r"^\d{1,9}$")

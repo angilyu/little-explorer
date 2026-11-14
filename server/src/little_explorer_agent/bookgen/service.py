@@ -19,6 +19,7 @@ from ..devices import DeviceStore
 from ..levels import levels_json
 from . import manifest as account_files
 from .config import BookgenConfig
+from .photos import uses_openverse
 from .runner import Runner, cleanup_page, delete_keys
 from .store import Asset, BookRow, BookStore, Job
 
@@ -28,7 +29,7 @@ log = logging.getLogger(__name__)
 class BookgenService:
     def __init__(self, store: DeviceStore, *, static_manifest: dict[str, Any], static_files: dict[str, Path],
                  config: BookgenConfig | None = None, storage: Any = None, client: Any = None,
-                 commons: Any = None) -> None:
+                 photos: Any = None) -> None:
         self.config = config or BookgenConfig.from_env()
         self.books = BookStore(store, self.config)
         if storage is None and self.config.r2.ready:
@@ -46,7 +47,7 @@ class BookgenService:
                 from .oai import OpenAIClient
 
                 client = OpenAIClient(self.config.openai_key)
-            self.runner = Runner(self.books, self.config, client=client, storage=self.storage, commons=commons)
+            self.runner = Runner(self.books, self.config, client=client, storage=self.storage, photos=photos)
         self._tasks: list[asyncio.Task[Any]] = []
 
     @property
@@ -56,15 +57,22 @@ class BookgenService:
 
     # -- an account's made books -------------------------------------------------------------------
 
-    async def account_manifest(self, account_id: str) -> tuple[dict[str, Any], dict[str, bytes | Asset]]:
-        """The made books on this account's shelf: a manifest the app syncs like the catalog, and its files."""
+    async def account_manifest(self, account_id: str, *, openverse: bool = True
+                               ) -> tuple[dict[str, Any], dict[str, bytes | Asset]]:
+        """The made books on this account's shelf: a manifest the app syncs like the catalog, and its files.
+        Without ``openverse`` (an app before 1.2.5, which credits every photo to Commons), books with
+        Openverse photos are left out."""
         if self.storage is None:
             return {"format": 1, "version": "none", "order": [], "files": {}}, {}
         shelf = await asyncio.to_thread(self.books.shelf_books, account_id)
+        shelf = [(row, assets) for row, assets in shelf if openverse or not uses_openverse(row.json)]
         return account_files.account_manifest(shelf, self.static, self.url_for)
 
-    async def shelf_book(self, account_id: str, book_id: str) -> tuple[BookRow, dict[str, Asset]] | None:
+    async def shelf_book(self, account_id: str, book_id: str, *, openverse: bool = True
+                         ) -> tuple[BookRow, dict[str, Asset]] | None:
         found = await asyncio.to_thread(self.books.shelf_books, account_id, book_id)
+        if found and not openverse and uses_openverse(found[0][0].json):
+            return None
         return found[0] if found else None
 
     async def made_books(self, account_id: str) -> list[dict[str, Any]]:
@@ -99,9 +107,9 @@ class BookgenService:
                 await asyncio.to_thread(self.books.drop_assets, job.book_id)
         return job
 
-    def queue_page(self, account_id: str, book_id: str, page_id: str) -> Job:
+    def queue_page(self, account_id: str, book_id: str, page_id: str, openverse: bool = False) -> Job:
         """Queue "make this page again" (blocking; call :meth:`wake` afterwards)."""
-        return self.books.queue_page(account_id, book_id, page_id)
+        return self.books.queue_page(account_id, book_id, page_id, openverse)
 
     async def set_published(self, book_id: str, published: bool) -> dict[str, Any]:
         book = await asyncio.to_thread(self.books.set_published, book_id, published)
