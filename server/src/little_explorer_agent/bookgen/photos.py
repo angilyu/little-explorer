@@ -48,7 +48,8 @@ ALLOWED = re.compile(
 REJECT = re.compile(r"\bnd\b|no ?deriv|fair use|copyrighted", re.I)
 UNSUITABLE = re.compile(
     r"nud(e|ity)|naked|erotic|\bsex|porn|lingerie|corpse|dead bod|blood|\bgore\b|violence|weapon|\bguns?\b|rifle|"
-    r"execution|war crime|wounded|injur|slaughter|hunting|drug|cigar|alcohol|beer|wine", re.I
+    r"execution|war crime|wounded|injur|slaughter|hunting|drug|cigar|alcohol|beer|wine|cemetery|graveyard|"
+    r"grave ?(stone|marker|site)|\btombs?(stone)?\b|funeral|coffin|burial", re.I
 )
 # Openverse finds a lot of personal Flickr snapshots: keep to places, animals and things, like the writer asks.
 PERSONAL = re.compile(
@@ -128,6 +129,8 @@ class Candidate:
     score: float
     query: str
     item: dict[str, Any] = field(repr=False)
+    # A Commons "quality image" or "featured picture" (a small boost when photos are judged).
+    quality: bool = False
 
 
 def clean(text: str | None) -> str:
@@ -160,6 +163,16 @@ def license_of(info: dict[str, Any]) -> tuple[bool, str, str, str]:
     if label.lower().startswith("public domain") or code.lower().startswith("pd"):
         label = "Public domain"
     return True, label, url, ""
+
+
+FILLER = re.compile(r"\b(real|realistic|stock|photos?|photographs?|pictures?|pics?|images?)\b", re.I)
+
+
+def search_words(query: str) -> str:
+    """The query without words that describe a photo rather than its subject ("real photo", "picture"): Openverse
+    finds nothing for "palm tree Honolulu real photo", and "real" matches "Real Estate Office" on Commons."""
+    cleaned = re.sub(r"\s+", " ", FILLER.sub(" ", query)).strip()
+    return cleaned or query.strip()
 
 
 def _words(query: str) -> list[str]:
@@ -211,6 +224,12 @@ def acceptable(page: dict[str, Any], used: set[str], query: str = "") -> tuple[b
     if query and not relevant(page, query):
         return False, "nothing in it matches the search"
     return True, ""
+
+
+def is_quality_image(info: dict[str, Any]) -> bool:
+    """Commons' own "Quality images", "Featured pictures" or "Valued images" mark."""
+    categories = _meta(info, "Categories").lower()
+    return any(mark in categories for mark in ("quality images", "featured pictures", "valued images"))
 
 
 def author_of(info: dict[str, Any]) -> str:
@@ -481,11 +500,12 @@ class Commons(_Http):
                 if not acceptable(page, used, query)[0] or commons_keys(page) & used:
                     continue
                 info = page["imageinfo"][0]
+                good = quality or is_quality_image(info)
                 found.append(Candidate(
                     "commons", page["title"], info.get("thumburl") or info["url"], commons_keys(page),
                     score(match_share(_commons_text(page), query), info.get("width", 0), info.get("height", 1), rank,
-                          query_index, quality),
-                    query, page,
+                          query_index, good),
+                    query, page, good,
                 ))
         return found
 
@@ -664,7 +684,7 @@ class Photos:
         sources: list[Any] = [self.commons]
         if openverse and self.openverse is not None:
             sources.append(self.openverse)
-        for index, query in enumerate(queries):
+        for index, query in enumerate(dict.fromkeys(search_words(q) for q in queries)):
             results = await asyncio.gather(*(s.candidates(query, index, seen) for s in sources), return_exceptions=True)
             for result in results:
                 if isinstance(result, BaseException):

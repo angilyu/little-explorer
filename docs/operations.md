@@ -509,9 +509,23 @@ Deleting a book doesn't give its slot back.
      have a good match the book alternates between them.
    - No photo is used twice in a book: not the same Commons file, Openverse result or source page, and not the
      same Flickr photo found both on Flickr and as a copy on Commons.
-   - The best candidate whose image (checked at 512 px) and credit line both pass moderation is downloaded (an
-     Openverse photo from its own site, e.g. Flickr, up to 15 MB; one that won't download or open is skipped),
-     resized to a JPEG and stored in R2. The page keeps its title, author, license (with its link), source page
+   - **Quality** ([`quality.py`](../server/src/little_explorer_agent/bookgen/quality.py)): the next 6 candidates
+     (taking turns between Commons and Openverse) are downloaded (an Openverse photo from its own site, e.g. Flickr,
+     up to 15 MB; one that won't download or open is skipped) and get a free Pillow check on a 512 px copy:
+     sharpness (the Laplacian's variance in the sharpest quarter of the picture), exposure, contrast, colour and
+     pixel width. Blurry or unreadable ones are dropped. The best 4 (again both sources) go to a vision judge
+     (`gpt-5.4-mini`, `BOOKGEN_JUDGE_MODEL`) as low-detail 512 px thumbnails in **one call per page**, with the
+     page's sentence. It names each photo's flaws, scores it 1-10 for a picture book (sharp, well lit, the subject
+     clear and filling the frame, attractive, matching the sentence) and flags problems; watermarks, text,
+     collages, screenshots, non-photos and people as the main subject rule a photo out, and each other problem
+     (clutter, a small subject, dark, ...) costs half a point. Commons quality, featured and valued images get
+     half a point more. The first photo scoring 7 or more that passes moderation is used; if none does, the
+     remaining candidates and the alternate queries get one more round, and then the best one scoring at least 3
+     is used. If the judge call fails, the free check and the search score decide; it never fails a book. The
+     judge costs about $0.0015 a call, roughly 1.5-2.5¢ a book, logged as `photo_judge` in the job's costs, and
+     each page's candidates, scores and reasons are logged.
+   - The chosen photo's image (checked at 512 px) and credit line must pass moderation; it is resized to a JPEG
+     and stored in R2. The page keeps its title, author, license (with its link), source page
      and where it came from (`sourceName`, e.g. "Wikimedia Commons" or "Flickr (via Openverse)"; Openverse photos
      also keep `authorUrl`, `provider` and `openverseId`). The app shows them behind a small (i) on the photo,
      and the made book's **Photo credits** in the Grown-ups corner lists them all.
@@ -591,6 +605,7 @@ bundled one. `/healthz` reports both `content` and `bundled` (the same now); the
 **Limits and cost.** About **$0.13 a book** with the "Typical" models:
 
 - `gpt-5.4-mini` for the text and the fact check, plus a few web searches
+- the photo judge, about 2¢
 - narration, about $0.05
 - moderation, which is free
 
@@ -622,6 +637,8 @@ that spend.
   - `BOOKGEN_RUNNER=0`, which serves made books but doesn't make new ones
   - `BOOKGEN_EVERYONE`
   - `BOOKGEN_OPENVERSE=0`, which turns Openverse photos off (Commons only)
+  - `BOOKGEN_PHOTO_JUDGE=0`, which turns the vision judge off (the free check and search score choose);
+    `BOOKGEN_JUDGE_MODEL` (default: `BOOKGEN_TEXT_MODEL`) picks its model
   - `OPENVERSE_CLIENT_ID`, `OPENVERSE_CLIENT_SECRET`: a registered Openverse app for higher rate limits than
     anonymous use. Register once with `curl -X POST https://api.openverse.org/v1/auth_tokens/register/ -H
     "Content-Type: application/json" -d '{"name": "Little Explorer", "description": "Real photos for a free kids

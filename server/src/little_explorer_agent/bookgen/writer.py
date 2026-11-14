@@ -124,7 +124,8 @@ For every page give:
 - about: 2-4 short true sentences of background for Milo (never shown on screen; plain words, no lists).
 - emoji: one emoji for the page.
 - photo_queries: two short photo search queries (for Wikimedia Commons and Flickr) that find a real photo of
-  the page's subject (names of places, animals, foods or objects; never a person as the subject). Free photo
+  the page's subject: just its names, 2-4 words, like "Waikiki Beach" or "plumeria flower" (names of places,
+  animals, foods or objects; never a person as the subject; no words like "photo" or "real"). Free photo
   sites have almost no pictures of cartoon, toy or game characters, so for a book about one, search for the real things
   behind it instead (a Dalmatian or a fire truck for a firefighting pup, a steam locomotive for a talking
   train, a toy shop or building bricks for a toy).
