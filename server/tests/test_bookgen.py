@@ -2074,3 +2074,10 @@ def test_the_shortlist_keeps_the_best_and_both_sources():
     chosen = quality.shortlist(commons + openverse + [starred, blurry])
     assert starred in chosen and blurry not in chosen
     assert quality.shortlist([pick("openverse", 1.0)]) and quality.appeal(commons[0].measured) > 0
+
+
+def test_default_limits():
+    config = BookgenConfig.from_env({})
+    assert (config.daily_usd_cap, config.job_usd_cap, config.per_day, config.per_month) == (5.0, 0.75, 3, 10)
+    assert config.limits_json()["daily_usd_cap"] == 5.0
+    assert BookgenConfig.from_env({"BOOKGEN_DAILY_USD_CAP": "2"}).daily_usd_cap == 2.0

@@ -63,7 +63,7 @@ class BookgenConfig:
     tries_per_day: int = 8
     # "Make this page again" a day; these don't use up a book from the quota.
     page_redos_per_day: int = 5
-    daily_usd_cap: float = 2.0
+    daily_usd_cap: float = 5.0
     job_usd_cap: float = 0.75
     max_attempts: int = 4
     lease_s: float = 300.0

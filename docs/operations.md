@@ -622,8 +622,8 @@ The limits are:
   failed and rejected ones (`BOOKGEN_TRIES_PER_DAY`), and 5 page remakes a day (`BOOKGEN_PAGE_REDOS_PER_DAY`); see
   **What counts** above
 - per book, a $0.75 stop (`BOOKGEN_JOB_USD_CAP`), so a runaway book fails
-- for the whole server, a $2 daily spend cap (`BOOKGEN_DAILY_USD_CAP`), after which new requests get 503 and the
-  runner starts no new job until the next day
+- for the whole server, a $5 daily spend cap (`BOOKGEN_DAILY_USD_CAP`, about 20 books at $0.25), after which new
+  requests get 503 and the runner starts no new job until the next day
 
 Each job's `costs` log lists every call with its model, tokens or seconds, and dollars. Deleting an account deletes its
 books and files, but keeps its jobs' day and cost (with the account and request blanked) so the daily cap still counts
