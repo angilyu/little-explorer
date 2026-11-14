@@ -2,6 +2,7 @@
 manifest of made books, and the grown-up and owner endpoints. No network, no OpenAI spend."""
 
 import asyncio
+import dataclasses
 import hashlib
 import io
 import json
@@ -20,7 +21,7 @@ from little_explorer_agent.bookgen.cost import CostLog
 from little_explorer_agent.bookgen.oai import Moderation, OpenAIError, TextResult
 from little_explorer_agent.bookgen.photos import (BadPhoto, Candidate, Commons, Openverse, Photo, PhotoError, Photos,
                                                   acceptable, license_of, openverse_acceptable, openverse_license,
-                                                  to_jpeg, used_keys)
+                                                  to_jpeg, used_keys, uses_openverse)
 from little_explorer_agent.bookgen.runner import LeaseLost, Runner, page_paths, r2_key
 from little_explorer_agent.bookgen.service import BookgenService
 from little_explorer_agent.bookgen.storage import MemoryStorage, R2Storage
@@ -1851,3 +1852,34 @@ async def test_openverse_is_asked_again_without_its_license_filter_after_an_empt
     finally:
         await photos.close()
         await server.close()
+
+
+async def test_apps_before_1_2_5_are_not_sent_books_with_openverse_photos(server, accounts):
+    c, service = server
+    mom, _ = accounts.create("angilyu@gmail.com")
+    old = await _signed_in(accounts, mom.email, MOM_DEVICE)  # 1.2
+    new = {**old, "X-App-Version": "1.2.5"}
+    commons_id = (await _wait_done(service, (await (await c.post("/account/books", json=REQUEST, headers=old)).json())
+                                   ["job"]["id"])).book_id
+    # A book with an Openverse photo, asked for on a newer device of the same account.
+    row = service.books.book(commons_id)
+    flickr = {**row.json, "pages": [dict(p) for p in row.json["pages"]]}
+    flickr["pages"][1] = {**flickr["pages"][1], "photo": {**flickr["pages"][1]["photo"], "openverseId": "ov-1",
+                                                           "sourceName": "Flickr (via Openverse)"}}
+    resp = await c.post("/account/books", json={**REQUEST, "title": "Flickr Tower"}, headers=new)
+    flickr_id = (await _wait_done(service, (await resp.json())["job"]["id"])).book_id
+    flickr["id"] = flickr_id
+    real = service.books.shelf_books
+
+    def shelf_books(account_id, book_id=None):
+        found = real(account_id, book_id) if book_id else real(account_id)
+        return [(dataclasses.replace(r, json=flickr) if r.id == flickr_id else r, a) for r, a in found]
+
+    service.books.shelf_books = shelf_books
+    assert uses_openverse(flickr) and not uses_openverse(row.json)
+    newer = await (await c.get("/account/content/manifest.json", headers=new)).json()
+    older = await (await c.get("/account/content/manifest.json", headers=old)).json()
+    assert set(newer["order"]) == {commons_id, flickr_id} and older["order"] == [commons_id]
+    assert older["version"] != newer["version"]
+    assert (await c.get(f"/account/content/Books/{flickr_id}.json", headers=old)).status == 404
+    assert (await c.get(f"/account/content/Books/{flickr_id}.json", headers=new)).status == 200

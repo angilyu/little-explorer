@@ -19,6 +19,7 @@ from ..devices import DeviceStore
 from ..levels import levels_json
 from . import manifest as account_files
 from .config import BookgenConfig
+from .photos import uses_openverse
 from .runner import Runner, cleanup_page, delete_keys
 from .store import Asset, BookRow, BookStore, Job
 
@@ -56,15 +57,22 @@ class BookgenService:
 
     # -- an account's made books -------------------------------------------------------------------
 
-    async def account_manifest(self, account_id: str) -> tuple[dict[str, Any], dict[str, bytes | Asset]]:
-        """The made books on this account's shelf: a manifest the app syncs like the catalog, and its files."""
+    async def account_manifest(self, account_id: str, *, openverse: bool = True
+                               ) -> tuple[dict[str, Any], dict[str, bytes | Asset]]:
+        """The made books on this account's shelf: a manifest the app syncs like the catalog, and its files.
+        Without ``openverse`` (an app before 1.2.5, which credits every photo to Commons), books with
+        Openverse photos are left out."""
         if self.storage is None:
             return {"format": 1, "version": "none", "order": [], "files": {}}, {}
         shelf = await asyncio.to_thread(self.books.shelf_books, account_id)
+        shelf = [(row, assets) for row, assets in shelf if openverse or not uses_openverse(row.json)]
         return account_files.account_manifest(shelf, self.static, self.url_for)
 
-    async def shelf_book(self, account_id: str, book_id: str) -> tuple[BookRow, dict[str, Asset]] | None:
+    async def shelf_book(self, account_id: str, book_id: str, *, openverse: bool = True
+                         ) -> tuple[BookRow, dict[str, Asset]] | None:
         found = await asyncio.to_thread(self.books.shelf_books, account_id, book_id)
+        if found and not openverse and uses_openverse(found[0][0].json):
+            return None
         return found[0] if found else None
 
     async def made_books(self, account_id: str) -> list[dict[str, Any]]:

@@ -284,6 +284,11 @@ def source_of(photo: dict[str, Any]) -> str:
     return "openverse" if photo.get("openverseId") else "commons"
 
 
+def uses_openverse(book: dict[str, Any]) -> bool:
+    """Whether any page's photo came through Openverse (apps before 1.2.5 can't credit it)."""
+    return any(source_of((page.get("photo") or {})) == "openverse" for page in book.get("pages") or [])
+
+
 def used_keys(pages: Iterable[dict[str, Any]]) -> set[str]:
     used: set[str] = set()
     for page in pages:

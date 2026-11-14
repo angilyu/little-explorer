@@ -419,7 +419,8 @@ curl -X POST -H "Authorization: Bearer $PIP_ADMIN_KEY" -H "Content-Type: applica
 ```
 
 - `title` (the cover title), `section` (the shelf it goes on; an existing city such as `Paris` or a new name) and
-  `level` (1, 2 or 3) are required; `note` (what the book should be about) is optional.
+  `level` (1, 2 or 3) are required; `note` (what the book should be about) is optional. Add `"openverse": true` for
+  Openverse photos too (only when the account's devices run app 1.2.5 or later; older apps aren't sent such books).
 - The section is the book's `city`. The app makes a shelf for it, and a new section also adds a Passport stamp.
 - The answer is `{"job", "usage"}`. The errors are:
   - 400: the request is invalid
@@ -491,7 +492,9 @@ Deleting a book doesn't give its slot back.
      iNaturalist and other Creative Commons sites; `excluded_source` drops its copy of Commons) are searched together
      with the page's query, then its alternates until there are about 6 candidates (in
      [`photos.py`](../server/src/little_explorer_agent/bookgen/photos.py)). Older apps label every photo "Wikimedia
-     Commons", so their books (and page remakes) use Commons only; the job's input records `openverse`.
+     Commons", so their books (and page remakes) use Commons only (the job's input records `openverse`), and
+     books with Openverse photos, asked for on a newer device of the same account, are left out of their account
+     manifest.
    - The same license rules for both: public domain (and Openverse's public domain mark), CC0, CC BY, CC BY-SA,
      and also the non-commercial CC BY-NC and CC BY-NC-SA (the app is free with no ads). Commons licenses are
      checked through the Commons API like `scripts/fetch_photos.py`; Openverse is asked for those licenses only and

@@ -1008,7 +1008,8 @@ async def handle_account_manifest(request: web.Request) -> web.Response:
     if not _sees_made_books(request):
         manifest = {"format": made_files.MANIFEST_FORMAT, "version": "none", "order": [], "files": {}}
     else:
-        manifest, _ = await request.app[BOOKGEN].account_manifest(session.account.id)
+        manifest, _ = await request.app[BOOKGEN].account_manifest(session.account.id,
+                                                                  openverse=_credits_openverse(request))
     return web.json_response(manifest, headers={"Cache-Control": "no-store"})
 
 
@@ -1029,7 +1030,8 @@ async def handle_account_content_file(request: web.Request) -> web.Response:
         return session
     rel = request.match_info["path"]
     book_id = _made_book_of(rel)
-    found = await request.app[BOOKGEN].shelf_book(session.account.id, book_id) if book_id else None
+    found = await request.app[BOOKGEN].shelf_book(
+        session.account.id, book_id, openverse=_credits_openverse(request)) if book_id else None
     data = made_files.book_files(*found).get(rel) if found else None
     if not isinstance(data, bytes):
         raise web.HTTPNotFound()
@@ -1233,8 +1235,9 @@ async def handle_admin_generate(request: web.Request) -> web.Response:
         return web.json_response({"error": "no such account"}, status=404)
     if not account.can_generate:
         return web.json_response({"error": "this account can't make books yet"}, status=403)
-    # The owner's tool: Openverse photos too unless {"openverse": false} (for an account on an app before 1.2.5).
-    book_request["openverse"] = body.get("openverse") is not False
+    # The owner's tool: Openverse photos only with {"openverse": true}, since the account's devices may run an app
+    # before 1.2.5 (which wouldn't be sent the book).
+    book_request["openverse"] = body.get("openverse") is True
     try:
         job = await asyncio.to_thread(bookgen.queue, account.id, book_request)
     except LimitError as exc:
@@ -1334,7 +1337,9 @@ def _sees_made_books(request: web.Request) -> bool:
 
 def _credits_openverse(request: web.Request) -> bool:
     """Whether the calling app names each photo's source (see ``OPENVERSE_PHOTOS_VERSION``), so the book it asks
-    for may use Openverse photos. Older apps credit every photo to Wikimedia Commons, so they get Commons only."""
+    for may use Openverse photos and it is sent books that have them. Older apps credit every photo to Wikimedia
+    Commons, so the books they ask for use Commons only, and books with Openverse photos (asked for on a newer app
+    on the same account) are left out of their manifest."""
     return ClientInfo.from_headers(request.headers).at_least(OPENVERSE_PHOTOS_VERSION)
 
 
