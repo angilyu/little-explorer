@@ -283,10 +283,11 @@ class Runner:
         """Find a good, safe, credited photo for ``page``, upload it as ``file`` and set the page's photo. Openverse
         is searched too when the app that asked can show where its photos come from (``openverse`` in the job).
 
-        The best few candidates are downloaded and checked for quality (:mod:`.quality`): the free check drops
-        blurry or unreadable ones, and the vision judge scores the rest in one call. The best-scored one that
-        passes moderation wins; if none scores well, the remaining candidates and the alternate queries get one
-        more round, and then the best acceptable one found is used."""
+        Up to :data:`.quality.POOL` candidates are downloaded and checked for quality (:mod:`.quality`): the free
+        check drops blurry or unreadable ones, and the vision judge scores the best :data:`.quality.JUDGE_BATCH`
+        for artistic quality in one call. The most beautiful matching one that passes moderation wins; if none is
+        polished enough, the remaining candidates and the alternate queries get one more round, and then the best
+        acceptable one found is used."""
         queries = [page["photo"].get("query", "")] + list(page["photo"].get("alternates") or [])
         queries = [q for q in queries if q]
         sources: dict[str, int] = {}
@@ -294,7 +295,8 @@ class Runner:
             if other.get("id") != page.get("id") and other["photo"].get("file"):
                 sources[source_of(other["photo"])] = sources.get(source_of(other["photo"]), 0) + 1
         openverse = bool(job.input.get("openverse"))
-        found = await self.photos.candidates(queries, used, openverse=openverse, book_sources=sources)
+        found = await self.photos.candidates(queries, used, openverse=openverse, book_sources=sources,
+                                             enough=quality.POOL)
         tried: set[str] = set()
         fallback: list[quality.Pick] = []
         report: list[dict[str, Any]] = []
@@ -302,15 +304,16 @@ class Runner:
             batch = await self._shortlist(job, found, tried, report)
             if batch and self.config.photo_judge:
                 verdicts = await quality.judge(self.client, self.config.judge_model or self.config.text_model,
-                                               page.get("text", ""), [p.photo.data for p in batch], costs)
+                                               page.get("text", ""), [p.photo.data for p in batch], costs,
+                                               [p.candidate.query for p in batch])
                 for pick, verdict in zip(batch, verdicts or []):
                     pick.verdict = verdict
             for pick in batch:
                 pick.entry = pick.report(round_)
                 report.append(pick.entry)
             for pick in sorted(batch, key=quality.Pick.rank, reverse=True):
-                if pick.verdict and (pick.verdict.blocked or pick.verdict.effective < quality.GOOD_SCORE):
-                    if not pick.verdict.blocked and pick.verdict.effective >= quality.MIN_SCORE:
+                if pick.verdict and (pick.verdict.blocked or pick.aesthetic() < quality.GOOD_SCORE):
+                    if not pick.verdict.blocked and pick.aesthetic() >= quality.MIN_SCORE:
                         fallback.append(pick)
                     continue
                 if await self._use_photo(job, page, file, used, pick, queries, book):
@@ -320,7 +323,8 @@ class Runner:
                 break
             found = [c for c in found if not c.keys & tried]
             if len(found) < quality.JUDGE_BATCH and len(queries) > 1:
-                more = await self.photos.candidates(queries[1:], used | tried, openverse=openverse, book_sources=sources)
+                more = await self.photos.candidates(queries[1:], used | tried, openverse=openverse, book_sources=sources,
+                                                    enough=quality.POOL)
                 keys = {k for c in found for k in c.keys}
                 found += [c for c in more if not c.keys & keys]
             if not found:
@@ -334,10 +338,10 @@ class Runner:
 
     async def _shortlist(self, job: Job, found: list[Any], tried: set[str],
                          report: list[dict[str, Any]]) -> list[quality.Pick]:
-        """Download the next few candidates and keep the best :data:`.quality.JUDGE_BATCH` by the free check, taking
-        turns between Commons and Openverse so the judge compares both."""
+        """Download up to :data:`.quality.POOL` candidates (taking turns between Commons and Openverse) and keep the
+        best :data:`.quality.JUDGE_BATCH` by the free check (:func:`.quality.shortlist`)."""
         picks: list[quality.Pick] = []
-        for candidate in _alternate([c for c in found if not c.keys & tried], lambda c: c.source)[:quality.JUDGE_BATCH + 2]:
+        for candidate in _alternate([c for c in found if not c.keys & tried], lambda c: c.source)[:quality.POOL]:
             tried |= candidate.keys
             try:
                 photo = await self.photos.download(candidate)
@@ -351,10 +355,11 @@ class Runner:
                 report.append(pick.report(0))
                 continue
             picks.append(pick)
-        picks = _alternate(sorted(picks, key=quality.Pick.rank, reverse=True), lambda p: p.candidate.source)
-        for extra in picks[quality.JUDGE_BATCH:]:
-            tried -= extra.candidate.keys  # not judged yet: it can be in the next round
-        return picks[:quality.JUDGE_BATCH]
+        chosen = quality.shortlist(picks)
+        for extra in picks:
+            if extra not in chosen:
+                tried -= extra.candidate.keys  # not judged yet: it can be in the next round
+        return chosen
 
     async def _use_photo(self, job: Job, page: dict[str, Any], file: str, used: set[str], pick: quality.Pick,
                          queries: list[str], book: dict[str, Any] | None) -> bool:

@@ -75,9 +75,10 @@ class BookgenConfig:
     openverse: bool = True
     openverse_client_id: str = ""
     openverse_client_secret: str = ""
-    # The vision judge that compares a page's best photo candidates (quality.py); "" means text_model.
+    # The vision judge that picks a page's most beautiful photo (quality.py). gpt-5.4 spots watermarks, clutter and
+    # off-topic photos that gpt-5.4-mini misses (about 10-14 cents a book against 3-4); "" means text_model.
     photo_judge: bool = True
-    judge_model: str = ""
+    judge_model: str = "gpt-5.4"
 
     @property
     def ready(self) -> bool:
@@ -104,7 +105,7 @@ class BookgenConfig:
             openverse_client_id=(env.get("OPENVERSE_CLIENT_ID") or "").strip(),
             openverse_client_secret=(env.get("OPENVERSE_CLIENT_SECRET") or "").strip(),
             photo_judge=_flag(env, "BOOKGEN_PHOTO_JUDGE", True),
-            judge_model=(env.get("BOOKGEN_JUDGE_MODEL") or "").strip(),
+            judge_model=(env.get("BOOKGEN_JUDGE_MODEL") or "").strip() or cls.judge_model,
         )
 
     def limits_json(self) -> dict[str, float | int]:

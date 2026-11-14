@@ -3,6 +3,7 @@ manifest of made books, and the grown-up and owner endpoints. No network, no Ope
 
 import asyncio
 import dataclasses
+import functools
 import hashlib
 import io
 import json
@@ -97,12 +98,15 @@ class FakeOpenAI:
             data = self.drafts.pop(0) if self.drafts else draft(self.level)
         elif schema_name == "photo_judge":
             images = [c for c in input[0]["content"] if c["type"] == "input_image"]
+            labels = [c["text"] for c in input[0]["content"] if c["type"] == "input_text" and c["text"].startswith("Photo ")]
+            assert all("(searched for: " in label for label in labels)
             assert all(c["detail"] == "low" and c["image_url"].startswith("data:image/jpeg;base64,") for c in images)
             self.judged.append(len(images))
             if self.judge_down:
                 raise OpenAIError("judge is down")
             scores = self.judge.pop(0) if self.judge else [7] * len(images)
-            return TextResult({"photos": [{"photo": i, "flaws": "none", "score": s if isinstance(s, int) else s[0],
+            return TextResult({"photos": [{"photo": i, "critique": "fine", "matches": True,
+                                           "score": s if isinstance(s, int) else s[0],
                                            "problems": [] if isinstance(s, int) else s[1]}
                                           for i, s in enumerate(scores)]}, 900, 60)
         elif schema_name == "picture_page":
@@ -138,6 +142,7 @@ class FakeOpenAI:
         pass
 
 
+@functools.cache
 def tiny_jpeg(color=(200, 120, 40), sharp=True):
     """A small photo; ``sharp`` ones pass the free quality check, others are a blur of one colour."""
     from PIL import Image
@@ -153,15 +158,16 @@ def tiny_jpeg(color=(200, 120, 40), sharp=True):
 
 
 class FakeCommons:
-    def __init__(self, missing=0, authors=None):
+    def __init__(self, missing=0, authors=None, per_query=2):
         self.missing = missing
+        self.per_query = per_query
         self.downloads = 0
         self.authors = authors or {}
         self.openverse = []
         self.book_sources = []
         self.blank = set()
 
-    async def candidates(self, queries, used, *, openverse=False, book_sources=None):
+    async def candidates(self, queries, used, *, openverse=False, book_sources=None, enough=6):
         self.openverse.append(openverse)
         self.book_sources.append(dict(book_sources or {}))
         # ``missing`` pages find nothing, with any of their queries.
@@ -170,7 +176,7 @@ class FakeCommons:
             self.blank |= set(queries)
         if set(queries) & self.blank:
             return []
-        titles = [f"File:{queries[0]} {n}.jpg" for n in range(2)]
+        titles = [f"File:{queries[0]} {n}.jpg" for n in range(self.per_query)]
         return [Candidate("commons", t, "https://example.org/" + t, frozenset({t}), 1.0, queries[0], {"title": t})
                 for t in titles if t not in used]
 
@@ -1824,8 +1830,8 @@ async def test_only_apps_that_name_the_source_get_openverse_photos(server, accou
 
 async def test_runner_keeps_an_openverse_credit(store, clock, fake_narrate):
     class FlickrToo(FakeCommons):
-        async def candidates(self, queries, used, *, openverse=False, book_sources=None):
-            found = await super().candidates(queries, used, openverse=openverse, book_sources=book_sources)
+        async def candidates(self, queries, used, *, openverse=False, book_sources=None, enough=6):
+            found = await super().candidates(queries, used, openverse=openverse, book_sources=book_sources, enough=enough)
             item = ov_item(queries[0].replace(" ", "-"), title=f"{queries[0]} on Flickr")
             if openverse:
                 found.insert(0, Candidate("openverse", item["title"], item["url"], frozenset({f"openverse:{item['id']}"}),
@@ -1944,11 +1950,15 @@ def _pick(score, quality_image=False, judge=None, problems=()):
     return quality.Pick(candidate, Photo(b"", "t", "a", "CC0", None, None), measured, verdict)
 
 
-def test_judge_scores_decide_and_commons_quality_images_get_a_small_boost():
+def test_the_most_beautiful_matching_photo_wins_and_commons_quality_images_get_a_boost():
     assert _pick(1.5).rank() > _pick(1.0).rank()  # no judge: the search and free scores
     assert _pick(0.5, judge=8).rank() > _pick(1.5, judge=7).rank()
     assert _pick(1.0, quality_image=True, judge=7).rank() > _pick(1.0, judge=7).rank()
-    assert _pick(1.0, judge=8).rank() > _pick(1.0, quality_image=True, judge=7).rank()
+    assert _pick(1.0, quality_image=True, judge=7).aesthetic() == 8 == _pick(1.0, judge=8).aesthetic()
+    assert _pick(1.0, judge=9).rank() > _pick(1.0, quality_image=True, judge=7).rank()
+    # Matching the sentence is a gate, not a score: a stunning photo of the wrong thing is never used.
+    assert quality.Verdict(10, [], "gorgeous sunset", matches=False).blocked
+    assert quality.Verdict(10, ["off_topic"]).blocked
     assert quality.Verdict(9, ["watermark"]).blocked and not quality.Verdict(5, ["cluttered"]).blocked
     # Problems the judge lists cost half a point each (at most one): a cluttered 7 with a small subject isn't "good".
     assert quality.Verdict(7, ["cluttered", "subject_small"]).effective == 6 < quality.GOOD_SCORE
@@ -1968,8 +1978,8 @@ async def test_the_judge_picks_the_higher_score_and_its_cost_is_recorded(store, 
     judged = [c for c in done.costs if c["step"] == "photo_judge"]
     pages = len(books.book(row.id).json["pages"])
     assert client.judged == [2] * pages and len(judged) == pages
-    assert judged[0]["model"] == CONFIG.text_model and judged[0]["in"] == 900 and judged[0]["out"] == 60
-    assert sum(c["usd"] for c in judged) == pytest.approx(pages * CostLog().tokens("x", CONFIG.text_model, 900, 60))
+    assert judged[0]["model"] == CONFIG.judge_model == "gpt-5.4" and judged[0]["in"] == 900 and judged[0]["out"] == 60
+    assert sum(c["usd"] for c in judged) == pytest.approx(pages * CostLog().tokens("x", "gpt-5.4", 900, 60))
 
 
 async def test_a_judge_that_fails_never_fails_the_book(store, clock, fake_narrate):
@@ -2022,3 +2032,45 @@ def test_search_words_drop_words_about_the_photo():
     assert search_words("palm tree Honolulu real photo") == "palm tree Honolulu"
     assert search_words("Pictures of Waikiki Beach") == "of Waikiki Beach"
     assert search_words("Diamond Head") == "Diamond Head" and search_words("photo") == "photo"
+
+
+def test_the_judge_asks_for_artistic_quality_with_anchors():
+    rubric = quality.JUDGE_INSTRUCTIONS
+    for words in ("composition", "golden hour", "9-10 award-winning or postcard quality", "7-8 polished",
+                  "5-6 an ordinary snapshot", "4 or less poor", "tourist snapshots", "tilted horizon", "documentary"):
+        assert words in rubric, words
+    item = quality.JUDGE_SCHEMA["properties"]["photos"]["items"]
+    assert item["required"] == ["photo", "critique", "matches", "score", "problems"]
+    assert {"watermark", "people_main_subject", "off_topic"} <= set(quality.BLOCKING)
+
+
+async def test_a_big_pool_is_downloaded_and_the_best_eight_are_judged_in_one_call(store, clock, fake_narrate):
+    books = make_books(store, clock)
+    client = FakeOpenAI(judge=[[5, 5, 5, 5, 5, 5, 9, 5]])
+    commons = FakeCommons(per_query=14)
+    job, row = books.queue("acct", REQUEST)
+    await make_runner(books, client=client, commons=commons).run_once()
+    assert books.job(job.id).status == "done"
+    pages = len(books.book(row.id).json["pages"])
+    assert client.judged[0] == quality.JUDGE_BATCH == 8 and len(client.judged) == pages  # one call a page
+    assert commons.downloads == pages * quality.POOL == pages * 12
+    first = books.book(row.id).json["pages"][0]["photo"]["commonsTitle"]
+    assert first == f"File:{draft(2)['pages'][0]['photo_queries'][0]} 6.jpg"  # the one the judge liked best
+
+
+def test_the_shortlist_keeps_the_best_and_both_sources():
+    def pick(source, score, good=False, reject=""):
+        candidate = Candidate(source, f"{source}{score}", "u", frozenset(), score, "q", {}, good)
+        measured = quality.Quality(800, 120, 50, 0, 0, 90, 1400, colourfulness=40, score=0.9, reject=reject)
+        return quality.Pick(candidate, Photo(b"", "t", "a", "CC0", None, None), measured)
+
+    commons = [pick("commons", 1.5 - i / 10) for i in range(9)]
+    openverse = [pick("openverse", 1.0 - i / 10) for i in range(4)]
+    chosen = quality.shortlist(commons + openverse)
+    assert len(chosen) == 8 and sum(p.candidate.source == "openverse" for p in chosen) == 3  # not forced to 4/4
+    assert chosen[0] is commons[0] and commons[4] in chosen and commons[5] not in chosen
+    # A Commons quality image moves up; a blurry photo never makes it.
+    starred, blurry = pick("commons", 0.9, good=True), pick("commons", 9.0, reject="blurry")
+    chosen = quality.shortlist(commons + openverse + [starred, blurry])
+    assert starred in chosen and blurry not in chosen
+    assert quality.shortlist([pick("openverse", 1.0)]) and quality.appeal(commons[0].measured) > 0

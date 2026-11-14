@@ -147,8 +147,8 @@ The server can write a whole new book in the cloud: text, real photos (Wikimedia
 Creative Commons sites through Openverse) and word-timed narration. The text
 is written at one of three reading levels (ages 4–5, 5–7, 7–9) and fact-checked with web search. Everything is
 moderated, and moderation fails closed. It runs for free inside the existing web service: one job at a time, with
-a Postgres lease so a restart picks up where it stopped. Files are stored in a private R2 bucket. A book costs
-about $0.13. Milo's talk rules follow the book's level. A grown-up asks for one from **Make a book** in the
+a Postgres lease so a restart picks up where it stopped. Files are stored in a private R2 bucket. A vision model
+picks the most beautiful matching photo for each page. A book costs about $0.25. Milo's talk rules follow the book's level. A grown-up asks for one from **Make a book** in the
 Grown-ups corner (level, section, name and an optional "what should it be about?"); a placeholder cover shows the
 progress on the shelf, and the finished book looks like any other; the Grown-ups corner lists made books, each with
 a menu to hide, report or delete it and its photo credits. A family can make a book about a character, toy or game
