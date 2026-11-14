@@ -8,12 +8,13 @@ struct ArrangeLibraryView: View {
     @Environment(LibraryStore.self) private var library
     @Environment(AccountStore.self) private var account
     @Environment(ContentStore.self) private var content
+    @Environment(MadeBookLibrary.self) private var made
     @State private var confirmShowAll = false
     @State private var confirmRestore = false
 
+    /// The same books and sections as the shelf (the server's layout), made books and their sections too.
     private var shelves: [CityShelf] {
-        let books = account.shelf(content.books)
-        return library.prefs.arrangedShelves(DemoLaunch.current?.leveled(books) ?? books)
+        library.arrangedShelves(account.shelf(content.books, made: made.books))
     }
 
     var body: some View {
@@ -72,7 +73,7 @@ struct ArrangeLibraryView: View {
     }
 
     private func sectionRow(_ shelf: CityShelf, in shelves: [CityShelf]) -> some View {
-        let hidden = shelf.books.filter { library.prefs.isHidden($0.id) }.count
+        let hidden = shelf.books.filter { library.isHidden($0.id) }.count
         let index = shelves.firstIndex(of: shelf) ?? 0
         let detail = hidden == 0 ? Self.count(shelf.books.count) : "\(Self.count(shelf.books.count)), \(hidden) hidden"
         return HStack(spacing: 12) {
@@ -96,7 +97,7 @@ struct ArrangeLibraryView: View {
     }
 
     private func bookRow(_ book: Book, in shelf: CityShelf) -> some View {
-        let hidden = library.prefs.isHidden(book.id)
+        let hidden = library.isHidden(book.id)
         let index = shelf.books.firstIndex(of: book) ?? 0
         let ids = shelf.books.map(\.id)
         let toggle = hidden ? "Show \(book.coverTitle)" : "Hide \(book.coverTitle)"

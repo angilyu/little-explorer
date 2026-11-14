@@ -1,0 +1,228 @@
+{
+  "about": "What the 1.2.6 build relies on for its shelf: GET /account/shelf lays out the shelf (sections in order with their books; see little_explorer_agent/shelf.py) and PUT /account/shelf saves an Arrange library change and answers with the new layout. Each section is {key, name, flag, flag_book, books: [{id, hidden, making?}]}; the app skips ids it doesn't have and adds books the layout doesn't list. When the server answers 404 (a server from before 1.2.6), the app uses GET/PUT /account/library and lays the shelf out itself. Responses may gain fields; never remove or retype one, and never change a status. Add a new file for the next release instead of editing this one.",
+  "app": "1.2.6",
+  "commit": "(this PR)",
+  "headers": {
+    "X-App-Version": "1.2.6",
+    "X-App-Build": "70",
+    "X-App-Channel": "testflight"
+  },
+  "channels": [
+    "testflight",
+    "appstore"
+  ],
+  "requests": [
+    {
+      "name": "sign-in code",
+      "method": "POST",
+      "path": "/auth/start",
+      "body": {
+        "email": "family@example.com",
+        "purpose": "sign_in"
+      },
+      "status": 200,
+      "shape": {
+        "resend_after_s": "int"
+      }
+    },
+    {
+      "name": "sign in",
+      "method": "POST",
+      "path": "/auth/verify",
+      "body": {
+        "email": "family@example.com",
+        "code": "<code>",
+        "device": {
+          "id": "BDFF5D95-6EBF-47BC-AA79-5FE554F0502B",
+          "name": "Leo's iPad",
+          "model": "iPad13,18"
+        }
+      },
+      "status": 200,
+      "save_token": true,
+      "shape": {
+        "token": "str",
+        "account": {
+          "id": "str",
+          "email": "str",
+          "books": "list",
+          "all_books": "bool",
+          "milo_consent": "bool?"
+        },
+        "claimed_device": "bool"
+      }
+    },
+    {
+      "name": "account",
+      "method": "GET",
+      "path": "/account",
+      "session": true,
+      "status": 200,
+      "shape": {
+        "account": {
+          "id": "str",
+          "email": "str",
+          "books": "list",
+          "all_books": "bool",
+          "milo_consent": "bool?"
+        }
+      }
+    },
+    {
+      "name": "shelf",
+      "method": "GET",
+      "path": "/account/shelf",
+      "session": true,
+      "status": 200,
+      "shape": {
+        "shelf": {
+          "format": "int",
+          "sections": "list"
+        },
+        "library": {
+          "v": "int",
+          "sections": "dict?",
+          "books": "dict",
+          "hidden": "dict",
+          "updated_at": "str?"
+        }
+      }
+    },
+    {
+      "name": "arrange the shelf",
+      "method": "PUT",
+      "path": "/account/shelf",
+      "session": true,
+      "body": {
+        "sections": {
+          "order": [
+            "Matt’s",
+            "Paris"
+          ],
+          "t": 1792000000000
+        },
+        "books": {
+          "Paris": {
+            "order": [
+              "paris-food",
+              "paris"
+            ],
+            "t": 1792000000000
+          }
+        },
+        "hidden": {
+          "london": {
+            "on": true,
+            "t": 1792000000000
+          }
+        }
+      },
+      "status": 200,
+      "shape": {
+        "shelf": {
+          "format": "int",
+          "sections": "list"
+        },
+        "library": {
+          "v": "int",
+          "sections": "dict?",
+          "books": "dict",
+          "hidden": "dict",
+          "updated_at": "str?"
+        }
+      }
+    },
+    {
+      "name": "a change the server refuses",
+      "method": "PUT",
+      "path": "/account/shelf",
+      "session": true,
+      "body": {
+        "sections": {
+          "order": "Paris",
+          "t": 1
+        }
+      },
+      "status": 400,
+      "shape": {
+        "error": "str",
+        "message": "str"
+      }
+    },
+    {
+      "name": "arrangement (fallback for servers before 1.2.6)",
+      "method": "GET",
+      "path": "/account/library",
+      "session": true,
+      "status": 200,
+      "shape": {
+        "library": {
+          "v": "int",
+          "sections": "dict?",
+          "books": "dict",
+          "hidden": "dict",
+          "updated_at": "str?"
+        }
+      }
+    },
+    {
+      "name": "made books",
+      "method": "GET",
+      "path": "/account/content/manifest.json",
+      "session": true,
+      "status": 200,
+      "shape": {
+        "format": "int",
+        "version": "str",
+        "order": "list",
+        "files": "dict"
+      }
+    },
+    {
+      "name": "sign out",
+      "method": "POST",
+      "path": "/auth/signout",
+      "session": true,
+      "body": {},
+      "status": 200,
+      "shape": {}
+    },
+    {
+      "name": "shelf after signing out",
+      "method": "GET",
+      "path": "/account/shelf",
+      "session": true,
+      "status": 401,
+      "shape": {
+        "error": "str"
+      }
+    }
+  ],
+  "agent": {
+    "context_topic": "context",
+    "star_topic": "milo.star",
+    "ended_attribute": "milo.ended",
+    "page_attributes": [
+      "book",
+      "page",
+      "page_number",
+      "city",
+      "page_text"
+    ],
+    "star_message": {
+      "id": "str",
+      "awarded_at": "str",
+      "book": "str",
+      "page": "str",
+      "city": "str",
+      "kind": "str",
+      "long": "bool",
+      "why_how": "bool",
+      "followup": "bool",
+      "stars": "int",
+      "words": "int",
+      "reason": "str",
+      "session_total": "int"
+    }
+  }
+}

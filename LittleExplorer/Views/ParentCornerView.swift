@@ -11,6 +11,7 @@ struct ParentCornerView: View {
     @Environment(AccountStore.self) private var account
     @Environment(VoiceModeController.self) private var voice
     @Environment(LibraryStore.self) private var library
+    @Environment(MadeBookLibrary.self) private var made
     @State private var arranging = DemoLaunch.current?.openArrange == true
     @State private var miloConsent: MiloConsentView.Purpose? = DemoLaunch.current?.milo == .turnOn ? .ask : nil
     @State private var miloMessage: String?
@@ -30,7 +31,7 @@ struct ParentCornerView: View {
             List {
                 accountSection
                 librarySection
-                MadeBooksSection(books: books)
+                MadeBooksSection()
                 miloSection
                 coinSection
 
@@ -67,7 +68,7 @@ struct ParentCornerView: View {
             }
             .navigationTitle("Grown-ups corner")
             .navigationDestination(isPresented: $arranging) { ArrangeLibraryView() }
-            .navigationDestination(isPresented: $makingBook) { MakeBookView(sections: MadeBooksSection.sections(books)) }
+            .navigationDestination(isPresented: $makingBook) { MakeBookView(sections: MadeBooksSection.sections(library: library, account: account, content: content, made: made)) }
             .navigationDestination(item: $madeBookMenu) { MadeBookMenuView(book: $0) }
             .task {
                 await loadCoins()

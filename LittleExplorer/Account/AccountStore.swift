@@ -193,6 +193,13 @@ final class AccountStore {
 
     func shelf(_ all: [Book]) -> [Book] { account?.shelf(all) ?? [] }
 
+    /// Every book on the signed-in account's shelf, hidden ones too and not yet arranged: its catalog books,
+    /// then its made books. The shelf and "Arrange library" both start from this, so they show the same sections.
+    func shelf(_ all: [Book], made: [Book]) -> [Book] {
+        let books = BookLibrary.shelfBooks(catalog: shelf(all), made: made)
+        return DemoLaunch.current?.leveled(books) ?? books
+    }
+
     func sendCode(to email: String) async throws -> Int {
         let email = email.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         guard Account.looksLikeEmail(email) else { throw AccountError.badEmail }

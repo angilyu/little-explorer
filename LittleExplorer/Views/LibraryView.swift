@@ -3,6 +3,8 @@ import SwiftUI
 struct LibraryView: View {
     /// The books on his shelf: the account's, arranged by a grown-up, without the hidden ones.
     let books: [Book]
+    /// `books` in their sections, as the server's layout has them; grouped by section here when nil.
+    var shelves: [CityShelf]? = nil
     /// Every book of the account in the arranged order, hidden ones too: the Passport and badges count
     /// these (hiding a book doesn't take away what he earned), and the grown-ups corner lists them.
     var allBooks: [Book]? = nil
@@ -31,7 +33,7 @@ struct LibraryView: View {
                 ScrollView {
                     VStack(alignment: .leading, spacing: regular ? 32 : 20) {
                         header
-                        ForEach(BookLibrary.rows(BookLibrary.shelves(books), columns: columns), id: \.self) { row in
+                        ForEach(BookLibrary.rows(shelves ?? BookLibrary.shelves(books), columns: columns), id: \.self) { row in
                             shelfRow(row)
                         }
                         grownUpsButton

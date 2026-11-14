@@ -2,7 +2,8 @@ import Foundation
 
 struct Book: Codable, Identifiable, Hashable {
     let id: String
-    let city: String
+    /// The book's shelf section: the city, "Travel", or the section a grown-up picked for a made book.
+    var city: String
     let country: String
     let flag: String
     /// Bundled flag picture shown next to the city name (emoji flags don't render everywhere).

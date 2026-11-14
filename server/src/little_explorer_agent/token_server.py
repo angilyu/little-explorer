@@ -55,7 +55,10 @@ read-aloud use, a daily app open; see :mod:`.reading`) for the session's account
 "milo_pages", "listened", "days"}}``).
 ``GET /account/library`` returns how a grown-up arranged the account's shelf (hidden books, the order
 of the sections and of the books in each; see :mod:`.library`) as ``{"library": {...}}`` and
-``PUT /account/library`` merges a device's changes into it and returns the result.
+``PUT /account/library`` merges a device's changes into it and returns the result. From app 1.2.6,
+``GET /account/shelf`` returns the whole shelf as the server lays it out (sections in order, each with its
+books, made books and books being made too; see :mod:`.shelf`) as ``{"shelf": {...}, "library": {...}}``, and
+``PUT /account/shelf`` takes the same changes as ``PUT /account/library`` and answers the same way.
 Errors are ``{"error": "bad_email" | "bad_code" | "expired" | "too_many" |
 "signed_out" | "email_off" | "email_failed", ...}``. The owner manages accounts with
 ``/admin/accounts...`` and saves everything with ``GET /admin/backup``.
@@ -109,6 +112,7 @@ from typing import Any
 from aiohttp import web
 
 from . import agent_name
+from . import shelf as shelf_layout
 from .accounts import Account, Accounts, AuthError, Session, normalize_email, valid_book_id
 from .app_versions import MADE_BOOKS_VERSION, OPENVERSE_PHOTOS_VERSION, ClientInfo, VersionSettings
 from .bookgen import manifest as made_files
@@ -843,6 +847,47 @@ async def handle_account_library(request: web.Request) -> web.Response:
     return web.json_response({"library": library})
 
 
+async def handle_account_shelf(request: web.Request) -> web.Response:
+    """The account's shelf laid out (see :mod:`.shelf`); a PUT first saves arrangement changes as ``PUT
+    /account/library`` does."""
+    session = await _session(request)
+    if isinstance(session, web.Response):
+        return session
+    prefs = request.app[LIBRARY]
+    if request.method == "GET":
+        library = await asyncio.to_thread(prefs.get, session.account.id)
+    else:
+        body = await _json_body(request)
+        if body is None:
+            return web.json_response({"error": "bad body"}, status=400)
+        try:
+            library = await asyncio.to_thread(prefs.put, session.account.id, body)
+        except LibraryError as exc:
+            return web.json_response(exc.as_json(), status=exc.status)
+    shelf = await _shelf(request, session.account, library)
+    return web.json_response({"shelf": shelf, "library": library}, headers={"Cache-Control": "no-store"})
+
+
+async def _shelf(request: web.Request, account: Account, library: dict[str, Any]) -> dict[str, Any]:
+    """The books the calling app shows for ``account`` (as its account JSON and content manifest have them),
+    laid out by :func:`.shelf.layout`."""
+    bookgen = request.app[BOOKGEN]
+    info = bookgen.catalog_books()
+    granted = set(account.shelf)
+    catalog = [shelf_layout.ShelfBook(b, info[b]["city"], info[b]["flag"])
+               for b in bookgen.static["order"] if b in granted and info[b]["city"]]
+    made: list[shelf_layout.ShelfBook] = []
+    making: list[shelf_layout.ShelfBook] = []
+    if _sees_made_books(request):
+        rows = await bookgen.shelf_rows(account.id, openverse=_credits_openverse(request))
+        made = [shelf_layout.ShelfBook(r.id, r.json.get("city") or r.section, r.json.get("flag") or "")
+                for r in rows if (r.json.get("city") or r.section)]
+        jobs = await asyncio.to_thread(bookgen.books.account_jobs, account.id, 5)
+        making = [shelf_layout.ShelfBook(f"making-{j.id}", j.input.get("section", ""), making=True)
+                  for j in reversed(jobs) if j.status in ACTIVE and j.kind == "book" and j.input.get("section")]
+    return shelf_layout.layout(catalog, made, making, library)
+
+
 # -- grown-ups: making books -----------------------------------------------------------------------
 
 NOT_ALLOWED = "Making books isn't turned on for this account yet."
@@ -1478,6 +1523,8 @@ def create_app(
     app.router.add_post("/account/reading", handle_account_reading)
     app.router.add_get("/account/library", handle_account_library)
     app.router.add_put("/account/library", handle_account_library)
+    app.router.add_get("/account/shelf", handle_account_shelf)
+    app.router.add_put("/account/shelf", handle_account_shelf)
     app.router.add_get("/account/bookgen", handle_account_bookgen)
     app.router.add_get("/account/books", handle_account_books)
     app.router.add_post("/account/books", handle_account_books)

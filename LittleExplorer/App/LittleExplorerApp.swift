@@ -23,22 +23,22 @@ struct LittleExplorerApp: App {
         voice.onMiloOff = { Task { await account.refresh() } }
         _account = State(initialValue: account)
         _reading = State(initialValue: ReadingActivity.live(account: account))
-        _library = State(initialValue: LibraryStore.live(account: account))
         let made = MadeBookLibrary.live(account: account)
         let maker = BookMaker.live(account: account)
-        maker.onReady = { await made.sync(force: true) }
+        let library = LibraryStore.live(account: account)
+        maker.onReady = {
+            await made.sync(force: true)
+            // The server's layout of the shelf now has the new book.
+            await library.sync()
+        }
+        _library = State(initialValue: library)
         _made = State(initialValue: made)
         _maker = State(initialValue: maker)
         _voice = State(initialValue: voice)
     }
 
     /// The account's catalog books, then its made books (the server already sent only the ones on its shelf).
-    private var shelf: [Book] {
-        let catalog = account.shelf(content.books)
-        let ids = Set(catalog.map(\.id))
-        let all = catalog + made.books.filter { !ids.contains($0.id) }
-        return DemoLaunch.current?.leveled(all) ?? all
-    }
+    private var shelf: [Book] { account.shelf(content.books, made: made.books) }
 
     /// Books being made show on the shelf as placeholder covers, in their section.
     private var placeholders: [Book] { maker.placeholders.map(BookMaker.placeholder(for:)) }
@@ -69,7 +69,9 @@ struct LittleExplorerApp: App {
                             .ignoresSafeArea()
                     )
                 } else if account.isSignedIn {
-                    LibraryView(books: library.visible(shelf) + placeholders, allBooks: library.arranged(shelf))
+                    // Placeholders go where the server's layout puts them (or the device's arrangement, without one).
+                    let shelves = library.visibleShelves(shelf + placeholders)
+                    LibraryView(books: shelves.flatMap(\.books), shelves: shelves, allBooks: library.arranged(shelf))
                 } else {
                     WelcomeView(books: content.books)
                 }
@@ -93,6 +95,10 @@ struct LittleExplorerApp: App {
                     if let demo = DemoLaunch.current {
                         library.switchAccount(account.account?.id)
                         library.seedDemo(demo.library)
+                        if let server = demo.shelfServer, let token = demo.shelfToken,
+                           let reply = try? await LibraryService(baseURL: server).sync(nil, token: token) {
+                            library.seedDemo(reply.library, layout: reply.shelf)
+                        }
                         if let make = demo.make {
                             if [.placeholder, .made, .menu, .credits].contains(make) { made.seedDemo([MakeDemo.book()].compactMap { $0 }) }
                             maker.seedDemo(status: MakeDemo.status(make), ownBooks: [MakeDemo.bookId])

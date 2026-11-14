@@ -11,6 +11,7 @@ from __future__ import annotations
 import asyncio
 import contextlib
 import copy
+import json
 import logging
 from pathlib import Path
 from typing import Any
@@ -39,6 +40,7 @@ class BookgenService:
         self.storage = storage
         self.static = copy.deepcopy(static_manifest)
         self.static_files = static_files
+        self._catalog_books: dict[str, dict[str, Any]] | None = None
         # The public manifest: the hand-made catalog, served as-is.
         self.manifest: dict[str, Any] = static_manifest
         self.runner: Runner | None = None
@@ -67,6 +69,30 @@ class BookgenService:
         shelf = await asyncio.to_thread(self.books.shelf_books, account_id)
         shelf = [(row, assets) for row, assets in shelf if openverse or not uses_openverse(row.json)]
         return account_files.account_manifest(shelf, self.static, self.url_for)
+
+    async def shelf_rows(self, account_id: str, *, openverse: bool = True) -> list[BookRow]:
+        """The made books the account's content manifest lists (see :meth:`account_manifest`), for the shelf
+        layout (``GET /account/shelf``)."""
+        if self.storage is None:
+            return []
+        catalog = set(self.static.get("order", []))
+        shelf = await asyncio.to_thread(self.books.shelf_books, account_id)
+        return [row for row, _ in shelf if row.id not in catalog and row.json.get("pages")
+                and (openverse or not uses_openverse(row.json))]
+
+    def catalog_books(self) -> dict[str, dict[str, Any]]:
+        """Each hand-made book's ``city`` and ``flag``, read once from the catalog being served."""
+        if self._catalog_books is None:
+            info: dict[str, dict[str, Any]] = {}
+            for book_id in self.static.get("order", []):
+                path = self.static_files.get(f"Books/{book_id}.json")
+                try:
+                    data = json.loads(path.read_text(encoding="utf-8")) if path else {}
+                except (OSError, ValueError):
+                    data = {}
+                info[book_id] = {"city": data.get("city") or "", "flag": data.get("flag") or ""}
+            self._catalog_books = info
+        return self._catalog_books
 
     async def shelf_book(self, account_id: str, book_id: str, *, openverse: bool = True
                          ) -> tuple[BookRow, dict[str, Asset]] | None:

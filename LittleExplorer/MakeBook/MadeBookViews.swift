@@ -60,13 +60,11 @@ struct PlaceholderCoverView: View {
 
 /// The Grown-ups corner's part for made books: "Make a book", books being made, and each made book's menu.
 struct MadeBooksSection: View {
-    /// Every book on the shelf, for the sections a new book can go in.
-    let books: [Book]
-
     @Environment(BookMaker.self) private var maker
     @Environment(MadeBookLibrary.self) private var made
     @Environment(LibraryStore.self) private var library
     @Environment(AccountStore.self) private var account
+    @Environment(ContentStore.self) private var content
 
     private var canMake: Bool { account.account?.canGenerate == true || maker.canMake }
 
@@ -75,7 +73,7 @@ struct MadeBooksSection: View {
             Section {
                 if canMake {
                     NavigationLink {
-                        MakeBookView(sections: Self.sections(books))
+                        MakeBookView(sections: Self.sections(library: library, account: account, content: content, made: made))
                     } label: {
                         LabeledContent {
                             Text(maker.status.map { "\($0.usage.left) left today" } ?? "")
@@ -127,15 +125,14 @@ struct MadeBooksSection: View {
 
     private func subtitle(_ book: Book) -> String {
         var parts = ["Level \(book.readingLevel)", book.city]
-        if library.prefs.isHidden(book.id) { parts.append("Hidden") }
+        if library.isHidden(book.id) { parts.append("Hidden") }
         if !maker.ownBooks.contains(book.id) { parts.append("Shared with this account") }
         return parts.joined(separator: " · ")
     }
 
-    /// The shelf's sections in order, without repeats.
-    static func sections(_ books: [Book]) -> [String] {
-        var seen = Set<String>()
-        return books.map(\.city).filter { seen.insert($0).inserted }
+    /// The shelf's sections in order, as the server's layout has them (hidden books' too).
+    static func sections(library: LibraryStore, account: AccountStore, content: ContentStore, made: MadeBookLibrary) -> [String] {
+        library.arrangedShelves(account.shelf(content.books, made: made.books)).map(\.city)
     }
 }
 
@@ -187,7 +184,7 @@ struct MadeBookMenuView: View {
                     }
                 }
                 Toggle(isOn: Binding(
-                    get: { !library.prefs.isHidden(book.id) },
+                    get: { !library.isHidden(book.id) },
                     set: { library.setHidden(book.id, !$0) }
                 )) {
                     Label("Show on the shelf", systemImage: "eye")
