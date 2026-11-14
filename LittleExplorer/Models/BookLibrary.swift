@@ -108,9 +108,11 @@ enum BookLibrary {
 struct CityShelf: Identifiable, Hashable {
     let city: String
     var books: [Book]
+    /// Whose flag the section shows (the server's layout says); its first book otherwise.
+    var flagId: String? = nil
 
     var id: String { city }
-    var flagBook: Book { books[0] }
+    var flagBook: Book { books.first { $0.id == flagId } ?? books[0] }
     /// The general Travel shelf (flights, packing, hotels…) rather than a place.
     var isTravel: Bool { books.allSatisfy(\.isTravel) }
 }

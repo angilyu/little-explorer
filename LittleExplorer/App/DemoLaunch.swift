@@ -34,7 +34,8 @@ import Foundation
 /// shows a book being made on the shelf; `-demoMake made` shows a finished made book on the shelf; `-demoMake
 /// menu` opens a made book's grown-up menu and `-demoMake credits` its photo credits. The account may make books,
 /// and nothing is sent to the server. `-demoMadeSection "Matt’s"` puts the demo made book in that shelf section
-/// (Paris otherwise). `-demoCredit` (with `-demoBook` of a made book) opens the page's photo credit.
+/// (Paris otherwise). `-demoShelfServer http://localhost:8080 -demoShelfToken <session>` lays the shelf out as that
+/// (local, test) server's `GET /account/shelf` does for the session's account (read only). `-demoCredit` (with `-demoBook` of a made book) opens the page's photo credit.
 /// `-demoUpgrade required` shows the update screen for a build that's no longer supported; `-demoUpgrade
 /// recommended` shows the "Maybe later" update prompt.
 struct DemoLaunch: Equatable {
@@ -91,6 +92,9 @@ struct DemoLaunch: Equatable {
     var make: Make?
     /// The shelf section of the demo made book.
     var madeSection: String?
+    /// A server to fetch the shelf layout from, with a session token for it.
+    var shelfServer: URL?
+    var shelfToken: String?
 
     /// `books` with the demo's reading levels.
     func leveled(_ books: [Book]) -> [Book] {
@@ -177,6 +181,8 @@ struct DemoLaunch: Equatable {
             found = true
         }
         if let section = value(after: "-demoMadeSection") { demo.madeSection = section; found = true }
+        if let server = value(after: "-demoShelfServer").flatMap(URL.init(string:)) { demo.shelfServer = server; found = true }
+        if let token = value(after: "-demoShelfToken") { demo.shelfToken = token }
         if arguments.contains("-demoArrange") { demo.openArrange = true; demo.openParent = true; found = true }
         if let screen = value(after: "-demoAccount").flatMap(AccountScreen.init(rawValue:)) {
             demo.accountScreen = screen; found = true

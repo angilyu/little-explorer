@@ -155,7 +155,8 @@ struct LibraryPrefs: Codable, Equatable {
     }
 }
 
-/// `GET` and `PUT /account/library`.
+/// `GET` and `PUT /account/shelf`: the arrangement and the shelf the server lays out with it. A server from
+/// before 1.2.6 answers 404 there, so the app falls back to `/account/library` (the arrangement only).
 struct LibraryService {
     var baseURL: URL
     var session: URLSession = .shared
@@ -167,28 +168,41 @@ struct LibraryService {
         case later
     }
 
-    private struct Reply: Decodable { let library: LibraryPrefs }
+    /// Sends `prefs` when given (the server merges them in) or just fetches; returns the account's settings and,
+    /// from a 1.2.6 server, its shelf layout.
+    func sync(_ prefs: LibraryPrefs?, token: String) async throws -> LibraryReply {
+        if let reply = try await send("account/shelf", prefs, token: token) { return reply }
+        guard let reply = try await send("account/library", prefs, token: token) else { throw Failure.later }
+        return reply
+    }
 
-    /// Sends `prefs` when given (the server merges them in) or just fetches; returns the account's settings.
-    func sync(_ prefs: LibraryPrefs?, token: String) async throws -> LibraryPrefs {
+    /// nil when the server doesn't have `path`.
+    private func send(_ path: String, _ prefs: LibraryPrefs?, token: String) async throws -> LibraryReply? {
         let service = AccountService(baseURL: baseURL, session: session)
-        let request = prefs.map { service.request("account/library", method: "PUT", token: token, body: $0.payload) }
-            ?? service.request("account/library", method: "GET", token: token)
+        let request = prefs.map { service.request(path, method: "PUT", token: token, body: $0.payload) }
+            ?? service.request(path, method: "GET", token: token)
         guard let (data, response) = try? await session.data(for: request) else { throw Failure.later }
         let status = (response as? HTTPURLResponse)?.statusCode ?? 0
+        if status == 404 { return nil }
         if [400, 413].contains(status) { throw Failure.refused }
-        guard status == 200, let reply = try? JSONDecoder().decode(Reply.self, from: data) else { throw Failure.later }
-        return reply.library
+        guard status == 200, let reply = try? JSONDecoder().decode(LibraryReply.self, from: data) else { throw Failure.later }
+        return reply
     }
 }
 
-/// The signed-in account's ``LibraryPrefs``: a copy saved on the device per account (so the shelf is
-/// arranged offline), changes saved at once and sent to the server, and the server's copy fetched when
-/// the app opens or comes back. Forgotten at sign-out. In a demo launch nothing is saved or sent.
+/// The signed-in account's ``LibraryPrefs`` and the ``ShelfLayout`` the server made with them: a copy saved on
+/// the device per account (so the shelf shows offline and at launch), changes saved at once and sent to the
+/// server, and the server's copy fetched when the app opens or comes back. Forgotten at sign-out. In a demo
+/// launch nothing is saved or sent.
+///
+/// The shelf and "Arrange library" draw the server's layout. Without one (a server from before 1.2.6, or never
+/// reached), or while a change hasn't reached the server yet, the device arranges the shelf itself from the prefs.
 @MainActor
 @Observable
 final class LibraryStore {
     private(set) var prefs = LibraryPrefs()
+    /// The server's layout of the shelf, as of the last sync.
+    private(set) var layout: ShelfLayout?
     private(set) var accountId: String?
     /// Changed here and not yet sent.
     private(set) var dirty = false
@@ -196,7 +210,7 @@ final class LibraryStore {
     @ObservationIgnored private let enabled: Bool
     @ObservationIgnored private let defaults: UserDefaults
     @ObservationIgnored private let token: () -> String?
-    @ObservationIgnored private let send: (LibraryPrefs?, String) async throws -> LibraryPrefs
+    @ObservationIgnored private let send: (LibraryPrefs?, String) async throws -> LibraryReply
     @ObservationIgnored private let now: () -> Date
     @ObservationIgnored private var syncing = false
     @ObservationIgnored private var syncAgain = false
@@ -205,7 +219,7 @@ final class LibraryStore {
         enabled: Bool = true,
         defaults: UserDefaults = .standard,
         token: @escaping () -> String?,
-        send: @escaping (LibraryPrefs?, String) async throws -> LibraryPrefs,
+        send: @escaping (LibraryPrefs?, String) async throws -> LibraryReply,
         now: @escaping () -> Date = Date.init
     ) {
         self.enabled = enabled
@@ -218,6 +232,7 @@ final class LibraryStore {
     private struct Saved: Codable {
         var prefs: LibraryPrefs
         var dirty: Bool
+        var layout: ShelfLayout?
     }
 
     private func key(_ accountId: String) -> String { AccountKeys.key("library.v1", accountId) }
@@ -228,6 +243,7 @@ final class LibraryStore {
         let saved = enabled ? accountId.flatMap { defaults.data(forKey: key($0)) }.flatMap { try? JSONDecoder().decode(Saved.self, from: $0) } : nil
         prefs = saved?.prefs ?? LibraryPrefs()
         dirty = saved?.dirty ?? false
+        layout = saved?.layout
     }
 
     func forgetAccount(_ accountId: String) {
@@ -235,18 +251,39 @@ final class LibraryStore {
         if self.accountId == accountId {
             self.accountId = nil
             prefs = LibraryPrefs()
+            layout = nil
             dirty = false
         }
     }
 
     /// Demo launches start from these settings (nothing is saved).
-    func seedDemo(_ prefs: LibraryPrefs) {
+    func seedDemo(_ prefs: LibraryPrefs, layout: ShelfLayout? = nil) {
         guard !enabled else { return }
         self.prefs = prefs
+        self.layout = layout
     }
 
-    func arranged(_ books: [Book]) -> [Book] { prefs.arranged(books) }
-    func visible(_ books: [Book]) -> [Book] { prefs.visible(books) }
+    /// The layout the shelf follows: the server's, unless this device changed something it hasn't seen yet.
+    private var currentLayout: ShelfLayout? { dirty ? nil : layout }
+
+    /// Every book in its section, in order, hidden ones too (what "Arrange library" lists).
+    func arrangedShelves(_ books: [Book]) -> [CityShelf] {
+        currentLayout?.shelves(books, fallback: prefs) ?? prefs.arrangedShelves(books)
+    }
+
+    func isHidden(_ bookId: String) -> Bool { currentLayout?.isHidden(bookId) ?? prefs.isHidden(bookId) }
+
+    /// What the child sees: the arranged sections without hidden books (a section with none left goes too).
+    func visibleShelves(_ books: [Book]) -> [CityShelf] {
+        arrangedShelves(books).compactMap { shelf in
+            var shelf = shelf
+            shelf.books.removeAll { isHidden($0.id) }
+            return shelf.books.isEmpty ? nil : shelf
+        }
+    }
+
+    func arranged(_ books: [Book]) -> [Book] { arrangedShelves(books).flatMap(\.books) }
+    func visible(_ books: [Book]) -> [Book] { visibleShelves(books).flatMap(\.books) }
 
     // MARK: - Changes
 
@@ -282,7 +319,7 @@ final class LibraryStore {
     }
 
     private func save() {
-        guard enabled, let accountId, let data = try? JSONEncoder().encode(Saved(prefs: prefs, dirty: dirty)) else { return }
+        guard enabled, let accountId, let data = try? JSONEncoder().encode(Saved(prefs: prefs, dirty: dirty, layout: layout)) else { return }
         defaults.set(data, forKey: key(accountId))
     }
 
@@ -302,18 +339,20 @@ final class LibraryStore {
             do {
                 let reply = try await send(sending ? sent : nil, token)
                 guard self.accountId == accountId else { return }
+                layout = reply.shelf
                 if prefs == sent {
-                    prefs = reply
+                    prefs = reply.library
                     dirty = false
                 } else {
-                    prefs = reply.merging(prefs)
+                    prefs = reply.library.merging(prefs)
                     syncAgain = true
                 }
             } catch LibraryService.Failure.refused where sending {
                 // The server won't take these; keep its copy so the device stops retrying them.
                 guard self.accountId == accountId, prefs == sent else { return }
                 if let reply = try? await send(nil, token), self.accountId == accountId, prefs == sent {
-                    prefs = reply
+                    prefs = reply.library
+                    layout = reply.shelf
                     dirty = false
                 }
             } catch {

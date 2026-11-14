@@ -267,11 +267,7 @@ book saves `on: false`, so a device that was offline can't bring back the old se
 
 Book ids and section names aren't checked against the catalog. The app ignores ids it doesn't know and puts
 sections and books that aren't in an order in their usual place after the ordered ones, so new books show up in
-their usual spot. Arrange library lists the same books and sections as the shelf, made books and the sections a
-grown-up typed for them too (from app 1.2.6; earlier versions listed only catalog books, so a made book's own
-section was missing there). Section names that differ only in case, spacing or the kind of apostrophe ("Matt’s",
-"matt's") are one section, both on the shelf and in a saved order, and a made book in a catalog city's section
-("Paris", "paris") joins that city's. Limits: 200 sections, 500 ids per book order, 1,000 hidden flags, names and ids up to 80
+their usual spot. Limits: 200 sections, 500 ids per book order, 1,000 hidden flags, names and ids up to 80
 characters (`400 bad_library`, or `413 too_big` with `max`). If a merge goes over a limit, entries set back to the
 default go first, then the oldest.
 
@@ -279,6 +275,37 @@ The app keeps the account's copy on the device (removed on sign-out) and applies
 when it comes back to the foreground and after each change; a change that fails to send waits on the device and is
 retried every minute. Demo launches keep changes in memory only. The table is in `/admin/backup` and restore, and
 deleting an account deletes it.
+
+**The server lays out the shelf (app 1.2.6 and later).** `GET /account/shelf` returns the whole shelf for the
+calling app, and `PUT /account/shelf` takes the same changes as `PUT /account/library` and returns the new layout
+([`shelf.py`](../server/src/little_explorer_agent/shelf.py)); both also return the arrangement as `library`:
+
+```json
+{"shelf": {"format": 1, "sections": [
+   {"key": "matt's", "name": "Matt’s", "flag": "", "flag_book": "dinosaur-2bb188",
+    "books": [{"id": "dinosaur-2bb188", "hidden": false}]},
+   {"key": "paris", "name": "Paris", "flag": "🇫🇷", "flag_book": "paris",
+    "books": [{"id": "paris", "hidden": false}, {"id": "what-should-i-do-at-paris-d1a210", "hidden": true}]},
+   {"key": "hawaii", "name": "Hawaii", "flag": "", "flag_book": "honolulu-046d4f",
+    "books": [{"id": "honolulu-046d4f", "hidden": false}, {"id": "making-<job id>", "hidden": false, "making": true}]}]},
+ "library": {"v": 7, "sections": {...}, "books": {...}, "hidden": {...}, "updated_at": "..."}}
+```
+
+It lists the account's catalog books (catalog order), then its published made books (only for apps from 1.2,
+without Openverse-photo books for apps before 1.2.5, as in the account's content manifest), then a `making` entry
+for each book being made. Section names that differ only in Unicode form, apostrophe kind, spacing or case are one
+section (`"Matt’s"` and `"matt's"`), named after its first book, so a made book in "paris" joins the catalog's
+Paris. The arrangement applies by section key: saved sections first, then the rest in shelf order; in each, the
+saved book order (the latest among names with the same key), then the rest. Hidden books stay in the layout with
+`"hidden": true` for Arrange library; the shelf leaves them out. Changing these rules is a server deploy.
+
+The app draws the shelf, Arrange library and Make a book's section list from the layout. It keeps the last one
+on the device (with the arrangement) for launch and offline use, skips ids it doesn't have, and puts books the
+layout doesn't list (a catalog book newer than the layout) where its own arrangement would. While a change hasn't
+reached the server, and with no layout at all (a server from before 1.2.6 answers 404, and the app uses
+`/account/library` instead), the app lays the shelf out itself with the same rules. Apps before 1.2.6 use only
+`/account/library`, which is unchanged (they listed only catalog books in Arrange library, so a made book's own
+section was missing there).
 
 **Hidden books still count** for the Passport badges and the stars total: hiding a book takes it off the shelf but
 doesn't take back what the child earned with it.
@@ -842,7 +869,9 @@ sign-in's email or code step), `-demoParent` (the Grown-ups corner), `-demoArran
 signin|talk|talk-consent|off|turn-on` (the Milo consent screen after sign-in, the gate and consent when Talk to Milo
 is tapped before Milo is allowed, the corner with Milo off, and the consent its switch shows when turned on).
 `-demoShelf grown-ups` scrolls to the Grown-ups button; with `-demoArrange`, `-demoShelf <book>` scrolls to that book.
-`-demoMadeSection "Matt’s"` (with `-demoMake made|menu|credits`) puts the demo made book in that section.
+`-demoMadeSection "Matt’s"` (with `-demoMake made|menu|credits`) puts the demo made book in that section, and
+`-demoShelfServer http://127.0.0.1:8765 -demoShelfToken <session>` lays the shelf out as that (local, test)
+server's `GET /account/shelf` does.
 `-demoUpgrade required|recommended` shows the [update screens](#app-versions-and-forced-updates).
 
 ### Release the app (beta and App Store)

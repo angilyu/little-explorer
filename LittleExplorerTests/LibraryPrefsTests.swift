@@ -162,6 +162,8 @@ final class LibraryStoreTests: XCTestCase {
     private var sent: [LibraryPrefs?] = []
     private var failure: Error?
     private var onSend: (() -> Void)?
+    /// The shelf layout the fake server answers with (none, like a server from before 1.2.6, when nil).
+    private var layoutFor: ((LibraryPrefs) -> ShelfLayout?)?
 
     override func setUp() async throws {
         suite = "LibraryStoreTests-\(UUID().uuidString)"
@@ -186,7 +188,7 @@ final class LibraryStoreTests: XCTestCase {
                     server = server.merging(prefs)
                     server.v += 1
                 }
-                return server
+                return LibraryReply(library: server, shelf: layoutFor?(server))
             },
             now: { [unowned self] in clock }
         )
@@ -311,6 +313,119 @@ final class LibraryStoreTests: XCTestCase {
         XCTAssertNil(defaults.data(forKey: "account.demo-family.library.v1"))
     }
 
+    // MARK: - The server's shelf layout
+
+    /// A layout as the server sends it: Lake Tahoe first, Paris with paris-fun hidden and a book this device
+    /// doesn't have, then "TRAVEL" (the server's name for the Travel section).
+    private static let layoutJSON = """
+    {"format": 1, "sections": [
+      {"key": "tahoe", "name": "Tahoe", "flag": "🇺🇸", "flag_book": "tahoe-heavenly",
+       "books": [{"id": "tahoe-heavenly", "hidden": false}, {"id": "tahoe", "hidden": false}]},
+      {"key": "paris", "name": "Paris", "flag": "🇫🇷", "flag_book": "paris",
+       "books": [{"id": "paris-fun", "hidden": true}, {"id": "not-here-yet", "hidden": false}, {"id": "paris", "hidden": false}]},
+      {"key": "travel", "name": "TRAVEL", "books": [{"id": "travel-flight", "hidden": false}, {"id": "making-j1", "hidden": false, "making": true}]}
+    ]}
+    """
+
+    private func serverLayout() -> ShelfLayout {
+        try! JSONDecoder().decode(ShelfLayout.self, from: Data(Self.layoutJSON.utf8))
+    }
+
+    func testRendersTheServersLayout() async {
+        layoutFor = { [unowned self] _ in serverLayout() }
+        let store = makeStore()
+        store.switchAccount("acct-1")
+        await store.sync()
+        XCTAssertEqual(store.layout, serverLayout())
+        let shelves = store.arrangedShelves(catalog)
+        // The layout's order and names; books it doesn't list (paris-food, london) go where the device puts them.
+        XCTAssertEqual(shelves.map(\.city), ["Tahoe", "Paris", "TRAVEL", "London"])
+        XCTAssertEqual(shelves[0].books.map(\.id), ["tahoe-heavenly", "tahoe"])
+        XCTAssertEqual(shelves[0].flagBook.id, "tahoe-heavenly")
+        XCTAssertEqual(shelves[1].books.map(\.id), ["paris-fun", "paris", "paris-food"])
+        XCTAssertEqual(shelves[2].books.map(\.city), ["TRAVEL"])
+        // Hidden as the layout says (the device's own prefs hide nothing).
+        XCTAssertFalse(store.prefs.isHidden("paris-fun"))
+        XCTAssertTrue(store.isHidden("paris-fun"))
+        XCTAssertEqual(ids(store.visible(catalog)), ["tahoe-heavenly", "tahoe", "paris", "paris-food", "travel-flight", "london"])
+        // A book being made goes where the layout puts it.
+        var placeholder = book("making-j1", city: "travel")
+        placeholder.generated = true
+        XCTAssertEqual(store.visibleShelves(catalog + [placeholder])[2].books.map(\.id), ["travel-flight", "making-j1"])
+    }
+
+    func testTheCachedLayoutShowsOfflineAndAfterRelaunch() async {
+        layoutFor = { [unowned self] _ in serverLayout() }
+        let store = makeStore()
+        store.switchAccount("acct-1")
+        await store.sync()
+
+        failure = LibraryService.Failure.later
+        let relaunched = makeStore()
+        relaunched.switchAccount("acct-1")
+        await relaunched.sync()
+        XCTAssertEqual(relaunched.layout, serverLayout())
+        XCTAssertEqual(relaunched.arrangedShelves(catalog).map(\.city), ["Tahoe", "Paris", "TRAVEL", "London"])
+
+        // A change the server hasn't seen: the device arranges the shelf itself until it has.
+        relaunched.moveSections(["Tahoe", "Paris", "TRAVEL", "London"], from: [3], to: 0)
+        XCTAssertTrue(relaunched.dirty)
+        XCTAssertEqual(relaunched.arrangedShelves(catalog).map(\.city), ["London", "Tahoe", "Paris", "Travel"])
+        XCTAssertFalse(relaunched.isHidden("paris-fun"))
+
+        // Another account on the device has no layout until its own sync.
+        relaunched.switchAccount("acct-2")
+        XCTAssertNil(relaunched.layout)
+        relaunched.forgetAccount("acct-2")
+        XCTAssertNil(relaunched.layout)
+    }
+
+    func testAServerWithoutLayoutsFallsBackToTheDevicesArrangement() async throws {
+        let store = makeStore()
+        store.switchAccount("acct-1")
+        store.moveSections(["Paris", "London", "Tahoe", "Travel"], from: [2], to: 0)
+        await store.sync()
+        await settle()
+        XCTAssertFalse(store.dirty)
+        XCTAssertNil(store.layout)
+        XCTAssertEqual(store.arrangedShelves(catalog).map(\.city), ["Tahoe", "Paris", "London", "Travel"])
+
+        // A layout format this app can't read counts as none.
+        let newer = #"{"library": {"v": 1}, "shelf": {"format": 2, "sections": "something new"}}"#
+        let reply = try JSONDecoder().decode(LibraryReply.self, from: Data(newer.utf8))
+        XCTAssertNil(reply.shelf)
+        XCTAssertEqual(reply.library.v, 1)
+    }
+
+    func testArrangeEditsRoundTripThroughTheServer() async {
+        // The fake server lays the shelf out from what it saved (named in capitals, so the test sees whose it is).
+        layoutFor = { saved in
+            ShelfLayout(format: 1, sections: saved.arrangedShelves(catalog).map { shelf in
+                .init(key: shelf.city.lowercased(), name: shelf.city.uppercased(), books: shelf.books.map {
+                    .init(id: $0.id, hidden: saved.isHidden($0.id))
+                })
+            })
+        }
+        let store = makeStore()
+        store.switchAccount("acct-1")
+        await store.sync()
+        let onScreen = store.arrangedShelves(catalog).map(\.city)
+        XCTAssertEqual(onScreen, ["PARIS", "LONDON", "TAHOE", "TRAVEL"])
+
+        store.moveSections(onScreen, from: [2], to: 0)
+        store.moveBooks(["paris", "paris-food", "paris-fun"], in: "PARIS", from: [2], to: 0)
+        store.setHidden("london", true)
+        await store.sync()
+        await settle()
+        XCTAssertFalse(store.dirty)
+        XCTAssertEqual(sent.compactMap { $0 }.last?.sections?.order, ["TAHOE", "PARIS", "LONDON", "TRAVEL"])
+        XCTAssertEqual(server.books["PARIS"]?.order, ["paris-fun", "paris", "paris-food"])
+        XCTAssertEqual(store.layout, layoutFor?(server))
+        XCTAssertEqual(store.visibleShelves(catalog).map(\.city), ["TAHOE", "PARIS", "TRAVEL"])
+        XCTAssertEqual(store.arrangedShelves(catalog)[1].books.map(\.id), ["paris-fun", "paris", "paris-food"])
+        XCTAssertTrue(store.isHidden("london"))
+    }
+
     func testMovesUseTheOrderOnScreen() {
         let store = makeStore(enabled: false)
         store.switchAccount("acct-1")
@@ -390,7 +505,7 @@ final class MadeBookSectionsTests: XCTestCase {
         let defaults = UserDefaults(suiteName: suite)!
         defer { defaults.removePersistentDomain(forName: suite) }
         func store() -> LibraryStore {
-            LibraryStore(defaults: defaults, token: { nil }, send: { _, _ in LibraryPrefs() })
+            LibraryStore(defaults: defaults, token: { nil }, send: { _, _ in LibraryReply(library: LibraryPrefs()) })
         }
         let arranging = store()
         arranging.switchAccount("6623a9cd")
@@ -447,6 +562,54 @@ final class MadeBookSectionsTests: XCTestCase {
         // The later of two spellings' book orders counts.
         prefs.setBookOrder(["dino", "rex"], in: "Matt’s", at: 2)
         XCTAssertEqual(prefs.arrangedShelves(books).first?.books.map(\.id), ["dino", "rex"])
-        XCTAssertEqual(MadeBooksSection.sections(books + [made("x", "MATT’S")]), ["Paris", "London", "Tahoe", "Travel", "Matt’s"])
+        XCTAssertEqual(BookLibrary.shelves(books + [made("x", "MATT’S")]).map(\.city), ["Paris", "London", "Tahoe", "Travel", "Matt’s"])
+    }
+}
+
+/// `LibraryService` asks `/account/shelf` and falls back to `/account/library` on a server from before 1.2.6.
+final class LibraryServiceTests: XCTestCase {
+    private func service() -> LibraryService {
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [StubAccountServer.self]
+        return LibraryService(baseURL: URL(string: "https://account.test")!, session: URLSession(configuration: config))
+    }
+
+    override func setUp() {
+        StubAccountServer.replies = []
+        StubAccountServer.sent = []
+    }
+
+    func testAsksForTheShelfLayout() async throws {
+        let shelf = #"{"format": 1, "sections": [{"key": "matt's", "name": "Matt’s", "flag": "", "flag_book": "dino", "books": [{"id": "dino", "hidden": false}]}]}"#
+        StubAccountServer.replies = [(200, #"{"library": {"v": 2, "books": {}, "hidden": {}}, "shelf": \#(shelf)}"#)]
+        var prefs = LibraryPrefs()
+        prefs.setSectionOrder(["Matt’s"], at: 5)
+        let reply = try await service().sync(prefs, token: "tok")
+        XCTAssertEqual(StubAccountServer.sent.map(\.path), ["/account/shelf"])
+        XCTAssertEqual(StubAccountServer.sent[0].method, "PUT")
+        XCTAssertEqual((StubAccountServer.sent[0].body["sections"] as? [String: Any])?["order"] as? [String], ["Matt’s"])
+        XCTAssertEqual(reply.library.v, 2)
+        XCTAssertEqual(reply.shelf?.sections.first?.name, "Matt’s")
+        XCTAssertEqual(reply.shelf?.sections.first?.flagBook, "dino")
+    }
+
+    func testAnOlderServerGetsTheLibraryEndpoint() async throws {
+        StubAccountServer.replies = [(404, #"{"error": "not found"}"#), (200, #"{"library": {"v": 3}}"#)]
+        let reply = try await service().sync(nil, token: "tok")
+        XCTAssertEqual(StubAccountServer.sent.map(\.path), ["/account/shelf", "/account/library"])
+        XCTAssertEqual(StubAccountServer.sent.map(\.method), ["GET", "GET"])
+        XCTAssertEqual(reply.library.v, 3)
+        XCTAssertNil(reply.shelf)
+    }
+
+    func testRefusedChangesAreNotRetriedElsewhere() async {
+        StubAccountServer.replies = [(400, #"{"error": "bad_library"}"#)]
+        do {
+            _ = try await service().sync(LibraryPrefs(), token: "tok")
+            XCTFail("refused")
+        } catch {
+            XCTAssertEqual(error as? LibraryService.Failure, .refused)
+        }
+        XCTAssertEqual(StubAccountServer.sent.count, 1)
     }
 }

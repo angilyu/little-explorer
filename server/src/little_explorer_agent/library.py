@@ -23,7 +23,8 @@ The document (``{"library": ...}`` in both replies)::
   than removed) so an older change from another device can't bring the old setting back.
 * ``v`` goes up by one with every write that changes something.
 
-Book ids and section names the app doesn't know are ignored by the app, so a book removed from the
+From app 1.2.6 the server also lays out the shelf with these settings (``GET``/``PUT /account/shelf``, see
+:mod:`.shelf`). Book ids and section names the app doesn't know are ignored by the app, so a book removed from the
 catalog or no longer granted to the account just stops counting, and a new book shows in its default
 place. Nothing about a book's grant changes: hiding only affects the shelf, not what Milo may read.
 A request with more than :data:`MAX_SECTIONS` sections, :data:`MAX_BOOKS_PER_SECTION` books in one
